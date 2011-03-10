@@ -6,6 +6,7 @@
 # @date   2010/10/17
 
 require 'rubygems'
+require 'pathname'
 require 'rack'
 require File.join(File.dirname(__FILE__), 'grep')
 

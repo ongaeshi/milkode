@@ -21,7 +21,7 @@ class TestMkgrendb < Test::Unit::TestCase
 
   def test_setup_and_open
     io = StringIO.new
-    obj = Mkgrendb::Mkgrendb.new(io)
+    obj = ::Mkgrendb::Mkgrendb.new(io)
     obj.init
 
     Database.setup('.')

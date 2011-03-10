@@ -5,9 +5,10 @@
 # @author ongaeshi
 # @date   2010/10/17
 
-require 'groonga'
+require 'rubygems'
 require 'pathname'
 require 'singleton'
+require 'groonga'
 require File.join(File.dirname(__FILE__), "../common/dbdir")
 
 module Grenweb

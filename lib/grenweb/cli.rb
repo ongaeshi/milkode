@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-require 'optparse'
 require 'rubygems'
-require 'rack'
+require 'optparse'
 require 'fileutils'
 require File.join(File.dirname(__FILE__), 'database')
 require File.join(File.dirname(__FILE__), '../common/dbdir')
-require 'launchy'
 include CodeStock
+require 'rack'
+require 'launchy'
 
 module Grenweb
   class CLI

@@ -19,18 +19,28 @@ Jeweler::Tasks.new do |gem|
   gem.description = %Q{longer description of your gem}
   gem.email = "ongaeshi0621@gmail.com"
   gem.authors = ["ongaeshi"]
+
   # Include your dependencies below. Runtime dependencies are required when using your gem,
+  gem.add_runtime_dependency 'termcolor','>= 1.2.0'
+  gem.add_runtime_dependency 'rroonga','>= 1.0.0'
+  gem.add_runtime_dependency 'rack','>=1.2.1'
+  gem.add_runtime_dependency 'launchy', '>=0.3.7'
+
   # and development dependencies are only needed for development (ie running rake tasks, tests, etc)
-  #  gem.add_runtime_dependency 'jabber4r', '> 0.1'
   #  gem.add_development_dependency 'rspec', '> 1.2.3'
 end
 Jeweler::RubygemsDotOrgTasks.new
 
-require 'rake/testtask'
-Rake::TestTask.new(:test) do |test|
-  test.libs << 'lib' << 'test'
-  test.pattern = 'test/**/test_*.rb'
-  test.verbose = true
+# require 'rake/testtask'
+# Rake::TestTask.new(:test) do |test|
+#   test.libs << 'lib' << 'test'
+#   test.pattern = 'test/**/test_*.rb'
+#   test.verbose = true
+# end
+
+task :test do
+  puts "Sorry, use (cd test;ruby runner.rb)"
+  # load "test/runner.rb"
 end
 
 require 'rcov/rcovtask'
