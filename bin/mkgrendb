@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+#
+#  Created on 2010-9-12.
+#  Copyright (c) 2010. All rights reserved.
+
+require 'rubygems'
+require File.expand_path(File.dirname(__FILE__) + "/../lib/gren")
+require "mkgrendb/cli"
+#require "mkgrendb/cli_old"
+
+Version = "0.2.4"
+Mkgrendb::CLI.execute(STDOUT, ARGV)
