@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.date = %q{2011-03-11}
   s.description = %q{longer description of your gem}
   s.email = %q{ongaeshi0621@gmail.com}
-  s.executables = ["mkgrendb", "grenweb", "grendb", "gren"]
+  s.executables = ["cdweb", "cdv", "cdstk", "cdview"]
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.rdoc"
@@ -25,6 +25,11 @@ Gem::Specification.new do |s|
     "README.rdoc",
     "Rakefile",
     "VERSION",
+    "bin/cdstk",
+    "bin/cdv",
+    "bin/cdview",
+    "bin/cdweb",
+    "codestock.gemspec",
     "lib/codestock.rb",
     "lib/common/dbdir.rb",
     "lib/common/display_util.rb",
