@@ -1,12 +1,12 @@
 require 'rubygems'
 require 'bundler'
-begin
-  Bundler.setup(:default, :development)
-rescue Bundler::BundlerError => e
-  $stderr.puts e.message
-  $stderr.puts "Run `bundle install` to install missing gems"
-  exit e.status_code
-end
+# begin
+#   Bundler.setup(:default, :development)
+# rescue Bundler::BundlerError => e
+#   $stderr.puts e.message
+#   $stderr.puts "Run `bundle install` to install missing gems"
+#   exit e.status_code
+# end
 require 'rake'
 
 require 'jeweler'
@@ -39,8 +39,7 @@ Jeweler::RubygemsDotOrgTasks.new
 # end
 
 task :test do
-  puts "Sorry, use (cd test;ruby runner.rb)"
-  # load "test/runner.rb"
+  load "test/runner.rb"
 end
 
 require 'rcov/rcovtask'
