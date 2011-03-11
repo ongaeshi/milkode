@@ -8,8 +8,8 @@
 require 'yaml'
 require 'pathname'
 
-module Mkgrendb
-  class GrendbYAML
+module CodeStock
+  class CdstkYaml
     class YAMLAlreadyExist < RuntimeError
     end
     
@@ -19,7 +19,7 @@ module Mkgrendb
     def self.create(path = ".")
       yf = yaml_file(path)
       raise YAMLAlreadyExist.new if FileTest.exist? yf
-      obj = GrendbYAML.new(yf, {'contents' => [], 'version' => 0.1})
+      obj = CdstkYaml.new(yf, {'contents' => [], 'version' => 0.1})
       obj.save
       return obj
     end
@@ -28,7 +28,7 @@ module Mkgrendb
       yf = yaml_file(path)
       raise YAMLNotExist.new unless FileTest.exist? yf
       open(yf) do |f|
-        return GrendbYAML.new(yf, YAML.load(f.read()))
+        return CdstkYaml.new(yf, YAML.load(f.read()))
       end
     end
 

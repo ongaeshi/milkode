@@ -6,13 +6,13 @@ require 'rubygems'
 require 'groonga'
 require 'fileutils'
 require 'pathname'
-require File.join(File.dirname(__FILE__), 'grendbyaml')
+require File.join(File.dirname(__FILE__), 'cdstk_yaml')
 require File.join(File.dirname(__FILE__), '../common/grenfiletest')
 require File.join(File.dirname(__FILE__), '../common/util')
 include Gren
 
-module Mkgrendb
-  class Mkgrendb
+module CodeStock
+  class Cdstk
     DB_FILE_PATH = 'db/grendb.db'
     
     def initialize(io = $stdout, db_dir = ".")
@@ -26,7 +26,7 @@ module Mkgrendb
 
     def init
       if Dir.entries(@db_dir) == [".", ".."]
-        GrendbYAML.create(@db_dir)
+        CdstkYaml.create(@db_dir)
         @out.puts "create     : #{yaml_file}"
         db_create(db_file)
       else
@@ -112,11 +112,11 @@ module Mkgrendb
     end
 
     def yaml_file
-      GrendbYAML.yaml_file @db_dir
+      CdstkYaml.yaml_file @db_dir
     end
 
     def yaml_load
-      GrendbYAML.load(@db_dir)
+      CdstkYaml.load(@db_dir)
     end
 
     def update_dir_in(dir)

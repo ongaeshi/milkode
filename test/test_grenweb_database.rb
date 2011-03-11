@@ -11,7 +11,7 @@ require File.join(File.dirname(__FILE__), "test_helper")
 require File.join(File.dirname(__FILE__), "file_test_utils")
 require File.join(File.dirname(__FILE__), "../lib/cdweb/database")
 require File.join(File.dirname(__FILE__), "../lib/common/dbdir")
-require File.join(File.dirname(__FILE__), "../lib/cdstk/mkgrendb")
+require File.join(File.dirname(__FILE__), "../lib/cdstk/cdstk")
 require 'stringio'
 
 class TestMkgrendb < Test::Unit::TestCase
@@ -21,7 +21,7 @@ class TestMkgrendb < Test::Unit::TestCase
 
   def test_setup_and_open
     io = StringIO.new
-    obj = ::Mkgrendb::Mkgrendb.new(io)
+    obj = Cdstk.new(io)
     obj.init
 
     Database.setup('.')
