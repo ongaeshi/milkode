@@ -9,7 +9,7 @@ require 'pathname'
 require File.join(File.dirname(__FILE__), 'cdstk_yaml')
 require File.join(File.dirname(__FILE__), '../common/grenfiletest')
 require File.join(File.dirname(__FILE__), '../common/util')
-include Gren
+include CodeStock
 
 module CodeStock
   class Cdstk

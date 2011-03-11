@@ -9,7 +9,7 @@ require 'rubygems'
 require 'groonga'
 require File.join(File.dirname(__FILE__), "test_helper.rb")
 require File.join(File.dirname(__FILE__), "file_test_utils")
-require File.join(File.dirname(__FILE__), "../lib/cdstk/cli.rb")
+require File.join(File.dirname(__FILE__), "../lib/cdstk/cli_cdstk.rb")
 require File.join(File.dirname(__FILE__), "../lib/cdstk/cdstk")
 require 'stringio'
 
@@ -103,34 +103,34 @@ EOF
 
   def test_cli
     io = StringIO.new
-    CLI.execute(io, ["init"])
+    CLI_Cdstk.execute(io, ["init"])
 
     io.string = ""
-    CLI.execute(io, ["add", "dummy/bar", "foo"])
+    CLI_Cdstk.execute(io, ["add", "dummy/bar", "foo"])
     assert_match /dummy\/bar/, io.string
     assert_match /foo/, io.string
     
     io.string = ""
-    CLI.execute(io, ["list"])
+    CLI_Cdstk.execute(io, ["list"])
     assert_match /dummy\/bar/, io.string
     assert_match /foo/, io.string
 
-    CLI.execute(io, ["remove", "foo"])
+    CLI_Cdstk.execute(io, ["remove", "foo"])
     io.string = ""
-    CLI.execute(io, ["list"])
+    CLI_Cdstk.execute(io, ["list"])
     assert_match /dummy\/bar/, io.string
     assert_no_match /foo/, io.string
 
-    CLI.execute(io, ["update"])
-    CLI.execute(io, ["rebuild"])
+    CLI_Cdstk.execute(io, ["update"])
+    CLI_Cdstk.execute(io, ["rebuild"])
   end
 
   def test_dump
     io = StringIO.new
-    CLI.execute(io, ["init"])
-    CLI.execute(io, ["add", "../runner.rb"])
+    CLI_Cdstk.execute(io, ["init"])
+    CLI_Cdstk.execute(io, ["add", "../runner.rb"])
     io.string = ""
-    CLI.execute(io, ["dump"])
+    CLI_Cdstk.execute(io, ["dump"])
     lines = io.string.split("\n")
     assert_match /path : .*test\/runner.rb/, lines[2]
     assert_match /shortpath : runner.rb/, lines[3]
@@ -140,16 +140,16 @@ EOF
   def test_add_remove_compact
     io = StringIO.new
 
-    CLI.execute(io, ["init"])
-    CLI.execute(io, ["add", "dummy/bar"])
-    CLI.execute(io, ["add", "dummy/bar"])
+    CLI_Cdstk.execute(io, ["init"])
+    CLI_Cdstk.execute(io, ["add", "dummy/bar"])
+    CLI_Cdstk.execute(io, ["add", "dummy/bar"])
 
     assert_equal 1, CdstkYaml.load.directorys.select{|i|i == File.expand_path("dummy/bar")}.count
     
-    CLI.execute(io, ["add", "dummy/da"])
-    CLI.execute(io, ["add", "dummy/ad"])
-    CLI.execute(io, ["add", "dummy/foo"])
-    CLI.execute(io, ["add", "dummy/bar"])
+    CLI_Cdstk.execute(io, ["add", "dummy/da"])
+    CLI_Cdstk.execute(io, ["add", "dummy/ad"])
+    CLI_Cdstk.execute(io, ["add", "dummy/foo"])
+    CLI_Cdstk.execute(io, ["add", "dummy/bar"])
 
     assert_equal 1, CdstkYaml.load.directorys.select{|i|i == File.expand_path("dummy/bar")}.count
   end

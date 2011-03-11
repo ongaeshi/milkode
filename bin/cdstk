@@ -4,7 +4,7 @@
 #  Copyright (c) 2010. All rights reserved.
 
 require 'rubygems'
-require File.join(File.dirname(__FILE__), "../lib/cdstk/cli")
+require File.join(File.dirname(__FILE__), "../lib/cdstk/cli_cdstk")
 
 Version = "0.1.0"
-CodeStock::CLI.execute(STDOUT, ARGV)
+CodeStock::CLI_Cdstk.execute(STDOUT, ARGV)

@@ -15,7 +15,6 @@ require File.join(File.dirname(__FILE__), "../lib/cdstk/cdstk")
 require 'stringio'
 
 class TestMkgrendb < Test::Unit::TestCase
-  include Grenweb
   include FileTestUtils
   include CodeStock
 

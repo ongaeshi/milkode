@@ -11,7 +11,7 @@ require 'singleton'
 require 'groonga'
 require File.join(File.dirname(__FILE__), "../common/dbdir")
 
-module Grenweb
+module CodeStock
   class Database
     include Singleton
     include CodeStock

@@ -4,12 +4,11 @@ require 'optparse'
 require 'fileutils'
 require File.join(File.dirname(__FILE__), 'database')
 require File.join(File.dirname(__FILE__), '../common/dbdir')
-include CodeStock
 require 'rack'
 require 'launchy'
 
-module Grenweb
-  class CLI
+module CodeStock
+  class CLI_Cdweb
     def self.execute(stdout, arguments=[])
       option = {
         :Port => 9292,

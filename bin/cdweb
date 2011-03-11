@@ -4,7 +4,7 @@
 #  Copyright (c) 2010. All rights reserved.
 
 require 'rubygems'
-require File.join(File.dirname(__FILE__), "../lib/cdweb/cli")
+require File.join(File.dirname(__FILE__), "../lib/cdweb/cli_cdweb")
 
 Version = "0.1.0"
-Grenweb::CLI.execute(STDOUT, ARGV)
+CodeStock::CLI_Cdweb.execute(STDOUT, ARGV)

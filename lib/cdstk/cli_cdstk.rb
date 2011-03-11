@@ -4,7 +4,7 @@ require File.join(File.dirname(__FILE__), 'cdstk')
 require File.join(File.dirname(__FILE__), '../common/dbdir.rb')
 
 module CodeStock
-  class CLI
+  class CLI_Cdstk
     def self.execute(stdout, arguments=[])
       opt = OptionParser.new <<EOF
 #{File.basename($0)} COMMAND [ARGS]

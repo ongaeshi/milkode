@@ -8,7 +8,7 @@
 require 'rubygems'
 require 'test/unit'
 require File.join(File.dirname(__FILE__), "../lib/cdstk/cli_cdstk")
-require File.join(File.dirname(__FILE__), "../lib/cdview/cli_cdview")
+]require File.join(File.dirname(__FILE__), "../lib/cdview/cli_cdview")
 require File.join(File.dirname(__FILE__), "../lib/cdweb/cli_cdweb")
 
 class TestBinExec < Test::Unit::TestCase
@@ -19,7 +19,7 @@ class TestBinExec < Test::Unit::TestCase
 
     CodeStock::CLI_Cdview.execute(io)
 
-    # ä¸€å®šæ™‚é–“ã ã‘èµ·å‹•ã™ã‚‹ã‚ˆã†ãªä»•çµ„ã¿ã¯ç„¡ã„ã‚‚ã®ã‹
+    # ’°ì’Äê’»þ’´Ö’¤À’¤±’µ¯’Æ°’¤¹’¤ë’¤è’¤¦’¤Ê’»Å’ÁÈ’¤ß’¤Ï’Ìµ’¤¤’¤â’¤Î’¤«
     # CodeStock::CLI_Cdweb.execute(io, "--no-browser -p 5555".split)
     
     # puts io.string
