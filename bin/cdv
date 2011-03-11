@@ -3,8 +3,4 @@
 #  Created on 2010-8-25.
 #  Copyright (c) 2010. All rights reserved.
 
-require 'rubygems'
-require File.join(File.dirname(__FILE__), "../lib/cdview/cli")
-
-Version = "0.1.0"
-Grendb::CLI.execute(STDOUT, ARGV)
+load File.join(File.dirname(__FILE__), "cdview")
