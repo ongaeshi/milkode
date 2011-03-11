@@ -9,7 +9,7 @@ module CodeStock
       opt = OptionParser.new <<EOF
 #{File.basename($0)} COMMAND [ARGS]
 
-The most commonly used mkgrendb are:
+The most commonly used #{File.basename($0)} are:
   init        Init db.
   update      Update db.
   add         Add contents. (ex. ~/Documents/cdstock, git://github.com/ongaeshi/cdstock.git)
@@ -60,7 +60,7 @@ EOF
         end
       else
         if subcommand
-          $stderr.puts "#{File.basename($0)}: '#{subcommand}' is not a mkgrendb command. See 'mkgrendb --help'"
+          $stderr.puts "#{File.basename($0)}: '#{subcommand}' is not a #{File.basename($0)} command. See '#{File.basename($0)} --help'"
         else
           stdout.puts opt.help
         end

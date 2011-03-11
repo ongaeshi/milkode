@@ -1,11 +1,10 @@
 #!/usr/bin/env ruby
 #
-#  Created on 2010-10-10.
+#  Created on 2010-8-25.
 #  Copyright (c) 2010. All rights reserved.
 
 require 'rubygems'
-require File.expand_path(File.dirname(__FILE__) + "/../lib/gren")
-require "cdweb/cli"
+require File.join(File.dirname(__FILE__), "../lib/cdweb/cli")
 
-Version = "0.3.1"
+Version = "0.1.0"
 Grenweb::CLI.execute(STDOUT, ARGV)
