@@ -6,7 +6,7 @@
 # @date   2010/10/21
 
 require File.join(File.dirname(__FILE__), "test_helper.rb")
-require File.join(File.dirname(__FILE__), "../lib/grenweb/searcher.rb")
+require File.join(File.dirname(__FILE__), "../lib/cdweb/searcher.rb")
 require 'rack/mock'
 
 class TestGrenwebSearcher < Test::Unit::TestCase

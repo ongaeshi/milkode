@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 require 'optparse'
-require File.join(File.dirname(__FILE__), 'mkgrendb')
+require File.join(File.dirname(__FILE__), 'grendb')
 
 module Mkgrendb
   class CLI

@@ -5,8 +5,8 @@
 
 require 'rubygems'
 require File.expand_path(File.dirname(__FILE__) + "/../lib/gren")
-require "mkgrendb/cli"
-#require "mkgrendb/cli_old"
+require "cdstk/cli"
+#require "cdstk/cli_old"
 
 Version = "0.2.4"
 Mkgrendb::CLI.execute(STDOUT, ARGV)

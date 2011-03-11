@@ -5,7 +5,7 @@
 
 require 'rubygems'
 require File.expand_path(File.dirname(__FILE__) + "/../lib/gren")
-require "grendb/cli"
+require "cdv/cli"
 
 Version = "0.2.4"
 Grendb::CLI.execute(STDOUT, ARGV)

@@ -1,7 +1,7 @@
 require File.join(File.dirname(__FILE__), 'test_helper.rb')
-require File.join(File.dirname(__FILE__), '../lib/grenweb/cli.rb')
-require File.join(File.dirname(__FILE__), '../lib/grenweb/searcher.rb')
-require File.join(File.dirname(__FILE__), '../lib/grenweb/viewer.rb')
+require File.join(File.dirname(__FILE__), '../lib/cdweb/cli.rb')
+require File.join(File.dirname(__FILE__), '../lib/cdweb/searcher.rb')
+require File.join(File.dirname(__FILE__), '../lib/cdweb/viewer.rb')
 
 class TestGrenwebCli < Test::Unit::TestCase
   def test_print_default_output

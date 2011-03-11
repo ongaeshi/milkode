@@ -6,7 +6,7 @@
 # @date   2011/02/20
 
 require File.join(File.dirname(__FILE__), "test_helper.rb")
-require File.join(File.dirname(__FILE__), "../lib/mkgrendb/grendbyaml.rb")
+require File.join(File.dirname(__FILE__), "../lib/cdstk/grendbyaml.rb")
 require 'fileutils'
 
 class TestGrendbYAML < Test::Unit::TestCase
