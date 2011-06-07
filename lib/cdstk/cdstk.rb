@@ -15,6 +15,12 @@ module CodeStock
   class Cdstk
     DB_FILE_PATH = 'db/grendb.db'
     
+    # バイグラムでトークナイズする。連続する記号・アルファベット・数字は一語として扱う。
+    # DEFAULT_TOKENIZER = "TokenBigram"
+
+    # 記号・アルファベット・数字もバイグラムでトークナイズする。
+    DEFAULT_TOKENIZER = "TokenBigramSplitSymbolAlphaDigit" 
+    
     def initialize(io = $stdout, db_dir = ".")
       @db_dir = db_dir
       @out = io
@@ -166,7 +172,7 @@ module CodeStock
           schema.create_table("terms",
                               :type => :patricia_trie,
                               :key_normalize => true,
-                              :default_tokenizer => "TokenBigram") do |table|
+                              :default_tokenizer => DEFAULT_TOKENIZER) do |table|
             table.index("documents.path", :with_position => true)
             table.index("documents.shortpath", :with_position => true)
             table.index("documents.content", :with_position => true)
