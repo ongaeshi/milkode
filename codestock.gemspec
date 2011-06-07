@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{codestock}
-  s.version = "0.1.0"
+  s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ongaeshi"]
-  s.date = %q{2011-03-11}
+  s.date = %q{2011-06-08}
   s.description = %q{longer description of your gem}
   s.email = %q{ongaeshi0621@gmail.com}
   s.executables = ["cdweb", "cdv", "cdstk", "cdview"]
@@ -40,39 +40,15 @@ Gem::Specification.new do |s|
     "lib/common/util.rb",
     "lib/findgrep/findgrep.rb",
     "lib/findgrep/result.rb",
-    "lib/gren.rb",
-    "lib/gren/cli.rb",
-    "lib/grendb/cli.rb",
-    "lib/grenweb/cli.rb",
-    "lib/grenweb/database.rb",
-    "lib/grenweb/grenweb.ru",
-    "lib/grenweb/grep.rb",
-    "lib/grenweb/help.rb",
-    "lib/grenweb/home.rb",
-    "lib/grenweb/html_renderer.rb",
-    "lib/grenweb/public/css/gren.css",
-    "lib/grenweb/public/images/gren-icon-mini.png",
-    "lib/grenweb/public/images/gren-icon.png",
-    "lib/grenweb/query.rb",
-    "lib/grenweb/searcher.rb",
-    "lib/grenweb/viewer.rb",
-    "lib/mkgrendb/cli.rb",
-    "lib/mkgrendb/cli_old.rb",
-    "lib/mkgrendb/grendbyaml.rb",
-    "lib/mkgrendb/mkgrendb.rb",
     "test/file_test_utils.rb",
     "test/runner.rb",
     "test/test_dbdir.rb",
-    "test/test_gren.rb",
     "test/test_gren_util.rb",
-    "test/test_grendbyaml.rb",
-    "test/test_grenweb_cli.rb",
     "test/test_grenweb_database.rb",
     "test/test_grenweb_html_renderer.rb",
     "test/test_grenweb_query.rb",
     "test/test_grenweb_searcher.rb",
     "test/test_helper.rb",
-    "test/test_mkgrendb.rb",
     "test/test_string_snip.rb"
   ]
   s.homepage = %q{http://github.com/ongaeshi/codestock}
@@ -84,16 +60,12 @@ Gem::Specification.new do |s|
     "test/file_test_utils.rb",
     "test/runner.rb",
     "test/test_dbdir.rb",
-    "test/test_gren.rb",
     "test/test_gren_util.rb",
-    "test/test_grendbyaml.rb",
-    "test/test_grenweb_cli.rb",
     "test/test_grenweb_database.rb",
     "test/test_grenweb_html_renderer.rb",
     "test/test_grenweb_query.rb",
     "test/test_grenweb_searcher.rb",
     "test/test_helper.rb",
-    "test/test_mkgrendb.rb",
     "test/test_string_snip.rb"
   ]
 
