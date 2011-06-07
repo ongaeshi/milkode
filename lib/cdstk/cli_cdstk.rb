@@ -2,6 +2,7 @@
 require 'optparse'
 require File.join(File.dirname(__FILE__), 'cdstk')
 require File.join(File.dirname(__FILE__), '../common/dbdir.rb')
+include CodeStock
 
 module CodeStock
   class CLI_Cdstk
