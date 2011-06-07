@@ -147,7 +147,7 @@ module CodeStock
       @end_time = Time.now
       
       @out.puts
-      @out.puts "time       : #{Util::time_s(time)}"
+      @out.puts "time       : #{Gren::Util::time_s(time)}"
       @out.puts "files      : #{@file_count}"
       @out.puts "add        : #{@add_count}"
       @out.puts "update     : #{@update_count}"
