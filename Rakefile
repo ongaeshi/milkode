@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'rubygems'
 require 'bundler'
 # begin
@@ -31,16 +32,27 @@ Jeweler::Tasks.new do |gem|
 end
 Jeweler::RubygemsDotOrgTasks.new
 
-# require 'rake/testtask'
-# Rake::TestTask.new(:test) do |test|
-#   test.libs << 'lib' << 'test'
-#   test.pattern = 'test/**/test_*.rb'
-#   test.verbose = true
-# end
+require 'rake/testtask'
 
-task :test do
-  load "test/runner.rb"
+# groonga関連のテストが通らないため、独自のrake_test_loaderを読み込む
+module Rake
+  class TestTask < TaskLib
+    def rake_loader # :nodoc:
+      find_file('test/rake_test_loader') or
+        fail "unable to find rake test loader"
+    end
+  end
 end
+ 
+Rake::TestTask.new(:test) do |test|
+  test.libs << 'lib' << 'test'
+  test.pattern = 'test/**/test_*.rb'
+  test.verbose = true
+end
+
+# task :test do
+#   load "test/runner.rb"
+# end
 
 require 'rcov/rcovtask'
 Rcov::RcovTask.new do |test|
