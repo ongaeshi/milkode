@@ -6,9 +6,9 @@
 # @date   2011/03/08
 
 require 'rubygems'
-require File.join(File.dirname(__FILE__), "test_helper")
-require File.join(File.dirname(__FILE__), "../lib/common/dbdir")
-require File.join(File.dirname(__FILE__), "file_test_utils")
+require 'test_helper'
+require 'common/dbdir'
+require 'file_test_utils'
 
 class TestDbDir< Test::Unit::TestCase
   include CodeStock

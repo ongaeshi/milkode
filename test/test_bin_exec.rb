@@ -7,9 +7,9 @@
 
 require 'rubygems'
 require 'test/unit'
-require File.join(File.dirname(__FILE__), "../lib/cdstk/cli_cdstk")
-require File.join(File.dirname(__FILE__), "../lib/cdview/cli_cdview")
-require File.join(File.dirname(__FILE__), "../lib/cdweb/cli_cdweb")
+require 'cdstk/cli_cdstk'
+require 'cdview/cli_cdview'
+require 'cdweb/cli_cdweb'
 
 class TestBinExec < Test::Unit::TestCase
   def test_bin_exec

@@ -6,9 +6,9 @@ require 'rubygems'
 require 'groonga'
 require 'fileutils'
 require 'pathname'
-require File.join(File.dirname(__FILE__), 'cdstk_yaml')
-require File.join(File.dirname(__FILE__), '../common/grenfiletest')
-require File.join(File.dirname(__FILE__), '../common/util')
+require 'cdstk/cdstk_yaml'
+require 'common/grenfiletest'
+require 'common/util'
 include CodeStock
 
 module CodeStock

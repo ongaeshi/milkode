@@ -7,11 +7,11 @@
 
 require 'rubygems'
 require 'groonga'
-require File.join(File.dirname(__FILE__), "test_helper")
-require File.join(File.dirname(__FILE__), "file_test_utils")
-require File.join(File.dirname(__FILE__), "../lib/cdweb/database")
-require File.join(File.dirname(__FILE__), "../lib/common/dbdir")
-require File.join(File.dirname(__FILE__), "../lib/cdstk/cdstk")
+require 'test_helper' 
+require 'file_test_utils'
+require 'cdweb/database'
+require 'common/dbdir'
+require 'cdstk/cdstk'
 require 'stringio'
 
 class TestMkgrendb < Test::Unit::TestCase

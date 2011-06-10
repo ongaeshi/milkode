@@ -8,7 +8,7 @@
 require 'rubygems'
 require 'pathname'
 require 'rack'
-require File.join(File.dirname(__FILE__), 'grep')
+require 'cdweb/grep'
 
 module Grenweb
   class HTMLRendeler

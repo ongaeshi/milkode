@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 require 'find'
-require File.join(File.dirname(__FILE__), '../common/util')
+require 'common/util'
 include Gren
 
 module FindGrep

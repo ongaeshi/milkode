@@ -4,7 +4,7 @@
 #  Copyright (c) 2010. All rights reserved.
 
 require 'rubygems'
-require File.join(File.dirname(__FILE__), "../lib/cdview/cli_cdview")
+require 'cdview/cli_cdview'
 
 Version = "0.1.0"
 CodeStock::CLI_Cdview.execute(STDOUT, ARGV)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 require 'optparse'
-require File.join(File.dirname(__FILE__), '../findgrep/findgrep')
-require File.join(File.dirname(__FILE__), '../common/dbdir')
+require 'findgrep/findgrep'
+require 'common/dbdir'
 include CodeStock
 
 module CodeStock

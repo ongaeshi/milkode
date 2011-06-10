@@ -7,10 +7,10 @@
 
 require 'rubygems'
 require 'groonga'
-require File.join(File.dirname(__FILE__), "test_helper.rb")
-require File.join(File.dirname(__FILE__), "file_test_utils")
-require File.join(File.dirname(__FILE__), "../lib/cdstk/cli_cdstk.rb")
-require File.join(File.dirname(__FILE__), "../lib/cdstk/cdstk")
+require 'test_helper'
+require 'file_test_utils'
+require 'cdstk/cli_cdstk.rb'
+require 'cdstk/cdstk'
 require 'stringio'
 
 class TestCdstk < Test::Unit::TestCase

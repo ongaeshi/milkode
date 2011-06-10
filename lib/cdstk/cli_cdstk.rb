@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 require 'optparse'
-require File.join(File.dirname(__FILE__), 'cdstk')
-require File.join(File.dirname(__FILE__), '../common/dbdir.rb')
+require 'cdstk/cdstk'
+require 'common/dbdir.rb'
 include CodeStock
 
 module CodeStock

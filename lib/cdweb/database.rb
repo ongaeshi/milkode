@@ -9,7 +9,7 @@ require 'rubygems'
 require 'pathname'
 require 'singleton'
 require 'groonga'
-require File.join(File.dirname(__FILE__), "../common/dbdir")
+require 'common/dbdir'
 include CodeStock
 
 module CodeStock

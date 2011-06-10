@@ -5,8 +5,8 @@
 # @author ongaeshi
 # @date   2011/02/20
 
-require File.join(File.dirname(__FILE__), "test_helper.rb")
-require File.join(File.dirname(__FILE__), "../lib/cdstk/cdstk_yaml.rb")
+require 'test_helper'
+require 'cdstk/cdstk_yaml.rb'
 require 'fileutils'
 
 class TestCdstkYaml < Test::Unit::TestCase

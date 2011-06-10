@@ -7,10 +7,10 @@
 
 require 'rubygems'
 require 'rack'
-require File.join(File.dirname(__FILE__), 'home')
-require File.join(File.dirname(__FILE__), 'searcher')
-require File.join(File.dirname(__FILE__), 'viewer')
-require File.join(File.dirname(__FILE__), 'help')
+require 'cdweb/home'
+require 'cdweb/searcher'
+require 'cdweb/viewer'
+require 'cdweb/help'
 
 use Rack::CommonLogger          
 use Rack::Runtime
