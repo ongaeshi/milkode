@@ -18,18 +18,18 @@ use Rack::Static, :urls => ["/css", "/images"], :root => "public"
 use Rack::ContentLength
 
 map '/' do
-  run Grenweb::Home.new
+  run CodeStock::Home.new
 end
 
 map '/::search' do
-  run Grenweb::Searcher.new
+  run CodeStock::Searcher.new
 end
 
 map '/::view' do
-  run Grenweb::Viewer.new
+  run CodeStock::Viewer.new
 end
 
 map '/::help' do
-  run Grenweb::Help.new
+  run CodeStock::Help.new
 end
 

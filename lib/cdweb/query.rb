@@ -8,7 +8,7 @@
 require 'rubygems'
 require 'rack'
 
-module Grenweb
+module CodeStock
   class Query
     include Rack::Utils
     attr_reader :query_string

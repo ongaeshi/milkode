@@ -10,7 +10,7 @@ require 'pathname'
 require 'rack'
 require 'cdweb/grep'
 
-module Grenweb
+module CodeStock
   class HTMLRendeler
     include Rack::Utils
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # @file 
-# @brief  Grenwebで使用するデータベース
+# @brief  CodeStockで使用するデータベース
 # @author ongaeshi
 # @date   2010/10/17
 

@@ -11,7 +11,7 @@ require 'cdweb/database'
 require 'cdweb/html_renderer'
 require 'cdweb/query'
 
-module Grenweb
+module CodeStock
   class Searcher
     include Rack::Utils
 

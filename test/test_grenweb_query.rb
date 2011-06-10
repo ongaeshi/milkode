@@ -9,7 +9,7 @@ require 'test_helper'
 require 'cdweb/query'
 
 class TestGrenWebQuery < Test::Unit::TestCase
-  include Grenweb
+  include CodeStock
   include Rack::Utils
 
   def test_query

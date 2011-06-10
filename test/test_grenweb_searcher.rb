@@ -11,7 +11,7 @@ require 'rack/mock'
 
 class TestGrenwebSearcher < Test::Unit::TestCase
   def setup
-    @app = Grenweb::Searcher.new
+    @app = CodeStock::Searcher.new
     @mr  = Rack::MockRequest.new(@app)
   end
 

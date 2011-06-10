@@ -3,7 +3,7 @@ require 'test_helper'
 require 'cdweb/html_renderer.rb'
 
 class TestGrenwebHTMLRendeler < Test::Unit::TestCase
-  include Grenweb
+  include CodeStock
 
   def setup
     @rendeler = HTMLRendeler.new('/')

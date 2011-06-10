@@ -10,7 +10,7 @@ require 'rack'
 require 'cdweb/database'
 require 'cdweb/html_renderer'
 
-module Grenweb
+module CodeStock
   class Viewer
     include Rack::Utils
 

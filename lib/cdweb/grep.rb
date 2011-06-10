@@ -5,7 +5,7 @@
 # @author ongaeshi
 # @date   2010/10/18
 
-module Grenweb
+module CodeStock
   class Grep
     attr_reader :content
     
