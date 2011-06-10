@@ -15,7 +15,8 @@ module Grenweb
     include Rack::Utils
 
     def initialize(script_name)
-      @script_name = Pathname(script_name)
+      # @script_name = Pathname(script_name)
+      @script_name = '/'
     end
 
     def header(title, header1)
