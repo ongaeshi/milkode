@@ -152,7 +152,8 @@ EOS
     end
 
     def line(lineno, line, match_datas)
-      sprintf("%5d: %s", lineno, match_strong(Rack::Utils::escape_html(line), match_datas))
+      # sprintf("%5d: %s", lineno, match_strong(Rack::Utils::escape_html(line), match_datas))
+      sprintf("%s", match_strong(Rack::Utils::escape_html(line), match_datas))      
     end
 
     def match_strong(line, match_datas)
