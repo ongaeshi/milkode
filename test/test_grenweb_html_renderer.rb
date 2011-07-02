@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-require File.join(File.dirname(__FILE__), "test_helper.rb")
-require File.join(File.dirname(__FILE__), "../lib/grenweb/html_renderer.rb")
+require 'test_helper'
+require 'cdweb/html_renderer.rb'
 
 class TestGrenwebHTMLRendeler < Test::Unit::TestCase
-  include Grenweb
+  include CodeStock
 
   def setup
     @rendeler = HTMLRendeler.new('/')

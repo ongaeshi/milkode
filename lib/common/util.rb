@@ -2,6 +2,10 @@
 
 module Gren
   module Util
+    # アルファベットと演算子で表示する数を変える
+    ALPHABET_DISP_NUM = 5
+    OPERATOR_DISP_NUM = 10
+
     def time_s(time)
       t = time.truncate
       h = t / 3600
@@ -44,10 +48,6 @@ module Gren
       end
     end
     module_function :size_s
-
-    # アルファベットと演算子で表示する数を変える
-    ALPHABET_DISP_NUM = 5
-    OPERATOR_DISP_NUM = 10
 
     def p_classtree(c)
       unless c.is_a?(Class)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-require File.join(File.dirname(__FILE__), 'string_snip')
+require 'common/string_snip'
 
 class GrenSnip
   MAX_LINE_SIZE = 256

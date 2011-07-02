@@ -5,11 +5,11 @@
 # @author ongaeshi
 # @date   2010/10/21
 
-require File.join(File.dirname(__FILE__), 'test_helper')
-require File.join(File.dirname(__FILE__), '../lib/grenweb/query')
+require 'test_helper'
+require 'cdweb/query'
 
 class TestGrenWebQuery < Test::Unit::TestCase
-  include Grenweb
+  include CodeStock
   include Rack::Utils
 
   def test_query

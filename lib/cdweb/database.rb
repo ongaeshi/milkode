@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # @file 
-# @brief  Grenwebで使用するデータベース
+# @brief  CodeStockで使用するデータベース
 # @author ongaeshi
 # @date   2010/10/17
 
@@ -9,9 +9,10 @@ require 'rubygems'
 require 'pathname'
 require 'singleton'
 require 'groonga'
-require File.join(File.dirname(__FILE__), "../common/dbdir")
+require 'common/dbdir'
+include CodeStock
 
-module Grenweb
+module CodeStock
   class Database
     include Singleton
     include CodeStock

@@ -5,12 +5,12 @@
 # @author ongaeshi
 # @date   2011/02/20
 
-require File.join(File.dirname(__FILE__), "test_helper.rb")
-require File.join(File.dirname(__FILE__), "../lib/mkgrendb/grendbyaml.rb")
+require 'test_helper'
+require 'cdstk/cdstk_yaml.rb'
 require 'fileutils'
 
-class TestGrendbYAML < Test::Unit::TestCase
-  include Mkgrendb
+class TestCdstkYaml < Test::Unit::TestCase
+  include CodeStock
 
   def setup
     @prev_dir = Dir.pwd
@@ -22,20 +22,20 @@ class TestGrendbYAML < Test::Unit::TestCase
 
   def test_000
     # create
-    yaml = GrendbYAML.create
+    yaml = CdstkYaml.create
     assert_equal yaml.contents, []
     assert_equal yaml.version, 0.1
-    assert_raise(GrendbYAML::YAMLAlreadyExist) { GrendbYAML.create }
+    assert_raise(CdstkYaml::YAMLAlreadyExist) { CdstkYaml.create }
 
     # load
-    yaml = GrendbYAML.load
+    yaml = CdstkYaml.load
     assert_equal yaml.contents, []
     assert_equal yaml.version, 0.1
 
     # load fail
     FileUtils.mkdir 'loadtest'
     FileUtils.cd 'loadtest' do
-      assert_raise(GrendbYAML::YAMLNotExist) { GrendbYAML.load }
+      assert_raise(CdstkYaml::YAMLNotExist) { CdstkYaml.load }
     end
 
     # add
@@ -64,20 +64,20 @@ EOF
     FileUtils.mkdir 'otherpath'
     
     # create
-    yaml = GrendbYAML.create('otherpath')
+    yaml = CdstkYaml.create('otherpath')
     assert_equal yaml.contents, []
     assert_equal yaml.version, 0.1
-    assert_raise(GrendbYAML::YAMLAlreadyExist) { GrendbYAML.create('otherpath') }
+    assert_raise(CdstkYaml::YAMLAlreadyExist) { CdstkYaml.create('otherpath') }
 
     # load
-    yaml = GrendbYAML.load 'otherpath'
+    yaml = CdstkYaml.load 'otherpath'
     assert_equal yaml.contents, []
     assert_equal yaml.version, 0.1
 
     # load fail
     FileUtils.mkdir 'loadtest'
     FileUtils.cd 'loadtest' do
-      assert_raise(GrendbYAML::YAMLNotExist) { GrendbYAML.load }
+      assert_raise(CdstkYaml::YAMLNotExist) { CdstkYaml.load }
     end
 
     # add

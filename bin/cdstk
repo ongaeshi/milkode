@@ -4,9 +4,7 @@
 #  Copyright (c) 2010. All rights reserved.
 
 require 'rubygems'
-require File.expand_path(File.dirname(__FILE__) + "/../lib/gren")
-require "mkgrendb/cli"
-#require "mkgrendb/cli_old"
+require 'cdstk/cli_cdstk'
 
-Version = "0.2.4"
-Mkgrendb::CLI.execute(STDOUT, ARGV)
+Version = "0.1.0"
+CodeStock::CLI_Cdstk.execute(STDOUT, ARGV)

@@ -1,12 +1,13 @@
+# -*- coding: utf-8 -*-
 require 'rubygems'
 require 'bundler'
-begin
-  Bundler.setup(:default, :development)
-rescue Bundler::BundlerError => e
-  $stderr.puts e.message
-  $stderr.puts "Run `bundle install` to install missing gems"
-  exit e.status_code
-end
+# begin
+#   Bundler.setup(:default, :development)
+# rescue Bundler::BundlerError => e
+#   $stderr.puts e.message
+#   $stderr.puts "Run `bundle install` to install missing gems"
+#   exit e.status_code
+# end
 require 'rake'
 
 require 'jeweler'
@@ -25,23 +26,34 @@ Jeweler::Tasks.new do |gem|
   gem.add_runtime_dependency 'rroonga','>= 1.0.0'
   gem.add_runtime_dependency 'rack','>=1.2.1'
   gem.add_runtime_dependency 'launchy', '>=0.3.7'
+  gem.add_runtime_dependency 'coderay', '>=0.9.8'
 
   # and development dependencies are only needed for development (ie running rake tasks, tests, etc)
   #  gem.add_development_dependency 'rspec', '> 1.2.3'
 end
 Jeweler::RubygemsDotOrgTasks.new
 
-# require 'rake/testtask'
-# Rake::TestTask.new(:test) do |test|
-#   test.libs << 'lib' << 'test'
-#   test.pattern = 'test/**/test_*.rb'
-#   test.verbose = true
-# end
+require 'rake/testtask'
 
-task :test do
-  puts "Sorry, use (cd test;ruby runner.rb)"
-  # load "test/runner.rb"
+# groonga関連のテストが通らないため、独自のrake_test_loaderを読み込む
+module Rake
+  class TestTask < TaskLib
+    def rake_loader # :nodoc:
+      find_file('test/rake_test_loader') or
+        fail "unable to find rake test loader"
+    end
+  end
 end
+ 
+Rake::TestTask.new(:test) do |test|
+  test.libs << 'lib' << 'test'
+  test.pattern = 'test/**/test_*.rb'
+  test.verbose = true
+end
+
+# task :test do
+#   load "test/runner.rb"
+# end
 
 require 'rcov/rcovtask'
 Rcov::RcovTask.new do |test|

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 require 'optparse'
-require File.join(File.dirname(__FILE__), '../findgrep/findgrep')
-require File.join(File.dirname(__FILE__), '../common/dbdir')
+require 'findgrep/findgrep'
+require 'common/dbdir'
 include CodeStock
 
-module Grendb
-  class CLI
+module CodeStock
+  class CLI_Cdview
     def self.execute(stdout, arguments=[])
       # オプション
       option = FindGrep::FindGrep::DEFAULT_OPTION

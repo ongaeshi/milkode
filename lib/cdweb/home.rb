@@ -7,11 +7,11 @@
 
 require 'rubygems'
 require 'rack'
-require File.join(File.dirname(__FILE__), 'database')
-require File.join(File.dirname(__FILE__), 'html_renderer')
-require File.join(File.dirname(__FILE__), 'query')
+require 'cdweb/database'
+require 'cdweb/html_renderer'
+require 'cdweb/query'
 
-module Grenweb
+module CodeStock
   class Home
     include Rack::Utils
 

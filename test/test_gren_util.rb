@@ -1,6 +1,6 @@
-require File.join(File.dirname(__FILE__), 'test_helper')
-require File.join(File.dirname(__FILE__), '../lib/common/util')
-require File.join(File.dirname(__FILE__), '../lib/common/grensnip')
+require 'test_helper'
+require 'common/util'
+require 'common/grensnip'
 
 class TestGrenSnip < Test::Unit::TestCase
   def setup

@@ -8,14 +8,16 @@
 require 'rubygems'
 require 'pathname'
 require 'rack'
-require File.join(File.dirname(__FILE__), 'grep')
+require 'cdweb/grep'
+require 'cdweb/coderay_wrapper'
 
-module Grenweb
+module CodeStock
   class HTMLRendeler
     include Rack::Utils
 
     def initialize(script_name)
-      @script_name = Pathname(script_name)
+      # @script_name = Pathname(script_name)
+      @script_name = '/'
     end
 
     def header(title, header1)
@@ -29,6 +31,7 @@ module Grenweb
   <!-- <meta name="robot" content="noindex,nofollow" /> -->
   <title>#{title}</title>
   <link rel="stylesheet" href="#{fullpath('css/gren.css')}"  type="text/css" media="all" />
+  <link rel="stylesheet" href="#{fullpath('css/coderay.css')}"  type="text/css" media="all" />
 </head>
 <body>
 <div class="header">
@@ -132,11 +135,7 @@ EOS
     end
 
     def record_content(record)
-      <<EOS
-<pre>
-#{record_content_line(record)}
-</pre>
-EOS
+      CodeRayWrapper.html_memfile(record.content, record.shortpath)
     end
     
     def record_content_line(record)

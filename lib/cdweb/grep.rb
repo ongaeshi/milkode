@@ -5,12 +5,12 @@
 # @author ongaeshi
 # @date   2010/10/18
 
-module Grenweb
+module CodeStock
   class Grep
     attr_reader :content
     
     def initialize(content)
-      @content = content.split("\n")
+      @content = content ? content.split("\n") : []
     end
 
     MatchLineResult = Struct.new(:index, :match_datas)

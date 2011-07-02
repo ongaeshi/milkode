@@ -6,14 +6,20 @@ require 'rubygems'
 require 'groonga'
 require 'fileutils'
 require 'pathname'
-require File.join(File.dirname(__FILE__), 'grendbyaml')
-require File.join(File.dirname(__FILE__), '../common/grenfiletest')
-require File.join(File.dirname(__FILE__), '../common/util')
-include Gren
+require 'cdstk/cdstk_yaml'
+require 'common/grenfiletest'
+require 'common/util'
+include CodeStock
 
-module Mkgrendb
-  class Mkgrendb
+module CodeStock
+  class Cdstk
     DB_FILE_PATH = 'db/grendb.db'
+    
+    # バイグラムでトークナイズする。連続する記号・アルファベット・数字は一語として扱う。
+    # DEFAULT_TOKENIZER = "TokenBigram"
+
+    # 記号・アルファベット・数字もバイグラムでトークナイズする。
+    DEFAULT_TOKENIZER = "TokenBigramSplitSymbolAlphaDigit" 
     
     def initialize(io = $stdout, db_dir = ".")
       @db_dir = db_dir
@@ -26,7 +32,7 @@ module Mkgrendb
 
     def init
       if Dir.entries(@db_dir) == [".", ".."]
-        GrendbYAML.create(@db_dir)
+        CdstkYaml.create(@db_dir)
         @out.puts "create     : #{yaml_file}"
         db_create(db_file)
       else
@@ -112,11 +118,11 @@ module Mkgrendb
     end
 
     def yaml_file
-      GrendbYAML.yaml_file @db_dir
+      CdstkYaml.yaml_file @db_dir
     end
 
     def yaml_load
-      GrendbYAML.load(@db_dir)
+      CdstkYaml.load(@db_dir)
     end
 
     def update_dir_in(dir)
@@ -141,7 +147,7 @@ module Mkgrendb
       @end_time = Time.now
       
       @out.puts
-      @out.puts "time       : #{Util::time_s(time)}"
+      @out.puts "time       : #{Gren::Util::time_s(time)}"
       @out.puts "files      : #{@file_count}"
       @out.puts "add        : #{@add_count}"
       @out.puts "update     : #{@update_count}"
@@ -166,7 +172,7 @@ module Mkgrendb
           schema.create_table("terms",
                               :type => :patricia_trie,
                               :key_normalize => true,
-                              :default_tokenizer => "TokenBigram") do |table|
+                              :default_tokenizer => DEFAULT_TOKENIZER) do |table|
             table.index("documents.path", :with_position => true)
             table.index("documents.shortpath", :with_position => true)
             table.index("documents.content", :with_position => true)

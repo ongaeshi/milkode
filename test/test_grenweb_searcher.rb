@@ -5,13 +5,13 @@
 # @author ongaeshi
 # @date   2010/10/21
 
-require File.join(File.dirname(__FILE__), "test_helper.rb")
-require File.join(File.dirname(__FILE__), "../lib/grenweb/searcher.rb")
+require 'test_helper'
+require 'cdweb/searcher.rb'
 require 'rack/mock'
 
 class TestGrenwebSearcher < Test::Unit::TestCase
   def setup
-    @app = Grenweb::Searcher.new
+    @app = CodeStock::Searcher.new
     @mr  = Rack::MockRequest.new(@app)
   end
 

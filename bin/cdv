@@ -3,9 +3,4 @@
 #  Created on 2010-8-25.
 #  Copyright (c) 2010. All rights reserved.
 
-require 'rubygems'
-require File.expand_path(File.dirname(__FILE__) + "/../lib/gren")
-require "grendb/cli"
-
-Version = "0.2.4"
-Grendb::CLI.execute(STDOUT, ARGV)
+load File.join(File.dirname(__FILE__), "cdview")

@@ -1,6 +1,6 @@
-require File.join(File.dirname(__FILE__), "test_helper.rb")
-require File.join(File.dirname(__FILE__), "../lib/common/util.rb")
-require File.join(File.dirname(__FILE__), "../lib/common/grensnip.rb")
+require 'test_helper'
+require 'common/util.rb'
+require 'common/grensnip.rb'
 
 class TestStringSnip < Test::Unit::TestCase
   def setup

@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 require 'optparse'
-require File.join(File.dirname(__FILE__), 'mkgrendb')
-require File.join(File.dirname(__FILE__), '../common/dbdir.rb')
+require 'cdstk/cdstk'
+require 'common/dbdir.rb'
 include CodeStock
 
-module Mkgrendb
-  class CLI
+module CodeStock
+  class CLI_Cdstk
     def self.execute(stdout, arguments=[])
       opt = OptionParser.new <<EOF
 #{File.basename($0)} COMMAND [ARGS]
 
-The most commonly used mkgrendb are:
+The most commonly used #{File.basename($0)} are:
   init        Init db.
   update      Update db.
-  add         Add contents. (ex. ~/Documents/gren, git://github.com/ongaeshi/gren.git)
+  add         Add contents. (ex. ~/Documents/cdstock, git://github.com/ongaeshi/cdstock.git)
   remove      Remove contents.
   list        List all contents. 
   rebuild     Rebuild db.
@@ -40,7 +40,7 @@ EOF
         subopt[subcommand].parse!(arguments) unless arguments.empty?
 
         db_dir = select_dbdir(subcommand, init_default)
-        obj = Mkgrendb.new(stdout, db_dir)
+        obj = Cdstk.new(stdout, db_dir)
 
         case subcommand
         when 'init'
@@ -61,7 +61,7 @@ EOF
         end
       else
         if subcommand
-          $stderr.puts "mkgrendb: '#{subcommand}' is not a mkgrendb command. See 'mkgrendb --help'"
+          $stderr.puts "#{File.basename($0)}: '#{subcommand}' is not a #{File.basename($0)} command. See '#{File.basename($0)} --help'"
         else
           stdout.puts opt.help
         end
