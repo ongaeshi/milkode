@@ -16,6 +16,10 @@ set :haml, :format => :html5
 
 helpers do
   alias h escape_html
+
+  def link(keyword)
+    "<a href='#{'::search' + '/' + Rack::Utils::escape_html(keyword)}'>#{keyword}</a>"
+  end
 end
 
 get '/' do
@@ -23,6 +27,10 @@ get '/' do
   @version = '0.1.2'
   @file_num = 20001
   haml :index
+end
+
+get '/::help' do
+  haml :help
 end
 
 get '/*.css' do |path|
