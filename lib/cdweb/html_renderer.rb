@@ -9,6 +9,7 @@ require 'rubygems'
 require 'pathname'
 require 'rack'
 require 'cdweb/grep'
+require 'cdweb/src_record'
 
 module CodeStock
   class HTMLRendeler
@@ -30,6 +31,7 @@ module CodeStock
   <!-- <meta name="robot" content="noindex,nofollow" /> -->
   <title>#{title}</title>
   <link rel="stylesheet" href="#{fullpath('css/gren.css')}"  type="text/css" media="all" />
+  <link rel="stylesheet" href="#{fullpath('css/coderay.css')}"  type="text/css" media="all" />
 </head>
 <body>
 <div class="header">
@@ -133,11 +135,7 @@ EOS
     end
 
     def record_content(record)
-      <<EOS
-<pre>
-#{record_content_line(record)}
-</pre>
-EOS
+      SrcRecord.new(record).to_html
     end
     
     def record_content_line(record)
@@ -152,8 +150,7 @@ EOS
     end
 
     def line(lineno, line, match_datas)
-      # sprintf("%5d: %s", lineno, match_strong(Rack::Utils::escape_html(line), match_datas))
-      sprintf("%s", match_strong(Rack::Utils::escape_html(line), match_datas))      
+      sprintf("%5d: %s", lineno, match_strong(Rack::Utils::escape_html(line), match_datas))
     end
 
     def match_strong(line, match_datas)
