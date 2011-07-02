@@ -10,7 +10,7 @@ module CodeStock
     attr_reader :content
     
     def initialize(content)
-      @content = content.split("\n")
+      @content = content ? content.split("\n") : []
     end
 
     MatchLineResult = Struct.new(:index, :match_datas)
