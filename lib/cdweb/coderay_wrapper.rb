@@ -10,24 +10,12 @@ require 'coderay'
 require 'coderay/helpers/file_type'
 
 module CodeStock
-  class SrcRecord
-    def initialize(record)
-      @record = record
+  class CodeRayWrapper
+    def self.html_memfile(content, filename)
+      to_html_code(content, file_type(filename))
     end
-
-    def to_html
-      <<EOF
-#{to_html_code(@record.content, file_type(filename))}
-EOF
-    end
-
-    private
     
-    def filename
-      @record.shortpath
-    end
-
-    def to_html_code(code, kind)
+    def self.to_html_code(code, kind)
       CodeRay.scan(code, kind).
         html(
              :wrap => nil,
@@ -36,7 +24,7 @@ EOF
              )
     end
     
-    def file_type(filename)
+    def self.file_type(filename)
       case File.extname(filename)
       when ".el"
         :scheme

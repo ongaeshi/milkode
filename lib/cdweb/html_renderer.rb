@@ -9,7 +9,7 @@ require 'rubygems'
 require 'pathname'
 require 'rack'
 require 'cdweb/grep'
-require 'cdweb/src_record'
+require 'cdweb/coderay_wrapper'
 
 module CodeStock
   class HTMLRendeler
@@ -135,7 +135,7 @@ EOS
     end
 
     def record_content(record)
-      SrcRecord.new(record).to_html
+      CodeRayWrapper.html_memfile(record.content, record.shortpath)
     end
     
     def record_content_line(record)
