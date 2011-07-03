@@ -12,6 +12,7 @@ require 'sass'
 
 $LOAD_PATH.unshift '../..'
 require 'codestock/cdweb/database'
+require 'codestock/cdweb/coderay_wrapper'
 
 set :haml, :format => :html5
 
@@ -41,7 +42,7 @@ get %r{/::view/(.*)} do |path|
   record, elapsed = Database.instance.record(path)
   @title = @path = record.shortpath
   @elapsed = elapsed
-  @record_content = '<pre>' + h(record.content) + '</pre>'
+  @record_content = CodeRayWrapper.html_memfile(record.content, record.shortpath)
   haml :view
 end
 
