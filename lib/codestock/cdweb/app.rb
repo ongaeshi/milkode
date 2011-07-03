@@ -36,10 +36,14 @@ end
 #   haml :search
 # end
 
-get %r{/::view} do
+get %r{/::view/(.*)} do |path|
   # @title = path.sub(/^view/, "")
   #   v = Viewer.new(request.path_info)
   #   @record = v.record
+  
+  @title = @path = path
+  @elapsed = 10
+  @record_content = '<pre>typedef struct aa</pre>'
   haml :view
 end
 
