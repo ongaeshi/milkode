@@ -11,8 +11,8 @@ require 'haml'
 require 'sass'
 
 $LOAD_PATH.unshift '../..'
-require 'codestock/cdweb/database'
-require 'codestock/cdweb/coderay_wrapper'
+require 'codestock/cdweb/lib/database'
+require 'codestock/cdweb/lib/coderay_wrapper'
 
 set :haml, :format => :html5
 
