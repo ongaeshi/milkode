@@ -11,6 +11,7 @@ require 'haml'
 require 'sass'
 
 $LOAD_PATH.unshift '../..'
+require 'codestock/cdweb/database'
 
 set :haml, :format => :html5
 
@@ -37,13 +38,10 @@ end
 # end
 
 get %r{/::view/(.*)} do |path|
-  # @title = path.sub(/^view/, "")
-  #   v = Viewer.new(request.path_info)
-  #   @record = v.record
-  
-  @title = @path = path
-  @elapsed = 10
-  @record_content = '<pre>typedef struct aa</pre>'
+  record, elapsed = Database.instance.record(path)
+  @title = @path = record.shortpath
+  @elapsed = elapsed
+  @record_content = '<pre>' + h(record.content) + '</pre>'
   haml :view
 end
 
