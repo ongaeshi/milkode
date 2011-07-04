@@ -20,7 +20,7 @@ helpers do
   alias h escape_html
 
   def link(keyword)
-    "<a href='#{'::search' + '/' + Rack::Utils::escape_html(keyword)}'>#{keyword}</a>"
+    "<a href='#{'/::search' + '/' + h(keyword)}'>#{keyword}</a>"
   end
 end
 
@@ -31,12 +31,17 @@ get '/' do
   haml :index
 end
 
-# post '/::search' do
-# end
+post '/::search' do
+  redirect "/::search/#{escape(params[:query])}"
+end
 
-# get '/::search' do
-#   haml :search
-# end
+get %r{/::search/(.*)} do |path|
+  @keyword = path
+  @total_records = 105
+  @range = 0..10
+  @elapsed = 0.551
+  haml :search
+end
 
 get %r{/::view/(.*)} do |path|
   record, elapsed = Database.instance.record(path)
