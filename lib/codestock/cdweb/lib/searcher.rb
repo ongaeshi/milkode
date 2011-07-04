@@ -23,8 +23,8 @@ module CodeStock
     end
 
     def page_range
-      # @todo
-      0..20
+      pageStart = page * limit
+      (@total_records.zero? ? 0 : pageStart + 1)..(pageStart + @records.size)
     end
 
     def html_contents
