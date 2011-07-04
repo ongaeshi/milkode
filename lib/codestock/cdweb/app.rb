@@ -25,9 +25,8 @@ helpers do
 end
 
 get '/' do
-  # @todo @file_num = Database.instance.fileNum
   @version = '0.1.2'
-  @file_num = 20001
+  @file_num = Database.instance.fileNum
   haml :index
 end
 
