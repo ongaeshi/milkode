@@ -13,11 +13,13 @@ module CodeStock
     attr_reader :keyword
     attr_reader :total_records
     attr_reader :elapsed
+    attr_reader :page
     
-    def initialize(keyword)
+    def initialize(keyword, page)
       @keyword = keyword
       @query = Query2.new(@keyword)
-      @records, @total_records, @elapsed = Database.instance.search(@query.keywords, @query.packages, @query.fpaths, @query.suffixs, calcPage, calcLimit)
+      @page = page || 0
+      @records, @total_records, @elapsed = Database.instance.search(@query.keywords, @query.packages, @query.fpaths, @query.suffixs, page, limit)
     end
 
     def page_range
@@ -34,12 +36,35 @@ module CodeStock
     end
     
     def html_pagination
+      return "" if @query.empty?
+      return "" if @total_records < limit
+
+      str = ""
+
+      last_page = (@total_records / limit.to_f).ceil
+      str += "<div class='pagination'>\n"
+      if page > 0
+        str += pagination_link(page - 1, "<<")
+      end
+      last_page.times do |i|
+        if i == page
+          str += pagination_span(i)
+        else
+          str += pagination_link(i, i)
+        end
+      end
+      if page < (last_page - 1)
+        str += pagination_link(page + 1, ">>")
+      end
+      str += "</div>\n"
+
+      str
     end
 
     private
 
     # 1ページに表示する最大レコードを計算
-    def calcLimit
+    def limit
       if @query.keywords.size == 0
         100
       else
@@ -47,12 +72,6 @@ module CodeStock
       end
     end
     
-    # 現在ページを計算
-    def calcPage
-      0
-#      (@request['page'] || 0).to_i
-    end
-
     def result_record(record, patterns, nth=1)
       if (patterns.size > 0)
         <<EOS
@@ -100,6 +119,15 @@ EOS
       end
       
       line
+    end
+
+    def pagination_link(page, label)
+      href = "?page=#{page}"
+      pagination_span("<a href='#{href}'>#{label}</a>")
+    end
+
+    def pagination_span(content)
+      "<span class='pagination-link'>#{content}</span>\n"
     end
 
   end

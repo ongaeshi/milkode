@@ -36,13 +36,13 @@ post '/::search' do
 end
 
 get %r{/::search/(.*)} do |keyword|
-  searcher = Searcher.new(keyword)
+  searcher = Searcher.new(keyword, params[:page].to_i)
   
   @keyword = searcher.keyword
   @total_records = searcher.total_records
   @range = searcher.page_range
   @elapsed = searcher.elapsed
-  @record_content = searcher.html_contents
+  @record_content = searcher.html_contents  + searcher.html_pagination;
   haml :search
 end
 
