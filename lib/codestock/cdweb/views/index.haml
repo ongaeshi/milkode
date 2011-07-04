@@ -1,0 +1,17 @@
+%div(align="center")
+  .header_home
+    %h1 <a href="/"><img src="/images/gren-icon.png" alt="gren-icon" border="0" height="100px"/></a> CodeStock <font class="version">#{@version}</font>
+
+  .content
+    %form(method="post" action="/::search")
+      %p
+        %input(name="query" type="text" size="60")
+        %input(type="submit" value="検索")
+  
+  .footer_home
+    -# <a href="/::search/p:*">#{package}</a>のパッケージ
+    <a href="/::search/f:*">#{@file_num}</a>のファイル<br>
+    <a href="/::help">ヘルプ</a> , 
+    <a href="http://codestock.ongaeshi.me">codestockについて</a>
+
+

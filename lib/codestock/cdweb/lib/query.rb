@@ -9,18 +9,15 @@ require 'rubygems'
 require 'rack'
 
 module CodeStock
-  class Query
-    include Rack::Utils
-    attr_reader :query_string
-  
+  class Query2
     OPTIONS = [
                ['package',  'p'],
                ['filepath', 'fpath', 'f'],
                ['suffix',   's'],
               ]
 
-    def initialize(request)
-      @query_string = unescape(request.path_info.gsub(/\A\/|\/\z/, ''))
+    def initialize(str)
+      @query_string = str
       init_hash
       parse
     end

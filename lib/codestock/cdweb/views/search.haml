@@ -1,0 +1,13 @@
+.header
+  %h1
+    <a href="/"><img src="/images/gren-icon-mini.png" alt="gren-icon" border="0"/></a>
+    search - CodeStock
+
+.content
+  %form(method="post" action="/::search")
+    %p
+      %input(name="query" type="text" size="60" value=@keyword)
+      %input(type="submit" value="検索")
+  .search-summary
+    <span class="keyword">#{@keyword}</span>の検索結果: <span class="total-entries">#{@total_records}</span>件中 <span class="display-range">#{@range.first} - #{@range.last}</span>件（#{@elapsed}秒）
+  ~ @record_content

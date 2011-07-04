@@ -15,14 +15,14 @@ include CodeStock
 module CodeStock
   class Database
     include Singleton
-    include CodeStock
 
     def self.setup(db_dir)
       @@db_dir = db_dir
     end
 
     def initialize
-      open(@@db_dir)
+      #      open(@@db_dir)
+      open(db_default_dir)
     end
 
     def open(db_dir)
