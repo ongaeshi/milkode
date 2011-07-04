@@ -42,6 +42,7 @@ get %r{/::search/(.*)} do |keyword|
   @total_records = searcher.total_records
   @range = searcher.page_range
   @elapsed = searcher.elapsed
+  @record_content = searcher.html_contents
   haml :search
 end
 
