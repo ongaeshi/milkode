@@ -13,6 +13,7 @@ require 'sass'
 $LOAD_PATH.unshift '../..'
 require 'codestock/cdweb/lib/database'
 require 'codestock/cdweb/lib/coderay_wrapper'
+require 'codestock/cdweb/lib/searcher'
 
 set :haml, :format => :html5
 
@@ -34,11 +35,13 @@ post '/::search' do
   redirect "/::search/#{escape(params[:query])}"
 end
 
-get %r{/::search/(.*)} do |path|
-  @keyword = path
-  @total_records = 105
-  @range = 0..10
-  @elapsed = 0.551
+get %r{/::search/(.*)} do |keyword|
+  searcher = Searcher.new(keyword)
+  
+  @keyword = searcher.keyword
+  @total_records = searcher.total_records
+  @range = searcher.page_range
+  @elapsed = searcher.elapsed
   haml :search
 end
 
