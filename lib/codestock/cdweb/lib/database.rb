@@ -84,6 +84,12 @@ module CodeStock
       return records, total_records
     end
 
+    def fileList(path)
+      [['test', false], ['lib', false]]
+    end
+
+    private 
+
     def searchMain(patterns, packages, fpaths, suffixs, page, limit)
       table = @documents.select do |record|
         expression = nil
