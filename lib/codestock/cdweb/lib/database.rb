@@ -80,11 +80,6 @@ module CodeStock
 
     # @sample test/test_database.rb:43 TestDatabase#t_fileList
     def fileList(base)
-      # match file
-      if record(base)
-        return [[base, true]]
-      end
-      
       # search dirs
       base_parts = base.split("/")
       base_depth = base_parts.length

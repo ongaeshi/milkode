@@ -34,17 +34,16 @@ end
 
 get '/home*' do |path|
   before = Time.now
-
   path = path.sub(/^\//, "")
-  fileList = Database.instance.fileList(path)
+  record = Database.instance.record(path)
 
-  if (fileList.size == 1 and fileList[0][1])
-    record = Database.instance.record(path)
+  if (record)
     @title = @path = record.shortpath
     @elapsed = Time.now - before
     @record_content = CodeRayWrapper.html_memfile(record.content, record.shortpath)
     haml :view
   else
+    fileList = Database.instance.fileList(path)
     @keyword = path
     @total_records = fileList.size
     @record_content = '<pre>' + fileList.inspect + '</pre>'
