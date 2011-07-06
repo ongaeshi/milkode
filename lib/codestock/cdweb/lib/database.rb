@@ -77,7 +77,7 @@ module CodeStock
 
       return records, total_records
     end
-
+    
     # @sample test/test_database.rb:43 TestDatabase#t_fileList
     def fileList(base)
       base_parts = base.split("/")
@@ -96,8 +96,9 @@ module CodeStock
       }.find_all {|parts|
         parts.length > base_depth and parts[0, base_depth] == base_parts
       }.map {|parts|
-        file_p = parts.length == base_depth + 1
-        [parts[0, base_depth + 1].join("/"), file_p]
+        is_file = parts.length == base_depth + 1
+        path = parts[0, base_depth + 1].join("/")
+        [path, is_file]
       }.uniq
       
       paths

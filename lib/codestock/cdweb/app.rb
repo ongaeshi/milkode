@@ -23,6 +23,13 @@ helpers do
   def link(keyword)
     "<a href='#{'/::search' + '/' + h(keyword)}'>#{keyword}</a>"
   end
+
+  def view(record, before)
+    @title = @path = record.shortpath
+    @record_content = CodeRayWrapper.html_memfile(record.content, record.shortpath)
+    @elapsed = Time.now - before
+    haml :view
+  end
 end
 
 get '/' do
@@ -38,10 +45,7 @@ get '/home*' do |path|
   record = Database.instance.record(path)
 
   if (record)
-    @title = @path = record.shortpath
-    @elapsed = Time.now - before
-    @record_content = CodeRayWrapper.html_memfile(record.content, record.shortpath)
-    haml :view
+    view(record, before)
   else
     fileList = Database.instance.fileList(path)
     @keyword = path
@@ -72,10 +76,7 @@ end
 get %r{/::view/(.*)} do |path|
   before = Time.now
   record = Database.instance.record(path)
-  @title = @path = record.shortpath
-  @elapsed = Time.now - before
-  @record_content = CodeRayWrapper.html_memfile(record.content, record.shortpath)
-  haml :view
+  view(record, before)
 end
 
 get %r{/::help} do
