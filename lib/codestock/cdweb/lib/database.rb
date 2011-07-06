@@ -80,11 +80,18 @@ module CodeStock
 
     # @sample test/test_database.rb:43 TestDatabase#t_fileList
     def fileList(base)
-      # search dirs
       base_parts = base.split("/")
       base_depth = base_parts.length
       
-      paths = @documents.select.records.map {|record|
+      # shortpathにマッチするものだけに絞り込む
+      if (base == "")
+        records = @documents.select.records
+      else
+        records = @documents.select {|record| record.shortpath =~ base }.to_a
+      end
+
+      # ファイルリストの生成
+      paths = records.map {|record|
         record.shortpath.split("/")
       }.find_all {|parts|
         parts.length > base_depth and parts[0, base_depth] == base_parts
@@ -92,7 +99,7 @@ module CodeStock
         file_p = parts.length == base_depth + 1
         [parts[0, base_depth + 1].join("/"), file_p]
       }.uniq
-
+      
       paths
     end
 
