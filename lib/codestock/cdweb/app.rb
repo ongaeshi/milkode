@@ -34,13 +34,14 @@ end
 
 get '/home*' do |path|
   before = Time.now
+
   path = path.sub(/^\//, "")
   fileList = Database.instance.fileList(path)
 
   if (fileList.size == 1 and fileList[0][1])
-    record, elapsed = Database.instance.record(path)
+    record = Database.instance.record(path)
     @title = @path = record.shortpath
-    @elapsed = elapsed
+    @elapsed = Time.now - before
     @record_content = CodeRayWrapper.html_memfile(record.content, record.shortpath)
     haml :view
   else
@@ -57,20 +58,23 @@ post '/::search' do
 end
 
 get %r{/::search/(.*)} do |keyword|
+  before = Time.now
+
   searcher = Searcher.new(keyword, params[:page].to_i)
   
   @keyword = searcher.keyword
   @total_records = searcher.total_records
   @range = searcher.page_range
-  @elapsed = searcher.elapsed
+  @elapsed = Time.now - before
   @record_content = searcher.html_contents  + searcher.html_pagination;
   haml :search
 end
 
 get %r{/::view/(.*)} do |path|
-  record, elapsed = Database.instance.record(path)
+  before = Time.now
+  record = Database.instance.record(path)
   @title = @path = record.shortpath
-  @elapsed = elapsed
+  @elapsed = Time.now - before
   @record_content = CodeRayWrapper.html_memfile(record.content, record.shortpath)
   haml :view
 end

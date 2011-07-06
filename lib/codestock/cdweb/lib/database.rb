@@ -39,10 +39,8 @@ module CodeStock
     end
 
     def record(shortpath)
-      before = Time.now
       table = @documents.select { |record| record.shortpath == shortpath }
-      elapsed = Time.now - before
-      return table.records[0], elapsed
+      return table.records[0]
     end
 
     def fileNum
@@ -50,20 +48,15 @@ module CodeStock
     end
 
     def search(patterns, packages, fpaths, suffixs, page = 0, limit = -1)
-      before = Time.now
-
       # 全てのパターンを検索
       if (fpaths.include?("*"))
         records, total_records = selectAll(page, limit)
       else
         records, total_records = searchMain(patterns, packages, fpaths, suffixs, page, limit)
       end
-      
-      # 検索にかかった時間
-      elapsed = Time.now - before
 
       # 結果
-      return records, total_records, elapsed
+      return records, total_records
     end
 
     def selectAll(page, limit)
@@ -88,7 +81,7 @@ module CodeStock
     # @sample test/test_database.rb:43 TestDatabase#t_fileList
     def fileList(base)
       # match file
-      if record(base)[0]
+      if record(base)
         return [[base, true]]
       end
       
