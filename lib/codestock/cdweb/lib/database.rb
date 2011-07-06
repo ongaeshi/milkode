@@ -16,6 +16,8 @@ module CodeStock
   class Database
     include Singleton
 
+    @@db_dir = nil
+
     def self.setup(db_dir)
       @@db_dir = db_dir
     end
@@ -85,6 +87,12 @@ module CodeStock
 
     # @sample test/test_database.rb:43 TestDatabase#t_fileList
     def fileList(base)
+      # match file
+      if record(base)[0]
+        return [[base, true]]
+      end
+      
+      # search dirs
       base_parts = base.split("/")
       base_depth = base_parts.length
       

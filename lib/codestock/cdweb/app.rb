@@ -27,8 +27,29 @@ end
 
 get '/' do
   @version = '0.1.2'
+  @package_num = Database.instance.fileList('').size
   @file_num = Database.instance.fileNum
   haml :index
+end
+
+get '/home*' do |path|
+  before = Time.now
+  path = path.sub(/^\//, "")
+  fileList = Database.instance.fileList(path)
+
+  if (fileList.size == 1 and fileList[0][1])
+    record, elapsed = Database.instance.record(path)
+    @title = @path = record.shortpath
+    @elapsed = elapsed
+    @record_content = CodeRayWrapper.html_memfile(record.content, record.shortpath)
+    haml :view
+  else
+    @keyword = path
+    @total_records = fileList.size
+    @record_content = '<pre>' + fileList.inspect + '</pre>'
+    @elapsed = Time.now - before
+    haml :home
+  end
 end
 
 post '/::search' do
