@@ -33,19 +33,20 @@ module CodeStock
     def test_database
       setup_db
       t_open
-      t_filelist
+      t_fileList
     end
 
     def t_open
       Database.instance
     end
 
-    def t_filelist
+    def t_fileList
       db = Database.instance
       
-      assert_equal [['test', false], ['lib', false]], db.fileList('/')
-      p db.fileList('/test')
-      # assert_equal 'test_database.rb', db.fileList('/test')[5][0]
+       assert_equal [['test', false], ['lib', false]], db.fileList('')
+      assert_equal ['test/test_database.rb', true],   db.fileList('test')[6]
+      assert_equal ['lib/cdstk', false],              db.fileList('lib')[0]
+      assert_equal ['lib/cdstk/cdstk.rb', true],      db.fileList('lib/cdstk')[0]
     end
   end
 end

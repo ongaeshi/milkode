@@ -21,8 +21,7 @@ module CodeStock
     end
 
     def initialize
-      #      open(@@db_dir)
-      open(db_default_dir)
+      open(@@db_dir || db_default_dir)
     end
 
     def open(db_dir)
@@ -84,8 +83,21 @@ module CodeStock
       return records, total_records
     end
 
-    def fileList(path)
-      [['test', false], ['lib', false]]
+    # @sample test/test_database.rb:43 TestDatabase#t_fileList
+    def fileList(base)
+      base_parts = base.split("/")
+      base_depth = base_parts.length
+      
+      paths = @documents.select.records.map {|record|
+        record.shortpath.split("/")
+      }.find_all {|parts|
+        parts.length > base_depth and parts[0, base_depth] == base_parts
+      }.map {|parts|
+        file_p = parts.length == base_depth + 1
+        [parts[0, base_depth + 1].join("/"), file_p]
+      }.uniq
+
+      paths
     end
 
     private 
