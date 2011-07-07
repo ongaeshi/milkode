@@ -9,5 +9,7 @@
       %input(name="query" type="text" size="60" value=@keyword)
       %input(type="submit" value="検索")
   .search-summary
-    <span class="keyword">#{@keyword}</span> <span class="total-entries">#{@total_records}</span>件（#{@elapsed}秒）
+    <span class="keyword">#{@filepath}</span> <span class="total-entries">#{@total_records}</span>件（#{@elapsed}秒）
   ~ @record_content
+
+

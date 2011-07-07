@@ -48,11 +48,20 @@ get '/home*' do |path|
     view(record, before)
   else
     fileList = Database.instance.fileList(path)
-    @keyword = path
+    @keyword = ""
+
+    path_href = '/home'
+    @filepath = path.split('/').map {|v|
+      path_href += '/' + v
+      "<a href='#{path_href}'>#{v}</a>"
+    }.join(' / ')
+
     @total_records = fileList.size
-    @record_content = '<pre>' + fileList.inspect + '</pre>'
+    @record_content = fileList.map do |v|
+      "<dt class='result-record'><a href='/home/#{v[0]}'>#{File.basename v[0]}</a></dt>"
+    end
     @elapsed = Time.now - before
-    haml :home
+    haml :filelist
   end
 end
 
