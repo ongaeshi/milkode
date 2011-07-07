@@ -24,8 +24,17 @@ helpers do
     "<a href='#{'/::search' + '/' + h(keyword)}'>#{keyword}</a>"
   end
 
+  def topic_path(path)
+    href = '/home'
+    path.split('/').map {|v|
+      href += '/' + v
+      "<a href='#{href}'>#{v}</a>"
+    }.join(' / ')
+  end
+
   def view(record, before)
-    @title = @path = record.shortpath
+    @title = record.shortpath
+    @path = topic_path(record.shortpath)
     @record_content = CodeRayWrapper.html_memfile(record.content, record.shortpath)
     @elapsed = Time.now - before
     haml :view
@@ -48,22 +57,21 @@ get '/home*' do |path|
     view(record, before)
   else
     fileList = Database.instance.fileList(path)
+    @title = (path == "") ? "Package List" : path
     @keyword = ""
-
-    path_href = '/home'
-    @filepath = path.split('/').map {|v|
-      path_href += '/' + v
-      "<a href='#{path_href}'>#{v}</a>"
-    }.join(' / ')
-
+    @filepath = topic_path(path)
     @total_records = fileList.size
-    @record_content = fileList.map do |v|
-      "<dt class='result-record'><a href='/home/#{v[0]}'>#{File.basename v[0]}</a></dt>"
-    end
+    @record_content = fileList.map {|v| "<dt class='result-record'><a href='/home/#{v[0]}'>#{File.basename v[0]}</a></dt>" }
     @elapsed = Time.now - before
     haml :filelist
   end
 end
+
+get %r{/::help} do
+  haml :help
+end
+
+# -- obsolate --
 
 post '/::search' do
   redirect "/::search/#{escape(params[:query])}"
@@ -86,9 +94,5 @@ get %r{/::view/(.*)} do |path|
   before = Time.now
   record = Database.instance.record(path)
   view(record, before)
-end
-
-get %r{/::help} do
-  haml :help
 end
 
