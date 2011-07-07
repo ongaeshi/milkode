@@ -48,6 +48,10 @@ get '/' do
   haml :index
 end
 
+post '/home*' do |path|
+  redirect "/home#{path}?#{escape(params[:query])}"
+end
+
 get '/home*' do |path|
   before = Time.now
   path = path.sub(/^\//, "")
@@ -62,6 +66,7 @@ get '/home*' do |path|
     @filepath = topic_path(path)
     @total_records = fileList.size
     @record_content = fileList.map {|v| "<dt class='result-record'><a href='/home/#{v[0]}'>#{File.basename v[0]}</a></dt>" }
+    @package_name = (path == "") ? 'root' : path.split('/')[0]
     @elapsed = Time.now - before
     haml :filelist
   end
