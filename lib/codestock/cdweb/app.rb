@@ -12,8 +12,7 @@ require 'sass'
 
 $LOAD_PATH.unshift '../..'
 require 'codestock/cdweb/lib/database'
-require 'codestock/cdweb/lib/coderay_wrapper'
-require 'codestock/cdweb/lib/searcher'
+require 'codestock/cdweb/lib/command'
 
 set :haml, :format => :html5
 
@@ -30,35 +29,6 @@ helpers do
   def link(keyword)
     "<a href='#{'/::search' + '/' + escape_url(keyword)}'>#{keyword}</a>"
   end
-
-  def topic_path(path)
-    href = '/home'
-    path.split('/').map {|v|
-      href += '/' + v
-      "<a href='#{escape_path(href)}'>#{v}</a>"
-    }.join(' / ')
-  end
-
-  def view(record, before)
-    @title = record.shortpath
-    @path = topic_path(record.shortpath)
-    @record_content = CodeRayWrapper.html_memfile(record.content, record.shortpath)
-    @elapsed = Time.now - before
-    haml :view
-  end
-end
-
-def search(path,keyword, before)
-  # @todo パスによる絞り込み
-  searcher = Searcher.new(keyword, params[:page].to_i)
-  @keyword = searcher.keyword
-  @package_name = (path == "") ? 'root' : path.split('/')[0]
-  @filepath = topic_path(path)
-  @total_records = searcher.total_records
-  @range = searcher.page_range
-  @record_content = searcher.html_contents  + searcher.html_pagination;
-  @elapsed = Time.now - before
-  haml :search
 end
 
 get '/' do
@@ -80,18 +50,10 @@ get '/home*' do |path|
   if (record)
     view(record, before)
   else
-    fileList = Database.instance.fileList(path)
-    @title = (path == "") ? "Package List" : path
     unless (params[:keyword])
-      @keyword = ""
-      @package_name = (path == "") ? 'root' : path.split('/')[0]
-      @filepath = topic_path(path)
-      @total_records = fileList.size
-      @record_content = fileList.map {|v| "<dt class='result-record'><a href='/home/#{escape_path(v[0])}'>#{File.basename v[0]}</a></dt>" }
-      @elapsed = Time.now - before
-      haml :filelist
+      filelist(path, before)
     else
-      search(path, params[:keyword], Time.now)
+      search(path, params[:keyword], before)
     end
   end
 end
