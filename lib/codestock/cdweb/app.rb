@@ -58,7 +58,7 @@ get '/home*' do |path|
   end
 end
 
-get %r{/::help} do
+get %r{/help} do
   haml :help
 end
 
