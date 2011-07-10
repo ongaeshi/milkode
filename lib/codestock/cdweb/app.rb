@@ -18,17 +18,24 @@ require 'codestock/cdweb/lib/searcher'
 set :haml, :format => :html5
 
 helpers do
+  # -- escape functions --
   alias h escape_html
+  alias escape_url escape
 
+  def escape_path(src)
+    escape_url(src).gsub("%2F", '/')
+  end
+  
+  # -- utility -- 
   def link(keyword)
-    "<a href='#{'/::search' + '/' + h(keyword)}'>#{keyword}</a>"
+    "<a href='#{'/::search' + '/' + escape_url(keyword)}'>#{keyword}</a>"
   end
 
   def topic_path(path)
     href = '/home'
     path.split('/').map {|v|
       href += '/' + v
-      "<a href='#{href}'>#{v}</a>"
+      "<a href='#{escape_path(href)}'>#{v}</a>"
     }.join(' / ')
   end
 
@@ -49,7 +56,7 @@ get '/' do
 end
 
 post '/home*' do |path|
-  redirect "/home#{path}?#{escape(params[:query])}"
+  redirect "/home#{path}?#{escape_url(params[:query])}"
 end
 
 get '/home*' do |path|
@@ -65,7 +72,7 @@ get '/home*' do |path|
     @keyword = ""
     @filepath = topic_path(path)
     @total_records = fileList.size
-    @record_content = fileList.map {|v| "<dt class='result-record'><a href='/home/#{v[0]}'>#{File.basename v[0]}</a></dt>" }
+    @record_content = fileList.map {|v| "<dt class='result-record'><a href='/home/#{escape_path(v[0])}'>#{File.basename v[0]}</a></dt>" }
     @package_name = (path == "") ? 'root' : path.split('/')[0]
     @elapsed = Time.now - before
     haml :filelist
@@ -79,7 +86,7 @@ end
 # -- obsolate --
 
 post '/::search' do
-  redirect "/::search/#{escape(params[:query])}"
+  redirect "/::search/#{escape_url(params[:query])}"
 end
 
 get %r{/::search/(.*)} do |keyword|
