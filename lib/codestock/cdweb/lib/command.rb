@@ -10,14 +10,6 @@ require 'codestock/cdweb/lib/coderay_wrapper'
 require 'codestock/cdweb/lib/searcher'
 
 module CodeStock
-  def topic_path(path)
-    href = '/home'
-    path.split('/').map {|v|
-      href += '/' + v
-      "<a href='#{escape_path(href)}'>#{v}</a>"
-    }.join(' / ')
-  end
-
   def view(record, before)
     @title = record.shortpath
     @path = topic_path(record.shortpath)
@@ -27,10 +19,10 @@ module CodeStock
   end
 
   def search(path,keyword, before)
-    @title = ""    # @todo 適切なタイトル
+    @title = path_title(path)
     searcher = Searcher.new(keyword, params[:page].to_i) # @todo パスによる絞り込み
     @keyword = searcher.keyword
-    @package_name = (path == "") ? 'root' : path.split('/')[0]
+    @package_name = package_name(path)
     @filepath = topic_path(path)
     @total_records = searcher.total_records
     @range = searcher.page_range
@@ -40,14 +32,32 @@ module CodeStock
   end
 
   def filelist(path, before)
-    @title = (path == "") ? "Package List" : path
+    @title = path_title(path)
     fileList = Database.instance.fileList(path)
     @keyword = ""
-    @package_name = (path == "") ? 'root' : path.split('/')[0]
+    @package_name = package_name(path)
     @filepath = topic_path(path)
     @total_records = fileList.size
     @record_content = fileList.map {|v| "<dt class='result-record'><a href='/home/#{escape_path(v[0])}'>#{File.basename v[0]}</a></dt>" }
     @elapsed = Time.now - before
     haml :filelist
+  end
+
+  # --------------
+
+  def path_title(path)
+    (path == "") ? "Package List" : path
+  end
+  
+  def package_name(path)
+    (path == "") ? 'root' : path.split('/')[0]
+  end
+
+  def topic_path(path)
+    href = '/home'
+    path.split('/').map {|v|
+      href += '/' + v
+      "<a href='#{escape_path(href)}'>#{v}</a>"
+    }.join(' / ')
   end
 end
