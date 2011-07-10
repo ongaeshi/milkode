@@ -122,7 +122,7 @@ EOS
     end
 
     def pagination_link(page, label)
-      href = "?page=#{page}"
+      href = "?keyword=#{Rack::Utils::escape_html(keyword)}&page=#{page}"
       pagination_span("<a href='#{href}'>#{label}</a>")
     end
 
