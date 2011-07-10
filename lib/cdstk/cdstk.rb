@@ -10,6 +10,7 @@ require 'cdstk/cdstk_yaml'
 require 'common/grenfiletest'
 require 'common/util'
 include CodeStock
+require 'kconv'
 
 module CodeStock
   class Cdstk
@@ -240,7 +241,9 @@ module CodeStock
       # タイムスタンプが新しければデータベースに格納
       if (document[:timestamp] < values[:timestamp])
         # 実際に使うタイミングでファイルの内容を読み込み
-        values[:content] = open(filename).read
+        # values[:content] = open(filename).read
+        # データベース内の文字コードは'utf-8'で統一
+        values[:content] = File.read(filename).kconv(Kconv::UTF8)
         
         # データベースに格納
         values.each do |key, value|
