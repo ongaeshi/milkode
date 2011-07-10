@@ -20,7 +20,7 @@ module CodeStock
 
   def search(path,keyword, before)
     @title = path_title(path)
-    searcher = Searcher.new(keyword, params[:page].to_i) # @todo パスによる絞り込み
+    searcher = Searcher.new(path, keyword, params[:page].to_i)
     @keyword = searcher.keyword
     @package_name = package_name(path)
     @filepath = topic_path(path)

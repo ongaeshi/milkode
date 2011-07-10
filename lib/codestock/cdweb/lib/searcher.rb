@@ -15,11 +15,14 @@ module CodeStock
     attr_reader :elapsed
     attr_reader :page
     
-    def initialize(keyword, page)
+    def initialize(path, keyword, page)
       @keyword = keyword
       @query = Query2.new(@keyword)
       @page = page || 0
-      @records, @total_records, @elapsed = Database.instance.search(@query.keywords, @query.packages, @query.fpaths, @query.suffixs, page, limit)
+      fpaths = @query.fpaths
+      fpaths << path unless path == ""
+      @records, @total_records, @elapsed = Database.instance.search(@query.keywords, @query.packages, fpaths, @query.suffixs, page, limit)
+      # @todo 厳密に検索するには、さらに検索結果から先頭からのパスではないものを除外する
     end
 
     def page_range
