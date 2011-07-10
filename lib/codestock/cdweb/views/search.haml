@@ -1,13 +1,20 @@
 .header
   %h1
     <a href="/"><img src="/images/gren-icon-mini.png" alt="gren-icon" border="0"/></a>
-    search - CodeStock
+    CodeStock
 
 .content
-  %form(method="post" action="/::search")
+  %form(method="post" action="")
     %p
       %input(name="query" type="text" size="60" value=@keyword)
-      %input(type="submit" value="検索")
+      %input(type="submit" value="検索") <br>
+      %input(type="radio" name="search_op" value="all")
+      %label 全体を検索
+      %input(type="radio" name="search_op" value="package")
+      %label #{@package_name} 以下
+      %input(type="radio" name="search_op" value="directory")
+      %label このディレクトリ以下
+
   .search-summary
-    <span class="keyword">#{@keyword}</span>の検索結果: <span class="total-entries">#{@total_records}</span>件中 <span class="display-range">#{@range.first} - #{@range.last}</span>件（#{@elapsed}秒）
+    <span class="keyword">#{@filepath}</span> <span class="total-entries">#{@total_records}</span>件中 <span class="display-range">#{@range.first} - #{@range.last}</span>件（#{@elapsed}秒）
   ~ @record_content

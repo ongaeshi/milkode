@@ -48,6 +48,19 @@ helpers do
   end
 end
 
+def search(path,keyword, before)
+  # @todo パスによる絞り込み
+  searcher = Searcher.new(keyword, params[:page].to_i)
+  @keyword = searcher.keyword
+  @package_name = (path == "") ? 'root' : path.split('/')[0]
+  @filepath = topic_path(path)
+  @total_records = searcher.total_records
+  @range = searcher.page_range
+  @record_content = searcher.html_contents  + searcher.html_pagination;
+  @elapsed = Time.now - before
+  haml :search
+end
+
 get '/' do
   @version = '0.1.2'
   @package_num = Database.instance.fileList('').size
@@ -56,7 +69,7 @@ get '/' do
 end
 
 post '/home*' do |path|
-  redirect "/home#{path}?#{escape_url(params[:query])}"
+  redirect "/home#{path}?keyword=#{escape_url(params[:query])}"
 end
 
 get '/home*' do |path|
@@ -69,13 +82,17 @@ get '/home*' do |path|
   else
     fileList = Database.instance.fileList(path)
     @title = (path == "") ? "Package List" : path
-    @keyword = ""
-    @filepath = topic_path(path)
-    @total_records = fileList.size
-    @record_content = fileList.map {|v| "<dt class='result-record'><a href='/home/#{escape_path(v[0])}'>#{File.basename v[0]}</a></dt>" }
-    @package_name = (path == "") ? 'root' : path.split('/')[0]
-    @elapsed = Time.now - before
-    haml :filelist
+    unless (params[:keyword])
+      @keyword = ""
+      @package_name = (path == "") ? 'root' : path.split('/')[0]
+      @filepath = topic_path(path)
+      @total_records = fileList.size
+      @record_content = fileList.map {|v| "<dt class='result-record'><a href='/home/#{escape_path(v[0])}'>#{File.basename v[0]}</a></dt>" }
+      @elapsed = Time.now - before
+      haml :filelist
+    else
+      search(path, params[:keyword], Time.now)
+    end
   end
 end
 
