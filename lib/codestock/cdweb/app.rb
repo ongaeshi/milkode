@@ -58,7 +58,8 @@ EOF
     href = '/home'
     path.split('/').map {|v|
       href += '/' + v
-      "<a href='#{escape_path(href) + "?query=#{escape_url(params[:query])}&shead=#{params[:shead]}"}'>#{v}</a>"
+#      "<a href='#{escape_path(href) + "?query=#{escape_url(params[:query])}&shead=#{params[:shead]}"}'>#{v}</a>"
+      "<a href='#{escape_path(href) + "?shead=#{params[:shead]}"}'>#{v}</a>"
     }.join('/')
   end
 
