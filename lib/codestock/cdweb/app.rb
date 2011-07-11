@@ -27,13 +27,13 @@ helpers do
   
   # -- utility -- 
   def link(query)
-    "<a href='#{'/home?keyword=' + escape_url(query)}'>#{query}</a>"
+    "<a href='#{'/home?query=' + escape_url(query)}'>#{query}</a>"
   end
 
-  def create_form(query, package_name)
+  def create_form(query, package_name, shead)
 #     all_op = package_op = directory_op = ""
 
-#     case search_op
+#     case shead
 #     when "all"
 #       all_op = "checked"
 #     when "package"
@@ -47,15 +47,31 @@ helpers do
     <p>
       <input name='query' size='60' type='text' value="#{query}" />
       <input type='submit' value='検索'><br></input>
-      <input name='search_op' type='radio' value='all'/>
+      <input name='shead' type='radio' value='all'/>
       <label>全体を検索</label>
-      <input name='search_op' type='radio' value='package'/>
+      <input name='shead' type='radio' value='package'/>
       <label> #{package_name} 以下</label>
-      <input name='search_op' type='radio' value='directory' checked />
+      <input name='shead' type='radio' value='directory' checked />
       <label>このディレクトリ以下</label>
     </p>
   </form>
 EOF
+  end
+
+  def topic_path(path)
+    href = '/home'
+    path.split('/').map {|v|
+      href += '/' + v
+      "<a href='#{escape_path(href)}'>#{v}</a>"
+    }.join(' / ')
+  end
+
+  def package_name(path)
+    (path == "") ? 'root' : path.split('/')[0]
+  end
+
+  def path_title(path)
+    (path == "") ? "Package List" : path
   end
 end
 
@@ -69,15 +85,15 @@ end
 post '/home*' do |path|
   path = path.sub(/^\//, "")
 
-  case params[:search_op]
+  case params[:shead]
   when 'all'
     path = ""
   when 'package'
     path = path.split('/')[0]
   end
 
-  url = "/home#{path}?keyword=#{escape_url(params[:query])}"
-  url += "&search_op?=#{params[:search_op]}" if params[:search_op]
+  url = "/home/#{path}?query=#{escape_url(params[:query])}"
+  url += "&shead?=#{params[:shead]}" if params[:shead]
 
   redirect url
 end
@@ -90,7 +106,7 @@ get '/home*' do |path|
   if (record)
     view(record, before)
   else
-    unless (params[:keyword])
+    unless (params[:query])
       filelist(path, before)
     else
       search(path, params, before)

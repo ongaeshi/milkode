@@ -10,19 +10,21 @@ require 'codestock/cdweb/lib/grep'
 
 module CodeStock
   class Searcher
-    attr_reader :keyword
     attr_reader :total_records
     attr_reader :elapsed
     attr_reader :page
     
-    def initialize(path, keyword, page)
-      @keyword = keyword
-      @query = Query2.new(@keyword)
+    def initialize(path, query, page)
+      @q = Query.new(query)
       @page = page || 0
-      fpaths = @query.fpaths
+      fpaths = @q.fpaths
       fpaths << path unless path == ""
-      @records, @total_records, @elapsed = Database.instance.search(@query.keywords, @query.packages, fpaths, @query.suffixs, page, limit)
+      @records, @total_records, @elapsed = Database.instance.search(@q.keywords, @q.packages, fpaths, @q.suffixs, page, limit)
       # @todo 厳密に検索するには、さらに検索結果から先頭からのパスではないものを除外する
+    end
+
+    def query
+      @q.query_string
     end
 
     def page_range
@@ -33,13 +35,13 @@ module CodeStock
     def html_contents
       str = ""
       @records.each do |record|
-        str += result_record(record, @query.keywords, 3)
+        str += result_record(record, @q.keywords, 3)
       end
       str
     end
     
     def html_pagination
-      return "" if @query.empty?
+      return "" if @q.empty?
       return "" if @total_records < limit
 
       str = ""
@@ -68,7 +70,7 @@ module CodeStock
 
     # 1ページに表示する最大レコードを計算
     def limit
-      if @query.keywords.size == 0
+      if @q.keywords.size == 0
         100
       else
         20
@@ -125,7 +127,7 @@ EOS
     end
 
     def pagination_link(page, label)
-      href = "?keyword=#{Rack::Utils::escape_html(keyword)}&page=#{page}"
+      href = "?query=#{Rack::Utils::escape_html(@q.query_string)}&page=#{page}"
       pagination_span("<a href='#{href}'>#{label}</a>")
     end
 

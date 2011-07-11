@@ -37,6 +37,7 @@ module CodeStock
       assert_equal q.suffixs, ['pl', 'rb']
 
       q = create_query("&p")
+      assert_equal "&p", q.query_string
       assert_equal q.escape_html, '&amp;p'
 
       q = create_query("int &p")
@@ -47,7 +48,7 @@ module CodeStock
     end
 
     def create_query(query)
-      Query2.new(query)
+      Query.new(query)
     end
   end
 end

@@ -4,10 +4,10 @@
     CodeStock
 
 .content
-  = create_form(@keyword, @package_name)
+  = create_form(params[:query], package_name(@path), params[:shead])
 
   .search-summary
-    <span class="keyword">#{@path}</span>（#{@elapsed}秒）
+    <span class="keyword">#{topic_path(@path)}</span>（#{@elapsed}秒）
   ~ @record_content
 
 
