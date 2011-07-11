@@ -14,9 +14,10 @@ module CodeStock
     attr_reader :elapsed
     attr_reader :page
     
-    def initialize(path, query, page)
-      @q = Query.new(query)
-      @page = page || 0
+    def initialize(path, params)
+      @params = params
+      @q = Query.new(params[:query])
+      @page = params[:page].to_i || 0
       fpaths = @q.fpaths
       fpaths << path unless path == ""
       @records, @total_records, @elapsed = Database.instance.search(@q.keywords, @q.packages, fpaths, @q.suffixs, page, limit)
@@ -80,7 +81,7 @@ module CodeStock
     def result_record(record, patterns, nth=1)
       if (patterns.size > 0)
         <<EOS
-    <dt class='result-record'><a href='#{"/home/" + Rack::Utils::escape_html(record.shortpath)}'>#{record.shortpath}</a></dt>
+    <dt class='result-record'><a href='#{"/home/" + record_link(record)}'>#{record.shortpath}</a></dt>
     <dd>
       <pre class='lines'>
 #{result_record_match_line(record, patterns, nth)}
@@ -89,9 +90,13 @@ module CodeStock
 EOS
       else
         <<EOS
-    <dt class='result-record'><a href='#{"/home/" + Rack::Utils::escape_html(record.shortpath)}'>#{record.shortpath}</a></dt>
+    <dt class='result-record'><a href='#{"/home/" + record_link(record)}'>#{record.shortpath}</a></dt>
 EOS
       end
+    end
+
+    def record_link(record)
+      escape_html(record.shortpath) + "?query=#{escape_html(query)}" + "&shead=#{@params[:shead]}"
     end
     
     def result_record_match_line(record, patterns, nth)
@@ -115,7 +120,7 @@ EOS
     end
 
     def line(lineno, line, match_datas)
-      sprintf("%5d: %s", lineno, match_strong(Rack::Utils::escape_html(line), match_datas))
+      sprintf("%5d: %s", lineno, match_strong(escape_html(line), match_datas))
     end
 
     def match_strong(line, match_datas)
@@ -127,12 +132,16 @@ EOS
     end
 
     def pagination_link(page, label)
-      href = "?query=#{Rack::Utils::escape_html(@q.query_string)}&page=#{page}"
+      href = "?query=#{escape_html(@q.query_string)}&shead=#{@params[:shead]}&page=#{page}"
       pagination_span("<a href='#{href}'>#{label}</a>")
     end
 
     def pagination_span(content)
       "<span class='pagination-link'>#{content}</span>\n"
+    end
+
+    def escape_html(src)
+      Rack::Utils::escape_html(src)
     end
 
   end

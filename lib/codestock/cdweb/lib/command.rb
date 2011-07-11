@@ -21,7 +21,7 @@ module CodeStock
   def search(path, params, before)
     @title = path_title(path)
     @path = path
-    searcher = Searcher.new(path, params[:query], params[:page].to_i)
+    searcher = Searcher.new(path, params)
     @total_records = searcher.total_records
     @range = searcher.page_range
     @record_content = searcher.html_contents  + searcher.html_pagination;

@@ -59,7 +59,7 @@ EOF
     path.split('/').map {|v|
       href += '/' + v
       "<a href='#{escape_path(href)}'>#{v}</a>"
-    }.join(' / ')
+    }.join('/')
   end
 
   def package_name(path)
