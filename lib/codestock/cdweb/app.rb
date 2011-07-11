@@ -54,11 +54,11 @@ EOF
     "<input name='shead' type='radio' value='#{value}' #{str}/>"
   end
 
-  def topic_path(path)
+  def topic_path(path, params)
     href = '/home'
     path.split('/').map {|v|
       href += '/' + v
-      "<a href='#{escape_path(href)}'>#{v}</a>"
+      "<a href='#{escape_path(href) + "?query=#{escape_url(params[:query])}&shead=#{params[:shead]}"}'>#{v}</a>"
     }.join('/')
   end
 
