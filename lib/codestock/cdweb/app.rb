@@ -31,31 +31,27 @@ helpers do
   end
 
   def create_form(query, package_name, shead)
-#     all_op = package_op = directory_op = ""
+    shead = shead || 'directory'
 
-#     case shead
-#     when "all"
-#       all_op = "checked"
-#     when "package"
-#       package_op = "checked"
-#     else
-#       directory_op = "checked"
-#     end
-    
     <<EOF
   <form action='' method='post'>
     <p>
       <input name='query' size='60' type='text' value="#{query}" />
       <input type='submit' value='検索'><br></input>
-      <input name='shead' type='radio' value='all'/>
+      #{create_radio('all', shead)}
       <label>全体を検索</label>
-      <input name='shead' type='radio' value='package'/>
+      #{create_radio('package', shead)}
       <label> #{package_name} 以下</label>
-      <input name='shead' type='radio' value='directory' checked />
+      #{create_radio('directory', shead)}
       <label>このディレクトリ以下</label>
     </p>
   </form>
 EOF
+  end
+
+  def create_radio(value, shead)
+    str = (value == shead) ? 'checked' : ''
+    "<input name='shead' type='radio' value='#{value}' #{str}/>"
   end
 
   def topic_path(path)
@@ -93,7 +89,7 @@ post '/home*' do |path|
   end
 
   url = "/home/#{path}?query=#{escape_url(params[:query])}"
-  url += "&shead?=#{params[:shead]}" if params[:shead]
+  url += "&shead=#{params[:shead]}" if params[:shead]
 
   redirect url
 end
