@@ -78,7 +78,7 @@ module CodeStock
     def result_record(record, patterns, nth=1)
       if (patterns.size > 0)
         <<EOS
-    <dt class='result-record'><a href='#{"/::view/" + Rack::Utils::escape_html(record.shortpath)}'>#{record.shortpath}</a></dt>
+    <dt class='result-record'><a href='#{"/home/" + Rack::Utils::escape_html(record.shortpath)}'>#{record.shortpath}</a></dt>
     <dd>
       <pre class='lines'>
 #{result_record_match_line(record, patterns, nth)}
@@ -87,7 +87,7 @@ module CodeStock
 EOS
       else
         <<EOS
-    <dt class='result-record'><a href='#{"/::view/" + Rack::Utils::escape_html(record.shortpath)}'>#{record.shortpath}</a></dt>
+    <dt class='result-record'><a href='#{"/home/" + Rack::Utils::escape_html(record.shortpath)}'>#{record.shortpath}</a></dt>
 EOS
       end
     end

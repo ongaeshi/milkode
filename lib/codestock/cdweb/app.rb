@@ -26,8 +26,8 @@ helpers do
   end
   
   # -- utility -- 
-  def link(keyword)
-    "<a href='#{'/::search' + '/' + escape_url(keyword)}'>#{keyword}</a>"
+  def link(query)
+    "<a href='#{'/home?keyword=' + escape_url(query)}'>#{query}</a>"
   end
 
   def create_form(query, package_name)
@@ -101,29 +101,3 @@ end
 get %r{/help} do
   haml :help
 end
-
-# -- obsolate --
-
-post '/::search' do
-  redirect "/::search/#{escape_url(params[:query])}"
-end
-
-get %r{/::search/(.*)} do |keyword|
-  before = Time.now
-
-  searcher = Searcher.new(keyword, params[:page].to_i)
-  
-  @keyword = searcher.keyword
-  @total_records = searcher.total_records
-  @range = searcher.page_range
-  @elapsed = Time.now - before
-  @record_content = searcher.html_contents  + searcher.html_pagination;
-  haml :search
-end
-
-get %r{/::view/(.*)} do |path|
-  before = Time.now
-  record = Database.instance.record(path)
-  view(record, before)
-end
-
