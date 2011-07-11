@@ -29,6 +29,34 @@ helpers do
   def link(keyword)
     "<a href='#{'/::search' + '/' + escape_url(keyword)}'>#{keyword}</a>"
   end
+
+  def create_form(query, package_name)
+#     all_op = package_op = directory_op = ""
+
+#     case search_op
+#     when "all"
+#       all_op = "checked"
+#     when "package"
+#       package_op = "checked"
+#     else
+#       directory_op = "checked"
+#     end
+    
+    <<EOF
+  <form action='' method='post'>
+    <p>
+      <input name='query' size='60' type='text' value="#{query}" />
+      <input type='submit' value='検索'><br></input>
+      <input name='search_op' type='radio' value='all'/>
+      <label>全体を検索</label>
+      <input name='search_op' type='radio' value='package'/>
+      <label> #{package_name} 以下</label>
+      <input name='search_op' type='radio' value='directory' checked />
+      <label>このディレクトリ以下</label>
+    </p>
+  </form>
+EOF
+  end
 end
 
 get '/' do
@@ -39,7 +67,19 @@ get '/' do
 end
 
 post '/home*' do |path|
-  redirect "/home#{path}?keyword=#{escape_url(params[:query])}"
+  path = path.sub(/^\//, "")
+
+  case params[:search_op]
+  when 'all'
+    path = ""
+  when 'package'
+    path = path.split('/')[0]
+  end
+
+  url = "/home#{path}?keyword=#{escape_url(params[:query])}"
+  url += "&search_op?=#{params[:search_op]}" if params[:search_op]
+
+  redirect url
 end
 
 get '/home*' do |path|
@@ -53,7 +93,7 @@ get '/home*' do |path|
     unless (params[:keyword])
       filelist(path, before)
     else
-      search(path, params[:keyword], before)
+      search(path, params, before)
     end
   end
 end

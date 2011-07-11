@@ -4,10 +4,8 @@
     CodeStock
 
 .content
-  %form(method="post" action="/::search")
-    %p
-      %input(name="query" type="text" size="60")
-      %input(type="submit" value="検索")
+  = create_form(@keyword, @package_name)
+
   .search-summary
     <span class="keyword">#{@path}</span>（#{@elapsed}秒）
   ~ @record_content

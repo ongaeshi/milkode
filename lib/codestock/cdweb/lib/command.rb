@@ -13,14 +13,16 @@ module CodeStock
   def view(record, before)
     @title = record.shortpath
     @path = topic_path(record.shortpath)
+    @package_name = package_name(record.shortpath)
     @record_content = CodeRayWrapper.html_memfile(record.content, record.shortpath)
     @elapsed = Time.now - before
     haml :view
   end
 
-  def search(path,keyword, before)
+  def search(path, params, before)
     @title = path_title(path)
-    searcher = Searcher.new(path, keyword, params[:page].to_i)
+    @search_op = params[:search_op]
+    searcher = Searcher.new(path, params[:keyword], params[:page].to_i)
     @keyword = searcher.keyword
     @package_name = package_name(path)
     @filepath = topic_path(path)
