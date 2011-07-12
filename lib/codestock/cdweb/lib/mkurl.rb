@@ -12,7 +12,7 @@ include Rack::Utils
 module CodeStock
     class Mkurl
     def initialize(path, params)
-      @path = path
+      @path = escape_path(path)
       @params = params
     end
 
@@ -29,6 +29,10 @@ module CodeStock
     end
 
     private
+
+    def escape_path(src)
+      escape(src).gsub("%2F", '/')
+    end
 
     def create_url(qp)
       if (qp == "")

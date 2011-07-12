@@ -35,7 +35,7 @@ module CodeStock
     @path = path
     fileList = Database.instance.fileList(path)
     @total_records = fileList.size
-    @record_content = fileList.map {|v| "<dt class='result-record'><a href='#{Mkurl.new('/home/' + escape_path(v[0]), params).inherit_query_shead}'>#{File.basename v[0]}</a></dt>"}
+    @record_content = fileList.map {|v| "<dt class='result-record'><a href='#{Mkurl.new('/home/' + v[0], params).inherit_query_shead}'>#{File.basename v[0]}</a></dt>"}
     @elapsed = Time.now - before
     haml :filelist
   end

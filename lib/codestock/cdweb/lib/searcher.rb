@@ -97,7 +97,7 @@ EOS
     end
 
     def record_link(record)
-      Mkurl.new(escape_html(record.shortpath), @params).inherit_query_shead
+      Mkurl.new(record.shortpath, @params).inherit_query_shead
     end
     
     def result_record_match_line(record, patterns, nth)
