@@ -7,6 +7,7 @@
 
 require 'codestock/cdweb/lib/query'
 require 'codestock/cdweb/lib/grep'
+require 'codestock/cdweb/lib/mkurl'
 
 module CodeStock
   class Searcher
@@ -96,7 +97,7 @@ EOS
     end
 
     def record_link(record)
-      escape_html(record.shortpath) + "?query=#{escape_html(query)}" + "&shead=#{@params[:shead]}"
+      Mkurl.new(escape_html(record.shortpath), @params).inherit_query_shead
     end
     
     def result_record_match_line(record, patterns, nth)
@@ -132,7 +133,9 @@ EOS
     end
 
     def pagination_link(page, label)
-      href = "?query=#{escape_html(@q.query_string)}&shead=#{@params[:shead]}&page=#{page}"
+      tmpp = @params
+      tmpp[:page] = page.to_s
+      href = Mkurl.new("", tmpp).inherit_query_shead_page
       pagination_span("<a href='#{href}'>#{label}</a>")
     end
 
