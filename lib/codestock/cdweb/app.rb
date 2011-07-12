@@ -46,7 +46,7 @@ get '/home*' do |path|
     view(record, before)
   else
     unless (params[:query])
-      filelist(path, before)
+      filelist(path, params, before)
     else
       search(path, params, before)
     end
@@ -100,7 +100,7 @@ EOF
   def topic_path(path, params)
     href = '/home'
     path.split('/').map {|v|
-      href += '/' + v
+      href += '/' + escape_path(v)
       "<a href='#{Mkurl.new(href, params).inherit_shead}'>#{v}</a>"
     }.join('/')
   end

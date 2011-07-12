@@ -8,6 +8,7 @@
 require 'codestock/cdweb/lib/database'
 require 'codestock/cdweb/lib/coderay_wrapper'
 require 'codestock/cdweb/lib/searcher'
+require 'codestock/cdweb/lib/mkurl'
 
 module CodeStock
   def view(record, before)
@@ -29,12 +30,12 @@ module CodeStock
     haml :search
   end
 
-  def filelist(path, before)
+  def filelist(path, params, before)
     @title = path_title(path)
     @path = path
     fileList = Database.instance.fileList(path)
     @total_records = fileList.size
-    @record_content = fileList.map {|v| "<dt class='result-record'><a href='/home/#{escape_path(v[0])}'>#{File.basename v[0]}</a></dt>" }
+    @record_content = fileList.map {|v| "<dt class='result-record'><a href='#{Mkurl.new('/home/' + escape_path(v[0]), params).inherit_query_shead}'>#{File.basename v[0]}</a></dt>"}
     @elapsed = Time.now - before
     haml :filelist
   end
