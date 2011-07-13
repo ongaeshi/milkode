@@ -75,7 +75,9 @@ helpers do
 
   def create_form(path, query, shead)
     shead = shead || 'directory'
-
+    
+    # こっちにすると'検索'ボタンを押した時に新しくウィンドウが開く
+    # <form action='' target='_blank' method='post'>
     <<EOF
   <form action='' method='post'>
     <p>
