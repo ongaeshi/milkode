@@ -4,7 +4,7 @@
     CodeStock
 
 .content
-  = create_form(params[:query], package_name(@path), params[:shead])
+  = create_form(@path, params[:query], params[:shead])
   
   .search-summary
     <span class="keyword">#{topic_path(@path, params)}</span> <span class="total-entries">#{@total_records}</span>件中 <span class="display-range">#{@range.first} - #{@range.last}</span>件（#{@elapsed}秒）

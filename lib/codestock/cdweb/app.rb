@@ -73,7 +73,7 @@ helpers do
     "<a href='#{'/home?query=' + escape_url(query)}'>#{query}</a>"
   end
 
-  def create_form(query, package_name, shead)
+  def create_form(path, query, shead)
     shead = shead || 'directory'
 
     <<EOF
@@ -84,9 +84,9 @@ helpers do
       #{create_radio('all', shead)}
       <label>全体を検索</label>
       #{create_radio('package', shead)}
-      <label> #{package_name} 以下</label>
+      <label> #{package_name(path)} 以下</label>
       #{create_radio('directory', shead)}
-      <label>このディレクトリ以下</label>
+      <label> #{current_name(path)} 以下</label>
     </p>
   </form>
 EOF
@@ -107,6 +107,10 @@ EOF
 
   def package_name(path)
     (path == "") ? 'root' : path.split('/')[0]
+  end
+
+  def current_name(path)
+    (path == "") ? 'root' : File.basename(path)
   end
 
   def path_title(path)
