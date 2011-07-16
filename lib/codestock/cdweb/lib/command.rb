@@ -19,7 +19,7 @@ module CodeStock
 
     unless (q.keywords.empty?)
       grep = Grep.new(record.content)
-      match_lines = grep.match_lines_or(q.keywords)
+      match_lines = grep.match_lines_and(q.keywords)
       @record_content = CodeRayWrapper.new(record.content, record.shortpath, match_lines).to_html
     else
       @record_content = CodeRayWrapper.new(record.content, record.shortpath).to_html

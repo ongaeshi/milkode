@@ -15,9 +15,25 @@ module CodeStock
 
     MatchLineResult = Struct.new(:index, :match_datas)
     
+    def match_lines_and(patterns)
+      result = []
+      patternRegexps = strs2regs(patterns, true)
+      
+      @content.each_with_index do |line, index|
+        match_datas = []
+        patternRegexps.each {|v| match_datas << v.match(line)}
+
+        if (match_datas.all?)
+          result << MatchLineResult.new(index, match_datas)
+        end
+      end
+      
+      result
+    end
+
     def match_lines_or(patterns)
       result = []
-      patternRegexps = strs2regs(patterns, true) # @todo ignoreオプションを付ける
+      patternRegexps = strs2regs(patterns, true)
       
       @content.each_with_index do |line, index|
         match_datas = []

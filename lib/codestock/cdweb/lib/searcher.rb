@@ -104,7 +104,7 @@ EOS
       str = ""
       
       grep = Grep.new(record.content)
-      lines = grep.match_lines_or(patterns)
+      lines = grep.match_lines_and(patterns)
 
       unless (lines.empty?)
         index = lines[0].index
