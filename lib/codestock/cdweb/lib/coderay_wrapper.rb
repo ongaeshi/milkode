@@ -11,20 +11,29 @@ require 'coderay/helpers/file_type'
 
 module CodeStock
   class CodeRayWrapper
+    attr_reader :line_number_start
+    
     def initialize(content, filename, match_lines = [])
       @content = content
       @filename = filename
       @match_lines = match_lines
       @highlight_lines = match_lines.map{|v|v.index+1}
+      @line_number_start = 1
     end
 
+    def set_range(content_range)
+      @content = @content.to_a[content_range]
+      @line_number_start = content_range.first + 1
+    end
+    
     def to_html
       html = CodeRay.scan(@content, file_type).
         html(
              :wrap => nil,
              :line_numbers => :table,
              :css => :class,
-             :highlight_lines => @highlight_lines
+             :highlight_lines => @highlight_lines,
+             :line_number_start => @line_number_start
              )
 
       codestock_ornament(html)
@@ -33,7 +42,7 @@ module CodeStock
     def codestock_ornament(html)
       a = html.split("\n")
 
-      line_number = 1
+      line_number = @line_number_start
       is_code_content = false
 
       a.each_with_index do |l, index|

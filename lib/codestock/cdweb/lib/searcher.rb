@@ -81,14 +81,7 @@ module CodeStock
     
     def result_record(record, patterns, nth=1)
       if (patterns.size > 0)
-        <<EOS
-    <dt class='result-record'><a href='#{"/home/" + record_link(record)}'>#{record.shortpath}</a></dt>
-    <dd>
-      <pre class='lines'>
-#{result_record_match_line(record, patterns, nth)}
-      </pre>
-    </dd>
-EOS
+        result_record_grep(record, patterns, nth)
       else
         <<EOS
     <dt class='result-record'><a href='#{"/home/" + record_link(record)}'>#{record.shortpath}</a></dt>
@@ -99,39 +92,29 @@ EOS
     def record_link(record)
       Mkurl.new(record.shortpath, @params).inherit_query_shead
     end
-    
-    def result_record_match_line(record, patterns, nth)
-      str = ""
-      
+
+    def result_record_grep(record, patterns, nth)
       grep = Grep.new(record.content)
-      lines = grep.match_lines_and(patterns)
+      match_lines = grep.match_lines_and(patterns)
+      return "" if (match_lines.empty?)
 
-      unless (lines.empty?)
-        index = lines[0].index
-        
-        (index - nth..index + nth).each do |i|
-          if (0 <= i && i < grep.content.size)
-            match_datas = (i == index) ? lines[0].match_datas : []
-            str << line(i + 1, grep.content[i], match_datas) + "\n"
-          end
-        end
-      end
+      first_index = match_lines[0].index - nth
+      first_index = 0 if first_index < 0
 
-      str
+      last_index = match_lines[0].index + nth
+      last_index = grep.content.size-1 if last_index >= grep.content.size
+
+      coderay = CodeRayWrapper.new(record.content, record.shortpath, match_lines)
+      coderay.set_range(first_index..last_index)
+
+      <<EOS
+    <dt class='result-record'><a href='#{"/home/" + record_link(record) + "##{coderay.line_number_start}"}'>#{record.shortpath}</a></dt>
+    <dd>
+#{coderay.to_html}
+    </dd>
+EOS
     end
-
-    def line(lineno, line, match_datas)
-      sprintf("%5d: %s", lineno, match_strong(escape_html(line), match_datas))
-    end
-
-    def match_strong(line, match_datas)
-      match_datas.each do |m|
-        line = line.split(m[0]).join('<strong>' + m[0] + '</strong>') unless (m.nil?)
-      end
-      
-      line
-    end
-
+    
     def pagination_link(page, label)
       tmpp = @params
       tmpp[:page] = page.to_s
@@ -141,10 +124,6 @@ EOS
 
     def pagination_span(content)
       "<span class='pagination-link'>#{content}</span>\n"
-    end
-
-    def escape_html(src)
-      Rack::Utils::escape_html(src)
     end
 
   end
