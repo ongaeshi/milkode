@@ -43,7 +43,7 @@ get '/home*' do |path|
   record = Database.instance.record(path)
 
   if (record)
-    view(record, before)
+    view(record, params, before)
   else
     unless (params[:query])
       filelist(path, params, before)

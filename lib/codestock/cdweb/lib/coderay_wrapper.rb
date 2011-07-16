@@ -11,17 +11,18 @@ require 'coderay/helpers/file_type'
 
 module CodeStock
   class CodeRayWrapper
-    def self.html_memfile(content, filename)
-      to_html_code(content, file_type(filename))
+    def self.html_memfile(content, filename, match_lines = [])
+      to_html_code(content, file_type(filename), match_lines)
     end
     
-    def self.to_html_code(code, kind)
+    def self.to_html_code(code, kind, match_lines)
       codestock_ornament(
         CodeRay.scan(code, kind).
         html(
              :wrap => nil,
              :line_numbers => :table,
-             :css => :class
+             :css => :class,
+             :highlight_lines => match_lines.map{|v|v.index+1}
              )
       )
     end

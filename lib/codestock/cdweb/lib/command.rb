@@ -11,10 +11,20 @@ require 'codestock/cdweb/lib/searcher'
 require 'codestock/cdweb/lib/mkurl'
 
 module CodeStock
-  def view(record, before)
+  def view(record, params, before)
     @title = record.shortpath
     @path = record.shortpath
-    @record_content = CodeRayWrapper.html_memfile(record.content, record.shortpath)
+
+    q = Query.new(params[:query])
+
+    unless (q.keywords.empty?)
+      grep = Grep.new(record.content)
+      match_lines = grep.match_lines_or(q.keywords)
+      @record_content = CodeRayWrapper.html_memfile(record.content, record.shortpath, match_lines)
+    else
+      @record_content = CodeRayWrapper.html_memfile(record.content, record.shortpath)
+    end
+    
     @elapsed = Time.now - before
     haml :view
   end
