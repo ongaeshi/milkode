@@ -15,9 +15,9 @@ module CodeStock
     @title = record.shortpath
     @path = record.shortpath
 
-    q = Query.new(params[:query])
+    q = params[:query] && Query.new(params[:query]) 
 
-    unless (q.keywords.empty?)
+    if (q and !q.keywords.empty?)
       grep = Grep.new(record.content)
       match_lines = grep.match_lines_and(q.keywords)
       @record_content = CodeRayWrapper.new(record.content, record.shortpath, match_lines).to_html
