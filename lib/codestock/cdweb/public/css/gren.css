@@ -58,3 +58,8 @@ span.keyword {
 font.version {
     font-size: 35%;
 }
+
+span.highlight-line {
+/*    background-color: #88FFB8; */
+    background-color: #FFFF55;
+}
