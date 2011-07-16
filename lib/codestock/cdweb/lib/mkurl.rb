@@ -10,7 +10,7 @@ require 'rack'
 include Rack::Utils
 
 module CodeStock
-    class Mkurl
+  class Mkurl
     def initialize(path, params)
       @path = escape_path(path)
       @params = params
