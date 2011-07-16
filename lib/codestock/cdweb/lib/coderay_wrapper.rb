@@ -69,7 +69,7 @@ module CodeStock
     def line_attr(no)
       r = []
       r << "id=\"#{no}\""
-      r << "class=\"highlight-line\"" if @highlight_lines.include? no
+      r << "class=\"highlight-line\"" if @highlight_lines.include?(no)
       r.join(" ")
     end
   end
