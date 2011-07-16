@@ -14,7 +14,7 @@ module CodeStock
   class TestCodeRayWrapper < Test::Unit::TestCase
     def test_basic
       assert_lines JS_SHORT_HTML, CodeRayWrapper.html_memfile(JS_SHORT_CODE, "console-dir.js")
-#       assert_lines JS_HTML, CodeRayWrapper.html_memfile(JS_CODE, "console-dir.js")
+      assert_lines JS_HTML, CodeRayWrapper.html_memfile(JS_CODE, "console-dir.js")
     end
   end
 end
