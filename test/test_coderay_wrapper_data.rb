@@ -54,7 +54,7 @@ EOF
 </tt>7<tt>
 </tt>8<tt>
 </tt>9<tt>
-</tt><strong>10</strong><tt>
+</tt>10<tt>
 </tt>11<tt>
 </tt>12<tt>
 </tt>13<tt>
