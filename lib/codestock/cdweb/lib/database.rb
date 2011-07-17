@@ -46,13 +46,17 @@ module CodeStock
     def fileNum
       @documents.select.size
     end
+    
+    def search2(patterns, packages, fpaths, suffixs, offset = 0, limit = -1)
+      records, total_records = searchMain(patterns, packages, fpaths, suffixs, offset, limit)
+    end
 
     def search(patterns, packages, fpaths, suffixs, page = 0, limit = -1)
       # 全てのパターンを検索
       if (fpaths.include?("*"))
         records, total_records = selectAll(page, limit)
       else
-        records, total_records = searchMain(patterns, packages, fpaths, suffixs, page, limit)
+        records, total_records = searchMain(patterns, packages, fpaths, suffixs, page * limit, limit)
       end
 
       # 結果
@@ -106,7 +110,7 @@ module CodeStock
 
     private 
 
-    def searchMain(patterns, packages, fpaths, suffixs, page, limit)
+    def searchMain(patterns, packages, fpaths, suffixs, offset, limit)
       table = @documents.select do |record|
         expression = nil
 
@@ -160,7 +164,7 @@ module CodeStock
       # スコアとタイムスタンプでソート
       records = table.sort([{:key => "_score", :order => "descending"},
                             {:key => "timestamp", :order => "descending"}],
-                           :offset => page * limit,
+                           :offset => offset,
                            :limit => limit)
 
       return records, total_records

@@ -21,7 +21,7 @@ module CodeStock
       @page = params[:page].to_i || 0
       fpaths = @q.fpaths
       fpaths << path unless path == ""
-      @records, @total_records, @elapsed = Database.instance.search(@q.keywords, @q.packages, fpaths, @q.suffixs, page, limit)
+      @records, @total_records, @elapsed = Database.instance.search2(@q.keywords, @q.packages, fpaths, @q.suffixs)
       # @todo 厳密に検索するには、さらに検索結果から先頭からのパスではないものを除外する
     end
 
@@ -35,11 +35,15 @@ module CodeStock
     end
 
     def html_contents
-      str = ""
+      result = []
       @records.each do |record|
-        str += result_record(record, @q.keywords, 3)
+        r = result_record(record, @q.keywords, 3)
+        unless (r == "")
+          result << r
+          break if result.size >= limit
+        end
       end
-      str
+      result.join
     end
     
     def html_pagination
@@ -104,7 +108,7 @@ EOS
 
     def result_record_grep(record, patterns, nth)
       grep = Grep.new(record.content)
-      match_lines = grep.match_lines_and(patterns)
+      match_lines = grep.one_match_and(patterns)
       return "" if (match_lines.empty?)
 
       first_index = match_lines[0].index - nth
