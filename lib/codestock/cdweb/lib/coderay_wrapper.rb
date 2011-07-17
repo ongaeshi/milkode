@@ -47,7 +47,7 @@ module CodeStock
 
       a.each_with_index do |l, index|
         if (l =~ /  <td class="code"><pre (.*?)>(.*)<tt>/)
-          a[index] = "  <td class=\"code\"><pre #{$1}><span #{line_attr(line_number)}\">#{$2}</span><tt>"
+          a[index] = "  <td class=\"code\"><pre #{$1}><span #{line_attr(line_number)}>#{$2}</span><tt>"
           is_code_content = true
           line_number += 1
           next
@@ -57,7 +57,7 @@ module CodeStock
 
         if (is_code_content)
           if (l =~ %r|</tt>(.*)<tt>|)
-            a[index] = "</tt><span #{line_attr(line_number)}\">#{$1}</span><tt>"
+            a[index] = "</tt><span #{line_attr(line_number)}>#{$1}</span><tt>"
             line_number += 1
           end
         end
