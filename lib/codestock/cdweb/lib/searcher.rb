@@ -46,6 +46,15 @@ module CodeStock
       return "" if @q.empty?
       return "" if @total_records < limit
 
+      last_page = (@total_records / limit.to_f).ceil      
+
+      return <<EOF
+<div class='pagination'>
+#{pagination_link(page + 1, "next >>") if page < (last_page - 1)}
+</div>
+EOF
+
+      # -- obsolate
       str = ""
 
       last_page = (@total_records / limit.to_f).ceil
