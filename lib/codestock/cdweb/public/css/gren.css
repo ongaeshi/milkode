@@ -34,6 +34,10 @@ dt.result-record {
     font-size: 105%;
 }
 
+dt.result-file {
+    font-size: 95%;
+}
+
 div.pagination {
     background-color:#FEFFF0;
     text-align: center;

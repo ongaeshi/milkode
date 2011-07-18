@@ -7,6 +7,7 @@
 
 require 'codestock/cdweb/lib/query'
 require 'codestock/cdweb/lib/mkurl'
+require 'codestock/cdweb/lib/command'
 
 module CodeStock
   class SearchFiles
@@ -72,7 +73,7 @@ EOF
 
     def result_record(record)
       <<EOS
-    <dt class='result-record'><a href='#{"/home/" + record_link(record)}'>#{record.shortpath}</a></dt>
+    <dt class='result-file'>#{file_or_dirimg(true)}<a href='#{"/home/" + record_link(record)}'>#{record.shortpath}</a></dt>
 EOS
     end
 
