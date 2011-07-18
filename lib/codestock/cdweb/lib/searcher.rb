@@ -19,9 +19,10 @@ module CodeStock
       @params = params
       @q = Query.new(params[:query])
       @page = params[:page].to_i || 0
+      @offset = params[:offset].to_i
       fpaths = @q.fpaths
       fpaths << path unless path == ""
-      @records, @total_records, @elapsed = Database.instance.search2(@q.keywords, @q.packages, fpaths, @q.suffixs)
+      @records, @total_records, @elapsed = Database.instance.search2(@q.keywords, @q.packages, fpaths, @q.suffixs, @offset)
       # @todo 厳密に検索するには、さらに検索結果から先頭からのパスではないものを除外する
     end
 
@@ -30,17 +31,22 @@ module CodeStock
     end
 
     def page_range
-      pageStart = page * limit
-      (@total_records.zero? ? 0 : pageStart + 1)..(pageStart + @records.size)
+      #       pageStart = page * limit
+      #       (@total_records.zero? ? 0 : pageStart + 1)..(pageStart + @records.size)
+      @offset..1000
+      # @offset..@grep_endindex
     end
 
     def html_contents
       result = []
-      @records.each do |record|
+      @records.each_with_index do |record, index|
         r = result_record(record, @q.keywords, 3)
         unless (r == "")
           result << r
-          break if result.size >= limit
+          if result.size >= limit
+            @grep_end_index = index
+            break
+          end
         end
       end
       result.join
@@ -54,34 +60,26 @@ module CodeStock
 
       return <<EOF
 <div class='pagination'>
-#{pagination_link(page + 1, "next >>") if page < (last_page - 1)}
+#{pagination_link(@offset + @grep_end_index + 1, "next >>") if page < (last_page - 1)}
 </div>
 EOF
-
-      # -- obsolate
-      str = ""
-
-      last_page = (@total_records / limit.to_f).ceil
-      str += "<div class='pagination'>\n"
-      if page > 0
-        str += pagination_link(page - 1, "<<")
-      end
-      last_page.times do |i|
-        if i == page
-          str += pagination_span(i)
-        else
-          str += pagination_link(i, i)
-        end
-      end
-      if page < (last_page - 1)
-        str += pagination_link(page + 1, ">>")
-      end
-      str += "</div>\n"
-
-      str
     end
 
     private
+
+    def pagination_link(offset, label)
+      tmpp = @params
+      tmpp[:offset] = offset.to_s
+      href = Mkurl.new("", tmpp).inherit_query_shead_offset
+      pagination_span("<a href='#{href}'>#{label}</a>")
+    end
+
+    def offset_link(offset, label)
+    end
+
+    def pagination_span(content)
+      "<span class='pagination-link'>#{content}</span>\n"
+    end
 
     # 1ページに表示する最大レコードを計算
     def limit
@@ -128,17 +126,6 @@ EOS
 EOS
     end
     
-    def pagination_link(page, label)
-      tmpp = @params
-      tmpp[:page] = page.to_s
-      href = Mkurl.new("", tmpp).inherit_query_shead_page
-      pagination_span("<a href='#{href}'>#{label}</a>")
-    end
-
-    def pagination_span(content)
-      "<span class='pagination-link'>#{content}</span>\n"
-    end
-
   end
 end
 

@@ -16,7 +16,7 @@ module CodeStock
       @params = params
     end
 
-    def inherit_query_shead_page
+    def inherit_query_shead_offset
       create_url(query_param(true, true, true))
     end
 
@@ -42,11 +42,11 @@ module CodeStock
       end
     end
 
-    def query_param(query_inherit, shead_inherit, page_inherit)
+    def query_param(query_inherit, shead_inherit, offset_inherit)
       qparam = []
       qparam << "query=#{escape(@params[:query])}" if (query_inherit and @params[:query])
       qparam << "shead=#{escape(@params[:shead])}" if (shead_inherit and @params[:shead])
-      qparam << "page=#{escape(@params[:page])}" if (page_inherit and @params[:page])
+      qparam << "offset=#{escape(@params[:offset])}" if (offset_inherit and @params[:offset])
       qparam.join('&')
     end
   end
