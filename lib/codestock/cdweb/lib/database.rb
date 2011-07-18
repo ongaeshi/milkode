@@ -152,15 +152,22 @@ module CodeStock
         expression
       end
 
-      # マッチ数
-      total_records = table.size
-      
       # スコアとタイムスタンプでソート
       records = table.sort([{:key => "_score", :order => "descending"},
                             {:key => "timestamp", :order => "descending"}],
                            :offset => offset,
                            :limit => limit)
+      
+      # パッケージの条件追加
+      if (packages.size > 0)
+        records.delete_if do |record|
+          !packages.any?{|package| record.shortpath =~ /^#{package}/ }
+        end
+      end
 
+      # マッチ数
+      total_records = records.size
+      
       return records, total_records
     end
     private :searchMain
