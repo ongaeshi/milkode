@@ -52,6 +52,30 @@ module CodeStock
       records, total_records = searchMain(patterns, packages, fpaths, suffixs, offset, limit)
     end
 
+    def selectAll2(offset = 0, limit = -1)
+      table = @documents.select
+
+      # マッチ数
+      total_records = table.size
+
+      # 2010/10/29 ongaeshi
+      # 本当はこのようにgroongaAPIでソートしたいのだが上手くいかなかった
+      #       # ファイル名順にソート
+      #       records = table.sort([{:key => "shortpath", :order => "descending"}],
+      #                            :offset => page * limit,
+      #                            :limit => limit)
+      
+      # ソート
+      if (limit != -1)
+        records = table.records.sort_by{|record| record.shortpath.downcase }[offset, limit]
+      else
+        records = table.records.sort_by{|record| record.shortpath.downcase }[offset..limit]
+      end
+        
+
+      return records, total_records
+    end
+
     def search(patterns, packages, fpaths, suffixs, page = 0, limit = -1)
       # 全てのパターンを検索
       if (fpaths.include?("*"))

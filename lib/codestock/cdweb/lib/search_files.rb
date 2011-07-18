@@ -11,18 +11,23 @@ require 'codestock/cdweb/lib/mkurl'
 module CodeStock
   class SearchFiles
     attr_reader :total_records
-    attr_reader :elapsed
 
     DISP_NUM = 100              # 1ページの表示数
     
     def initialize(path, params, query)
       @params = params
       @q = query
-
+      
       @offset = params[:offset].to_i
+
       fpaths = @q.fpaths
       fpaths << path unless path == ""
-      @records, @total_records, @elapsed = Database.instance.search2(@q.keywords, @q.packages, fpaths, @q.suffixs, @offset, DISP_NUM)
+
+      if (fpaths.include?("*"))
+        @records, @total_records = Database.instance.selectAll2(@offset, DISP_NUM)
+      else
+        @records, @total_records = Database.instance.search2(@q.keywords, @q.packages, fpaths, @q.suffixs, @offset, DISP_NUM)
+      end
     end
 
     def query
