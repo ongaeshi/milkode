@@ -48,6 +48,21 @@ module CodeStock
       result
     end
 
+    def one_match_and2(patterns)
+      patternRegexps = strs2regs(patterns, true)
+      
+      @content.each_with_index do |line, index|
+        match_datas = []
+        patternRegexps.each {|v| match_datas << v.match(line)}
+
+        if (match_datas.all?)
+          return MatchLineResult.new(index, match_datas)
+        end
+      end
+      
+      nil
+    end
+
     def match_lines_or(patterns)
       result = []
       patternRegexps = strs2regs(patterns, true)

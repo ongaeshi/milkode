@@ -8,6 +8,7 @@
 require 'codestock/cdweb/lib/database'
 require 'codestock/cdweb/lib/coderay_wrapper'
 require 'codestock/cdweb/lib/searcher'
+require 'codestock/cdweb/lib/search_contents'
 require 'codestock/cdweb/lib/search_files'
 require 'codestock/cdweb/lib/mkurl'
 
@@ -36,13 +37,13 @@ module CodeStock
     query = Query.new(params[:query])
 
     if (query.keywords.size > 0)
-      searcher = Searcher.new(path, params)
+      searcher = SearchContents.new(path, params, query)
     else
       searcher = SearchFiles.new(path, params, query)
     end
     
     @total_records = searcher.total_records
-    @range = searcher.page_range
+    @range = searcher.data_range
     @record_content = searcher.html_contents  + searcher.html_pagination;
     @elapsed = Time.now - before
     haml :search

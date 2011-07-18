@@ -36,7 +36,6 @@ module CodeStock
     def data_range
       @offset..(next_offset - 1)
     end
-    alias_method :page_range, :data_range
 
     def html_contents
       @records.map {|record| result_record(record)}.join
