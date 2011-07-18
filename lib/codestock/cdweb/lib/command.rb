@@ -8,6 +8,7 @@
 require 'codestock/cdweb/lib/database'
 require 'codestock/cdweb/lib/coderay_wrapper'
 require 'codestock/cdweb/lib/searcher'
+require 'codestock/cdweb/lib/search_files'
 require 'codestock/cdweb/lib/mkurl'
 
 module CodeStock
@@ -32,7 +33,14 @@ module CodeStock
   def search(path, params, before)
     @title = path_title(path)
     @path = path
-    searcher = Searcher.new(path, params)
+    query = Query.new(params[:query])
+
+    if (query.keywords.size > 0)
+      searcher = Searcher.new(path, params)
+    else
+      searcher = SearchFiles.new(path, params, query)
+    end
+    
     @total_records = searcher.total_records
     @range = searcher.page_range
     @record_content = searcher.html_contents  + searcher.html_pagination;

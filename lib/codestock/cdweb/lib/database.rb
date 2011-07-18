@@ -48,6 +48,7 @@ module CodeStock
     end
     
     def search2(patterns, packages, fpaths, suffixs, offset = 0, limit = -1)
+      # @todo fpathを厳密に検索するには、検索結果からさらに先頭からのパスではないものを除外する
       records, total_records = searchMain(patterns, packages, fpaths, suffixs, offset, limit)
     end
 
