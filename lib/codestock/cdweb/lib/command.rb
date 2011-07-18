@@ -62,6 +62,6 @@ module CodeStock
 
   def file_or_dirimg(is_file)
     src = (is_file) ? '/images/file.png' : '/images/directory.png'
-    "<img alt='' style='vertical-align:bottom; border: 0;' src='#{src}'>"
+    "<img alt='' style='vertical-align:bottom; border: 0; margin: 1px;' src='#{src}'>"
   end
 end
