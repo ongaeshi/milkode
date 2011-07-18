@@ -126,6 +126,10 @@ EOF
   end
 
   def path_title(path)
+    (path == "") ? "root" : path
+  end
+
+  def filelist_title(path)
     (path == "") ? "Package List" : path
   end
 end

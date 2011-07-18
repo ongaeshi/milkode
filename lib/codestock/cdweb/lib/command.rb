@@ -31,9 +31,9 @@ module CodeStock
   end
 
   def search(path, params, before)
-    @title = path_title(path)
     @path = path
     query = Query.new(params[:query])
+    @title = "'#{query.query_string}' in #{path_title(path)}"
 
     if (query.keywords.size > 0)
       searcher = SearchContents.new(path, params, query)
@@ -49,7 +49,7 @@ module CodeStock
   end
 
   def filelist(path, params, before)
-    @title = path_title(path)
+    @title = filelist_title(path)
     @path = path
     fileList = Database.instance.fileList(path)
     @total_records = fileList.size
