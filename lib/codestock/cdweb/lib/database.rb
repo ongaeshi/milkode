@@ -161,7 +161,7 @@ module CodeStock
       # パッケージの条件追加
       if (packages.size > 0)
         records.delete_if do |record|
-          !packages.any?{|package| record.shortpath =~ /^#{package}/ }
+          !packages.any?{|package| record.shortpath.split('/')[0] =~ /#{package}/ }
         end
       end
 
