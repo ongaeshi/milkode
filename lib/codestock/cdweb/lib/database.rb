@@ -47,12 +47,12 @@ module CodeStock
       @documents.select.size
     end
     
-    def search2(patterns, packages, fpaths, suffixs, offset = 0, limit = -1)
+    def search(patterns, packages, fpaths, suffixs, offset = 0, limit = -1)
       # @todo fpathを厳密に検索するには、検索結果からさらに先頭からのパスではないものを除外する
       records, total_records = searchMain(patterns, packages, fpaths, suffixs, offset, limit)
     end
 
-    def selectAll2(offset = 0, limit = -1)
+    def selectAll(offset = 0, limit = -1)
       table = @documents.select
 
       # マッチ数
@@ -76,37 +76,6 @@ module CodeStock
       return records, total_records
     end
 
-    def search(patterns, packages, fpaths, suffixs, page = 0, limit = -1)
-      # 全てのパターンを検索
-      if (fpaths.include?("*"))
-        records, total_records = selectAll(page, limit)
-      else
-        records, total_records = searchMain(patterns, packages, fpaths, suffixs, page * limit, limit)
-      end
-
-      # 結果
-      return records, total_records
-    end
-
-    def selectAll(page, limit)
-      table = @documents.select
-
-      # マッチ数
-      total_records = table.size
-
-      # 2010/10/29 ongaeshi
-      # 本当はこのようにgroongaAPIでソートしたいのだが上手くいかなかった
-      #       # ファイル名順にソート
-      #       records = table.sort([{:key => "shortpath", :order => "descending"}],
-      #                            :offset => page * limit,
-      #                            :limit => limit)
-      
-      # ソート
-      records = table.records.sort_by{|record| record.shortpath.downcase }[page * limit, limit]
-
-      return records, total_records
-    end
-    
     # @sample test/test_database.rb:43 TestDatabase#t_fileList
     def fileList(base)
       base_parts = base.split("/")

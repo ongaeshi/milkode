@@ -24,9 +24,9 @@ module CodeStock
       fpaths << path unless path == ""
 
       if (fpaths.include?("*"))
-        @records, @total_records = Database.instance.selectAll2(@offset, DISP_NUM)
+        @records, @total_records = Database.instance.selectAll(@offset, DISP_NUM)
       else
-        @records, @total_records = Database.instance.search2(@q.keywords, @q.packages, fpaths, @q.suffixs, @offset, DISP_NUM)
+        @records, @total_records = Database.instance.search(@q.keywords, @q.packages, fpaths, @q.suffixs, @offset, DISP_NUM)
       end
     end
 

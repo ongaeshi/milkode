@@ -26,7 +26,7 @@ module CodeStock
       @offset = params[:offset].to_i
       fpaths = @q.fpaths
       fpaths << path unless path == ""
-      @records, @total_records, @elapsed = Database.instance.search2(@q.keywords, @q.packages, fpaths, @q.suffixs, @offset, LIMIT_NUM)
+      @records, @total_records, @elapsed = Database.instance.search(@q.keywords, @q.packages, fpaths, @q.suffixs, @offset, LIMIT_NUM)
       grep_contents
     end
 
