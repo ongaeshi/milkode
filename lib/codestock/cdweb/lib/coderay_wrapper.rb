@@ -21,11 +21,18 @@ module CodeStock
       @line_number_start = 1
     end
 
-    def set_range(content_range)
-      @content = @content.to_a[content_range]
-      @line_number_start = content_range.first + 1
+    def set_range(range)
+      content_a = @content.to_a
+      range = limit_range(range, content_a)
+      @content = content_a[range]
+      @line_number_start = range.first + 1
     end
-    
+
+    def limit_range(range, array)
+      Range.new(range.first < 0 ? 0 : range.first,
+                range.last >= array.size ? array.size - 1 : range.last)
+    end
+
     def to_html
       html = CodeRay.scan(@content, file_type).
         html(

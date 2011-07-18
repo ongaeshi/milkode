@@ -79,14 +79,10 @@ EOF
 
     def result_match_record(match_record)
       record = match_record.record
-      content_a = record.content.split("\n")
       match_line = match_record.match_line
 
       first_index = match_line.index - NTH
-      first_index = 0 if first_index < 0
-
       last_index = match_line.index + NTH
-      last_index = content_a.size-1 if last_index >= content_a.size
 
       coderay = CodeRayWrapper.new(record.content, record.shortpath, [match_line])
       coderay.set_range(first_index..last_index)
