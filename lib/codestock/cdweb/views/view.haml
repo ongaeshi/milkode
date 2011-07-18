@@ -2,6 +2,7 @@
   %h1
     <a href="/"><img src="/images/gren-icon-mini.png" alt="gren-icon" border="0"/></a>
     CodeStock
+    = create_headmenu(@path, params)
 
 .content
   = create_form(@path, params[:query], params[:shead])

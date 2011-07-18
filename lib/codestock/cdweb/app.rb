@@ -99,6 +99,16 @@ EOF
     "<input name='shead' type='radio' value='#{value}' #{str}/>"
   end
 
+  def create_headmenu(path, query)
+    # href = "#{request.path_info}?'#{request.query_string}"
+    # href = '/home/rack-1.3.0/lib/rack/handler/cgi.rb?shead=directory'
+    href = Mkurl.new('/home/' + path, params).inherit_query_shead
+    <<EOF
+    <a href="/home" class="headmenu">全てのパッケージ</a>
+    <a href="#{href}" class="headmenu" onclick="window.open('#{href}'); return false;">新しい検索</a>
+EOF
+  end
+
   def topic_path(path, params)
     href = '/home'
     path.split('/').map {|v|

@@ -63,3 +63,9 @@ span.highlight-line {
    background-color: #d0ff9c;
 /*     background-color: #FFFF55; */
 }
+
+a.headmenu {
+    font-size: 40%;
+    font-weight: normal;
+}
+
