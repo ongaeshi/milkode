@@ -7,10 +7,8 @@
 
 module CodeStock
   class Grep
-    attr_reader :content
-    
     def initialize(content)
-      @content = content ? content.split("\n") : []
+      @content = content
     end
 
     MatchLineResult = Struct.new(:index, :match_datas)
@@ -18,68 +16,38 @@ module CodeStock
     def match_lines_and(patterns)
       result = []
       patternRegexps = strs2regs(patterns, true)
+      index = 0
       
-      @content.each_with_index do |line, index|
+      @content.each_line do |line|
         match_datas = []
         patternRegexps.each {|v| match_datas << v.match(line)}
 
         if (match_datas.all?)
           result << MatchLineResult.new(index, match_datas)
         end
+
+        index += 1
       end
       
       result
     end
 
     def one_match_and(patterns)
-      result = []
       patternRegexps = strs2regs(patterns, true)
+      index = 0
       
-      @content.each_with_index do |line, index|
-        match_datas = []
-        patternRegexps.each {|v| match_datas << v.match(line)}
-
-        if (match_datas.all?)
-          result << MatchLineResult.new(index, match_datas)
-          break
-        end
-      end
-      
-      result
-    end
-
-    def one_match_and2(patterns)
-      patternRegexps = strs2regs(patterns, true)
-      
-      @content.each_with_index do |line, index|
+      @content.each_line do |line|
         match_datas = []
         patternRegexps.each {|v| match_datas << v.match(line)}
 
         if (match_datas.all?)
           return MatchLineResult.new(index, match_datas)
         end
+
+        index += 1
       end
       
       nil
-    end
-
-    def match_lines_or(patterns)
-      result = []
-      patternRegexps = strs2regs(patterns, true)
-      
-      @content.each_with_index do |line, index|
-        match_datas = []
-        patternRegexps.each {|v| match_datas << v.match(line)}
-
-        if (match_datas.any?)
-          result << MatchLineResult.new(index, match_datas)
-        end
-      end
-      
-      result
-    end
-
-    def context(result, num)
     end
 
     private

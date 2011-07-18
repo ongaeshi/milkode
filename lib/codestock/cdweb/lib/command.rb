@@ -7,7 +7,6 @@
 
 require 'codestock/cdweb/lib/database'
 require 'codestock/cdweb/lib/coderay_wrapper'
-require 'codestock/cdweb/lib/searcher'
 require 'codestock/cdweb/lib/search_contents'
 require 'codestock/cdweb/lib/search_files'
 require 'codestock/cdweb/lib/mkurl'

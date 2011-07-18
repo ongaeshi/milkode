@@ -67,7 +67,7 @@ EOF
       
       @records.each_with_index do |record, index|
         grep = Grep.new(record.content)
-        match_line = grep.one_match_and2(@q.keywords)
+        match_line = grep.one_match_and(@q.keywords)
         @match_records << MatchRecord.new(record, match_line) if match_line
 
         if @match_records.size > DISP_NUM
