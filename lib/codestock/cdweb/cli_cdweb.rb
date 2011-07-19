@@ -3,6 +3,7 @@ require 'rubygems'
 require 'rack'
 require 'launchy'
 require 'optparse'
+require 'codestock/cdweb/lib/database'
 
 module Rack
   class Server
@@ -64,7 +65,8 @@ module CodeStock
         :config      => "config.ru",
         # ----------------------------
         :server      => "thin",
-        :LaunchBrowser => true
+        :LaunchBrowser => true,
+        :DbDir => select_dbdir,
       }
 
       opts = OptionParser.new("#{File.basename($0)}")
@@ -74,11 +76,22 @@ module CodeStock
       opts.on('-n', '--no-browser', 'No launch browser.') {|v| options[:LaunchBrowser] = false }
       opts.parse!(argv)
       
+      # 使用するデータベースの位置設定
+      Database.setup(File.expand_path(options[:DbDir]))
+
       # サーバースクリプトのある場所へ移動
       FileUtils.cd(File.dirname(__FILE__))
 
       # Rackサーバー起動
       Rack::Server.start(options)
+    end
+
+    def self.select_dbdir
+      if (dbdir?('.') || !dbdir?(db_default_dir))
+        '.'
+      else
+        db_default_dir
+      end
     end
   end
 end
