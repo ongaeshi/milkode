@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{codestock}
-  s.version = "0.1.1"
+  s.version = "0.1.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ongaeshi"]
-  s.date = %q{2011-06-08}
+  s.date = %q{2011-07-20}
   s.description = %q{longer description of your gem}
   s.email = %q{ongaeshi0621@gmail.com}
   s.executables = ["cdweb", "cdv", "cdstk", "cdview"]
@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
     ".document",
     "Gemfile",
     "Gemfile.lock",
+    "HISTORY.rdoc",
     "LICENSE.txt",
     "README.rdoc",
     "Rakefile",
@@ -30,7 +31,34 @@ Gem::Specification.new do |s|
     "bin/cdview",
     "bin/cdweb",
     "codestock.gemspec",
+    "lib/cdstk/cdstk.rb",
+    "lib/cdstk/cdstk_yaml.rb",
+    "lib/cdstk/cli_cdstk.rb",
+    "lib/cdview/cli_cdview.rb",
     "lib/codestock.rb",
+    "lib/codestock/cdweb/app.rb",
+    "lib/codestock/cdweb/cli_cdweb.rb",
+    "lib/codestock/cdweb/config.ru",
+    "lib/codestock/cdweb/lib/coderay_wrapper.rb",
+    "lib/codestock/cdweb/lib/command.rb",
+    "lib/codestock/cdweb/lib/database.rb",
+    "lib/codestock/cdweb/lib/grep.rb",
+    "lib/codestock/cdweb/lib/mkurl.rb",
+    "lib/codestock/cdweb/lib/query.rb",
+    "lib/codestock/cdweb/lib/search_contents.rb",
+    "lib/codestock/cdweb/lib/search_files.rb",
+    "lib/codestock/cdweb/public/css/coderay.css",
+    "lib/codestock/cdweb/public/css/gren.css",
+    "lib/codestock/cdweb/public/images/directory.png",
+    "lib/codestock/cdweb/public/images/file.png",
+    "lib/codestock/cdweb/public/images/gren-icon-mini.png",
+    "lib/codestock/cdweb/public/images/gren-icon.png",
+    "lib/codestock/cdweb/views/filelist.haml",
+    "lib/codestock/cdweb/views/help.haml",
+    "lib/codestock/cdweb/views/index.haml",
+    "lib/codestock/cdweb/views/layout.haml",
+    "lib/codestock/cdweb/views/search.haml",
+    "lib/codestock/cdweb/views/view.haml",
     "lib/common/dbdir.rb",
     "lib/common/display_util.rb",
     "lib/common/grenfiletest.rb",
@@ -40,15 +68,21 @@ Gem::Specification.new do |s|
     "lib/common/util.rb",
     "lib/findgrep/findgrep.rb",
     "lib/findgrep/result.rb",
+    "test/file_assert.rb",
     "test/file_test_utils.rb",
+    "test/rake_test_loader.rb",
     "test/runner.rb",
+    "test/test_bin_exec.rb",
+    "test/test_cdstk.rb",
+    "test/test_cdstk_yaml.rb",
+    "test/test_coderay_wrapper.rb",
+    "test/test_coderay_wrapper_data.rb",
+    "test/test_database.rb",
     "test/test_dbdir.rb",
     "test/test_gren_util.rb",
-    "test/test_grenweb_database.rb",
-    "test/test_grenweb_html_renderer.rb",
-    "test/test_grenweb_query.rb",
-    "test/test_grenweb_searcher.rb",
     "test/test_helper.rb",
+    "test/test_mkurl.rb",
+    "test/test_query.rb",
     "test/test_string_snip.rb"
   ]
   s.homepage = %q{http://github.com/ongaeshi/codestock}
@@ -57,15 +91,21 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.6}
   s.summary = %q{one-line summary of your gem}
   s.test_files = [
+    "test/file_assert.rb",
     "test/file_test_utils.rb",
+    "test/rake_test_loader.rb",
     "test/runner.rb",
+    "test/test_bin_exec.rb",
+    "test/test_cdstk.rb",
+    "test/test_cdstk_yaml.rb",
+    "test/test_coderay_wrapper.rb",
+    "test/test_coderay_wrapper_data.rb",
+    "test/test_database.rb",
     "test/test_dbdir.rb",
     "test/test_gren_util.rb",
-    "test/test_grenweb_database.rb",
-    "test/test_grenweb_html_renderer.rb",
-    "test/test_grenweb_query.rb",
-    "test/test_grenweb_searcher.rb",
     "test/test_helper.rb",
+    "test/test_mkurl.rb",
+    "test/test_query.rb",
     "test/test_string_snip.rb"
   ]
 
@@ -81,6 +121,8 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<rroonga>, [">= 1.0.0"])
       s.add_runtime_dependency(%q<rack>, [">= 1.2.1"])
       s.add_runtime_dependency(%q<launchy>, [">= 0.3.7"])
+      s.add_runtime_dependency(%q<coderay>, [">= 0.9.8"])
+      s.add_runtime_dependency(%q<thin>, [">= 1.2.10"])
     else
       s.add_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
@@ -89,6 +131,8 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rroonga>, [">= 1.0.0"])
       s.add_dependency(%q<rack>, [">= 1.2.1"])
       s.add_dependency(%q<launchy>, [">= 0.3.7"])
+      s.add_dependency(%q<coderay>, [">= 0.9.8"])
+      s.add_dependency(%q<thin>, [">= 1.2.10"])
     end
   else
     s.add_dependency(%q<bundler>, ["~> 1.0.0"])
@@ -98,6 +142,8 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<rroonga>, [">= 1.0.0"])
     s.add_dependency(%q<rack>, [">= 1.2.1"])
     s.add_dependency(%q<launchy>, [">= 0.3.7"])
+    s.add_dependency(%q<coderay>, [">= 0.9.8"])
+    s.add_dependency(%q<thin>, [">= 1.2.10"])
   end
 end
 
