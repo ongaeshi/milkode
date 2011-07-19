@@ -17,18 +17,36 @@ module CodeStock
   class TestDatabase < Test::Unit::TestCase
     include FileTestUtils
 
-    def test_setup_and_open
+    def setup_db
+      # データベース作成
       io = StringIO.new
       obj = Cdstk.new(io)
       obj.init
+      obj.add('../../test')
+      obj.add('../../lib')
+      # puts io.string
 
+      # データベースのセットアップ
       Database.setup('.')
+    end
+
+    def test_database
+      setup_db
+      t_open
+      t_fileList
+    end
+
+    def t_open
       Database.instance
     end
 
-    def teardown
-      teardown_custom(true)
-      #    teardown_custom(false)
+    def t_fileList
+      db = Database.instance
+      assert_equal [['test', false], ['lib', false]], db.fileList('')
+      assert db.fileList('test').include? ['test/test_database.rb', true]
+      assert_equal ['lib/cdstk', false],              db.fileList('lib')[0]
+      assert_equal ['lib/cdstk/cdstk.rb', true],      db.fileList('lib/cdstk')[0]
+      assert_equal nil,                               db.fileList('lib/cdstk/cdstk.rb')[0]
     end
   end
 end

@@ -4,7 +4,7 @@
 #  Copyright (c) 2010. All rights reserved.
 
 require 'rubygems'
-require 'cdweb/cli_cdweb'
+require 'codestock/cdweb/cli_cdweb'
 
-Version = "0.1.0"
+Version = "0.1.3"
 CodeStock::CLI_Cdweb.execute(STDOUT, ARGV)

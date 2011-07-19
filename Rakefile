@@ -27,6 +27,7 @@ Jeweler::Tasks.new do |gem|
   gem.add_runtime_dependency 'rack','>=1.2.1'
   gem.add_runtime_dependency 'launchy', '>=0.3.7'
   gem.add_runtime_dependency 'coderay', '>=0.9.8'
+  gem.add_runtime_dependency 'thin', '>=1.2.10'
 
   # and development dependencies are only needed for development (ie running rake tasks, tests, etc)
   #  gem.add_development_dependency 'rspec', '> 1.2.3'

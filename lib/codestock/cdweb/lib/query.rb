@@ -9,7 +9,9 @@ require 'rubygems'
 require 'rack'
 
 module CodeStock
-  class Query2
+  class Query
+    attr_reader :query_string
+
     OPTIONS = [
                ['package',  'p'],
                ['filepath', 'fpath', 'f'],

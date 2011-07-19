@@ -16,13 +16,14 @@ module CodeStock
   class Database
     include Singleton
 
+    @@db_dir = nil
+
     def self.setup(db_dir)
       @@db_dir = db_dir
     end
 
     def initialize
-      #      open(@@db_dir)
-      open(db_default_dir)
+      open(@@db_dir || db_default_dir)
     end
 
     def open(db_dir)
@@ -38,34 +39,20 @@ module CodeStock
     end
 
     def record(shortpath)
-      before = Time.now
       table = @documents.select { |record| record.shortpath == shortpath }
-      elapsed = Time.now - before
-      return table.records[0], elapsed
+      return table.records[0]
     end
 
     def fileNum
       @documents.select.size
     end
-
-    def search(patterns, packages, fpaths, suffixs, page = 0, limit = -1)
-      before = Time.now
-
-      # 全てのパターンを検索
-      if (fpaths.include?("*"))
-        records, total_records = selectAll(page, limit)
-      else
-        records, total_records = searchMain(patterns, packages, fpaths, suffixs, page, limit)
-      end
-      
-      # 検索にかかった時間
-      elapsed = Time.now - before
-
-      # 結果
-      return records, total_records, elapsed
+    
+    def search(patterns, packages, fpaths, suffixs, offset = 0, limit = -1)
+      # @todo fpathを厳密に検索するには、検索結果からさらに先頭からのパスではないものを除外する
+      records, total_records = searchMain(patterns, packages, fpaths, suffixs, offset, limit)
     end
 
-    def selectAll(page, limit)
+    def selectAll(offset = 0, limit = -1)
       table = @documents.select
 
       # マッチ数
@@ -79,12 +66,45 @@ module CodeStock
       #                            :limit => limit)
       
       # ソート
-      records = table.records.sort_by{|record| record.shortpath.downcase }[page * limit, limit]
+      if (limit != -1)
+        records = table.records.sort_by{|record| record.shortpath.downcase }[offset, limit]
+      else
+        records = table.records.sort_by{|record| record.shortpath.downcase }[offset..limit]
+      end
+        
 
       return records, total_records
     end
 
-    def searchMain(patterns, packages, fpaths, suffixs, page, limit)
+    # @sample test/test_database.rb:43 TestDatabase#t_fileList
+    def fileList(base)
+      base_parts = base.split("/")
+      base_depth = base_parts.length
+      
+      # shortpathにマッチするものだけに絞り込む
+      if (base == "")
+        records = @documents.select.records
+      else
+        records = @documents.select {|record| record.shortpath =~ base }.to_a
+      end
+
+      # ファイルリストの生成
+      paths = records.map {|record|
+        record.shortpath.split("/")
+      }.find_all {|parts|
+        parts.length > base_depth and parts[0, base_depth] == base_parts
+      }.map {|parts|
+        is_file = parts.length == base_depth + 1
+        path = parts[0, base_depth + 1].join("/")
+        [path, is_file]
+      }.uniq
+      
+      paths
+    end
+
+    private 
+
+    def searchMain(patterns, packages, fpaths, suffixs, offset, limit)
       table = @documents.select do |record|
         expression = nil
 
@@ -132,15 +152,22 @@ module CodeStock
         expression
       end
 
-      # マッチ数
-      total_records = table.size
-      
       # スコアとタイムスタンプでソート
       records = table.sort([{:key => "_score", :order => "descending"},
                             {:key => "timestamp", :order => "descending"}],
-                           :offset => page * limit,
+                           :offset => offset,
                            :limit => limit)
+      
+      # パッケージの条件追加
+      if (packages.size > 0)
+        records.delete_if do |record|
+          !packages.any?{|package| record.shortpath.split('/')[0] =~ /#{package}/ }
+        end
+      end
 
+      # マッチ数
+      total_records = records.size
+      
       return records, total_records
     end
     private :searchMain
