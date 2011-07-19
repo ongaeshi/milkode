@@ -6,7 +6,7 @@
 # @date   2011/02/20
 
 require 'test_helper'
-require 'cdstk/cdstk_yaml.rb'
+require 'codestock/cdstk/cdstk_yaml.rb'
 require 'fileutils'
 
 class TestCdstkYaml < Test::Unit::TestCase

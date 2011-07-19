@@ -10,7 +10,7 @@ require 'groonga'
 require 'test_helper' 
 require 'file_test_utils'
 require 'stringio'
-require 'cdstk/cdstk'
+require 'codestock/cdstk/cdstk'
 require 'codestock/cdweb/lib/database'
 
 module CodeStock
@@ -44,9 +44,9 @@ module CodeStock
       db = Database.instance
       assert_equal [['test', false], ['lib', false]], db.fileList('')
       assert db.fileList('test').include? ['test/test_database.rb', true]
-      assert_equal ['lib/cdstk', false],              db.fileList('lib')[0]
-      assert_equal ['lib/cdstk/cdstk.rb', true],      db.fileList('lib/cdstk')[0]
-      assert_equal nil,                               db.fileList('lib/cdstk/cdstk.rb')[0]
+      assert_equal ['lib/codestock', false],              db.fileList('lib')[0]
+      assert_equal ['lib/codestock/cdstk/cdstk.rb', true],      db.fileList('lib/codestock/cdstk')[0]
+      assert_equal nil,                               db.fileList('lib/codestock/cdstk/cdstk.rb')[0]
     end
   end
 end

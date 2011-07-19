@@ -9,8 +9,8 @@ require 'rubygems'
 require 'groonga'
 require 'test_helper'
 require 'file_test_utils'
-require 'cdstk/cli_cdstk.rb'
-require 'cdstk/cdstk'
+require 'codestock/cdstk/cli_cdstk.rb'
+require 'codestock/cdstk/cdstk'
 require 'stringio'
 
 class TestCdstk < Test::Unit::TestCase
@@ -53,7 +53,7 @@ EOF
      
      # Cdstk#add
      io.string = ""
-     obj.add('../../lib/findgrep', '../../lib/common')
+     obj.add('../../lib/codestock/findgrep', '../../lib/codestock/common')
      assert_match /add_file\s+:\s+.*findgrep.rb/, io.string
      assert_match /add_file\s+:\s+.*grenfiletest.rb/, io.string
 
@@ -92,7 +92,7 @@ EOF
      
      # Cdstk#add
      io.string = ""
-     obj.add('../../lib/findgrep', '../../lib/common')
+     obj.add('../../lib/codestock/findgrep', '../../lib/codestock/common')
      assert_match /add_file\s+:\s+.*findgrep.rb/, io.string
      assert_match /add_file\s+:\s+.*grenfiletest.rb/, io.string
 

@@ -6,9 +6,9 @@ require 'rubygems'
 require 'groonga'
 require 'fileutils'
 require 'pathname'
-require 'cdstk/cdstk_yaml'
-require 'common/grenfiletest'
-require 'common/util'
+require 'codestock/cdstk/cdstk_yaml'
+require 'codestock/common/grenfiletest'
+require 'codestock/common/util'
 include CodeStock
 require 'kconv'
 

@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 require 'find'
-require 'findgrep/result'
+require 'codestock/findgrep/result'
 require 'rubygems'
 require 'termcolor'
 require 'kconv'
-require 'common/platform'
-require 'common/grenfiletest'
-require 'common/grensnip'
+require 'codestock/common/platform'
+require 'codestock/common/grenfiletest'
+require 'codestock/common/grensnip'
 require 'groonga'
-require 'common/util'
+require 'codestock/common/util'
 include Gren
 require 'cgi'
 

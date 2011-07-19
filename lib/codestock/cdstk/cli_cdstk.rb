@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 require 'optparse'
-require 'cdstk/cdstk'
-require 'common/dbdir.rb'
+require 'codestock/cdstk/cdstk'
+require 'codestock/common/dbdir.rb'
 include CodeStock
 
 module CodeStock

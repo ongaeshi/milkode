@@ -7,8 +7,8 @@
 
 require 'rubygems'
 require 'test/unit'
-require 'cdstk/cli_cdstk'
-require 'cdview/cli_cdview'
+require 'codestock/cdstk/cli_cdstk'
+require 'codestock/cdview/cli_cdview'
 require 'cdweb/cli_cdweb'
 
 class TestBinExec < Test::Unit::TestCase

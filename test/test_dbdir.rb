@@ -7,7 +7,7 @@
 
 require 'rubygems'
 require 'test_helper'
-require 'common/dbdir'
+require 'codestock/common/dbdir'
 require 'file_test_utils'
 
 class TestDbDir< Test::Unit::TestCase

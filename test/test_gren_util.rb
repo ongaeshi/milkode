@@ -1,6 +1,6 @@
 require 'test_helper'
-require 'common/util'
-require 'common/grensnip'
+require 'codestock/common/util'
+require 'codestock/common/grensnip'
 
 class TestGrenSnip < Test::Unit::TestCase
   def setup
