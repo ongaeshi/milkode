@@ -86,8 +86,8 @@ module CodeStock
       # @todo 削除したコンテンツをインデックスから削除
     end
 
-    def list
-      @out.puts yaml_load.list
+    def list(args, is_verbose)
+      @out.puts yaml_load.list(CdstkYaml::Query.new(args), is_verbose)
     end
 
     def rebuild

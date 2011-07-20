@@ -112,13 +112,13 @@ EOF
     
     io.string = ""
     CLI_Cdstk.execute(io, ["list"])
-    assert_match /dummy\/bar/, io.string
+    assert_match /bar/, io.string
     assert_match /foo/, io.string
 
     CLI_Cdstk.execute(io, ["remove", "foo"])
     io.string = ""
     CLI_Cdstk.execute(io, ["list"])
-    assert_match /dummy\/bar/, io.string
+    assert_match /bar/, io.string
     assert_no_match /foo/, io.string
 
     CLI_Cdstk.execute(io, ["update"])

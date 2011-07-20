@@ -101,6 +101,38 @@ contents:
 - directory: dir4
 EOF
   end
+
+  def test_query
+    d = 'directory'
+    
+    contents = [{d => 'key'}, {d => 'keyword'}, {d => 'not'}]
+
+    query = CdstkYaml::Query.new(['key'])
+    assert_equal [{d => 'key'}, {d => 'keyword'}], query.select(contents)
+
+    query = CdstkYaml::Query.new(['word'])
+    assert_equal [{d => 'keyword'}], query.select(contents)
+
+    contents = [{d => 'a/dir'}, {d => 'b/dia'}]
+    query = CdstkYaml::Query.new(['a'])
+    assert_equal [{d => 'b/dia'}], query.select(contents) # ディレクトリ名は含めない
+  end
+
+  def test_list
+    src = <<EOF
+version: 0.1
+contents: 
+- directory: /a/dir1
+- directory: /b/dir4
+EOF
+
+    yaml = CdstkYaml.new('dummy.yaml', YAML.load(src))
+    assert_equal ['dir1', 'dir4'], yaml.list
+    assert_equal ['/a/dir1', '/b/dir4'], yaml.list(nil, true)
+    assert_equal ['dir4'], yaml.list(CdstkYaml::Query.new(['4']), false)
+    assert_equal [], yaml.list(CdstkYaml::Query.new(['a']), true)
+    assert_equal ['dir1', 'dir4'], yaml.list(CdstkYaml::Query.new([]))
+  end
   
   def teardown
     FileUtils.cd(@prev_dir)

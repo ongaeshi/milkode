@@ -32,13 +32,18 @@ module CodeStock
       end
     end
 
+    def initialize(yaml_file, data)
+      @yaml_file = yaml_file
+      @data = data
+    end
+
     def add(*dirs)
-      contents.push(*dirs.map{|v|{"directory" => v}})
+      contents.push(*dirs.map{|v|{'directory' => v}})
       contents.uniq!
     end
 
     def remove(*dirs)
-      dirs.each {|f| contents.delete( {"directory" => f} ) }
+      dirs.each {|f| contents.delete( {'directory' => f} ) }
     end
 
     def save
@@ -50,27 +55,41 @@ module CodeStock
     end
 
     def directorys
-      contents.map{|v|v["directory"]}
+      contents.map{|v|v['directory']}
     end
 
     def version
       @data['version']
     end
 
-    def list
-      directorys
+    def list(query = nil, is_verbose = false)
+      r = query ? query.select(contents) : contents
+
+      if (is_verbose)
+        r.map{|v| v['directory']}
+      else
+        r.map{|v| File.basename v['directory']}
+      end
     end
 
     def self.yaml_file(path)
       (Pathname.new(path) + 'grendb.yaml').to_s
     end
 
-    private
+    class Query
+      def initialize(keywords)
+        @keywords = keywords
+      end
 
-    def initialize(yaml_file, data)
-      @yaml_file = yaml_file
-      @data = data
+      def select(contents)
+        if @keywords.empty?
+          contents
+        else
+          contents.find_all do |v|
+            @keywords.any? {|s| File.basename(v['directory']).include? s }
+          end
+        end
+      end
     end
-
   end
 end
