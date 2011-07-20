@@ -55,7 +55,7 @@ EOF
         when 'add'
           obj.add *arguments
         when 'remove'
-          obj.remove *arguments
+          obj.remove arguments
         when 'list'
           obj.list(arguments, list_options[:verbose])
         when 'rebuild'

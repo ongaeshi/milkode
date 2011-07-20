@@ -42,8 +42,9 @@ module CodeStock
       contents.uniq!
     end
 
-    def remove(*dirs)
-      dirs.each {|f| contents.delete( {'directory' => f} ) }
+    def remove(query)
+      r = query.select(contents)
+      r.each {|v| contents.delete v}
     end
 
     def save
@@ -82,12 +83,8 @@ module CodeStock
       end
 
       def select(contents)
-        if @keywords.empty?
-          contents
-        else
-          contents.find_all do |v|
-            @keywords.any? {|s| File.basename(v['directory']).include? s }
-          end
+        contents.find_all do |v|
+          @keywords.any? {|s| File.basename(v['directory']).include? s }
         end
       end
     end

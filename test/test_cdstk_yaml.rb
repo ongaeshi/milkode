@@ -45,8 +45,8 @@ class TestCdstkYaml < Test::Unit::TestCase
 
     # remove
     yaml.add('dir2', 'dir4', 'dir5')
-    yaml.remove('dir5')
-    yaml.remove('dir2', 'dir3')
+    yaml.remove(CdstkYaml::Query.new ['dir5'])
+    yaml.remove(CdstkYaml::Query.new ['dir2', 'dir3'])
     assert_equal ['dir1', 'dir4'], yaml.directorys
 
     # save
@@ -87,8 +87,8 @@ EOF
 
     # remove
     yaml.add('dir2', 'dir4', 'dir5')
-    yaml.remove('dir5')
-    yaml.remove('dir2', 'dir3')
+    yaml.remove(CdstkYaml::Query.new ['dir5'])
+    yaml.remove(CdstkYaml::Query.new ['dir2', 'dir3'])
     assert_equal ['dir1', 'dir4'], yaml.directorys
 
     # save
@@ -131,7 +131,35 @@ EOF
     assert_equal ['/a/dir1', '/b/dir4'], yaml.list(nil, true)
     assert_equal ['dir4'], yaml.list(CdstkYaml::Query.new(['4']), false)
     assert_equal [], yaml.list(CdstkYaml::Query.new(['a']), true)
-    assert_equal ['dir1', 'dir4'], yaml.list(CdstkYaml::Query.new([]))
+    assert_equal ['dir1', 'dir4'], yaml.list(nil)
+  end
+
+  def test_remove
+    src = <<EOF
+version: 0.1
+contents: 
+- directory: /a/dir1
+- directory: /b/dir4
+EOF
+
+    yaml = CdstkYaml.new('dummy.yaml', YAML.load(src))
+
+    yaml.remove(CdstkYaml::Query.new(['dir4']))
+    assert_equal ['dir1'], yaml.list
+
+    yaml.remove(CdstkYaml::Query.new(['dir1']))
+    assert_equal [], yaml.list
+
+    # ---
+
+    yaml = CdstkYaml.new('dummy.yaml', YAML.load(src))
+
+    yaml.remove(CdstkYaml::Query.new(['dir1']))
+    assert_equal ['dir4'], yaml.list
+
+    yaml.remove(CdstkYaml::Query.new([]))
+    assert_equal ['dir4'], yaml.list
+
   end
   
   def teardown

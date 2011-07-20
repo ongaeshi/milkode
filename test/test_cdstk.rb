@@ -41,14 +41,10 @@ EOF
      # Cdstk#add, remove
      obj.add('test1.html', 'test2.html')
 
-     f1 = File.expand_path 'test1.html'
-     f2 = File.expand_path 'test2.html'
-
-     assert_equal [f1, f2], CdstkYaml.load.directorys
      assert_match /WARNING.*test1.html/, io.string
      assert_match /WARNING.*test2.html/, io.string
 
-     obj.remove(f1, f2)
+     obj.remove(['test1.html', 'test2.html'])
      assert_equal [], CdstkYaml.load.directorys
      
      # Cdstk#add
@@ -81,13 +77,10 @@ EOF
      # Cdstk#add, remove
      obj.add('test1.html', 'test2.html')
 
-     f1 = File.expand_path 'test1.html'
-     f2 = File.expand_path 'test2.html'
-     assert_equal [f1, f2], CdstkYaml.load('other_path').directorys
      assert_match /WARNING.*test1.html/, io.string
      assert_match /WARNING.*test2.html/, io.string
 
-     obj.remove(f1, f2)
+     obj.remove(['test1.html', 'test2.html'])
      assert_equal [], CdstkYaml.load('other_path').directorys
      
      # Cdstk#add
