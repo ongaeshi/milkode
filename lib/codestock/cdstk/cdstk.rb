@@ -11,6 +11,7 @@ require 'codestock/common/grenfiletest'
 require 'codestock/common/util'
 include CodeStock
 require 'kconv'
+require 'readline'
 
 module CodeStock
   class Cdstk
@@ -74,13 +75,36 @@ module CodeStock
       end
     end
 
-    def remove(args)
-      # YAML更新
+    def remove(args, is_force)
       yaml = yaml_load
-      yaml.remove(CdstkYaml::Query.new(args))
-      yaml.save
+      query = CdstkYaml::Query.new(args)
+      
+      remove_list = yaml_load.list(query, false)
+      return if remove_list.empty?
 
-      # @todo 削除したコンテンツをインデックスから削除
+      @out.puts remove_list
+      
+      if is_force or yes_or_no("Remove #{remove_list.size} contents? (yes/no)")
+        yaml.remove(CdstkYaml::Query.new(args))
+        yaml.save
+
+        # @todo 削除したコンテンツをインデックスから削除
+
+        @out.puts '.....removed.'
+      end
+    end
+
+    def yes_or_no(msg)
+      @out.puts msg
+      while buf = Readline.readline("> ")
+        case buf
+        when 'yes'
+          return true
+        when 'no'
+          break
+        end
+      end
+      return false
     end
 
     def list(args, is_verbose)

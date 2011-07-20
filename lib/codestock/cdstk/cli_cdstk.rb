@@ -28,7 +28,10 @@ EOF
       
       subopt['update'] = OptionParser.new("#{File.basename($0)} update")
       subopt['add'] = OptionParser.new("#{File.basename($0)} add content1 [content2 ...]")
+
+      remove_options = {:force => false}
       subopt['remove'] = OptionParser.new("#{File.basename($0)} remove content1 [content2 ...]")
+      subopt['remove'].on('-f', '--force', 'Force remove.') { remove_options[:force] = true }
 
       list_options = {:verbose => false}
       subopt['list'] = OptionParser.new("#{File.basename($0)} list content1 [content2 ...]")
@@ -55,7 +58,7 @@ EOF
         when 'add'
           obj.add *arguments
         when 'remove'
-          obj.remove arguments
+          obj.remove(arguments, remove_options[:force])
         when 'list'
           obj.list(arguments, list_options[:verbose])
         when 'rebuild'
