@@ -145,6 +145,7 @@ module CodeStock
         @out.puts "content :", record.content ? record.content[0..64] : nil
         @out.puts
       end
+      @out.puts "total #{records.size} record."
     end
 
     private
