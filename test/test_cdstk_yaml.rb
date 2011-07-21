@@ -127,11 +127,10 @@ contents:
 EOF
 
     yaml = CdstkYaml.new('dummy.yaml', YAML.load(src))
-    assert_equal ['dir1', 'dir4'], yaml.list
-    assert_equal ['/a/dir1', '/b/dir4'], yaml.list(nil, true)
-    assert_equal ['dir4'], yaml.list(CdstkYaml::Query.new(['4']), false)
-    assert_equal [], yaml.list(CdstkYaml::Query.new(['a']), true)
-    assert_equal ['dir1', 'dir4'], yaml.list(nil)
+    assert_equal [{"directory"=>"/a/dir1"}, {"directory"=>"/b/dir4"}], yaml.list
+    assert_equal [{"directory"=>"/b/dir4"}], yaml.list(CdstkYaml::Query.new(['4']))
+    assert_equal [], yaml.list(CdstkYaml::Query.new(['a']))
+    assert_equal [{"directory"=>"/a/dir1"}, {"directory"=>"/b/dir4"}], yaml.list(nil)
   end
 
   def test_remove
@@ -145,7 +144,7 @@ EOF
     yaml = CdstkYaml.new('dummy.yaml', YAML.load(src))
 
     yaml.remove(CdstkYaml::Query.new(['dir4']))
-    assert_equal ['dir1'], yaml.list
+    assert_equal [{"directory"=>"/a/dir1"}], yaml.list
 
     yaml.remove(CdstkYaml::Query.new(['dir1']))
     assert_equal [], yaml.list
@@ -155,10 +154,10 @@ EOF
     yaml = CdstkYaml.new('dummy.yaml', YAML.load(src))
 
     yaml.remove(CdstkYaml::Query.new(['dir1']))
-    assert_equal ['dir4'], yaml.list
+    assert_equal [{"directory"=>"/b/dir4"}], yaml.list
 
     yaml.remove(CdstkYaml::Query.new([]))
-    assert_equal ['dir4'], yaml.list
+    assert_equal [{"directory"=>"/b/dir4"}], yaml.list
 
   end
   

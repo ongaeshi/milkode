@@ -79,10 +79,10 @@ module CodeStock
       yaml = yaml_load
       query = CdstkYaml::Query.new(args)
       
-      remove_list = yaml_load.list(query, false)
+      remove_list = yaml_load.list(query)
       return if remove_list.empty?
-
-      @out.puts remove_list
+      
+      list(args, true)
       
       if is_force or yes_or_no("Remove #{remove_list.size} contents? (yes/no)")
         yaml.remove(CdstkYaml::Query.new(args))
@@ -108,11 +108,21 @@ module CodeStock
     end
 
     def list(args, is_verbose)
-      if (args.empty?)
-        @out.puts yaml_load.list(nil, is_verbose)
-      else
-        @out.puts yaml_load.list(CdstkYaml::Query.new(args), is_verbose)
-      end
+      query = (args.empty?) ? nil : CdstkYaml::Query.new(args)
+      a = yaml_load.list(query).map {|v| [File.basename(v['directory']), v['directory']] }
+      max = a.map{|v|v[0].length}.max
+      str = a.sort_by {|v|
+        v[0]
+      }.map {|v|
+        h = File.exist?(v[1]) ? '' : '? '
+        if (is_verbose)
+          "#{(h + v[0]).ljust(max+2)} #{v[1]}"
+        else
+          "#{h}#{v[0]}"
+        end
+      }.join("\n")
+
+      @out.puts  str
     end
 
     def rebuild

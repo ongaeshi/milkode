@@ -63,14 +63,8 @@ module CodeStock
       @data['version']
     end
 
-    def list(query = nil, is_verbose = false)
-      r = query ? query.select(contents) : contents
-
-      if (is_verbose)
-        r.map{|v| v['directory']}
-      else
-        r.map{|v| File.basename v['directory']}
-      end
+    def list(query = nil)
+      query ? query.select(contents) : contents
     end
 
     def self.yaml_file(path)
