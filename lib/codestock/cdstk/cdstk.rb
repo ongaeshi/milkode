@@ -340,7 +340,7 @@ module CodeStock
           unless ignoreFile?(fpath)
             db_add_file(stdout, fpath, shortpath)
             @file_count += 1
-            @out.puts "file_count : #{@file_count}" if (@file_count % 100 == 0)
+            # @out.puts "file_count : #{@file_count}" if (@file_count % 100 == 0)
           end
         end          
       end
