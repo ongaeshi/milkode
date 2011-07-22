@@ -13,10 +13,10 @@ module CodeStock
 The most commonly used #{File.basename($0)} are:
   init        Init db.
   update      Update db.
-  add         Add contents. (ex. ~/Documents/cdstock, git://github.com/ongaeshi/cdstock.git)
+  add         Add contents.
   remove      Remove contents.
-  list        List all contents. 
-  cleanup     Clean up garbage record and contents.
+  list        List contents. 
+  cleanup     Cleanup garbage (record, contents).
   rebuild     Rebuild db.
   dump        Dump database contents.
 EOF
