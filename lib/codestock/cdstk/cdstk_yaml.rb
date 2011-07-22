@@ -67,6 +67,10 @@ module CodeStock
       query ? query.select(contents) : contents
     end
 
+    def exist?(shortname)
+      @data['contents'].find {|v| File.basename(v['directory']) == shortname }   
+    end
+
     def cleanup
       contents.delete_if do |v|
         !File.exist?(v['directory'])

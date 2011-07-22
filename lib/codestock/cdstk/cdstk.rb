@@ -65,11 +65,27 @@ module CodeStock
     end
 
     def add(*content)
+      # YAMLを読み込み
+      yaml = yaml_load
+
       # 絶対パスに変換
       content.map!{|v|File.expand_path(v)}
 
+      # 存在しないコンテンツがあった場合はその場で終了
+      content.each do |v|
+        shortname = File.basename v
+        if (yaml.exist? shortname)
+          @out.puts "Already exist '#{shortname}'."
+          return
+        end
+        
+        unless (File.exist? v)
+          @out.puts "Not found #{v}."
+          return
+        end
+      end
+
       # YAML更新
-      yaml = yaml_load
       yaml.add(*content)
       yaml.save
 

@@ -160,6 +160,23 @@ EOF
     assert_equal [{"directory"=>"/b/dir4"}], yaml.list
 
   end
+
+  def test_exist
+    src = <<EOF
+version: 0.1
+contents: 
+- directory: /a/dir1
+- directory: /b/dir12
+- directory: /b/dir4
+EOF
+
+    yaml = CdstkYaml.new('dummy.yaml', YAML.load(src))
+
+    assert_not_nil yaml.exist?('dir1')
+    assert_not_nil yaml.exist?('dir12')
+    assert_nil yaml.exist?('dir123')
+    assert_nil yaml.exist?('dir')
+  end
   
   def teardown
     FileUtils.cd(@prev_dir)
