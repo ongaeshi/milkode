@@ -72,8 +72,12 @@ module CodeStock
         records = table.records.sort_by{|record| record.shortpath.downcase }[offset..limit]
       end
         
-
       return records, total_records
+    end
+    
+    # レコード数を得る
+    def totalRecords
+      @documents.select.size      
     end
 
     # @sample test/test_database.rb:43 TestDatabase#t_fileList
@@ -100,6 +104,19 @@ module CodeStock
       }.uniq
       
       paths
+    end
+
+    def remove(packages, io = nil)
+      # 削除したコンテンツをインデックスから削除
+      records, total_records = search([], packages, [], [])
+
+      # 検索結果はHashのレコードなので、これを直接deleteしても駄目
+      # 1. Record#record_idを使って主キー(Groonga#Arrayのレコード)を取り出し
+      # 2. Record#delete で削除
+      records.each do |r|
+        io.puts r.shortpath if io
+        r.record_id.delete
+      end
     end
 
     private 

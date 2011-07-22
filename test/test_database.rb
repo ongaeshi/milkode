@@ -34,6 +34,7 @@ module CodeStock
       setup_db
       t_open
       t_fileList
+      t_remove
     end
 
     def t_open
@@ -47,6 +48,13 @@ module CodeStock
       assert_equal ['lib/codestock', false],              db.fileList('lib')[0]
       assert_equal ['lib/codestock/cdstk/cdstk.rb', true],      db.fileList('lib/codestock/cdstk')[0]
       assert_equal nil,                               db.fileList('lib/codestock/cdstk/cdstk.rb')[0]
+    end
+
+    def t_remove
+      db = Database.instance
+      db.remove('test')
+      db.remove('lib')
+      assert_equal 0, db.totalRecords
     end
   end
 end

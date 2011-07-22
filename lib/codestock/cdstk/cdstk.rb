@@ -12,6 +12,7 @@ require 'codestock/common/util'
 include CodeStock
 require 'kconv'
 require 'readline'
+require 'codestock/cdweb/lib/database'
 
 module CodeStock
   class Cdstk
@@ -25,6 +26,7 @@ module CodeStock
     
     def initialize(io = $stdout, db_dir = ".")
       @db_dir = db_dir
+      Database.setup(@db_dir)
       @out = io
       @file_count = 0
       @add_count = 0
@@ -75,7 +77,7 @@ module CodeStock
       end
     end
 
-    def remove(args, is_force)
+    def remove(args, is_force, is_verbose)
       yaml = yaml_load
       query = CdstkYaml::Query.new(args)
       
@@ -85,17 +87,21 @@ module CodeStock
       list(args, true)
       
       if is_force or yes_or_no("Remove #{remove_list.size} contents? (yes/no)")
-        yaml.remove(CdstkYaml::Query.new(args))
+        # yamlから削除
+        yaml.remove(query)
         yaml.save
-
-        # @todo 削除したコンテンツをインデックスから削除
-
+        
+        # データベースからも削除
+        packages = remove_list.map{|v| File.basename v['directory']}
+        Database.instance.remove(packages, is_verbose ? @out : nil)
+        
+        # 完了
         @out.puts '.....removed.'
       end
     end
 
     def yes_or_no(msg)
-      @out.puts msg
+       @out.puts msg
       while buf = Readline.readline("> ")
         case buf
         when 'yes'
