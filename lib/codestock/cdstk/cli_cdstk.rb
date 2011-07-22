@@ -16,6 +16,7 @@ The most commonly used #{File.basename($0)} are:
   add         Add contents. (ex. ~/Documents/cdstock, git://github.com/ongaeshi/cdstock.git)
   remove      Remove contents.
   list        List all contents. 
+  cleanup     Clean up garbage record and contents.
   rebuild     Rebuild db.
   dump        Dump database contents.
 EOF
@@ -27,6 +28,7 @@ EOF
       subopt['init'].on('--default', 'Init db default path. (Maybe ~/.codestock)') { init_default = true }
       
       subopt['update'] = OptionParser.new("#{File.basename($0)} update")
+
       subopt['add'] = OptionParser.new("#{File.basename($0)} add content1 [content2 ...]")
 
       remove_options = {:force => false, :verbose => false}
@@ -37,6 +39,10 @@ EOF
       list_options = {:verbose => false}
       subopt['list'] = OptionParser.new("#{File.basename($0)} list content1 [content2 ...]")
       subopt['list'].on('-v', '--verbose', 'Be verbose.') { list_options[:verbose] = true }
+
+      cleanup_options = {:verbose => false}
+      subopt['cleanup'] = OptionParser.new("#{File.basename($0)} cleanup")
+      subopt['cleanup'].on('-v', '--verbose', 'Be verbose.') { cleanup_options[:verbose] = true }
       
       subopt['rebuild'] = OptionParser.new("#{File.basename($0)} rebuild")
       subopt['dump'] = OptionParser.new("#{File.basename($0)} dump")
@@ -62,6 +68,8 @@ EOF
           obj.remove(arguments, remove_options[:force], remove_options[:verbose])
         when 'list'
           obj.list(arguments, list_options[:verbose])
+        when 'cleanup'
+          obj.cleanup(cleanup_options[:verbose])
         when 'rebuild'
           obj.rebuild
         when 'dump'

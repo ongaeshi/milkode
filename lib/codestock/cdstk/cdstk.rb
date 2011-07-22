@@ -131,6 +131,18 @@ module CodeStock
       @out.puts  str
     end
 
+    def cleanup(is_verbose)
+      if (yes_or_no "cleanup contents? (yes/no)")
+        # yamlファイルのクリーンアップ
+        yaml = yaml_load
+        yaml.cleanup
+        yaml.save
+        
+        # データベースのクリーンアップ
+        Database.instance.cleanup(is_verbose ? @out : nil)
+      end
+    end
+
     def rebuild
       db_delete(db_file)
       db_create(db_file)

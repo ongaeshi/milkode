@@ -67,6 +67,12 @@ module CodeStock
       query ? query.select(contents) : contents
     end
 
+    def cleanup
+      contents.delete_if do |v|
+        !File.exist?(v['directory'])
+      end
+    end
+
     def self.yaml_file(path)
       (Pathname.new(path) + 'grendb.yaml').to_s
     end

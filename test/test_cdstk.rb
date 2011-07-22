@@ -44,7 +44,7 @@ EOF
      assert_match /WARNING.*test1.html/, io.string
      assert_match /WARNING.*test2.html/, io.string
 
-     obj.remove(['test1.html', 'test2.html'], true)
+     obj.remove(['test1.html', 'test2.html'], true, false)
      assert_equal [], CdstkYaml.load.directorys
      
      # Cdstk#add
@@ -80,7 +80,7 @@ EOF
      assert_match /WARNING.*test1.html/, io.string
      assert_match /WARNING.*test2.html/, io.string
 
-     obj.remove(['test1.html', 'test2.html'], true)
+     obj.remove(['test1.html', 'test2.html'], true, false)
      assert_equal [], CdstkYaml.load('other_path').directorys
      
      # Cdstk#add

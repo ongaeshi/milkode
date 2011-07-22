@@ -74,6 +74,11 @@ module CodeStock
         
       return records, total_records
     end
+
+    def selectAll2(offset = 0, limit = -1)
+      records, total_records = selectAll(offset, limit)
+      records
+    end
     
     # レコード数を得る
     def totalRecords
@@ -105,7 +110,8 @@ module CodeStock
       
       paths
     end
-
+    
+    # コンテンツの削除
     def remove(packages, io = nil)
       # 削除したコンテンツをインデックスから削除
       records, total_records = search([], packages, [], [])
@@ -119,6 +125,18 @@ module CodeStock
       end
     end
 
+    # 実体の存在しないデータを削除
+    def cleanup(io = nil)
+      records = selectAll2
+
+      records.each do |r|
+        unless File.exist? r.path
+          io.puts r.shortpath if io
+          r.record_id.delete
+        end
+      end
+    end
+    
     private 
 
     def searchMain(patterns, packages, fpaths, suffixs, offset, limit)

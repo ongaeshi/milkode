@@ -20,10 +20,15 @@ module CodeStock
     def setup_db
       # データベース作成
       io = StringIO.new
-      obj = Cdstk.new(io)
-      obj.init
-      obj.add('../../test')
-      obj.add('../../lib')
+      @obj = Cdstk.new(io)
+      @obj.init
+      @obj.add('../../test')
+      @obj.add('../../lib')
+
+      FileUtils.touch('notfound.file')
+      @obj.add('notfound.file')
+      FileUtils.rm('notfound.file')
+
       # puts io.string
 
       # データベースのセットアップ
@@ -34,6 +39,7 @@ module CodeStock
       setup_db
       t_open
       t_fileList
+      t_cleanup
       t_remove
     end
 
@@ -43,11 +49,16 @@ module CodeStock
 
     def t_fileList
       db = Database.instance
-      assert_equal [['test', false], ['lib', false]], db.fileList('')
+      assert_equal [['test', false], ['lib', false], ["notfound.file", true]], db.fileList('')
       assert db.fileList('test').include? ['test/test_database.rb', true]
       assert_equal ['lib/codestock', false],              db.fileList('lib')[0]
       assert_equal ['lib/codestock/cdstk/cdstk.rb', true],      db.fileList('lib/codestock/cdstk')[0]
       assert_equal nil,                               db.fileList('lib/codestock/cdstk/cdstk.rb')[0]
+    end
+
+    def t_cleanup
+      db = Database.instance
+      db.cleanup
     end
 
     def t_remove
@@ -56,6 +67,7 @@ module CodeStock
       db.remove('lib')
       assert_equal 0, db.totalRecords
     end
+
   end
 end
 
