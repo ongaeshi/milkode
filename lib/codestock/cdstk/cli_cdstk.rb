@@ -27,9 +27,9 @@ EOF
       subopt['init'] = OptionParser.new("#{File.basename($0)} init")
       subopt['init'].on('--default', 'Init db default path. (Maybe ~/.codestock)') { init_default = true }
       
-      subopt['update'] = OptionParser.new("#{File.basename($0)} update")
+      subopt['update'] = OptionParser.new("#{File.basename($0)} update content1 [content2 ...]")
 
-      subopt['add'] = OptionParser.new("#{File.basename($0)} add content1 [content2 ...]")
+      subopt['add'] = OptionParser.new("#{File.basename($0)} add dir1 [dir2 ...]")
 
       remove_options = {:force => false, :verbose => false}
       subopt['remove'] = OptionParser.new("#{File.basename($0)} remove content1 [content2 ...]")
@@ -61,7 +61,7 @@ EOF
           FileUtils.mkdir_p db_dir if (init_default)
           obj.init 
         when 'update'
-          obj.update
+          obj.update(arguments)
         when 'add'
           obj.add *arguments
         when 'remove'

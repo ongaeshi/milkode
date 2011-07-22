@@ -44,12 +44,15 @@ module CodeStock
       end
     end
 
-    def update
+    def update(args)
       print_result do 
         yaml = yaml_load
+        query = CdstkYaml::Query.new(args)
+        update_list = yaml_load.list(query)
+        
         db_open(db_file)
 
-        yaml.contents.each do |content|
+        update_list.each do |content|
           update_dir_in(content["directory"])
         end
       end
