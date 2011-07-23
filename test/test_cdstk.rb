@@ -19,7 +19,7 @@ class TestCdstk < Test::Unit::TestCase
   
   # メッセージを出す時はここをコメントアウト
   def dbputs(msg)
-    puts msg
+    # puts msg
   end
   private :dbputs
 
@@ -54,6 +54,7 @@ class TestCdstk < Test::Unit::TestCase
       io.puts('--- remove ---')
       obj.remove(['findgrep'], true, true)
       obj.remove([], true, true)
+      obj.remove(['abc', 'nodir_abc'], true, true)
 
       io.puts('--- list ---')
       obj.list([], true)

@@ -125,27 +125,36 @@ module CodeStock
     end
 
     def remove(args, is_force, is_verbose)
-      db_open(db_file)
-      
-      yaml = yaml_load
-      query = CdstkYaml::Query.new(args)
-      
-      remove_list = yaml_load.list(query)
-      return if remove_list.empty?
-      
-      list(args, true)
-      
-      if is_force or yes_or_no("Remove #{remove_list.size} contents? (yes/no)")
-        # yamlから削除
-        yaml.remove(query)
-        yaml.save
+      print_result do 
+        db_open(db_file)
         
-        # データベースからも削除
-        packages = remove_list.map{|v| File.basename v['directory']}
-        Database.instance.remove(packages, is_verbose ? @out : nil)
+        yaml = yaml_load
+        query = CdstkYaml::Query.new(args)
         
-        # 完了
-        @out.puts '.....removed.'
+        remove_list = yaml_load.list(query)
+        return if remove_list.empty?
+        
+        list(args, true)
+        
+        if is_force or yes_or_no("Remove #{remove_list.size} contents? (yes/no)")
+          # yamlから削除
+          yaml.remove(query)
+          yaml.save
+          
+          # データベースからも削除
+          packages = remove_list.map{|v| File.basename v['directory']}
+
+          # 本当はパッケージの配列をまとめて渡した方が効率が良いのだが、表示を綺麗にするため
+          packages.each do |package|
+            alert("rm_package", package)
+            @package_count += 1
+            
+            Database.instance.remove(package) do |record|
+              alert("rm_record", record.path)
+              @file_count += 1
+            end
+          end
+        end
       end
     end
 

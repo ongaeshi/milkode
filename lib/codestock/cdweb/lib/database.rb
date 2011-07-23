@@ -113,7 +113,8 @@ module CodeStock
     end
     
     # コンテンツの削除
-    def remove(packages, io = nil)
+    # @todo パッケージ名完全一致になっていないので直す
+    def remove(packages)
       # データベースを開き直す
       reopen_patch
       
@@ -124,7 +125,7 @@ module CodeStock
       # 1. Record#record_idを使って主キー(Groonga#Arrayのレコード)を取り出し
       # 2. Record#delete で削除
       records.each do |r|
-        io.puts r.shortpath if io
+        yield r if block_given?
         r.record_id.delete
       end
     end
