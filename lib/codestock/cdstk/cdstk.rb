@@ -282,17 +282,16 @@ module CodeStock
 
     def result_info
       r = []
-      r << Gren::Util::time_s(time)
       r << "#{@package_count} packages" if @package_count > 0
       r << "#{@file_count} records" if @file_count > 0
       r << "#{@add_count} add" if @add_count > 0
       r << "#{@update_count} update" if @update_count > 0
       r.join(', ')
-      alert('result', "#{r.join(', ')}.")
+      alert('result', "#{r.join(', ')}. (#{Gren::Util::time_s(time)})")
     end
 
     def milkode_info
-      alert('*milkode*', "#{yaml_load.package_num} package, #{Database.instance.totalRecords} records in #{db_file}.")
+      alert('*milkode*', "#{yaml_load.package_num} packages, #{Database.instance.totalRecords} records in #{db_file}.")
     end
 
     def db_create(filename)
