@@ -44,10 +44,10 @@ module CodeStock
       end
     end
 
-    def update(args)
+    def update(args = nil)
       print_result do 
         yaml = yaml_load
-        query = CdstkYaml::Query.new(args)
+        query = args ? CdstkYaml::Query.new(args) : nil
         update_list = yaml_load.list(query)
         
         db_open(db_file)

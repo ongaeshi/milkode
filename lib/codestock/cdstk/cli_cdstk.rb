@@ -12,20 +12,20 @@ module CodeStock
 
 The most commonly used #{File.basename($0)} are:
   init        Init db.
-  update      Update db.
   add         Add contents.
+  update      Update contents.
   remove      Remove contents.
   list        List contents. 
   cleanup     Cleanup garbage (record, contents).
   rebuild     Rebuild db.
-  dump        Dump database contents.
+  dump        Dump contents.
 EOF
 
       subopt = Hash.new
       
       init_default = false
       subopt['init'] = OptionParser.new("#{File.basename($0)} init")
-      subopt['init'].on('--default', 'Init db default path. (Maybe ~/.codestock)') { init_default = true }
+      subopt['init'].on('--default', 'Init db default path, ENV[\'CODESTOCK_DEFAULT_DIR\'] or ~/.codestock.') { init_default = true }
       
       subopt['update'] = OptionParser.new("#{File.basename($0)} update content1 [content2 ...]")
 
