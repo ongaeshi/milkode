@@ -76,6 +76,11 @@ module CodeStock
       opts.on('-n', '--no-browser', 'No launch browser.') {|v| options[:LaunchBrowser] = false }
       opts.parse!(argv)
       
+      # 実行！！
+      execute_with_options(options)
+    end
+    
+    def self.execute_with_options(stdout, options)
       # 使用するデータベースの位置設定
       Database.setup(File.expand_path(options[:DbDir]))
 
@@ -85,6 +90,7 @@ module CodeStock
       # Rackサーバー起動
       Rack::Server.start(options)
     end
+    
 
     def self.select_dbdir
       if (dbdir?('.') || !dbdir?(db_default_dir))

@@ -2,6 +2,7 @@
 require 'optparse'
 require 'codestock/cdstk/cdstk'
 require 'codestock/common/dbdir.rb'
+require 'codestock/cdweb/cli_cdweb'
 include CodeStock
 
 module CodeStock
@@ -12,13 +13,15 @@ module CodeStock
 
 The most commonly used #{File.basename($0)} are:
   init        Init db.
-  add         Add contents.
-  update      Update contents.
-  remove      Remove contents.
-  list        List contents. 
-  cleanup     Cleanup garbage (record, contents).
+  add         Add packages.
+  update      Update packages.
+  web         Run web-app.
+  remove      Remove packages.
+  list        List packages. 
+  pwd         Disp current db.
+  cleanup     Cleanup garbage records, packages.
   rebuild     Rebuild db.
-  dump        Dump contents.
+  dump        Dump records.
 EOF
 
       subopt = Hash.new
@@ -49,6 +52,8 @@ EOF
 
       subopt['dump'] = OptionParser.new("#{File.basename($0)} dump")
 
+      subopt['web'], suboptions['web'] = setup_web
+
       opt.order!(arguments)
       subcommand = arguments.shift
 
@@ -78,6 +83,8 @@ EOF
           obj.rebuild
         when 'dump'
           obj.dump
+        when 'web'
+          CodeStock::CLI_Cdweb.execute_with_options(stdout, suboptions[subcommand])
         end
       else
         if subcommand
@@ -114,6 +121,35 @@ EOF
       opt.on('-v', '--verbose', 'Be verbose.')  { options[:verbose] = true }
 
       return opt, options
+    end
+
+    def self.setup_web
+      options = {
+        :environment => ENV['RACK_ENV'] || "development",
+        :pid         => nil,
+        :Port        => 9292,
+        :Host        => "0.0.0.0",
+        :AccessLog   => [],
+        :config      => "config.ru",
+        # ----------------------------
+        :server      => "thin",
+        :LaunchBrowser => true,
+        :DbDir => CodeStock::CLI_Cdweb::select_dbdir,
+      }
+      
+      opts = OptionParser.new("#{File.basename($0)} web")
+      opts.on('--db DB_DIR', 'Database dir (default : ~/.codestock)') {|v| options[:DbDir] = v }
+      opts.on("-o", "--host HOST", "listen on HOST (default: 0.0.0.0)") {|host| options[:Host] = host }
+      opts.on('-p', '--port PORT', 'use PORT (default: 9292)') {|v| options[:Port] = v }
+      opts.on('-n', '--no-browser', 'No launch browser.') {|v| options[:LaunchBrowser] = false }
+      
+      # --hostが'-h'を上書きするので、'-h'を再定義してあげる
+      opts.on_tail("-h", "-?", "--help", "Show this message") do
+        puts opts
+        exit
+      end
+      
+      return opts, options
     end
   end
 end
