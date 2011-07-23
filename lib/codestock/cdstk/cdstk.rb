@@ -186,7 +186,7 @@ module CodeStock
         end
       }.join("\n")
 
-      @out.puts  str
+      @out.puts str
     end
 
     def pwd
@@ -279,6 +279,10 @@ module CodeStock
       @end_time = Time.now
 
       alert('result', "#{Gren::Util::time_s(time)}, #{@package_count} packages, #{@file_count} records, #{@add_count} add, #{@update_count} update.")
+      milkode_info
+    end
+
+    def milkode_info
       alert('*milkode*', "#{yaml_load.package_num} package, #{Database.instance.totalRecords} records in #{db_file}.")
     end
 
