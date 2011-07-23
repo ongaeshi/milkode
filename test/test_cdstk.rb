@@ -19,7 +19,7 @@ class TestCdstk < Test::Unit::TestCase
   
   # メッセージを出す時はここをコメントアウト
   def dbputs(msg)
-    puts msg
+    # puts msg
   end
   private :dbputs
 
@@ -33,14 +33,14 @@ class TestCdstk < Test::Unit::TestCase
       obj.init
       
       io.puts('--- add ---')
-      obj.add('../../lib/codestock/findgrep', '../../lib/codestock/common')
+      obj.add(['../../lib/codestock/findgrep', '../../lib/codestock/common'])
       FileUtils.touch('last1.txt')
-      obj.add('last1.txt')
+      obj.add(['last1.txt'])
       FileUtils.touch('atodekesu.txt')
-      obj.add('atodekesu.txt')
+      obj.add(['atodekesu.txt'])
 
       io.puts('--- add notfound ---')
-      obj.add('notfound.html')
+      obj.add(['notfound.html'])
       
       io.puts('--- update ---')
       obj.update

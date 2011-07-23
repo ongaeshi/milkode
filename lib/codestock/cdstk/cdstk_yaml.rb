@@ -37,8 +37,8 @@ module CodeStock
       @data = data
     end
 
-    def add(*dirs)
-      contents.push(*dirs.map{|v|{'directory' => v}})
+    def add(dirs)
+      contents.concat(dirs.map{|v|{'directory' => v}})
       contents.uniq!
     end
 

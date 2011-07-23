@@ -39,12 +39,12 @@ class TestCdstkYaml < Test::Unit::TestCase
     end
 
     # add
-    yaml.add('dir1')
-    yaml.add('dir2', 'dir3')
+    yaml.add(['dir1'])
+    yaml.add(['dir2', 'dir3'])
     assert_equal ['dir1', 'dir2', 'dir3'], yaml.directorys
 
     # remove
-    yaml.add('dir2', 'dir4', 'dir5')
+    yaml.add(['dir2', 'dir4', 'dir5'])
     yaml.remove(CdstkYaml::Query.new ['dir5'])
     yaml.remove(CdstkYaml::Query.new ['dir2', 'dir3'])
     assert_equal ['dir1', 'dir4'], yaml.directorys
@@ -62,43 +62,15 @@ EOF
 
   def test_001
     FileUtils.mkdir 'otherpath'
-    
-    # create
     yaml = CdstkYaml.create('otherpath')
-    assert_equal yaml.contents, []
-    assert_equal yaml.version, 0.1
-    assert_raise(CdstkYaml::YAMLAlreadyExist) { CdstkYaml.create('otherpath') }
-
-    # load
-    yaml = CdstkYaml.load 'otherpath'
-    assert_equal yaml.contents, []
-    assert_equal yaml.version, 0.1
-
-    # load fail
-    FileUtils.mkdir 'loadtest'
-    FileUtils.cd 'loadtest' do
-      assert_raise(CdstkYaml::YAMLNotExist) { CdstkYaml.load }
-    end
-
-    # add
-    yaml.add('dir1')
-    yaml.add('dir2', 'dir3')
-    assert_equal ['dir1', 'dir2', 'dir3'], yaml.directorys
-
-    # remove
-    yaml.add('dir2', 'dir4', 'dir5')
-    yaml.remove(CdstkYaml::Query.new ['dir5'])
-    yaml.remove(CdstkYaml::Query.new ['dir2', 'dir3'])
-    assert_equal ['dir1', 'dir4'], yaml.directorys
-
-    # save
     yaml.save
+    
+    # save
     assert_equal <<EOF, open('otherpath/grendb.yaml').read
 --- 
 version: 0.1
-contents: 
-- directory: dir1
-- directory: dir4
+contents: []
+
 EOF
   end
 
