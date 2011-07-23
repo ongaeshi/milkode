@@ -23,189 +23,51 @@ class TestCdstk < Test::Unit::TestCase
   end
   private :dbputs
 
-#    def test_create
-#      db_path = Pathname.new('.') + 'db'
-#      database = Groonga::Database.create(:path => db_path.to_s)
-#      assert_equal database, Groonga::Context.default.database
-#    end
+  def test_basic
+    io = StringIO.new
 
-   def test_basic
-     io = StringIO.new
+    begin
+      obj = Cdstk.new(io)
 
-     begin
-       obj = Cdstk.new(io)
+      io.puts('--- init ---')
+      obj.init
+      
+      io.puts('--- add ---')
+      obj.add('../../lib/codestock/findgrep', '../../lib/codestock/common')
+      FileUtils.touch('last1.txt')
+      obj.add('last1.txt')
+      FileUtils.touch('atodekesu.txt')
+      obj.add('atodekesu.txt')
 
-       io.puts('--- init ---')
-       obj.init
-       
-       io.puts('--- add ---')
-       obj.add('../../lib/codestock/findgrep', '../../lib/codestock/common')
-       FileUtils.touch('last1.txt')
-       obj.add('last1.txt')
-       FileUtils.touch('atodekesu.txt')
-       obj.add('atodekesu.txt')
+      io.puts('--- add notfound ---')
+      obj.add('notfound.html')
+      
+      io.puts('--- update ---')
+      obj.update
 
-       io.puts('--- add notfound ---')
-       obj.add('notfound.html')
-       
-       io.puts('--- update ---')
-       obj.update
+      io.puts('--- remove ---')
+      obj.remove(['findgrep'], true, true)
+      obj.remove([], true, true)
 
-       io.puts('--- remove ---')
-       obj.remove(['findgrep'], true, true)
-       obj.remove([], true, true)
+      io.puts('--- list ---')
+      obj.list([], true)
+      obj.list(['com'], false)
 
-       io.puts('--- list ---')
-       obj.list([], true)
-       obj.list(['com'], false)
+      io.puts('--- cleanup ---')
+      # obj.cleanup(true)
 
-       io.puts('--- cleanup ---')
-       # obj.cleanup(true)
+      io.puts('--- rebuild ---')
+      obj.rebuild
 
-       io.puts('--- rebuild ---')
-       obj.rebuild
-
-       io.puts('--- dump ---')
-       obj.add('../../lib/codestock/findgrep')
-       # 原因不明
-       # Groonga::ObjectClosed: can't access already closed groonga object: Groonga::Array
-       obj.remove(['cdstk'], true, true)
-       obj.remove(['common'], true, true)
-       obj.dump
-     ensure
-       dbputs io.string
-     end
-   end
-
-#    def test_mkgrendb
-#      io = StringIO.new
-#      obj = Cdstk.new(io)
-    
-#      # Cdstk#init
-#      obj.init
-#      assert_equal <<EOF, io.string
-# create     : grendb.yaml
-# create     : db/grendb.db created.
-# EOF
-     
-#      io.string = ""
-#      obj.init
-#      assert_match "Can't create Grendb Database (Not empty)", io.string
-     
-#      # Cdstk#add, remove
-#      obj.add('test1.html', 'test2.html')
-
-#      assert_match /WARNING.*test1.html/, io.string
-#      assert_match /WARNING.*test2.html/, io.string
-
-#      obj.remove(['test1.html', 'test2.html'], true, false)
-#      assert_equal [], CdstkYaml.load.directorys
-     
-#      # Cdstk#add
-#      io.string = ""
-#      obj.add('../../lib/codestock/findgrep', '../../lib/codestock/common')
-#      assert_match /add_file\s+:\s+.*findgrep.rb/, io.string
-#      assert_match /add_file\s+:\s+.*grenfiletest.rb/, io.string
-
-#      # Cdstk#update
-#      io.string = ""
-#      obj.update
-#   end
-
-#    def test_mkgrendb_other_path
-#      io = StringIO.new
-#      FileUtils.mkdir 'other_path'
-#      obj = Cdstk.new(io, 'other_path')
-    
-#      # Cdstk#init
-#      obj.init
-#      assert_equal <<EOF, io.string
-# create     : other_path/grendb.yaml
-# create     : other_path/db/grendb.db created.
-# EOF
-     
-#      io.string = ""
-#      obj.init
-#      assert_match "Can't create Grendb Database (Not empty)", io.string
-     
-#      # Cdstk#add, remove
-#      obj.add('test1.html', 'test2.html')
-     
-#      puts io.string
-#      assert_match /Not found.*test1.html/, io.string
-#      assert_match /Not found.*test2.html/, io.string
-
-#      obj.remove(['test1.html', 'test2.html'], true, false)
-#      assert_equal [], CdstkYaml.load('other_path').directorys
-     
-#      # Cdstk#add
-#      io.string = ""
-#      obj.add('../../lib/codestock/findgrep', '../../lib/codestock/common')
-#      assert_match /add_file\s+:\s+.*findgrep.rb/, io.string
-#      assert_match /add_file\s+:\s+.*grenfiletest.rb/, io.string
-
-#      # Cdstk#update
-#      io.string = ""
-#      obj.update
-#   end
-
-#   def test_cli
-#     io = StringIO.new
-#     CLI_Cdstk.execute(io, ["init"])
-
-#     io.string = ""
-
-#     FileUtils.mkdir_p('dummy')
-#     FileUtils.touch('dummy/bar')
-#     FileUtils.touch('foo')
-    
-#     CLI_Cdstk.execute(io, ["add", "dummy/bar", "foo"])
-#     assert_match /dummy\/bar/, io.string
-#     assert_match /foo/, io.string
-    
-#     io.string = ""
-#     CLI_Cdstk.execute(io, ["list"])
-#     assert_match /bar/, io.string
-#     assert_match /foo/, io.string
-
-#     CLI_Cdstk.execute(io, ["remove", "foo", "-f"])
-#     io.string = ""
-#     CLI_Cdstk.execute(io, ["list"])
-#     assert_match /bar/, io.string
-#     assert_no_match /foo/, io.string
-
-#     CLI_Cdstk.execute(io, ["update"])
-#     CLI_Cdstk.execute(io, ["rebuild"])
-#   end
-
-#   def test_dump
-#     io = StringIO.new
-#     CLI_Cdstk.execute(io, ["init"])
-#     CLI_Cdstk.execute(io, ["add", "../runner.rb"])
-#     io.string = ""
-#     CLI_Cdstk.execute(io, ["dump"])
-#     lines = io.string.split("\n")
-#     assert_match /path : .*test\/runner.rb/, lines[2]
-#     assert_match /shortpath : runner.rb/, lines[3]
-#     assert_match /suffix : \.rb/, lines[4]
-#   end
-
-#   def test_add_remove_compact
-#     io = StringIO.new
-
-#     CLI_Cdstk.execute(io, ["init"])
-#     CLI_Cdstk.execute(io, ["add", "dummy/bar"])
-#     CLI_Cdstk.execute(io, ["add", "dummy/bar"])
-
-#     assert_equal 0, CdstkYaml.load.directorys.select{|i|i == File.expand_path("dummy/bar")}.count
-    
-#     CLI_Cdstk.execute(io, ["add", "dummy/da"])
-#     CLI_Cdstk.execute(io, ["add", "dummy/ad"])
-#     CLI_Cdstk.execute(io, ["add", "dummy/foo"])
-#     CLI_Cdstk.execute(io, ["add", "dummy/bar"])
-
-#     assert_equal 0, CdstkYaml.load.directorys.select{|i|i == File.expand_path("dummy/bar")}.count
-#   end
+      io.puts('--- dump ---')
+      obj.add('../../lib/codestock/findgrep')
+      obj.remove(['cdstk'], true, true)
+      obj.remove(['common'], true, true)
+      obj.dump
+    ensure
+      dbputs io.string
+    end
+  end
 
   def teardown
     teardown_custom(true)
