@@ -34,6 +34,9 @@ class TestCdstk < Test::Unit::TestCase
       
       io.puts('--- add ---')
       obj.add(['../../lib/codestock/findgrep', '../../lib/codestock/common'])
+      obj.add(['../data/abc.zip'])
+      obj.add(['../data/nodir_abc.zip'])
+
       FileUtils.touch('last1.txt')
       obj.add(['last1.txt'])
       FileUtils.touch('atodekesu.txt')
@@ -72,7 +75,7 @@ class TestCdstk < Test::Unit::TestCase
 
   def teardown
     teardown_custom(true)
-#    teardown_custom(false)
+    # teardown_custom(false)
   end
 end
 

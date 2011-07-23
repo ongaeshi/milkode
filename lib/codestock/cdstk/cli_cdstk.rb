@@ -61,7 +61,7 @@ EOF
         when 'update'
           obj.update(arguments)
         when 'add'
-          obj.add *arguments
+          obj.add(arguments)
         when 'remove'
           obj.remove(arguments, remove_options[:force], remove_options[:verbose])
         when 'list'

@@ -1,5 +1,48 @@
 # -*- coding: utf-8 -*-
 
+require 'rubygems'
+require 'archive/zip'
+require 'fileutils'
+
+module CodeStock
+  module Util
+    module_function
+    
+    # zipファイルを展開し、展開フォルダ名を返す
+    def zip_extract(filename, dst_dir)
+      FileUtils.mkdir_p dst_dir
+
+      root_list = root_entrylist(filename)
+      
+      if (root_list.size == 1)
+        # そのまま展開
+        Archive::Zip.extract filename, dst_dir
+        return root_list[0].gsub("/", "")
+      else
+        # ディレクトリを作ってその先で展開
+        dir = File.basename(filename).sub(/.zip$/, "")
+        FileUtils.mkdir_p File.join(dst_dir, dir)
+        Archive::Zip.extract filename, File.join(dst_dir, dir)
+        return dir
+      end
+    end
+
+    def root_entrylist(filename)
+      list = []
+      
+      Archive::Zip.open(filename) do |archive|
+        archive.each do |entry|
+          list << entry.zip_path if entry.zip_path.split('/').size == 1
+        end
+      end
+
+      list
+    end
+  end
+end
+
+# -- 将来的には CodeStock に統一 ---
+
 module Gren
   module Util
     # アルファベットと演算子で表示する数を変える

@@ -68,8 +68,8 @@ module CodeStock
       # YAMLを読み込み
       yaml = yaml_load
 
-      # 絶対パスに変換
-      contents.map!{|v|File.expand_path(v)}
+      # コンテンツを読み込める形に変換
+      contents.map!{|v|convert_content(v)}
 
       # 存在しないコンテンツがあった場合はその場で終了
       contents.each do |v|
@@ -94,6 +94,18 @@ module CodeStock
       contents.each do |dir|
         update_dir(dir)
       end
+    end
+
+    def convert_content(src)
+      # zipファイルなら展開
+      if (File.extname(src) == '.zip')
+        zip_dir = File.join(@db_dir, 'zip')
+        src = Util::zip_extract(src, zip_dir)
+        src = File.join(zip_dir, src)
+      end
+
+      # 絶対パスに変換
+      File.expand_path(src)
     end
 
     def remove(args, is_force, is_verbose)
