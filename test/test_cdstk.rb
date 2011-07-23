@@ -36,6 +36,7 @@ class TestCdstk < Test::Unit::TestCase
       obj.add(['../../lib/codestock/findgrep', '../../lib/codestock/common'])
       obj.add(['../data/abc.zip'])
       obj.add(['../data/nodir_abc.zip'])
+      obj.add(['../data/nodir_abc_xpi.xpi'])
 
       FileUtils.touch('last1.txt')
       obj.add(['last1.txt'])

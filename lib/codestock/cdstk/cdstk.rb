@@ -97,20 +97,26 @@ module CodeStock
     end
 
     def convert_content(src)
-      # zipファイルなら展開
-      ext = File.extname(src);
-      
-      case ext
-      when '.zip'
-      when '.xpi'
-        @out.puts "extract     : #{src}"
-        zip_dir = File.join(@db_dir, 'zip')
-        src = Util::zip_extract(src, zip_dir)
-        src = File.join(zip_dir, src)
-      end
+      # アーカイブファイルなら展開
+      src = extract_file(src)
 
       # 絶対パスに変換
       File.expand_path(src)
+    end
+
+    def extract_file(src)
+      ext = File.extname(src);
+      
+      case ext
+      when '.zip', '.xpi'
+        @out.puts "extract     : #{src}"
+        zip_dir = File.join(@db_dir, "packages/#{ext.sub(".", "")}")
+        File.join(zip_dir, Util::zip_extract(src, zip_dir))
+
+      else
+        src
+        
+      end
     end
 
     def remove(args, is_force, is_verbose)
