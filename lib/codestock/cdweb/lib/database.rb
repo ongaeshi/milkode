@@ -113,6 +113,9 @@ module CodeStock
     
     # コンテンツの削除
     def remove(packages, io = nil)
+      # データベースを開き直す
+      reopen_patch
+      
       # 削除したコンテンツをインデックスから削除
       records, total_records = search([], packages, [], [])
 
@@ -138,6 +141,12 @@ module CodeStock
     end
     
     private 
+
+    def reopen_patch
+      # 削除系のコマンドが上手く動作しないためのパッチ
+      # 本質的な解決にはなっていないと思う
+      open(@@db_dir || db_default_dir)
+    end
 
     def searchMain(patterns, packages, fpaths, suffixs, offset, limit)
       table = @documents.select do |record|

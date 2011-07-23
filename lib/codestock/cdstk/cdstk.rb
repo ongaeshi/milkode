@@ -97,6 +97,8 @@ module CodeStock
     end
 
     def remove(args, is_force, is_verbose)
+      db_open(db_file)
+      
       yaml = yaml_load
       query = CdstkYaml::Query.new(args)
       
