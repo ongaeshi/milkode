@@ -41,8 +41,12 @@ EOF
       subopt['list'] = OptionParser.new("#{File.basename($0)} list content1 [content2 ...]")
       subopt['list'].on('-v', '--verbose', 'Be verbose.') { list_options[:verbose] = true }
       
+      subopt['pwd'] = OptionParser.new("#{File.basename($0)} pwd")
+
       subopt['cleanup'], suboptions['cleanup'] = setup_cleanup
+
       subopt['rebuild'] = OptionParser.new("#{File.basename($0)} rebuild")
+
       subopt['dump'] = OptionParser.new("#{File.basename($0)} dump")
 
       opt.order!(arguments)
@@ -66,6 +70,8 @@ EOF
           obj.remove(arguments, remove_options[:force], remove_options[:verbose])
         when 'list'
           obj.list(arguments, list_options[:verbose])
+        when 'pwd'
+          obj.pwd
         when 'cleanup'
           obj.cleanup(suboptions[subcommand])
         when 'rebuild'

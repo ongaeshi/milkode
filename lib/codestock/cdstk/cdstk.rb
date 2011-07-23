@@ -175,6 +175,10 @@ module CodeStock
       @out.puts  str
     end
 
+    def pwd
+      db_open(db_file)
+    end
+
     def cleanup(options)
       if (options[:force] or yes_or_no("cleanup contents? (yes/no)"))
         # yamlファイルのクリーンアップ
