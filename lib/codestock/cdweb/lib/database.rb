@@ -82,6 +82,7 @@ module CodeStock
     
     # レコード数を得る
     def totalRecords
+      reopen_patch
       @documents.select.size      
     end
 

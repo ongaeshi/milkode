@@ -28,6 +28,11 @@ module CodeStock
       @db_dir = db_dir
       Database.setup(@db_dir)
       @out = io
+      clear_count
+    end
+
+    def clear_count
+      @package_count = 0
       @file_count = 0
       @add_count = 0
       @update_count = 0
@@ -40,7 +45,7 @@ module CodeStock
         @out.puts "create     : #{yaml_file}"
         db_create(db_file)
       else
-        @out.puts "Can't create Grendb Database (Not empty) in #{@db_dir}"
+        @out.puts "Can't create milkode db (Because not empty in #{Dir.pwd})"
       end
     end
 
@@ -59,9 +64,7 @@ module CodeStock
     end
 
     def update_dir(dir)
-      print_result do 
-        update_dir_in(dir)
-      end
+      update_dir_in(dir)
     end
 
     def add(contents)
@@ -90,9 +93,11 @@ module CodeStock
       yaml.save
 
       # 部分アップデート
-      db_open(db_file)
-      contents.each do |dir|
-        update_dir(dir)
+      print_result do 
+        db_open(db_file)
+        contents.each do |dir|
+          update_dir(dir)
+        end
       end
     end
 
@@ -109,7 +114,7 @@ module CodeStock
       
       case ext
       when '.zip', '.xpi'
-        @out.puts "extract     : #{src}"
+        alert("extract", src)
         zip_dir = File.join(@db_dir, "packages/#{ext.sub(".", "")}")
         File.join(zip_dir, Util::zip_extract(src, zip_dir))
 
@@ -176,7 +181,13 @@ module CodeStock
     end
 
     def pwd
-      db_open(db_file)
+      dir = db_file_expand
+      
+      if File.exist? dir
+        @out.puts dir
+      else
+        @out.puts "Not found db in #{Dir.pwd}"
+      end
     end
 
     def cleanup(options)
@@ -220,6 +231,10 @@ module CodeStock
       (Pathname.new(@db_dir) + DB_FILE_PATH).to_s
     end
 
+    def db_file_expand
+      File.expand_path(db_file)
+    end
+
     def yaml_file
       CdstkYaml.yaml_file @db_dir
     end
@@ -229,6 +244,9 @@ module CodeStock
     end
 
     def update_dir_in(dir)
+      alert("package", File.basename(dir) )
+      @package_count += 1
+      
       dir = File.expand_path(dir)
 
       if (!FileTest.exist?(dir))
@@ -245,15 +263,14 @@ module CodeStock
     end
 
     def print_result
+      clear_count
+      
       yield
       
       @end_time = Time.now
-      
-      @out.puts
-      @out.puts "time       : #{Gren::Util::time_s(time)}"
-      @out.puts "files      : #{@file_count}"
-      @out.puts "add        : #{@add_count}"
-      @out.puts "update     : #{@update_count}"
+
+      alert('result', "#{Gren::Util::time_s(time)}, #{@package_count} packages, #{@file_count} records, #{@add_count} add, #{@update_count} update.")
+      alert('*milkode*', "#{yaml_load.package_num} package, #{Database.instance.totalRecords} records in #{db_file}.")
     end
 
     def db_create(filename)
@@ -293,7 +310,7 @@ module CodeStock
       
       if dbfile.exist?
         Groonga::Database.open(dbfile.to_s)
-        @out.puts  "open       : #{dbfile} open."
+        # @out.puts  "open       : #{dbfile} open."
       else
         raise "error      : #{dbfile.to_s} not found!!"
       end
@@ -352,10 +369,10 @@ module CodeStock
           if (key == :path)
             if (isNewFile)
               @add_count += 1
-              @out.puts "add_file   : #{value}"
+              alert("add_record", value)
             else
               @update_count += 1
-              @out.puts "update     : #{value}"
+              alert("update", value)
             end
           end
           document[key] = value
@@ -402,6 +419,10 @@ module CodeStock
       GrenFileTest::binary?(fpath)
     end
     private :ignoreFile?
+
+    def alert(title, msg)
+      @out.puts "#{title.ljust(10)} : #{msg}"
+    end
 
   end
 end

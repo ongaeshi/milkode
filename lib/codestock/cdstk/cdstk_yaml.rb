@@ -55,6 +55,10 @@ module CodeStock
       @data['contents']
     end
 
+    def package_num
+      @data['contents'].size
+    end
+
     def directorys
       contents.map{|v|v['directory']}
     end

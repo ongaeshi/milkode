@@ -19,7 +19,7 @@ class TestCdstk < Test::Unit::TestCase
   
   # メッセージを出す時はここをコメントアウト
   def dbputs(msg)
-    # puts msg
+    puts msg
   end
   private :dbputs
 
@@ -45,8 +45,10 @@ class TestCdstk < Test::Unit::TestCase
 
       io.puts('--- add notfound ---')
       obj.add(['notfound.html'])
-      
+
       io.puts('--- update ---')
+      FileUtils.touch('packages/zip/abc/c.txt')
+      FileUtils.touch('packages/zip/abc/d.txt')
       obj.update
 
       io.puts('--- remove ---')
