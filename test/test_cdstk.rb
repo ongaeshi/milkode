@@ -19,7 +19,7 @@ class TestCdstk < Test::Unit::TestCase
   
   # メッセージを出す時はここをコメントアウト
   def dbputs(msg)
-    # puts msg
+    puts msg
   end
   private :dbputs
 
@@ -54,15 +54,16 @@ class TestCdstk < Test::Unit::TestCase
       obj.list(['com'], false)
 
       io.puts('--- cleanup ---')
-      # obj.cleanup(true)
+      # t_cleanup # 何故か 'rake test' で実行すると上手く動かないので、一旦テストから外す
+      # obj.cleanup({:verbose=>true, :force=>true})
 
       io.puts('--- rebuild ---')
       obj.rebuild
 
+      io.puts('--- remove ---')
+      obj.remove(['findgrep', 'common'], true, true)
+
       io.puts('--- dump ---')
-      obj.add('../../lib/codestock/findgrep')
-      obj.remove(['cdstk'], true, true)
-      obj.remove(['common'], true, true)
       obj.dump
     ensure
       dbputs io.string

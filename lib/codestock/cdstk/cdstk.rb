@@ -152,15 +152,15 @@ module CodeStock
       @out.puts  str
     end
 
-    def cleanup(is_verbose)
-      if (yes_or_no "cleanup contents? (yes/no)")
+    def cleanup(options)
+      if (options[:force] or yes_or_no("cleanup contents? (yes/no)"))
         # yamlファイルのクリーンアップ
         yaml = yaml_load
         yaml.cleanup
         yaml.save
         
         # データベースのクリーンアップ
-        Database.instance.cleanup(is_verbose ? @out : nil)
+        Database.instance.cleanup(options[:verbose] ? @out : nil)
       end
     end
 

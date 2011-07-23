@@ -22,6 +22,7 @@ The most commonly used #{File.basename($0)} are:
 EOF
 
       subopt = Hash.new
+      suboptions = Hash.new
       
       init_default = false
       subopt['init'] = OptionParser.new("#{File.basename($0)} init")
@@ -39,11 +40,8 @@ EOF
       list_options = {:verbose => false}
       subopt['list'] = OptionParser.new("#{File.basename($0)} list content1 [content2 ...]")
       subopt['list'].on('-v', '--verbose', 'Be verbose.') { list_options[:verbose] = true }
-
-      cleanup_options = {:verbose => false}
-      subopt['cleanup'] = OptionParser.new("#{File.basename($0)} cleanup")
-      subopt['cleanup'].on('-v', '--verbose', 'Be verbose.') { cleanup_options[:verbose] = true }
       
+      subopt['cleanup'], suboptions['cleanup'] = setup_cleanup
       subopt['rebuild'] = OptionParser.new("#{File.basename($0)} rebuild")
       subopt['dump'] = OptionParser.new("#{File.basename($0)} dump")
 
@@ -69,7 +67,7 @@ EOF
         when 'list'
           obj.list(arguments, list_options[:verbose])
         when 'cleanup'
-          obj.cleanup(cleanup_options[:verbose])
+          obj.cleanup(suboptions[subcommand])
         when 'rebuild'
           obj.rebuild
         when 'dump'
@@ -100,6 +98,16 @@ EOF
           db_default_dir
         end
       end
+    end
+
+    def self.setup_cleanup
+      options = {:verbose => false, :force => false}
+      
+      opt = OptionParser.new("#{File.basename($0)} cleanup")
+      opt.on('-f', '--force', 'Force cleanup.') { options[:force] = true }
+      opt.on('-v', '--verbose', 'Be verbose.')  { options[:verbose] = true }
+
+      return opt, options
     end
   end
 end

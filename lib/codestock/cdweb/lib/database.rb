@@ -130,6 +130,10 @@ module CodeStock
 
     # 実体の存在しないデータを削除
     def cleanup(io = nil)
+      # データベースを開き直す
+      reopen_patch
+
+      # クリーンアップ
       records = selectAll2
 
       records.each do |r|
