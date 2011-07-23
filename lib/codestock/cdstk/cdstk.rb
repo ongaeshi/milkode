@@ -98,7 +98,12 @@ module CodeStock
 
     def convert_content(src)
       # zipファイルなら展開
-      if (File.extname(src) == '.zip')
+      ext = File.extname(src);
+      
+      case ext
+      when '.zip'
+      when '.xpi'
+        @out.puts "extract     : #{src}"
         zip_dir = File.join(@db_dir, 'zip')
         src = Util::zip_extract(src, zip_dir)
         src = File.join(zip_dir, src)

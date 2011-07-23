@@ -20,7 +20,7 @@ module CodeStock
         return root_list[0].gsub("/", "")
       else
         # ディレクトリを作ってその先で展開
-        dir = File.basename(filename).sub(/.zip$/, "")
+        dir = File.basename(filename).sub(/#{File.extname(filename)}$/, "")
         FileUtils.mkdir_p File.join(dst_dir, dir)
         Archive::Zip.extract filename, File.join(dst_dir, dir)
         return dir
