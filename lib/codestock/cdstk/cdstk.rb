@@ -273,13 +273,22 @@ module CodeStock
 
     def print_result
       clear_count
-      
       yield
-      
       @end_time = Time.now
-
-      alert('result', "#{Gren::Util::time_s(time)}, #{@package_count} packages, #{@file_count} records, #{@add_count} add, #{@update_count} update.")
+      
+      result_info
       milkode_info
+    end
+
+    def result_info
+      r = []
+      r << Gren::Util::time_s(time)
+      r << "#{@package_count} packages" if @package_count > 0
+      r << "#{@file_count} records" if @file_count > 0
+      r << "#{@add_count} add" if @add_count > 0
+      r << "#{@update_count} update" if @update_count > 0
+      r.join(', ')
+      alert('result', "#{r.join(', ')}.")
     end
 
     def milkode_info
