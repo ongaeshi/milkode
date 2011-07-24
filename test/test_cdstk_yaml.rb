@@ -10,7 +10,7 @@ require 'milkode/cdstk/cdstk_yaml.rb'
 require 'fileutils'
 
 class TestCdstkYaml < Test::Unit::TestCase
-  include CodeStock
+  include Milkode
 
   def setup
     @prev_dir = Dir.pwd

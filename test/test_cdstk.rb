@@ -14,7 +14,7 @@ require 'milkode/cdstk/cdstk'
 require 'stringio'
 
 class TestCdstk < Test::Unit::TestCase
-  include CodeStock
+  include Milkode
   include FileTestUtils
   
   # メッセージを出す時はここをコメントアウト

@@ -7,4 +7,4 @@ require 'rubygems'
 require 'milkode/cdview/cli_cdview'
 
 Version = "0.1.0"
-CodeStock::CLI_Cdview.execute(STDOUT, ARGV)
+Milkode::CLI_Cdview.execute(STDOUT, ARGV)

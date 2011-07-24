@@ -7,4 +7,4 @@ require 'rubygems'
 require 'milkode/cdstk/cli_cdstk'
 
 Version = "0.1.0"
-CodeStock::CLI_Cdstk.execute(STDOUT, ARGV)
+Milkode::CLI_Cdstk.execute(STDOUT, ARGV)

@@ -11,7 +11,7 @@ require 'milkode/common/dbdir'
 require 'file_test_utils'
 
 class TestDbDir< Test::Unit::TestCase
-  include CodeStock
+  include Milkode
   include FileTestUtils
 
   def test_default_dir

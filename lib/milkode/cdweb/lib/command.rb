@@ -11,7 +11,7 @@ require 'milkode/cdweb/lib/search_contents'
 require 'milkode/cdweb/lib/search_files'
 require 'milkode/cdweb/lib/mkurl'
 
-module CodeStock
+module Milkode
   def view(record, params, before)
     @title = record.shortpath
     @path = record.shortpath

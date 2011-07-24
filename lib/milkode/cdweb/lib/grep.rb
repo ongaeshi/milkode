@@ -5,7 +5,7 @@
 # @author ongaeshi
 # @date   2010/10/18
 
-module CodeStock
+module Milkode
   class Grep
     def initialize(content)
       @content = content

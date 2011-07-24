@@ -9,13 +9,13 @@ require 'pathname'
 require 'milkode/cdstk/cdstk_yaml'
 require 'milkode/common/grenfiletest'
 require 'milkode/common/util'
-include CodeStock
+include Milkode
 require 'kconv'
 require 'readline'
 require 'milkode/cdweb/lib/database'
 require 'open-uri'
 
-module CodeStock
+module Milkode
   class Cdstk
     # バイグラムでトークナイズする。連続する記号・アルファベット・数字は一語として扱う。
     # DEFAULT_TOKENIZER = "TokenBigram"

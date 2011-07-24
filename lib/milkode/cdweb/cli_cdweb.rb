@@ -53,7 +53,7 @@ module Rack
   end
 end
 
-module CodeStock
+module Milkode
   class CLI_Cdweb
     def self.execute(stdout, argv)
       options = {

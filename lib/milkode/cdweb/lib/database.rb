@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # @file 
-# @brief  CodeStockで使用するデータベース
+# @brief  Milkodeで使用するデータベース
 # @author ongaeshi
 # @date   2010/10/17
 
@@ -10,9 +10,9 @@ require 'pathname'
 require 'singleton'
 require 'groonga'
 require 'milkode/common/dbdir'
-include CodeStock
+include Milkode
 
-module CodeStock
+module Milkode
   class Database
     include Singleton
 

@@ -3,9 +3,9 @@ require 'optparse'
 require 'milkode/cdstk/cdstk'
 require 'milkode/common/dbdir.rb'
 require 'milkode/cdweb/cli_cdweb'
-include CodeStock
+include Milkode
 
-module CodeStock
+module Milkode
   class CLI_Cdstksub
     def self.setup_init
       options = {:init_default => false}
@@ -80,7 +80,7 @@ EOF
         # ----------------------------
         :server      => "thin",
         :LaunchBrowser => true,
-        :DbDir => CodeStock::CLI_Cdweb::select_dbdir,
+        :DbDir => Milkode::CLI_Cdweb::select_dbdir,
       }
       
       opts = OptionParser.new("#{File.basename($0)} web")

@@ -4,9 +4,9 @@ require 'milkode/cdstk/cli_cdstksub'
 require 'milkode/cdstk/cdstk'
 require 'milkode/common/dbdir.rb'
 require 'milkode/cdweb/cli_cdweb'
-include CodeStock
+include Milkode
 
-module CodeStock
+module Milkode
   class CLI_Cdstk
     def self.execute(stdout, arguments=[])
       opt = OptionParser.new <<EOF
@@ -70,7 +70,7 @@ EOF
         when 'dump'
           obj.dump
         when 'web'
-          CodeStock::CLI_Cdweb.execute_with_options(stdout, suboptions[subcommand])
+          Milkode::CLI_Cdweb.execute_with_options(stdout, suboptions[subcommand])
         end
       else
         if subcommand

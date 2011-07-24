@@ -9,7 +9,7 @@ require 'rubygems'
 require 'rack'
 include Rack::Utils
 
-module CodeStock
+module Milkode
   class Mkurl
     def initialize(path, params)
       @path = escape_path(path)

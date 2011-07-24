@@ -9,7 +9,7 @@ require 'rubygems'
 require 'coderay'
 require 'coderay/helpers/file_type'
 
-module CodeStock
+module Milkode
   class CodeRayWrapper
     attr_reader :line_number_start
     

@@ -8,7 +8,7 @@
 require 'rubygems'
 require 'rack'
 
-module CodeStock
+module Milkode
   class Query
     attr_reader :query_string
 

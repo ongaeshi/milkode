@@ -7,7 +7,7 @@
 
 require 'fileutils'
 
-module CodeStock
+module Milkode
   module Dbdir
     module_function
 

@@ -2,9 +2,9 @@
 require 'optparse'
 require 'milkode/findgrep/findgrep'
 require 'milkode/common/dbdir'
-include CodeStock
+include Milkode
 
-module CodeStock
+module Milkode
   class CLI_Cdview
     def self.execute(stdout, arguments=[])
       # オプション

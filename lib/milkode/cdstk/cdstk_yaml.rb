@@ -9,7 +9,7 @@ require 'yaml'
 require 'pathname'
 require 'milkode/common/dbdir'
 
-module CodeStock
+module Milkode
   class CdstkYaml
     class YAMLAlreadyExist < RuntimeError
     end

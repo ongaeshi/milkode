@@ -4,7 +4,7 @@ require 'rubygems'
 require 'archive/zip'
 require 'fileutils'
 
-module CodeStock
+module Milkode
   module Util
     module_function
 
@@ -44,7 +44,7 @@ module CodeStock
   end
 end
 
-# -- 将来的には CodeStock に統一 ---
+# -- 将来的には Milkode に統一 ---
 
 module Gren
   module Util

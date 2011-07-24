@@ -8,7 +8,7 @@
 require 'test_helper'
 require 'milkode/cdweb/lib/mkurl'
 
-module CodeStock
+module Milkode
   class TestMkurl < Test::Unit::TestCase
     def test_basic
       p1 = {:query => 'test', :shead => 'package', :page => '2'}

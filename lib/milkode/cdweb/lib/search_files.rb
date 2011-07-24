@@ -9,7 +9,7 @@ require 'milkode/cdweb/lib/query'
 require 'milkode/cdweb/lib/mkurl'
 require 'milkode/cdweb/lib/command'
 
-module CodeStock
+module Milkode
   class SearchFiles
     attr_reader :total_records
 

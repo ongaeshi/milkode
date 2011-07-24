@@ -8,7 +8,7 @@
 require 'test_helper'
 require 'milkode/cdweb/lib/query'
 
-module CodeStock
+module Milkode
   class TestQuery < Test::Unit::TestCase
     def test_query
       q = create_query("test fire beam")

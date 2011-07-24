@@ -13,7 +13,7 @@ require 'stringio'
 require 'milkode/cdstk/cdstk'
 require 'milkode/cdweb/lib/database'
 
-module CodeStock
+module Milkode
   class TestDatabase < Test::Unit::TestCase
     include FileTestUtils
 
