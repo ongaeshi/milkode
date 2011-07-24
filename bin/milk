@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
 #
-#  Created on 2010-8-25.
+#  Created on 2010-9-12.
 #  Copyright (c) 2010. All rights reserved.
 
 require 'rubygems'
-require 'milkode/cdview/cli_cdview'
+require 'milkode/cdstk/cli_cdstk'
 
 Version = "0.1.0"
-Milkode::CLI_Cdview.execute(STDOUT, ARGV)
+Milkode::CLI_Cdstk.execute(STDOUT, ARGV)

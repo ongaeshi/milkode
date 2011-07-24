@@ -1,6 +1,6 @@
 require 'test_helper'
-require 'common/util'
-require 'common/grensnip'
+require 'milkode/common/util'
+require 'milkode/common/grensnip'
 
 class TestGrenSnip < Test::Unit::TestCase
   def setup

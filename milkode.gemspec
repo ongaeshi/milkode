@@ -28,7 +28,48 @@ Gem::Specification.new do |s|
     "VERSION",
     "bin/cdv",
     "bin/cdview",
+    "bin/milk",
+    "lib/milkode/cdstk/cdstk.rb",
+    "lib/milkode/cdstk/cdstk_yaml.rb",
+    "lib/milkode/cdstk/cli_cdstk.rb",
+    "lib/milkode/cdstk/cli_cdstksub.rb",
+    "lib/milkode/cdview/cli_cdview.rb",
+    "lib/milkode/cdweb/app.rb",
+    "lib/milkode/cdweb/cli_cdweb.rb",
+    "lib/milkode/cdweb/config.ru",
+    "lib/milkode/cdweb/lib/coderay_wrapper.rb",
+    "lib/milkode/cdweb/lib/command.rb",
+    "lib/milkode/cdweb/lib/database.rb",
+    "lib/milkode/cdweb/lib/grep.rb",
+    "lib/milkode/cdweb/lib/mkurl.rb",
+    "lib/milkode/cdweb/lib/query.rb",
+    "lib/milkode/cdweb/lib/search_contents.rb",
+    "lib/milkode/cdweb/lib/search_files.rb",
+    "lib/milkode/cdweb/public/css/coderay.css",
+    "lib/milkode/cdweb/public/css/gren.css",
+    "lib/milkode/cdweb/public/images/directory.png",
+    "lib/milkode/cdweb/public/images/file.png",
+    "lib/milkode/cdweb/public/images/gren-icon-mini.png",
+    "lib/milkode/cdweb/public/images/gren-icon.png",
+    "lib/milkode/cdweb/views/filelist.haml",
+    "lib/milkode/cdweb/views/help.haml",
+    "lib/milkode/cdweb/views/index.haml",
+    "lib/milkode/cdweb/views/layout.haml",
+    "lib/milkode/cdweb/views/search.haml",
+    "lib/milkode/cdweb/views/view.haml",
+    "lib/milkode/common/dbdir.rb",
+    "lib/milkode/common/display_util.rb",
+    "lib/milkode/common/grenfiletest.rb",
+    "lib/milkode/common/grensnip.rb",
+    "lib/milkode/common/platform.rb",
+    "lib/milkode/common/string_snip.rb",
+    "lib/milkode/common/util.rb",
+    "lib/milkode/findgrep/findgrep.rb",
+    "lib/milkode/findgrep/result.rb",
     "milkode.gemspec",
+    "test/data/abc.zip",
+    "test/data/nodir_abc.zip",
+    "test/data/nodir_abc_xpi.xpi",
     "test/file_assert.rb",
     "test/file_test_utils.rb",
     "test/rake_test_loader.rb",
@@ -44,7 +85,8 @@ Gem::Specification.new do |s|
     "test/test_helper.rb",
     "test/test_mkurl.rb",
     "test/test_query.rb",
-    "test/test_string_snip.rb"
+    "test/test_string_snip.rb",
+    "test/test_util.rb"
   ]
   s.homepage = %q{http://github.com/ongaeshi/milkode}
   s.licenses = ["MIT"]
@@ -67,7 +109,8 @@ Gem::Specification.new do |s|
     "test/test_helper.rb",
     "test/test_mkurl.rb",
     "test/test_query.rb",
-    "test/test_string_snip.rb"
+    "test/test_string_snip.rb",
+    "test/test_util.rb"
   ]
 
   if s.respond_to? :specification_version then

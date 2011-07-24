@@ -5,7 +5,7 @@
 # @author ongaeshi
 # @date   2011/07/16
 
-module CodeStock
+module Milkode
   JS_SHORT_CODE = <<EOF
 console.dir_s = function (object, msg) {
   var disp_properties  = function (properties, indent, out) {

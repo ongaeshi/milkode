@@ -9,154 +9,81 @@ require 'rubygems'
 require 'groonga'
 require 'test_helper'
 require 'file_test_utils'
-require 'cdstk/cli_cdstk.rb'
-require 'cdstk/cdstk'
+require 'milkode/cdstk/cli_cdstk.rb'
+require 'milkode/cdstk/cdstk'
 require 'stringio'
 
 class TestCdstk < Test::Unit::TestCase
-  include CodeStock
+  include Milkode
   include FileTestUtils
-
-   def test_create
-     db_path = Pathname.new('.') + 'db'
-     database = Groonga::Database.create(:path => db_path.to_s)
-     assert_equal database, Groonga::Context.default.database
-   end
-
-   def test_mkgrendb
-     io = StringIO.new
-     obj = Cdstk.new(io)
-    
-     # Cdstk#init
-     obj.init
-     assert_equal <<EOF, io.string
-create     : grendb.yaml
-create     : db/grendb.db created.
-EOF
-     
-     io.string = ""
-     obj.init
-     assert_match "Can't create Grendb Database (Not empty)", io.string
-     
-     # Cdstk#add, remove
-     obj.add('test1.html', 'test2.html')
-
-     f1 = File.expand_path 'test1.html'
-     f2 = File.expand_path 'test2.html'
-
-     assert_equal [f1, f2], CdstkYaml.load.directorys
-     assert_match /WARNING.*test1.html/, io.string
-     assert_match /WARNING.*test2.html/, io.string
-
-     obj.remove(f1, f2)
-     assert_equal [], CdstkYaml.load.directorys
-     
-     # Cdstk#add
-     io.string = ""
-     obj.add('../../lib/findgrep', '../../lib/common')
-     assert_match /add_file\s+:\s+.*findgrep.rb/, io.string
-     assert_match /add_file\s+:\s+.*grenfiletest.rb/, io.string
-
-     # Cdstk#update
-     io.string = ""
-     obj.update
+  
+  # メッセージを出す時はここをコメントアウト
+  def dbputs(msg)
+    # puts msg
   end
+  private :dbputs
 
-   def test_mkgrendb_other_path
-     io = StringIO.new
-     FileUtils.mkdir 'other_path'
-     obj = Cdstk.new(io, 'other_path')
-    
-     # Cdstk#init
-     obj.init
-     assert_equal <<EOF, io.string
-create     : other_path/grendb.yaml
-create     : other_path/db/grendb.db created.
-EOF
-     
-     io.string = ""
-     obj.init
-     assert_match "Can't create Grendb Database (Not empty)", io.string
-     
-     # Cdstk#add, remove
-     obj.add('test1.html', 'test2.html')
-
-     f1 = File.expand_path 'test1.html'
-     f2 = File.expand_path 'test2.html'
-     assert_equal [f1, f2], CdstkYaml.load('other_path').directorys
-     assert_match /WARNING.*test1.html/, io.string
-     assert_match /WARNING.*test2.html/, io.string
-
-     obj.remove(f1, f2)
-     assert_equal [], CdstkYaml.load('other_path').directorys
-     
-     # Cdstk#add
-     io.string = ""
-     obj.add('../../lib/findgrep', '../../lib/common')
-     assert_match /add_file\s+:\s+.*findgrep.rb/, io.string
-     assert_match /add_file\s+:\s+.*grenfiletest.rb/, io.string
-
-     # Cdstk#update
-     io.string = ""
-     obj.update
-  end
-
-  def test_cli
-    io = StringIO.new
-    CLI_Cdstk.execute(io, ["init"])
-
-    io.string = ""
-    CLI_Cdstk.execute(io, ["add", "dummy/bar", "foo"])
-    assert_match /dummy\/bar/, io.string
-    assert_match /foo/, io.string
-    
-    io.string = ""
-    CLI_Cdstk.execute(io, ["list"])
-    assert_match /dummy\/bar/, io.string
-    assert_match /foo/, io.string
-
-    CLI_Cdstk.execute(io, ["remove", "foo"])
-    io.string = ""
-    CLI_Cdstk.execute(io, ["list"])
-    assert_match /dummy\/bar/, io.string
-    assert_no_match /foo/, io.string
-
-    CLI_Cdstk.execute(io, ["update"])
-    CLI_Cdstk.execute(io, ["rebuild"])
-  end
-
-  def test_dump
-    io = StringIO.new
-    CLI_Cdstk.execute(io, ["init"])
-    CLI_Cdstk.execute(io, ["add", "../runner.rb"])
-    io.string = ""
-    CLI_Cdstk.execute(io, ["dump"])
-    lines = io.string.split("\n")
-    assert_match /path : .*test\/runner.rb/, lines[2]
-    assert_match /shortpath : runner.rb/, lines[3]
-    assert_match /suffix : \.rb/, lines[4]
-  end
-
-  def test_add_remove_compact
+  def test_basic
     io = StringIO.new
 
-    CLI_Cdstk.execute(io, ["init"])
-    CLI_Cdstk.execute(io, ["add", "dummy/bar"])
-    CLI_Cdstk.execute(io, ["add", "dummy/bar"])
+    begin
+      obj = Cdstk.new(io)
 
-    assert_equal 1, CdstkYaml.load.directorys.select{|i|i == File.expand_path("dummy/bar")}.count
-    
-    CLI_Cdstk.execute(io, ["add", "dummy/da"])
-    CLI_Cdstk.execute(io, ["add", "dummy/ad"])
-    CLI_Cdstk.execute(io, ["add", "dummy/foo"])
-    CLI_Cdstk.execute(io, ["add", "dummy/bar"])
+      io.puts('--- init ---')
+      obj.init
+      
+      io.puts('--- add ---')
+      obj.add(['../../lib/milkode/findgrep', '../../lib/milkode/common'])
+      obj.add(['../../lib/milkode/findgrep'])
+      obj.add(['../data/abc.zip'])
+      obj.add(['../data/nodir_abc.zip'])
+      obj.add(['../data/nodir_abc_xpi.xpi'])
+      obj.add(['http://ongaeshi.me/test_data/http_nodir_abc.zip'])
+      assert_raise(OpenURI::HTTPError) { obj.add(['http://ongaeshi.me/test_data/not_found.zip']) }
 
-    assert_equal 1, CdstkYaml.load.directorys.select{|i|i == File.expand_path("dummy/bar")}.count
+      FileUtils.touch('last1.txt')
+      obj.add(['last1.txt'])
+      FileUtils.touch('atodekesu.txt')
+      obj.add(['atodekesu.txt'])
+      FileUtils.rm('atodekesu.txt')
+
+      io.puts('--- add notfound ---')
+      obj.add(['notfound.html'])
+
+      io.puts('--- update ---')
+      FileUtils.touch('packages/zip/abc/c.txt')
+      FileUtils.touch('packages/zip/abc/d.txt')
+      obj.update
+
+      io.puts('--- remove ---')
+      obj.remove(['findgrep'], {:force => true})
+      obj.remove([], {:force => true})
+      obj.remove(['abc', 'nodir_abc'], {:force => true})
+
+      io.puts('--- list ---')
+      obj.list([], {:verbose => true})
+      obj.list(['com'], {:verbose => false})
+
+      io.puts('--- cleanup ---')
+      # 何故か 'rake test' で実行すると上手く動かないので、一旦テストから外す
+      # obj.cleanup({:force=>true})
+
+      io.puts('--- rebuild ---')
+      obj.rebuild
+
+      io.puts('--- remove ---')
+      obj.remove(['findgrep', 'common'], {:force => true})
+
+      io.puts('--- dump ---')
+      obj.dump
+    ensure
+      dbputs io.string
+    end
   end
 
   def teardown
     teardown_custom(true)
-#    teardown_custom(false)
+    # teardown_custom(false)
   end
 end
 

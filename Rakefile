@@ -13,10 +13,10 @@ require 'rake'
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
-  gem.name = "codestock"
-  gem.homepage = "http://github.com/ongaeshi/codestock"
+  gem.name = "milkode"
+  gem.homepage = "http://github.com/ongaeshi/milkode"
   gem.license = "MIT"
-  gem.summary = %Q{one-line summary of your gem}
+  gem.summary = %Q{Line based local source(src) code search engin & web-app}
   gem.description = %Q{longer description of your gem}
   gem.email = "ongaeshi0621@gmail.com"
   gem.authors = ["ongaeshi"]
@@ -25,9 +25,11 @@ Jeweler::Tasks.new do |gem|
   gem.add_runtime_dependency 'termcolor','>= 1.2.0'
   gem.add_runtime_dependency 'rroonga','>= 1.0.0'
   gem.add_runtime_dependency 'rack','>=1.2.1'
+  gem.add_runtime_dependency 'sinatra', '>=1.2.6'
   gem.add_runtime_dependency 'launchy', '>=0.3.7'
   gem.add_runtime_dependency 'coderay', '>=0.9.8'
   gem.add_runtime_dependency 'thin', '>=1.2.10'
+  gem.add_runtime_dependency 'archive-zip', '>=0.3.0'
 
   # and development dependencies are only needed for development (ie running rake tasks, tests, etc)
   #  gem.add_development_dependency 'rspec', '> 1.2.3'
@@ -70,7 +72,7 @@ Rake::RDocTask.new do |rdoc|
   version = File.exist?('VERSION') ? File.read('VERSION') : ""
 
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "codestock #{version}"
+  rdoc.title = "milkode #{version}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
