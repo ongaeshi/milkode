@@ -48,7 +48,7 @@ module CodeStock
         @out.puts "create     : #{yaml_file}"
         db_create(db_file)
       else
-        @out.puts "Can't create milkode db (Because not empty in #{Dir.pwd})"
+        @out.puts "Can't create milkode db (Because not empty in #{db_dir_expand})"
       end
     end
 
@@ -177,7 +177,7 @@ module CodeStock
         remove_list = yaml_load.list(query)
         return if remove_list.empty?
         
-        list(args, {:verbose => false})
+        list(args, {:verbose => true})
         
         if options[:force] or yes_or_no("Remove #{remove_list.size} contents? (yes/no)")
           # yamlから削除
@@ -232,8 +232,8 @@ module CodeStock
       @out.puts str
     end
 
-    def pwd
-      dir = db_file_expand
+    def pwd(options)
+      dir = options[:default] ? db_default_dir : db_dir_expand
       
       if File.exist? dir
         @out.puts dir
@@ -285,6 +285,10 @@ module CodeStock
 
     def db_file_expand
       File.expand_path(db_file)
+    end
+
+    def db_dir_expand
+      File.expand_path(@db_dir)
     end
 
     def yaml_file

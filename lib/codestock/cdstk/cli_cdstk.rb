@@ -33,7 +33,7 @@ EOF
       subopt['update'] = OptionParser.new("#{File.basename($0)} update package1 [package2 ...]")
       subopt['remove'], suboptions['remove'] = CLI_Cdstksub.setup_remove
       subopt['list'], suboptions['list'] = CLI_Cdstksub.setup_list
-      subopt['pwd'] = OptionParser.new("#{File.basename($0)} pwd")
+      subopt['pwd'], suboptions['pwd'] = CLI_Cdstksub.setup_pwd
       subopt['cleanup'], suboptions['cleanup'] = CLI_Cdstksub.setup_cleanup
       subopt['rebuild'] = OptionParser.new("#{File.basename($0)} rebuild")
       subopt['dump'] = OptionParser.new("#{File.basename($0)} dump")
@@ -62,7 +62,7 @@ EOF
         when 'list'
           obj.list(arguments, suboptions[subcommand])
         when 'pwd'
-          obj.pwd
+          obj.pwd(suboptions[subcommand])
         when 'cleanup'
           obj.cleanup(suboptions[subcommand])
         when 'rebuild'

@@ -51,6 +51,15 @@ EOF
       return opt, options
     end
 
+    def self.setup_pwd
+      options = {:default => false}
+
+      opt = OptionParser.new("#{File.basename($0)} pwd package1 [package2 ...]")
+      opt.on('--default', 'Show default db, ENV[\'MILKODE_DEFAULT_DIR\'] or ~/.milkode.') { options[:default] = true }
+
+      return opt, options
+    end
+
     def self.setup_cleanup
       options = {:verbose => false, :force => false}
       
