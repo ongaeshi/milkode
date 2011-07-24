@@ -8,30 +8,32 @@
 require 'fileutils'
 
 module CodeStock
-  DEFAULT_PATH = '~/.codestock'
-  
-  def db_default_dir
-    if (ENV['MILKODE_DEFAULT_DIR'])
-      File.expand_path ENV['MILKODE_DEFAULT_DIR']
-    else
-      File.expand_path DEFAULT_PATH
+  module Dbdir
+    module_function
+
+    def default_dir
+      if (ENV['MILKODE_DEFAULT_DIR'])
+        File.expand_path ENV['MILKODE_DEFAULT_DIR']
+      else
+        File.expand_path '~/.milkode'
+      end
     end
-  end
 
-  def dbdir?(path = '.')
-    FileTest.exist? db_yaml_path(path)
-  end
+    def groonga_path(path = '.')
+      (Pathname.new(path) + 'db/milkode.db').to_s
+    end
 
-  def db_groonga_path(path = '.')
-    (Pathname.new(path) + 'db/grendb.db').to_s
-  end
+    def expand_groonga_path(path = '.')
+      File.expand_path groonga_path(path)
+    end
+    
+    def yaml_path(path = '.')
+      (Pathname.new(path) + 'milkode.yaml').to_s
+    end
 
-  def db_expand_groonga_path(path = '.')
-    File.expand_path db_groonga_path(path)
-  end
-
-  def db_yaml_path(path = '.')
-    (Pathname.new(path) + 'grendb.yaml').to_s
+    def dbdir?(path = '.')
+      FileTest.exist? yaml_path(path)
+    end
   end
 end
 

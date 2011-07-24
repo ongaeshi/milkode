@@ -19,7 +19,7 @@ class TestCdstk < Test::Unit::TestCase
   
   # メッセージを出す時はここをコメントアウト
   def dbputs(msg)
-    puts msg
+    # puts msg
   end
   private :dbputs
 

@@ -86,15 +86,15 @@ EOF
     def self.select_dbdir(subcommand, init_default)
       if (subcommand == 'init')
         if (init_default)
-          db_default_dir
+          Dbdir.default_dir
         else
           '.'
         end
       else
-        if (dbdir?('.') || !dbdir?(db_default_dir))
+        if (Dbdir.dbdir?('.') || !Dbdir.dbdir?(Dbdir.default_dir))
           '.'
         else
-          db_default_dir
+          Dbdir.default_dir
         end
       end
     end

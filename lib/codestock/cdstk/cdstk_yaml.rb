@@ -7,6 +7,7 @@
 
 require 'yaml'
 require 'pathname'
+require 'codestock/common/dbdir'
 
 module CodeStock
   class CdstkYaml
@@ -87,7 +88,7 @@ module CodeStock
     end
 
     def self.yaml_file(path)
-      (Pathname.new(path) + 'grendb.yaml').to_s
+      Dbdir.yaml_path(path)
     end
 
     class Query

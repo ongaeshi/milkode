@@ -9,14 +9,14 @@ module CodeStock
     def self.execute(stdout, arguments=[])
       # オプション
       option = FindGrep::FindGrep::DEFAULT_OPTION
-      option.dbFile = db_groonga_path(db_default_dir)
+      option.dbFile = Dbdir.groonga_path(Dbdir.default_dir)
       
       # デフォルトのマッチモードは'File'
       option.isMatchFile = true
 
       # オプション解析
       opt = OptionParser.new("#{File.basename($0)} [option] keyword1 [keyword2 ...]")
-      opt.on('--db [GREN_DB_FILE]', 'Search from the grendb database.') {|v| option.dbFile = db_groonga_path(v) }
+      opt.on('--db [GREN_DB_FILE]', 'Search from the grendb database.') {|v| option.dbFile = Dbdir.groonga_path(v) }
       opt.on('-f KEYWORD', '--file-keyword KEYWORD', 'Path keyword. (Enable multiple call)') {|v| option.filePatterns << v}
       opt.on('-s SUFFIX', '--suffix SUFFIX',  'Search suffix.') {|v| option.suffixs << v }
       opt.on('-i', '--ignore', 'Ignore case.') {|v| option.ignoreCase = true}

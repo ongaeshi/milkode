@@ -23,11 +23,11 @@ module CodeStock
     end
 
     def initialize
-      open(@@db_dir || db_default_dir)
+      open(@@db_dir || Dbdir.default_dir)
     end
 
     def open(db_dir)
-      dbfile = db_expand_groonga_path(db_dir)
+      dbfile = Dbdir.expand_groonga_path(db_dir)
       
       if File.exist? dbfile
         Groonga::Database.open(dbfile)
@@ -151,7 +151,7 @@ module CodeStock
     def reopen_patch
       # 削除系のコマンドが上手く動作しないためのパッチ
       # 本質的な解決にはなっていないと思う
-      open(@@db_dir || db_default_dir)
+      open(@@db_dir || Dbdir.default_dir)
     end
 
     def searchMain(patterns, packages, fpaths, suffixs, offset, limit)

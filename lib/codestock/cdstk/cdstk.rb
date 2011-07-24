@@ -17,8 +17,6 @@ require 'open-uri'
 
 module CodeStock
   class Cdstk
-    DB_FILE_PATH = 'db/grendb.db'
-    
     # バイグラムでトークナイズする。連続する記号・アルファベット・数字は一語として扱う。
     # DEFAULT_TOKENIZER = "TokenBigram"
 
@@ -233,7 +231,7 @@ module CodeStock
     end
 
     def pwd(options)
-      dir = options[:default] ? db_default_dir : db_dir_expand
+      dir = options[:default] ? Dbdir.default_dir : db_dir_expand
       
       if File.exist? dir
         @out.puts dir
@@ -290,7 +288,7 @@ module CodeStock
     private
 
     def db_file
-      (Pathname.new(@db_dir) + DB_FILE_PATH).to_s
+      Dbdir.expand_groonga_path(@db_dir)
     end
 
     def db_file_expand

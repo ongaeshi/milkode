@@ -15,6 +15,7 @@ class TestBinExec < Test::Unit::TestCase
     io = StringIO.new
 
     CodeStock::CLI_Cdstk.execute(io)
+    
     CodeStock::CLI_Cdview.execute(io)
 
     # 一定時間だけ起動するような仕組みは無いものか

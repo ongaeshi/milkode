@@ -51,7 +51,7 @@ class TestCdstkYaml < Test::Unit::TestCase
 
     # save
     yaml.save
-    assert_equal <<EOF, open('grendb.yaml').read
+    assert_equal <<EOF, open('milkode.yaml').read
 --- 
 version: 0.1
 contents: 
@@ -66,7 +66,7 @@ EOF
     yaml.save
     
     # save
-    assert_equal <<EOF, open('otherpath/grendb.yaml').read
+    assert_equal <<EOF, open('otherpath/milkode.yaml').read
 --- 
 version: 0.1
 contents: []
