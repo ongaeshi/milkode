@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{milkode}
-  s.version = "0.1.0"
+  s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ongaeshi"]
@@ -14,6 +14,7 @@ Gem::Specification.new do |s|
   s.email = %q{ongaeshi0621@gmail.com}
   s.executables = ["cdv", "milk", "cdview"]
   s.extra_rdoc_files = [
+    "LICENSE.txt",
     "README.rdoc"
   ]
   s.files = [
@@ -21,6 +22,7 @@ Gem::Specification.new do |s|
     "Gemfile",
     "Gemfile.lock",
     "HISTORY.rdoc",
+    "LICENSE.txt",
     "README.rdoc",
     "Rakefile",
     "VERSION",
@@ -87,7 +89,7 @@ Gem::Specification.new do |s|
     "test/test_util.rb"
   ]
   s.homepage = %q{http://github.com/ongaeshi/milkode}
-  s.licenses = ["GPL"]
+  s.licenses = ["MIT"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.6}
   s.summary = %q{Line based local source code search engine & web-app.}
