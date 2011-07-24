@@ -6,7 +6,7 @@
 # @date   2010/10/21
 
 require 'test_helper'
-require 'codestock/cdweb/lib/query'
+require 'milkode/cdweb/lib/query'
 
 module CodeStock
   class TestQuery < Test::Unit::TestCase

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-require 'codestock/common/string_snip'
+require 'milkode/common/string_snip'
 
 class GrenSnip
   MAX_LINE_SIZE = 256

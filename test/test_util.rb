@@ -5,7 +5,7 @@
 # @author ongaeshi
 # @date   2011/02/20
 
-require 'codestock/common/util'
+require 'milkode/common/util'
 require 'test/unit'
 require 'file_test_utils'
 

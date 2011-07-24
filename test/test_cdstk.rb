@@ -9,8 +9,8 @@ require 'rubygems'
 require 'groonga'
 require 'test_helper'
 require 'file_test_utils'
-require 'codestock/cdstk/cli_cdstk.rb'
-require 'codestock/cdstk/cdstk'
+require 'milkode/cdstk/cli_cdstk.rb'
+require 'milkode/cdstk/cdstk'
 require 'stringio'
 
 class TestCdstk < Test::Unit::TestCase

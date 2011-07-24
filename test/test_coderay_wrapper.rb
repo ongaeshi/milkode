@@ -8,7 +8,7 @@
 require 'test_helper'
 require 'file_assert'
 require 'test_coderay_wrapper_data'
-require 'codestock/cdweb/lib/coderay_wrapper'
+require 'milkode/cdweb/lib/coderay_wrapper'
 
 module CodeStock
   class TestCodeRayWrapper < Test::Unit::TestCase

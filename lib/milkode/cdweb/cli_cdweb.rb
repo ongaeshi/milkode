@@ -3,7 +3,7 @@ require 'rubygems'
 require 'rack'
 require 'launchy'
 require 'optparse'
-require 'codestock/cdweb/lib/database'
+require 'milkode/cdweb/lib/database'
 
 module Rack
   class Server

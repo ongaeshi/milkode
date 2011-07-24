@@ -4,7 +4,7 @@
 #  Copyright (c) 2010. All rights reserved.
 
 require 'rubygems'
-require 'codestock/cdview/cli_cdview'
+require 'milkode/cdview/cli_cdview'
 
 Version = "0.1.0"
 CodeStock::CLI_Cdview.execute(STDOUT, ARGV)

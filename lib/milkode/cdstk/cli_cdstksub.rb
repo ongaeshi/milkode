@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 require 'optparse'
-require 'codestock/cdstk/cdstk'
-require 'codestock/common/dbdir.rb'
-require 'codestock/cdweb/cli_cdweb'
+require 'milkode/cdstk/cdstk'
+require 'milkode/common/dbdir.rb'
+require 'milkode/cdweb/cli_cdweb'
 include CodeStock
 
 module CodeStock

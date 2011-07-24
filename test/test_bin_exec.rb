@@ -7,8 +7,8 @@
 
 require 'rubygems'
 require 'test/unit'
-require 'codestock/cdstk/cli_cdstk'
-require 'codestock/cdview/cli_cdview'
+require 'milkode/cdstk/cli_cdstk'
+require 'milkode/cdview/cli_cdview'
 
 class TestBinExec < Test::Unit::TestCase
   def test_bin_exec

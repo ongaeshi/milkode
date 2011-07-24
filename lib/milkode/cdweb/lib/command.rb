@@ -5,11 +5,11 @@
 # @author ongaeshi
 # @date   2011/07/11
 
-require 'codestock/cdweb/lib/database'
-require 'codestock/cdweb/lib/coderay_wrapper'
-require 'codestock/cdweb/lib/search_contents'
-require 'codestock/cdweb/lib/search_files'
-require 'codestock/cdweb/lib/mkurl'
+require 'milkode/cdweb/lib/database'
+require 'milkode/cdweb/lib/coderay_wrapper'
+require 'milkode/cdweb/lib/search_contents'
+require 'milkode/cdweb/lib/search_files'
+require 'milkode/cdweb/lib/mkurl'
 
 module CodeStock
   def view(record, params, before)

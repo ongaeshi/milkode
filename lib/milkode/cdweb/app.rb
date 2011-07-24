@@ -11,9 +11,9 @@ require 'haml'
 require 'sass'
 
 $LOAD_PATH.unshift '../..'
-require 'codestock/cdweb/lib/database'
-require 'codestock/cdweb/lib/command'
-require 'codestock/cdweb/lib/mkurl'
+require 'milkode/cdweb/lib/database'
+require 'milkode/cdweb/lib/command'
+require 'milkode/cdweb/lib/mkurl'
 
 set :haml, :format => :html5
 

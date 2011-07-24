@@ -10,8 +10,8 @@ require 'groonga'
 require 'test_helper' 
 require 'file_test_utils'
 require 'stringio'
-require 'codestock/cdstk/cdstk'
-require 'codestock/cdweb/lib/database'
+require 'milkode/cdstk/cdstk'
+require 'milkode/cdweb/lib/database'
 
 module CodeStock
   class TestDatabase < Test::Unit::TestCase
@@ -51,9 +51,9 @@ module CodeStock
       db = Database.instance
       assert_equal [['test', false], ['lib', false], ["notfound.file", true]], db.fileList('')
       assert db.fileList('test').include? ['test/test_database.rb', true]
-      assert_equal ['lib/codestock', false],              db.fileList('lib')[0]
-      assert_equal ['lib/codestock/cdstk/cdstk.rb', true],      db.fileList('lib/codestock/cdstk')[0]
-      assert_equal nil,                               db.fileList('lib/codestock/cdstk/cdstk.rb')[0]
+      assert_equal ['lib/milkode', false],              db.fileList('lib')[0]
+      assert_equal ['lib/milkode/cdstk/cdstk.rb', true],      db.fileList('lib/milkode/cdstk')[0]
+      assert_equal nil,                               db.fileList('lib/milkode/cdstk/cdstk.rb')[0]
     end
 
     def t_cleanup

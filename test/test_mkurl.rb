@@ -6,7 +6,7 @@
 # @date   2010/10/21
 
 require 'test_helper'
-require 'codestock/cdweb/lib/mkurl'
+require 'milkode/cdweb/lib/mkurl'
 
 module CodeStock
   class TestMkurl < Test::Unit::TestCase

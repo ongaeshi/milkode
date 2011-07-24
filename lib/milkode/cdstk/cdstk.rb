@@ -6,13 +6,13 @@ require 'rubygems'
 require 'groonga'
 require 'fileutils'
 require 'pathname'
-require 'codestock/cdstk/cdstk_yaml'
-require 'codestock/common/grenfiletest'
-require 'codestock/common/util'
+require 'milkode/cdstk/cdstk_yaml'
+require 'milkode/common/grenfiletest'
+require 'milkode/common/util'
 include CodeStock
 require 'kconv'
 require 'readline'
-require 'codestock/cdweb/lib/database'
+require 'milkode/cdweb/lib/database'
 require 'open-uri'
 
 module CodeStock

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 require 'find'
-require 'codestock/common/util'
+require 'milkode/common/util'
 include Gren
 
 module FindGrep

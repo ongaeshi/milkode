@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 require 'optparse'
-require 'codestock/findgrep/findgrep'
-require 'codestock/common/dbdir'
+require 'milkode/findgrep/findgrep'
+require 'milkode/common/dbdir'
 include CodeStock
 
 module CodeStock

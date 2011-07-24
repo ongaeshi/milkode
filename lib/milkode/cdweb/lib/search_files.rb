@@ -5,9 +5,9 @@
 # @author ongaeshi
 # @date   2011/07/18
 
-require 'codestock/cdweb/lib/query'
-require 'codestock/cdweb/lib/mkurl'
-require 'codestock/cdweb/lib/command'
+require 'milkode/cdweb/lib/query'
+require 'milkode/cdweb/lib/mkurl'
+require 'milkode/cdweb/lib/command'
 
 module CodeStock
   class SearchFiles

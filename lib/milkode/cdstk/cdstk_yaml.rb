@@ -7,7 +7,7 @@
 
 require 'yaml'
 require 'pathname'
-require 'codestock/common/dbdir'
+require 'milkode/common/dbdir'
 
 module CodeStock
   class CdstkYaml
