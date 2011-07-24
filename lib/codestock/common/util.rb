@@ -7,11 +7,14 @@ require 'fileutils'
 module CodeStock
   module Util
     module_function
+
+    class ZipfileNotFound < RuntimeError ; end
     
     # zipファイルを展開し、展開フォルダ名を返す
+    # ファイルが見つからなかった時はnilを返す
     def zip_extract(filename, dst_dir)
-      FileUtils.mkdir_p dst_dir
-
+      raise ZipfileNotFound unless File.exist?(filename)
+      
       root_list = root_entrylist(filename)
       
       if (root_list.size == 1)

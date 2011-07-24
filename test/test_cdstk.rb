@@ -19,7 +19,7 @@ class TestCdstk < Test::Unit::TestCase
   
   # メッセージを出す時はここをコメントアウト
   def dbputs(msg)
-    # puts msg
+    puts msg
   end
   private :dbputs
 
@@ -34,9 +34,11 @@ class TestCdstk < Test::Unit::TestCase
       
       io.puts('--- add ---')
       obj.add(['../../lib/codestock/findgrep', '../../lib/codestock/common'])
+      obj.add(['../../lib/codestock/findgrep'])
       obj.add(['../data/abc.zip'])
       obj.add(['../data/nodir_abc.zip'])
       obj.add(['../data/nodir_abc_xpi.xpi'])
+      obj.add(['http://ongaeshi.me/test_data/http_nodir_abc.zip'])
 
       FileUtils.touch('last1.txt')
       obj.add(['last1.txt'])

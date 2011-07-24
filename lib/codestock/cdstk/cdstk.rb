@@ -72,18 +72,22 @@ module CodeStock
       yaml = yaml_load
 
       # コンテンツを読み込める形に変換
-      contents.map!{|v|convert_content(v)}
+      begin
+        contents.map!{|v|convert_content(v)}
+      rescue
+        return
+      end
 
       # 存在しないコンテンツがあった場合はその場で終了
       contents.each do |v|
         shortname = File.basename v
         if (yaml.exist? shortname)
-          @out.puts "Already exist '#{shortname}'."
+          error_alert("already exist '#{shortname}'.")
           return
         end
         
         unless (File.exist? v)
-          @out.puts "Not found #{v}."
+          error_alert("not found '#{v}'.")
           return
         end
       end
@@ -103,7 +107,12 @@ module CodeStock
 
     def convert_content(src)
       # アーカイブファイルなら展開
-      src = extract_file(src)
+      begin
+        src = extract_file(src)
+      rescue => e
+        error_alert("extract failure '#{src}'.")
+        raise e
+      end
 
       # 絶対パスに変換
       File.expand_path(src)
@@ -116,11 +125,9 @@ module CodeStock
       when '.zip', '.xpi'
         alert("extract", src)
         zip_dir = File.join(@db_dir, "packages/#{ext.sub(".", "")}")
-        File.join(zip_dir, Util::zip_extract(src, zip_dir))
-
+        result = File.join(zip_dir, Util::zip_extract(src, zip_dir))
       else
         src
-        
       end
     end
 
@@ -443,6 +450,10 @@ module CodeStock
 
     def alert(title, msg)
       @out.puts "#{title.ljust(10)} : #{msg}"
+    end
+
+    def error_alert(msg)
+      @out.puts "[fatal] #{msg}"
     end
 
   end
