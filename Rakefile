@@ -16,8 +16,8 @@ Jeweler::Tasks.new do |gem|
   gem.name = "milkode"
   gem.homepage = "http://github.com/ongaeshi/milkode"
   gem.license = "MIT"
-  gem.summary = %Q{Line based local source(src) code search engin & web-app}
-  gem.description = %Q{longer description of your gem}
+  gem.summary = %Q{Line based local source code search engine & web-app.}
+  gem.description = %Q{Line based local source code search engine & web-app.}
   gem.email = "ongaeshi0621@gmail.com"
   gem.authors = ["ongaeshi"]
 

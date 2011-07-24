@@ -1,5 +1,8 @@
-=== 0.1.2 2011/07/03
+=== 0.1.1 2011/07/25
 
-* Syntax highlighting (using CodeRay)
+* Add comment.
 
+=== 0.1.0 2011/07/25
+
+* 1st release.
 

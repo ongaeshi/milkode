@@ -1,6 +1,6 @@
 = milkode
 
-Description goes here.
+Line based local source code search engine & web-app.
 
 == Contributing to milkode
  
