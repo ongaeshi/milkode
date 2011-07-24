@@ -73,7 +73,15 @@ module CodeStock
       opts.on('--db DB_DIR', 'Database dir (default : ~/.codestock)') {|v| options[:DbDir] = v }
       opts.on("-o", "--host HOST", "listen on HOST (default: 0.0.0.0)") {|host| options[:Host] = host }
       opts.on('-p', '--port PORT', 'use PORT (default: 9292)') {|v| options[:Port] = v }
+      opts.on("-s", "--server SERVER", "serve using SERVER (default : thin)") {|s| options[:server] = s }
       opts.on('-n', '--no-browser', 'No launch browser.') {|v| options[:LaunchBrowser] = false }
+
+      # --hostが'-h'を上書きするので、'-h'を再定義してあげる
+      opts.on_tail("-h", "-?", "--help", "Show this message") do
+        puts opts
+        exit
+      end
+      
       opts.parse!(argv)
       
       # 実行！！

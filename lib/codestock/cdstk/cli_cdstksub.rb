@@ -11,7 +11,7 @@ module CodeStock
       options = {:init_default => false}
       
       opt = OptionParser.new("#{File.basename($0)} init")
-      opt.on('--default', 'Init db default path, ENV[\'CODESTOCK_DEFAULT_DIR\'] or ~/.codestock.') { options[:init_default] = true }
+      opt.on('--default', 'Init default db, ENV[\'MILKODE_DEFAULT_DIR\'] or ~/.milkode.') { options[:init_default] = true }
 
       return opt, options
     end
@@ -76,9 +76,10 @@ EOF
       }
       
       opts = OptionParser.new("#{File.basename($0)} web")
-      opts.on('--db DB_DIR', 'Database dir (default : ~/.codestock)') {|v| options[:DbDir] = v }
+      opts.on('--db DB_DIR', 'Database dir (default : current_dir)') {|v| options[:DbDir] = v }
       opts.on("-o", "--host HOST", "listen on HOST (default: 0.0.0.0)") {|host| options[:Host] = host }
       opts.on('-p', '--port PORT', 'use PORT (default: 9292)') {|v| options[:Port] = v }
+      opts.on("-s", "--server SERVER", "serve using SERVER (default : thin)") {|s| options[:server] = s }
       opts.on('-n', '--no-browser', 'No launch browser.') {|v| options[:LaunchBrowser] = false }
       
       # --hostが'-h'を上書きするので、'-h'を再定義してあげる
