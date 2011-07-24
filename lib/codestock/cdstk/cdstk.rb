@@ -244,13 +244,23 @@ module CodeStock
 
     def cleanup(options)
       if (options[:force] or yes_or_no("cleanup contents? (yes/no)"))
-        # yamlファイルのクリーンアップ
-        yaml = yaml_load
-        yaml.cleanup
-        yaml.save
-        
-        # データベースのクリーンアップ
-        Database.instance.cleanup(options[:verbose] ? @out : nil)
+        print_result do 
+          # yamlファイルのクリーンアップ
+          yaml = yaml_load
+          
+          yaml.cleanup do |v|
+            alert("rm_package", v['directory'])
+            @package_count += 1
+          end
+          
+          yaml.save
+          
+          # データベースのクリーンアップ
+          Database.instance.cleanup do |record|
+            alert("rm_record", record.path)
+            @file_count += 1
+          end
+        end
       end
     end
 

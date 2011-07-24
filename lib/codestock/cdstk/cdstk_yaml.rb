@@ -77,7 +77,12 @@ module CodeStock
 
     def cleanup
       contents.delete_if do |v|
-        !File.exist?(v['directory'])
+        if (!File.exist? v['directory'])
+          yield v if block_given?
+          true
+        else
+          false
+        end
       end
     end
 

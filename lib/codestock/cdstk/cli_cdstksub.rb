@@ -65,7 +65,6 @@ EOF
       
       opt = OptionParser.new("#{File.basename($0)} cleanup")
       opt.on('-f', '--force', 'Force cleanup.') { options[:force] = true }
-      opt.on('-v', '--verbose', 'Be verbose.')  { options[:verbose] = true }
 
       return opt, options
     end

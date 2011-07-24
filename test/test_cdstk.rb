@@ -45,6 +45,7 @@ class TestCdstk < Test::Unit::TestCase
       obj.add(['last1.txt'])
       FileUtils.touch('atodekesu.txt')
       obj.add(['atodekesu.txt'])
+      FileUtils.rm('atodekesu.txt')
 
       io.puts('--- add notfound ---')
       obj.add(['notfound.html'])
@@ -64,8 +65,8 @@ class TestCdstk < Test::Unit::TestCase
       obj.list(['com'], {:verbose => false})
 
       io.puts('--- cleanup ---')
-      # t_cleanup # 何故か 'rake test' で実行すると上手く動かないので、一旦テストから外す
-      # obj.cleanup({:verbose=>true, :force=>true})
+      # 何故か 'rake test' で実行すると上手く動かないので、一旦テストから外す
+      # obj.cleanup({:force=>true})
 
       io.puts('--- rebuild ---')
       obj.rebuild

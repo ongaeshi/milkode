@@ -131,7 +131,7 @@ module CodeStock
     end
 
     # 実体の存在しないデータを削除
-    def cleanup(io = nil)
+    def cleanup
       # データベースを開き直す
       reopen_patch
 
@@ -140,7 +140,7 @@ module CodeStock
 
       records.each do |r|
         unless File.exist? r.path
-          io.puts r.shortpath if io
+          yield r if block_given?
           r.record_id.delete
         end
       end
