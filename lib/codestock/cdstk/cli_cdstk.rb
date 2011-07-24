@@ -19,7 +19,7 @@ The most commonly used #{File.basename($0)} are:
   remove      Remove packages.
   list        List packages. 
   pwd         Disp current db.
-  cleanup     Cleanup garbage records, packages.
+  cleanup     Cleanup garbage records.
   rebuild     Rebuild db.
   dump        Dump records.
 EOF
@@ -31,9 +31,9 @@ EOF
       subopt['init'] = OptionParser.new("#{File.basename($0)} init")
       subopt['init'].on('--default', 'Init db default path, ENV[\'CODESTOCK_DEFAULT_DIR\'] or ~/.codestock.') { init_default = true }
       
+      subopt['add'] = setup_add
+      
       subopt['update'] = OptionParser.new("#{File.basename($0)} update content1 [content2 ...]")
-
-      subopt['add'] = OptionParser.new("#{File.basename($0)} add dir1 [dir2 ...]")
 
       remove_options = {:force => false, :verbose => false}
       subopt['remove'] = OptionParser.new("#{File.basename($0)} remove content1 [content2 ...]")
@@ -111,6 +111,21 @@ EOF
           db_default_dir
         end
       end
+    end
+
+    def self.setup_add
+      bin = File.basename($0)
+        
+      OptionParser.new(<<EOF)
+#{bin} add package1 [package2 ...]
+usage:
+  #{bin} add /path/to/dir1
+  #{bin} add /path/to/dir2 /path/to/dir3
+  #{bin} add /path/is/*
+  #{bin} add /path/to/zipfile.zip
+  #{bin} add /path/to/addon.xpi
+  #{bin} add http://example.com/urlfile.zip
+EOF
     end
 
     def self.setup_cleanup
