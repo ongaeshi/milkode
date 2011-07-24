@@ -55,13 +55,13 @@ class TestCdstk < Test::Unit::TestCase
       obj.update
 
       io.puts('--- remove ---')
-      obj.remove(['findgrep'], true, true)
-      obj.remove([], true, true)
-      obj.remove(['abc', 'nodir_abc'], true, true)
+      obj.remove(['findgrep'], {:force => true})
+      obj.remove([], {:force => true})
+      obj.remove(['abc', 'nodir_abc'], {:force => true})
 
       io.puts('--- list ---')
-      obj.list([], true)
-      obj.list(['com'], false)
+      obj.list([], {:verbose => true})
+      obj.list(['com'], {:verbose => false})
 
       io.puts('--- cleanup ---')
       # t_cleanup # 何故か 'rake test' で実行すると上手く動かないので、一旦テストから外す
@@ -71,7 +71,7 @@ class TestCdstk < Test::Unit::TestCase
       obj.rebuild
 
       io.puts('--- remove ---')
-      obj.remove(['findgrep', 'common'], true, true)
+      obj.remove(['findgrep', 'common'], {:force => true})
 
       io.puts('--- dump ---')
       obj.dump

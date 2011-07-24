@@ -167,7 +167,7 @@ module CodeStock
       filename
     end
 
-    def remove(args, is_force, is_verbose)
+    def remove(args, options)
       print_result do 
         db_open(db_file)
         
@@ -177,9 +177,9 @@ module CodeStock
         remove_list = yaml_load.list(query)
         return if remove_list.empty?
         
-        list(args, true)
+        list(args, {:verbose => false})
         
-        if is_force or yes_or_no("Remove #{remove_list.size} contents? (yes/no)")
+        if options[:force] or yes_or_no("Remove #{remove_list.size} contents? (yes/no)")
           # yamlから削除
           yaml.remove(query)
           yaml.save
@@ -214,7 +214,7 @@ module CodeStock
       return false
     end
 
-    def list(args, is_verbose)
+    def list(args, options)
       query = (args.empty?) ? nil : CdstkYaml::Query.new(args)
       a = yaml_load.list(query).map {|v| [File.basename(v['directory']), v['directory']] }
       max = a.map{|v|v[0].length}.max
@@ -222,7 +222,7 @@ module CodeStock
         v[0]
       }.map {|v|
         h = File.exist?(v[1]) ? '' : '? '
-        if (is_verbose)
+        if (options[:verbose])
           "#{(h + v[0]).ljust(max+2)} #{v[1]}"
         else
           "#{h}#{v[0]}"

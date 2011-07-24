@@ -30,17 +30,9 @@ EOF
       
       subopt['init'], suboptions['init'] = CLI_Cdstksub.setup_init
       subopt['add'] = CLI_Cdstksub.setup_add
-      subopt['update'] = OptionParser.new("#{File.basename($0)} update content1 [content2 ...]")
-
-      remove_options = {:force => false, :verbose => false}
-      subopt['remove'] = OptionParser.new("#{File.basename($0)} remove content1 [content2 ...]")
-      subopt['remove'].on('-f', '--force', 'Force remove.') { remove_options[:force] = true }
-      subopt['remove'].on('-v', '--verbose', 'Be verbose.') { remove_options[:verbose] = true }
-
-      list_options = {:verbose => false}
-      subopt['list'] = OptionParser.new("#{File.basename($0)} list content1 [content2 ...]")
-      subopt['list'].on('-v', '--verbose', 'Be verbose.') { list_options[:verbose] = true }
-      
+      subopt['update'] = OptionParser.new("#{File.basename($0)} update package1 [package2 ...]")
+      subopt['remove'], suboptions['remove'] = CLI_Cdstksub.setup_remove
+      subopt['list'], suboptions['list'] = CLI_Cdstksub.setup_list
       subopt['pwd'] = OptionParser.new("#{File.basename($0)} pwd")
       subopt['cleanup'], suboptions['cleanup'] = CLI_Cdstksub.setup_cleanup
       subopt['rebuild'] = OptionParser.new("#{File.basename($0)} rebuild")
@@ -66,9 +58,9 @@ EOF
         when 'add'
           obj.add(arguments)
         when 'remove'
-          obj.remove(arguments, remove_options[:force], remove_options[:verbose])
+          obj.remove(arguments, suboptions[subcommand])
         when 'list'
-          obj.list(arguments, list_options[:verbose])
+          obj.list(arguments, suboptions[subcommand])
         when 'pwd'
           obj.pwd
         when 'cleanup'
