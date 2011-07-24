@@ -15,12 +15,13 @@ class TestDbDir< Test::Unit::TestCase
   include FileTestUtils
 
   def test_db_default_dir
+    ENV['MILKODE_DEFAULT_DIR'] = nil
     assert_equal File.expand_path('~/.codestock'), db_default_dir
 
-    ENV['CODESTOCK_DEFAULT_DIR'] = "~/DummyDir"
+    ENV['MILKODE_DEFAULT_DIR'] = "~/DummyDir"
     assert_equal File.expand_path("~/DummyDir"), db_default_dir
 
-    ENV['CODESTOCK_DEFAULT_DIR'] = nil
+    ENV['MILKODE_DEFAULT_DIR'] = nil
     ENV['CODESTOCK_DEFAULT_DIRR'] = "~/DummyDir"
     assert_equal File.expand_path('~/.codestock'), db_default_dir
   end

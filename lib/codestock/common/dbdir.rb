@@ -11,8 +11,8 @@ module CodeStock
   DEFAULT_PATH = '~/.codestock'
   
   def db_default_dir
-    if (ENV['CODESTOCK_DEFAULT_DIR'])
-      File.expand_path ENV['CODESTOCK_DEFAULT_DIR']
+    if (ENV['MILKODE_DEFAULT_DIR'])
+      File.expand_path ENV['MILKODE_DEFAULT_DIR']
     else
       File.expand_path DEFAULT_PATH
     end
