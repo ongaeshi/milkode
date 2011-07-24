@@ -10,11 +10,10 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ongaeshi"]
   s.date = %q{2011-07-25}
-  s.description = %q{longer description of your gem}
+  s.description = %q{Line based local source code search engine & web-app.}
   s.email = %q{ongaeshi0621@gmail.com}
   s.executables = ["cdv", "milk", "cdview"]
   s.extra_rdoc_files = [
-    "LICENSE.txt",
     "README.rdoc"
   ]
   s.files = [
@@ -22,7 +21,6 @@ Gem::Specification.new do |s|
     "Gemfile",
     "Gemfile.lock",
     "HISTORY.rdoc",
-    "LICENSE.txt",
     "README.rdoc",
     "Rakefile",
     "VERSION",
@@ -66,6 +64,7 @@ Gem::Specification.new do |s|
     "lib/milkode/common/util.rb",
     "lib/milkode/findgrep/findgrep.rb",
     "lib/milkode/findgrep/result.rb",
+    "milkode.gemspec",
     "test/data/abc.zip",
     "test/data/nodir_abc.zip",
     "test/data/nodir_abc_xpi.xpi",
@@ -88,10 +87,10 @@ Gem::Specification.new do |s|
     "test/test_util.rb"
   ]
   s.homepage = %q{http://github.com/ongaeshi/milkode}
-  s.licenses = ["MIT"]
+  s.licenses = ["GPL"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.6}
-  s.summary = %q{one-line summary of your gem}
+  s.summary = %q{Line based local source code search engine & web-app.}
   s.test_files = [
     "test/file_assert.rb",
     "test/file_test_utils.rb",
