@@ -13,10 +13,10 @@ require 'rake'
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
-  gem.name = "codestock"
-  gem.homepage = "http://github.com/ongaeshi/codestock"
+  gem.name = "milkode"
+  gem.homepage = "http://github.com/ongaeshi/milkode"
   gem.license = "MIT"
-  gem.summary = %Q{one-line summary of your gem}
+  gem.summary = %Q{Line based local source(src) code search engin & web-app}
   gem.description = %Q{longer description of your gem}
   gem.email = "ongaeshi0621@gmail.com"
   gem.authors = ["ongaeshi"]
@@ -72,7 +72,7 @@ Rake::RDocTask.new do |rdoc|
   version = File.exist?('VERSION') ? File.read('VERSION') : ""
 
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "codestock #{version}"
+  rdoc.title = "milkode #{version}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
