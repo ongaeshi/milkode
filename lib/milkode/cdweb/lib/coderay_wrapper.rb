@@ -43,10 +43,10 @@ module Milkode
              :line_number_start => @line_number_start
              )
 
-      codestock_ornament(html)
+      milkode_ornament(html)
     end
 
-    def codestock_ornament(html)
+    def milkode_ornament(html)
       a = html.split("\n")
 
       line_number = @line_number_start
