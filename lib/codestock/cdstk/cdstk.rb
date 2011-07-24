@@ -13,6 +13,7 @@ include CodeStock
 require 'kconv'
 require 'readline'
 require 'codestock/cdweb/lib/database'
+require 'open-uri'
 
 module CodeStock
   class Cdstk
@@ -22,7 +23,9 @@ module CodeStock
     # DEFAULT_TOKENIZER = "TokenBigram"
 
     # 記号・アルファベット・数字もバイグラムでトークナイズする。
-    DEFAULT_TOKENIZER = "TokenBigramSplitSymbolAlphaDigit" 
+    DEFAULT_TOKENIZER = "TokenBigramSplitSymbolAlphaDigit"
+
+    class ConvetError < RuntimeError ; end
     
     def initialize(io = $stdout, db_dir = ".")
       @db_dir = db_dir
@@ -74,7 +77,7 @@ module CodeStock
       # コンテンツを読み込める形に変換
       begin
         contents.map!{|v|convert_content(v)}
-      rescue
+      rescue ConvetError
         return
       end
 
@@ -106,12 +109,20 @@ module CodeStock
     end
 
     def convert_content(src)
+      # httpファイルならダウンロード
+      begin
+        src = download_file(src)
+      rescue => e
+        error_alert("download failure '#{src}'.")
+        raise e                 # そのまま上に持ち上げてスタックトレース表示
+      end
+      
       # アーカイブファイルなら展開
       begin
         src = extract_file(src)
       rescue => e
         error_alert("extract failure '#{src}'.")
-        raise e
+        raise e                 # そのまま上に持ち上げてスタックトレース表示
       end
 
       # 絶対パスに変換
@@ -123,12 +134,37 @@ module CodeStock
       
       case ext
       when '.zip', '.xpi'
-        alert("extract", src)
+        alert("extract", "#{src}")
         zip_dir = File.join(@db_dir, "packages/#{ext.sub(".", "")}")
         result = File.join(zip_dir, Util::zip_extract(src, zip_dir))
       else
         src
       end
+    end
+
+    def download_file(src)
+      if (src =~ /^https?:/)
+        download_file_in(src)
+      else
+        src
+      end
+    end
+
+    def download_file_in(url)
+      alert("download", "#{url}")
+      
+      dst_dir = File.join(@db_dir, "packages/http")
+      FileUtils.mkdir_p dst_dir
+
+      filename = File.join(dst_dir, File.basename(url))
+      
+      open(url) do |src|
+        open(filename, "wb") do |dst|
+          dst.write(src.read)
+        end
+      end
+
+      filename
     end
 
     def remove(args, is_force, is_verbose)
