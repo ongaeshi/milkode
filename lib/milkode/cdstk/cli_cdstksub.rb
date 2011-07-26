@@ -74,7 +74,7 @@ EOF
         :environment => ENV['RACK_ENV'] || "development",
         :pid         => nil,
         :Port        => 9292,
-        :Host        => "0.0.0.0",
+        :Host        => "127.0.0.1",
         :AccessLog   => [],
         :config      => "config.ru",
         # ----------------------------
@@ -85,7 +85,7 @@ EOF
       
       opts = OptionParser.new("#{File.basename($0)} web")
       opts.on('--db DB_DIR', 'Database dir (default : current_dir)') {|v| options[:DbDir] = v }
-      opts.on("-o", "--host HOST", "listen on HOST (default: 0.0.0.0)") {|host| options[:Host] = host }
+      opts.on("-o", "--host HOST", "listen on HOST (default: 127.0.0.1)") {|host| options[:Host] = host }
       opts.on('-p', '--port PORT', 'use PORT (default: 9292)') {|v| options[:Port] = v }
       opts.on("-s", "--server SERVER", "serve using SERVER (default : thin)") {|s| options[:server] = s }
       opts.on('-n', '--no-browser', 'No launch browser.') {|v| options[:LaunchBrowser] = false }
