@@ -1,3 +1,8 @@
+=== 0.1.2 2011/07/26
+
+* milk web --host, default value "127.0.0.1" (for Windows).
+* to update all packages at 'milk update' (no arg).
+
 === 0.1.1 2011/07/25
 
 * Add comment.

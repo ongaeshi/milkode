@@ -53,8 +53,8 @@ module Milkode
     def update(args = nil)
       print_result do 
         yaml = yaml_load
-        query = args ? CdstkYaml::Query.new(args) : nil
-        update_list = yaml_load.list(query)
+        
+        update_list = (!args || args.empty?) ? yaml_load.list : yaml_load.list(CdstkYaml::Query.new(args))
         
         db_open(db_file)
 
