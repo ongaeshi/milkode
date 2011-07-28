@@ -17,8 +17,11 @@ div.footer_home {
 }
 
 div.search-summary {
-    border-color:#F4CA3F;
-    background-color:#FEFFF0;
+/*     border-color: #c0dbfe; */
+/*     background-color:#EAF9FE; */
+
+    border-color: #e9565b;
+    background-color:#fe8991;
     border-top-style:solid;
     border-top-width:1px;
     border-bottom-style:solid;
@@ -39,7 +42,8 @@ dt.result-file {
 }
 
 div.pagination {
-    background-color:#FEFFF0;
+    /*background-color:#EAF9FE;*/
+    background-color:#fe8991;
     text-align: center;
     margin-bottom: 20px;
 }
@@ -64,8 +68,8 @@ font.version {
 }
 
 span.highlight-line {
-   background-color: #d0ff9c;
-/*     background-color: #FFFF55; */
+    background-color: #d0ff9c;
+   /*background-color: #FFFF55;*/
 }
 
 a.headmenu {
