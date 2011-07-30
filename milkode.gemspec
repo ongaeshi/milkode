@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{milkode}
-  s.version = "0.1.2"
+  s.version = "0.1.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ongaeshi"]
-  s.date = %q{2011-07-27}
+  s.date = %q{2011-07-30}
   s.description = %q{Line based local source code search engine & web-app.}
   s.email = %q{ongaeshi0621@gmail.com}
   s.executables = ["cdv", "milk", "cdview"]
@@ -47,10 +47,9 @@ Gem::Specification.new do |s|
     "lib/milkode/cdweb/lib/search_files.rb",
     "lib/milkode/cdweb/public/css/coderay.css",
     "lib/milkode/cdweb/public/css/gren.css",
+    "lib/milkode/cdweb/public/images/MilkodeIcon135.png",
     "lib/milkode/cdweb/public/images/directory.png",
     "lib/milkode/cdweb/public/images/file.png",
-    "lib/milkode/cdweb/public/images/gren-icon-mini.png",
-    "lib/milkode/cdweb/public/images/gren-icon.png",
     "lib/milkode/cdweb/views/filelist.haml",
     "lib/milkode/cdweb/views/help.haml",
     "lib/milkode/cdweb/views/index.haml",
