@@ -17,8 +17,8 @@ div.footer_home {
 }
 
 div.search-summary {
-    border-color:#F4CA3F;
-    background-color:#FEFFF0;
+    border-color: #e92926;
+    background-color:#FFF0F0;
     border-top-style:solid;
     border-top-width:1px;
     border-bottom-style:solid;
@@ -39,7 +39,10 @@ dt.result-file {
 }
 
 div.pagination {
-    background-color:#FEFFF0;
+    border-color: #e92926;
+    background-color:#FFF0F0;
+    border-top-style:solid;
+    border-top-width:1px;
     text-align: center;
     margin-bottom: 20px;
 }
@@ -64,8 +67,8 @@ font.version {
 }
 
 span.highlight-line {
-   background-color: #d0ff9c;
-/*     background-color: #FFFF55; */
+    background-color: #d0ff9c;
+   /*background-color: #FFFF55;*/
 }
 
 a.headmenu {
