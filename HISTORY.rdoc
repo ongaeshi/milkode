@@ -1,3 +1,7 @@
+=== 0.1.4 2011/08/01
+
+* To act reasonably even if it fails to require 'readline'.
+
 === 0.1.3 2011/07/30
 
 * Change Icon.
