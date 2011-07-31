@@ -11,7 +11,11 @@ require 'milkode/common/grenfiletest'
 require 'milkode/common/util'
 include Milkode
 require 'kconv'
-require 'readline'
+begin
+  require 'readline'
+rescue LoadError
+  $no_readline = true
+end
 require 'milkode/cdweb/lib/database'
 require 'open-uri'
 
@@ -200,7 +204,12 @@ module Milkode
     end
 
     def yes_or_no(msg)
-       @out.puts msg
+      if ($no_readline)
+        @out.puts "Pass Cdstk#yes_or_no, because fail \"require 'readline'\"."
+        return true
+      end
+        
+      @out.puts msg
       while buf = Readline.readline("> ")
         case buf
         when 'yes'
