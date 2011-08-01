@@ -58,7 +58,7 @@ module Gren
       t = t % 3600
       m = t / 60
       t = t % 60
-      t += round(time - time.prec_i, 2)
+      t += round(time - time.to_i, 2)
       
       if (h > 0 && m > 0)
         "#{h}h #{m}m #{t}s"
@@ -82,13 +82,13 @@ module Gren
       kb = 1024
 
       if (size >= tb)
-        round(size / tb.prec_f, 2).to_s + "TB"
+        round(size / tb.to_f, 2).to_s + "TB"
       elsif (size >= gb)
-        round(size / gb.prec_f, 2).to_s + "GB"
+        round(size / gb.to_f, 2).to_s + "GB"
       elsif (size >= mb)
-        round(size / mb.prec_f, 2).to_s + "MB"
+        round(size / mb.to_f, 2).to_s + "MB"
       elsif (size >= kb)
-        round(size / kb.prec_f, 2).to_s + "KB"
+        round(size / kb.to_f, 2).to_s + "KB"
       else
         size.to_s + "Byte"
       end

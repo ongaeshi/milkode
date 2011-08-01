@@ -63,8 +63,8 @@ module Milkode
 
     def t_remove
       db = Database.instance
-      db.remove('test')
-      db.remove('lib')
+      db.remove(['test'])
+      db.remove(['lib'])
       assert_equal 0, db.totalRecords
     end
 

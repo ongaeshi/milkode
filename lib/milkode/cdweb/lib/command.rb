@@ -55,7 +55,7 @@ module Milkode
     @total_records = fileList.size
     @record_content = fileList.map do |v|
       "<dt class='result-file'>#{file_or_dirimg(v[1])}<a href='#{Mkurl.new('/home/' + v[0], params).inherit_query_shead}'>#{File.basename v[0]}</a></dt>"
-    end
+    end.join
     @elapsed = Time.now - before
     haml :filelist
   end

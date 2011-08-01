@@ -22,9 +22,9 @@ module Milkode
     end
 
     def set_range(range)
-      content_a = @content.to_a
+      content_a = @content.split("\n")
       range = limit_range(range, content_a)
-      @content = content_a[range]
+      @content = content_a[range].join("\n")
       @line_number_start = range.first + 1
     end
 

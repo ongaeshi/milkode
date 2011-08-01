@@ -30,6 +30,8 @@ Jeweler::Tasks.new do |gem|
   gem.add_runtime_dependency 'coderay', '>=0.9.8'
   gem.add_runtime_dependency 'thin', '>=1.2.10'
   gem.add_runtime_dependency 'archive-zip', '>=0.3.0'
+  gem.add_runtime_dependency 'haml', '>=3.1.2'
+  gem.add_runtime_dependency 'sass', '>=3.1.3'
 
   # and development dependencies are only needed for development (ie running rake tasks, tests, etc)
   #  gem.add_development_dependency 'rspec', '> 1.2.3'
@@ -39,6 +41,7 @@ Jeweler::RubygemsDotOrgTasks.new
 require 'rake/testtask'
 
 # groonga関連のテストが通らないため、独自のrake_test_loaderを読み込む
+$LOAD_PATH.unshift '.'
 module Rake
   class TestTask < TaskLib
     def rake_loader # :nodoc:

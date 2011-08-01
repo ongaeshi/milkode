@@ -194,7 +194,7 @@ module Milkode
             alert("rm_package", package)
             @package_count += 1
             
-            Database.instance.remove(package) do |record|
+            Database.instance.remove([package]) do |record|
               alert("rm_record", record.path)
               @file_count += 1
             end
@@ -447,7 +447,7 @@ module Milkode
         # 実際に使うタイミングでファイルの内容を読み込み
         # values[:content] = open(filename).read
         # データベース内の文字コードは'utf-8'で統一
-        values[:content] = File.read(filename).kconv(Kconv::UTF8)
+        values[:content] = Kconv.kconv(File.read(filename), Kconv::UTF8)
         
         # データベースに格納
         values.each do |key, value|
