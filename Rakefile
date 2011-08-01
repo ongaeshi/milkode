@@ -41,6 +41,7 @@ Jeweler::RubygemsDotOrgTasks.new
 require 'rake/testtask'
 
 # groonga関連のテストが通らないため、独自のrake_test_loaderを読み込む
+$LOAD_PATH.unshift '.'
 module Rake
   class TestTask < TaskLib
     def rake_loader # :nodoc:
