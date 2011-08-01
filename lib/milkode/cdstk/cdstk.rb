@@ -194,7 +194,7 @@ module Milkode
             alert("rm_package", package)
             @package_count += 1
             
-            Database.instance.remove(package) do |record|
+            Database.instance.remove([package]) do |record|
               alert("rm_record", record.path)
               @file_count += 1
             end
