@@ -4,23 +4,6 @@ require 'rubygems'
 require 'archive/zip'
 require 'fileutils'
 
-# for 1.9.2
-class IO
-  unless IO.method_defined?(:readbytes)
-    # Copied from IO#readbytes 1.8.6.
-    def readbytes(n)
-      str = read(n)
-      if str == nil
-        raise EOFError, "end of file reached"
-      end
-      if str.size < n
-        raise TruncatedDataError.new("data truncated", str)
-      end
-      str
-    end
-  end
-end
-
 module Milkode
   module Util
     module_function
