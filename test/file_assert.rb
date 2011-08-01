@@ -27,8 +27,8 @@ def assert_diff_files(file1, file2)
 end
 
 def assert_lines(s1, s2)
-  a1 = s1.to_a
-  a2 = s2.to_a
+  a1 = s1.split("\n")
+  a2 = s2.split("\n")
   
   a1.each_index do |i|
     assert_equal a1[i], a2[i]
