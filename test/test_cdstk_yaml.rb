@@ -51,13 +51,9 @@ class TestCdstkYaml < Test::Unit::TestCase
 
     # save
     yaml.save
-    assert_equal <<EOF, open('milkode.yaml').read
---- 
-version: 0.1
-contents: 
-- directory: dir1
-- directory: dir4
-EOF
+    r = YAML.load(open('milkode.yaml').read)
+    assert_equal 0.1, r['version']
+    assert_equal([{'directory'=>'dir1'}, {'directory' => 'dir4'}], r['contents'])
   end
 
   def test_001
@@ -66,12 +62,9 @@ EOF
     yaml.save
     
     # save
-    assert_equal <<EOF, open('otherpath/milkode.yaml').read
---- 
-version: 0.1
-contents: []
-
-EOF
+    r = YAML.load(open('otherpath/milkode.yaml').read)
+    assert_equal 0.1, r['version']
+    assert_equal([], r['contents'])
   end
 
   def test_query
