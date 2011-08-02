@@ -5,14 +5,14 @@
 
 Gem::Specification.new do |s|
   s.name = %q{milkode}
-  s.version = "0.1.5"
+  s.version = "0.1.6"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = [%q{ongaeshi}]
-  s.date = %q{2011-08-01}
+  s.authors = ["ongaeshi"]
+  s.date = %q{2011-08-03}
   s.description = %q{Line based local source code search engine & web-app.}
   s.email = %q{ongaeshi0621@gmail.com}
-  s.executables = [%q{cdv}, %q{cdview}, %q{milk}]
+  s.executables = ["cdv", "milk", "cdview"]
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.rdoc"
@@ -57,6 +57,7 @@ Gem::Specification.new do |s|
     "lib/milkode/cdweb/views/search.haml",
     "lib/milkode/cdweb/views/view.haml",
     "lib/milkode/common/dbdir.rb",
+    "lib/milkode/common/dir.rb",
     "lib/milkode/common/display_util.rb",
     "lib/milkode/common/grenfiletest.rb",
     "lib/milkode/common/grensnip.rb",
@@ -80,6 +81,7 @@ Gem::Specification.new do |s|
     "test/test_coderay_wrapper_data.rb",
     "test/test_database.rb",
     "test/test_dbdir.rb",
+    "test/test_dir.rb",
     "test/test_gren_util.rb",
     "test/test_helper.rb",
     "test/test_mkurl.rb",
@@ -88,15 +90,36 @@ Gem::Specification.new do |s|
     "test/test_util.rb"
   ]
   s.homepage = %q{http://github.com/ongaeshi/milkode}
-  s.licenses = [%q{MIT}]
-  s.require_paths = [%q{lib}]
-  s.rubygems_version = %q{1.8.6}
+  s.licenses = ["MIT"]
+  s.require_paths = ["lib"]
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{Line based local source code search engine & web-app.}
+  s.test_files = [
+    "test/file_assert.rb",
+    "test/file_test_utils.rb",
+    "test/rake_test_loader.rb",
+    "test/runner.rb",
+    "test/test_bin_exec.rb",
+    "test/test_cdstk.rb",
+    "test/test_cdstk_yaml.rb",
+    "test/test_coderay_wrapper.rb",
+    "test/test_coderay_wrapper_data.rb",
+    "test/test_database.rb",
+    "test/test_dbdir.rb",
+    "test/test_dir.rb",
+    "test/test_gren_util.rb",
+    "test/test_helper.rb",
+    "test/test_mkurl.rb",
+    "test/test_query.rb",
+    "test/test_string_snip.rb",
+    "test/test_util.rb"
+  ]
 
   if s.respond_to? :specification_version then
+    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.5.2"])
       s.add_development_dependency(%q<rcov>, [">= 0"])
