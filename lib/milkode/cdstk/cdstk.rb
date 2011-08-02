@@ -9,6 +9,7 @@ require 'pathname'
 require 'milkode/cdstk/cdstk_yaml'
 require 'milkode/common/grenfiletest'
 require 'milkode/common/util'
+require 'milkode/common/dir'
 include Milkode
 require 'kconv'
 begin
@@ -45,7 +46,7 @@ module Milkode
     end
 
     def init
-      if Dir.entries(@db_dir) == [".", ".."]
+      if Dir.emptydir?(@db_dir)
         CdstkYaml.create(@db_dir)
         @out.puts "create     : #{yaml_file}"
         db_create(db_file)
