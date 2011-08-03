@@ -1,3 +1,7 @@
+=== 0.1.7 2011/08/04
+
+* archive-zip patch for Ruby1.9.2.
+
 === 0.1.6 2011/08/03
 
 * Bug fix, faild 'milk init' for Ubunts. (thanks kumonopanya, and maroekun)
