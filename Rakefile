@@ -20,6 +20,7 @@ Jeweler::Tasks.new do |gem|
   gem.description = %Q{Line based local source code search engine & web-app.}
   gem.email = "ongaeshi0621@gmail.com"
   gem.authors = ["ongaeshi"]
+  gem.files = FileList['lib/**/*.rb', 'bin/*', '[A-Z]*', 'test/**/*', 'vendor/**/*.rb'].to_a
 
   # Include your dependencies below. Runtime dependencies are required when using your gem,
   gem.add_runtime_dependency 'termcolor','>= 1.2.0'
