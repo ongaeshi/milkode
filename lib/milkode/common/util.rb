@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 require 'rubygems'
-require 'archive/zip'
+require 'milkode/common/archive-zip'
 require 'fileutils'
 
 module Milkode
