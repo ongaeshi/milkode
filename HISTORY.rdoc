@@ -1,4 +1,8 @@
-=== 0.1.7 2011/08/04
+=== 0.1.9 2011/08/05
+
+* Bug fix, can't move 'milk web'.
+
+=== 0.1.8, 0.1.7 2011/08/04
 
 * archive-zip patch for Ruby1.9.2.
 
