@@ -58,6 +58,10 @@ module Milkode
 EOF
     end
 
+    def match_num
+      @records.size
+    end
+
     private
 
     def pagination_link(offset, label)

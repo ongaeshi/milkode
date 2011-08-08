@@ -44,6 +44,7 @@ module Milkode
     @total_records = searcher.total_records
     @range = searcher.data_range
     @record_content = searcher.html_contents  + searcher.html_pagination;
+    @match_num = searcher.match_num
     @elapsed = Time.now - before
     haml :search
   end

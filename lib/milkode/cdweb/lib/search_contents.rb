@@ -18,7 +18,10 @@ module Milkode
     DISP_NUM = 20              # 1ページの表示数
     LIMIT_NUM = 50             # 最大検索ファイル数
     NTH = 3                    # 表示範囲
-
+#     DISP_NUM = 1000              # 1ページの表示数
+#     LIMIT_NUM = 1000             # 最大検索ファイル数
+#     NTH = 3                      # 表示範囲
+    
     def initialize(path, params, query)
       @params = params
       @q = query
@@ -57,6 +60,10 @@ module Milkode
 EOF
     end
 
+    def match_num
+      @match_records.size
+    end
+
     private
 
     MatchRecord = Struct.new(:record, :match_line)
@@ -70,7 +77,7 @@ EOF
         match_line = grep.one_match_and(@q.keywords)
         @match_records << MatchRecord.new(record, match_line) if match_line
 
-        if @match_records.size > DISP_NUM
+        if @match_records.size >= DISP_NUM
           @next_index = index + 1
           break
         end
