@@ -8,5 +8,9 @@
   = create_form(@path, params[:query], params[:shead])
   
   .search-summary
-    <span class="keyword">#{topic_path(@path, params)}</span> <span class="total-entries">#{@total_records}</span>件ヒット : <span class="display-range">#{@range.first} - #{@range.last}</span> から <span class="total-entries">#{@match_num}</span>件マッチ （#{@elapsed}秒）
+    <span class="keyword">#{topic_path(@path, params)}</span>
+    <span class="total-entries">#{@total_records}</span>件ヒット</span>
+    <span class="total-entries">#{@match_num}</span>件マッチ</span>
+    （#{@range.first}から#{@range.last - @range.first + 1}件検索, #{@elapsed}秒）
+    
   ~ @record_content
