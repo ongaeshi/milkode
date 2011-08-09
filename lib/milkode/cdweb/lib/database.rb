@@ -216,7 +216,7 @@ module Milkode
       end
 
       # マッチ数
-      total_records = records.size
+      total_records = table.size
       
       return records, total_records
     end
