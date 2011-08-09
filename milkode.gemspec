@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{milkode}
-  s.version = "0.1.9"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = [%q{ongaeshi}]
-  s.date = %q{2011-08-04}
+  s.date = %q{2011-08-09}
   s.description = %q{Line based local source code search engine & web-app.}
   s.email = %q{ongaeshi0621@gmail.com}
   s.executables = [%q{cdv}, %q{cdview}, %q{milk}]
@@ -67,6 +67,7 @@ Gem::Specification.new do |s|
     "lib/milkode/common/util.rb",
     "lib/milkode/findgrep/findgrep.rb",
     "lib/milkode/findgrep/result.rb",
+    "milkode.gemspec",
     "test/data/abc.zip",
     "test/data/nodir_abc.zip",
     "test/data/nodir_abc_xpi.xpi",
