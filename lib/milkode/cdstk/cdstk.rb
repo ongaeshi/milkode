@@ -429,18 +429,32 @@ module Milkode
       # 検索するデータベース
       documents = Groonga::Context.default["documents"]
       
-      # 既に登録されているファイルならばそれを上書き、そうでなければ新規レコードを作成
-      _documents = documents.select do |record|
-        record["path"] == values[:path]
-      end
+#       # 既に登録されているファイルならばそれを上書き、そうでなければ新規レコードを作成
+#       _documents = documents.select do |record|
+#         record["path"] == values[:path]
+#       end
       
+#       isNewFile = false
+
+#       if _documents.size.zero?
+#         document = documents.add
+#         isNewFile = true
+#       else
+#         document = _documents.to_a[0].key
+#       end
+      
+      table = documents.select
+      records = table.records
+
       isNewFile = false
 
-      if _documents.size.zero?
+      record = records.find{|r| r.path == values[:path] }
+
+      unless record
         document = documents.add
         isNewFile = true
       else
-        document = _documents.to_a[0].key
+        document = record
       end
       
       # タイムスタンプが新しければデータベースに格納
