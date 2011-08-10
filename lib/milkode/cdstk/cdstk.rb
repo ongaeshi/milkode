@@ -27,8 +27,13 @@ module Milkode
 
     # 記号・アルファベット・数字もバイグラムでトークナイズする。
     DEFAULT_TOKENIZER = "TokenBigramSplitSymbolAlphaDigit"
-
+    
+    # コンバート時のエラー
     class ConvetError < RuntimeError ; end
+
+    # gc
+    GC_COUNTER = 100
+    @@gc_counter = 0
     
     def initialize(io = $stdout, db_dir = ".")
       @db_dir = db_dir
@@ -417,6 +422,14 @@ module Milkode
     private :db_add_dir
 
     def db_add_file(stdout, filename, shortpath)
+      @@gc_counter += 1
+      p @@gc_counter
+      if (@@gc_counter > GC_COUNTER)
+        puts "gc start ..."
+        GC.start
+        @@gc_counter = 0
+      end
+      
       # 格納するデータ
       values = {
         :path => filename,
