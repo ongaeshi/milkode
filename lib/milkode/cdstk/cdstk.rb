@@ -400,6 +400,9 @@ module Milkode
       else
         raise "error      : #{dbfile.to_s} not found!!"
       end
+      
+      documents = Groonga::Context.default["documents"]      
+      @records = documents.select.records
     end
 
     def db_delete(filename)
@@ -443,12 +446,8 @@ module Milkode
 #         document = _documents.to_a[0].key
 #       end
       
-      table = documents.select
-      records = table.records
-
       isNewFile = false
-
-      record = records.find{|r| r.path == values[:path] }
+      record = @records.find{|r| r.path == values[:path] }
 
       unless record
         document = documents.add
