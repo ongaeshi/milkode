@@ -367,7 +367,7 @@ module Milkode
       unless dbfile.exist?
         Groonga::Database.create(:path => dbfile.to_s)
         Groonga::Schema.define do |schema|
-          schema.create_table("documents") do |table|
+          schema.create_table("documents", :type => :hash) do |table|          
             table.string("path")
             table.string("shortpath")
             table.text("content")
@@ -429,18 +429,14 @@ module Milkode
       # 検索するデータベース
       documents = Groonga::Context.default["documents"]
       
-      # 既に登録されているファイルならばそれを上書き、そうでなければ新規レコードを作成
-      _documents = documents.select do |record|
-        record["path"] == values[:path]
-      end
-      
+      record = documents[ values[:path] ]
       isNewFile = false
 
-      if _documents.size.zero?
-        document = documents.add
+      unless record
+        document = documents.add(values[:path])
         isNewFile = true
       else
-        document = _documents.to_a[0].key
+        document = record
       end
       
       # タイムスタンプが新しければデータベースに格納
