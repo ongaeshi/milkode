@@ -70,6 +70,7 @@ EOF
         when 'dump'
           obj.dump
         when 'web'
+          obj.compatible?
           Milkode::CLI_Cdweb.execute_with_options(stdout, suboptions[subcommand])
         end
       else
