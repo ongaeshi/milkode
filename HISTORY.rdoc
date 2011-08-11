@@ -1,6 +1,14 @@
-=== 0.2.1 
+=== 0.2.1 2011/08/12
+
+Milkode repository is version up.
+Please rebuild repository.
+
+  milk rebuild
 
 * Support AutoPagerize. (thanks awasira)
+* 'documents' table type change, 'Groonga::Array -> Groonga:: Hash'.
+  * 'milk update' faster (thanks kou)
+  * Issues#6 CentOS 5.5 (32bit) in 'milk update' fails (thanks yoshikaw)
 
 === 0.2.0 2011/08/10
 
