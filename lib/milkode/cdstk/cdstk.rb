@@ -55,6 +55,10 @@ module Milkode
       end
     end
 
+    def compatible?
+      db_open(db_file)
+    end
+
     def update(args = nil)
       print_result do 
         yaml = yaml_load
@@ -251,6 +255,10 @@ module Milkode
     end
 
     def cleanup(options)
+      # 互換性テスト
+      db_open(db_file)
+
+      # cleanup開始
       if (options[:force] or yes_or_no("cleanup contents? (yes/no)"))
         print_result do 
           # yamlファイルのクリーンアップ
@@ -366,28 +374,32 @@ module Milkode
       
       unless dbfile.exist?
         Groonga::Database.create(:path => dbfile.to_s)
-        Groonga::Schema.define do |schema|
-          schema.create_table("documents", :type => :hash) do |table|          
-            table.string("path")
-            table.string("shortpath")
-            table.text("content")
-            table.time("timestamp")
-            table.text("suffix")
-          end
-
-          schema.create_table("terms",
-                              :type => :patricia_trie,
-                              :key_normalize => true,
-                              :default_tokenizer => DEFAULT_TOKENIZER) do |table|
-            table.index("documents.path", :with_position => true)
-            table.index("documents.shortpath", :with_position => true)
-            table.index("documents.content", :with_position => true)
-            table.index("documents.suffix", :with_position => true)
-          end
-        end
+        db_define
         @out.puts "create     : #{filename} created."
       else
         @out.puts "message    : #{filename} already exist."
+      end
+    end
+
+    def db_define
+      Groonga::Schema.define do |schema|
+        schema.create_table("documents", :type => :hash) do |table|          
+          table.string("path")
+          table.string("shortpath")
+          table.text("content")
+          table.time("timestamp")
+          table.text("suffix")
+        end
+
+        schema.create_table("terms",
+                            :type => :patricia_trie,
+                            :key_normalize => true,
+                            :default_tokenizer => DEFAULT_TOKENIZER) do |table|
+          table.index("documents.path", :with_position => true)
+          table.index("documents.shortpath", :with_position => true)
+          table.index("documents.content", :with_position => true)
+          table.index("documents.suffix", :with_position => true)
+        end
       end
     end
 
@@ -395,8 +407,11 @@ module Milkode
       dbfile = Pathname(File.expand_path(filename))
       
       if dbfile.exist?
+        # データベースを開く
         Groonga::Database.open(dbfile.to_s)
-        # @out.puts  "open       : #{dbfile} open."
+
+        # 互換性テスト
+        db_compatible?
       else
         raise "error      : #{dbfile.to_s} not found!!"
       end
@@ -510,5 +525,20 @@ module Milkode
       @out.puts "[fatal] #{msg}"
     end
 
+    def db_compatible?
+      begin
+        db_define
+      rescue Groonga::Schema::Error => e
+        puts <<EOF
+Milkode repository is old -> #{db_dir_expand}.
+Please rebuild repository, 
+
+  milk rebuild
+
+See 'milk --help' or http://milkode.ongaeshi.me .
+EOF
+        exit -1
+      end
+    end
   end
 end
