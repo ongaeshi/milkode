@@ -367,7 +367,7 @@ module Milkode
       unless dbfile.exist?
         Groonga::Database.create(:path => dbfile.to_s)
         Groonga::Schema.define do |schema|
-          schema.create_table("documents") do |table|
+          schema.create_table("documents", :type => :hash) do |table|          
             table.string("path")
             table.string("shortpath")
             table.text("content")
@@ -447,10 +447,10 @@ module Milkode
 #       end
       
       isNewFile = false
-      record = @records.find{|r| r.path == values[:path] }
+      record = documents[ values[:path] ]
 
       unless record
-        document = documents.add
+        document = documents.add(values[:path])
         isNewFile = true
       else
         document = record
