@@ -24,17 +24,17 @@ get '/' do
   haml :index
 end
 
-post '/home*' do |path|
-  path = path.sub(/^\//, "")
-
+post '/search*' do
+  path = params[:pathname]
+  
   case params[:shead]
   when 'all'
-    path = ""
+    path = "/home"
   when 'package'
-    path = path.split('/')[0]
+    path = path.split('/')[0,3].join('/')
   end
 
-  redirect Mkurl.new("home/#{path}", params).inherit_query_shead
+  redirect Mkurl.new("#{path}", params).inherit_query_shead
 end
 
 get '/home*' do |path|
@@ -79,16 +79,22 @@ helpers do
     # こっちにすると'検索'ボタンを押した時に新しくウィンドウが開く
     # <form action='' target='_blank' method='post'>
     <<EOF
-  <form action='' method='post'>
+  <script type="text/javascript">
+  function set_pathname() {
+    document.searchform.pathname.value = location.pathname;
+  }
+  </script>
+  <form name="searchform" action='/search' method='post'>
     <p>
       <input name='query' size='60' type='text' value='#{query}' />
-      <input type='submit' value='検索'><br></input>
+      <input type='submit' value='検索' onclick='set_pathname()'><br></input>
       #{create_radio('all', shead)}
       <label>全体を検索</label>
       #{create_radio('package', shead)}
       <label> #{package_name(path)} 以下</label>
       #{create_radio('directory', shead)}
       <label> #{current_name(path)} 以下</label>
+      <input name='pathname' type='hidden' value=''></input>
     </p>
   </form>
 EOF
