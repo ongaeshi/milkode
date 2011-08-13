@@ -106,12 +106,12 @@ EOF
   end
 
   def create_headmenu(path, query)
-    # href = "#{request.path_info}?'#{request.query_string}"
-    # href = '/home/rack-1.3.0/lib/rack/handler/cgi.rb?shead=directory'
     href = Mkurl.new('/home/' + path, params).inherit_query_shead
+    flist = "/home/#{path}"     # @todo ファイル一覧はファイルだったら所属するフォルダへ
     <<EOF
     <a href="/home" class="headmenu">全てのパッケージ</a>
     <a href="#{href}" class="headmenu" onclick="window.open('#{href}'); return false;">新しい検索</a>
+    <a href="#{flist}" class="headmenu">ファイル一覧</a> 
 EOF
   end
 
