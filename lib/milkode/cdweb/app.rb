@@ -105,9 +105,9 @@ EOF
     "<input name='shead' type='radio' value='#{value}' #{str}/>"
   end
 
-  def create_headmenu(path, query)
+  def create_headmenu(path, query, flistpath = '')
     href = Mkurl.new('/home/' + path, params).inherit_query_shead
-    flist = "/home/#{path}"     # @todo ファイル一覧はファイルだったら所属するフォルダへ
+    flist = File.join("/home/#{path}", flistpath)
     <<EOF
     <a href="/home" class="headmenu">全てのパッケージ</a>
     <a href="#{href}" class="headmenu" onclick="window.open('#{href}'); return false;">新しい検索</a>
