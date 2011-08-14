@@ -119,7 +119,8 @@ EOF
     href = '/home'
     path.split('/').map {|v|
       href += '/' + v
-      "<a href='#{Mkurl.new(href, params).inherit_shead}'>#{v}</a>"
+      # "<a href='#{Mkurl.new(href, params).inherit_shead}'>#{v}</a>"
+      "<a href='#{Mkurl.new(href, params).inherit_query_shead}'>#{v}</a>"
     }.join('/')
   end
 
