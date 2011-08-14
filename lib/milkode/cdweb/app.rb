@@ -25,7 +25,7 @@ get '/' do
 end
 
 post '/search*' do
-  path = params[:pathname]
+  path = unescape(params[:pathname])
   
   case params[:shead]
   when 'all'
