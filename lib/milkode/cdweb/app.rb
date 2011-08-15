@@ -116,7 +116,9 @@ EOF
   end
 
   def topic_path(path, params)
-    href = '/home'
+    href = ''
+    path = File.join('home', path)
+
     path.split('/').map {|v|
       href += '/' + v
       # "<a href='#{Mkurl.new(href, params).inherit_shead}'>#{v}</a>"
