@@ -1,0 +1,9 @@
+/* for CodeRay */
+.CodeRay .highlight-line { background-color: #d0ff9c; }
+
+/* html_anchor */
+.anchor-table { background-color: #ffffff; }
+.anchor-table .line_numbers { background-color: #D0FF9C; }
+.anchor-table td { border: 1px solid silver; font-size:13px; }
+.anchor-table a { color: #000000; text-decoration:none; }
+.anchor-table a:hover { text-decoration:underline; }
