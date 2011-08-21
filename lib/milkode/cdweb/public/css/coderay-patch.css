@@ -2,6 +2,7 @@
 .CodeRay .highlight-line { background-color: #d0ff9c; }
 
 /* html_anchor */
+.match-num { font-size: 13px; font-weight: bold; }
 .anchor-table { background-color: #ffffff; }
 .anchor-table .line_numbers { background-color: #D0FF9C; }
 .anchor-table td { border: 1px solid silver; font-size:13px; }

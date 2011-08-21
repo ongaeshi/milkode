@@ -262,6 +262,7 @@ module Encoders
         }.join("\n")
         
         <<EOF
+<span class="match-num">#{options[:highlight_lines].size} results</span>
 <table class="CodeRay anchor-table">
 #{codes}
 </table>
