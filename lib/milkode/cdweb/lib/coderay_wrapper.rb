@@ -9,6 +9,10 @@ require 'rubygems'
 require 'coderay'
 require 'coderay/helpers/file_type'
 
+# 独自実装したエンコード形式は事前に読み込んでおけばOK
+$LOAD_PATH.unshift File.join(File.dirname(__FILE__), '../../../../vendor')
+require 'coderay/encoders/html_anchor'
+
 module Milkode
   class CodeRayWrapper
     attr_reader :line_number_start
@@ -42,8 +46,18 @@ module Milkode
              :highlight_lines => @highlight_lines,
              :line_number_start => @line_number_start
              )
-
       milkode_ornament(html)
+    end
+
+    def to_html_anchor
+      html = CodeRay.scan(@content, file_type).
+        html_anchor(
+             :wrap => nil,
+             :line_numbers => :table,
+             :css => :class,
+             :highlight_lines => @highlight_lines,
+             :line_number_start => @line_number_start
+             )
     end
 
     def milkode_ornament(html)
