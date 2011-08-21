@@ -7,4 +7,4 @@
 .anchor-table .line_numbers { background-color: #D0FF9C; }
 .anchor-table td { border: 1px solid silver; font-size:13px; }
 .anchor-table a { color: #000000; text-decoration:none; }
-.anchor-table a:hover { text-decoration:underline; }
+.anchor-table a:hover { text-decoration:underline; background-color: #F0F0F0; }
