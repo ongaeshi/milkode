@@ -123,10 +123,9 @@ EOF
     href = ''
     path = File.join('home', path)
 
-    path.split('/').map {|v|
+    path.split('/').map_with_index {|v, index|
       href += '/' + v
-      # "<a href='#{Mkurl.new(href, params).inherit_shead}'>#{v}</a>"
-      "<a href='#{Mkurl.new(href, params).inherit_query_shead}'>#{v}</a>"
+      "<a id='topic_#{index}' href='#{Mkurl.new(href, params).inherit_query_shead}' onclick='topic_path(\"topic_#{index}\");'>#{v}</a>"
     }.join('/')
   end
 
@@ -147,3 +146,12 @@ EOF
   end
 end
 
+class Array
+  def map_with_index!
+    each_with_index do |e, idx| self[idx] = yield(e, idx); end
+  end
+
+  def map_with_index(&block)
+    dup.map_with_index!(&block)
+  end
+end
