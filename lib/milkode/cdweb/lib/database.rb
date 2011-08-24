@@ -57,7 +57,9 @@ module Milkode
 
       # マッチ数
       total_records = table.size
-
+      
+      # @todo ここが速度低下の原因？
+      # 
       # 2010/10/29 ongaeshi
       # 本当はこのようにgroongaAPIでソートしたいのだが上手くいかなかった
       #       # ファイル名順にソート
