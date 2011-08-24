@@ -10,10 +10,6 @@ require 'coderay'
 require 'coderay/helpers/file_type'
 require 'nokogiri'
 
-# 独自実装したエンコード形式は事前に読み込んでおけばOK
-$LOAD_PATH.unshift File.join(File.dirname(__FILE__), '../../../../vendor')
-require 'coderay/encoders/html_anchor'
-
 module Milkode
   class CodeRayWrapper
     attr_reader :line_number_start
@@ -67,6 +63,7 @@ module Milkode
     end
 
     def milkode_ornament(html)
+      # @todo nokogiri使う？
       a = html.split("\n")
 
       line_number = @line_number_start
