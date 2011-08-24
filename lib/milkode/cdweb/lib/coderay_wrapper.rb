@@ -8,6 +8,7 @@
 require 'rubygems'
 require 'coderay'
 require 'coderay/helpers/file_type'
+require 'nokogiri'
 
 # 独自実装したエンコード形式は事前に読み込んでおけばOK
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), '../../../../vendor')
@@ -51,13 +52,18 @@ module Milkode
 
     def to_html_anchor
       html = CodeRay.scan(@content, file_type).
-        html_anchor(
+        html(
              :wrap => nil,
              :line_numbers => :table,
              :css => :class,
              :highlight_lines => @highlight_lines,
              :line_number_start => @line_number_start
              )
+      
+      html_doc = Nokogiri::HTML(html)
+      anchor = create_anchorlink(html_doc.at_css("table.CodeRay td.code pre").inner_html)
+      body = milkode_ornament(html)
+      return anchor + body
     end
 
     def milkode_ornament(html)
@@ -101,6 +107,28 @@ module Milkode
       r << "id=\"#{no}\""
       r << "class=\"highlight-line\"" if @highlight_lines.include?(no)
       r.join(" ")
+    end
+
+    ANCHOR_OFFSET = 3
+    
+    def create_anchorlink(str)
+      if @highlight_lines
+        lines = str.split("\n")
+
+        codes = @highlight_lines.map {|no|
+          "  <tr><td class=\"line_numbers\">#{no}</td> <td class=\"code\"><pre><a href=\"##{[no - ANCHOR_OFFSET, 1].max}\">#{lines[no - 1]}</a></pre></td> </tr>"
+        }.join("\n")
+        
+        <<EOF
+<span class="match-num">#{@highlight_lines.size} results</span>
+<table class="CodeRay anchor-table">
+#{codes}
+</table>
+<p>
+EOF
+      else
+        ""
+      end
     end
   end
 end
