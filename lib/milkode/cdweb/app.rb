@@ -45,10 +45,10 @@ get '/home*' do |path|
   if (record)
     view(record, params, before)
   else
-    unless (params[:query])
-      filelist(path, params, before)
-    else
+    if (params[:query] and !params[:query].empty?)
       search(path, params, before)
+    else
+      filelist(path, params, before)
     end
   end
 end
