@@ -58,22 +58,22 @@ module Milkode
       # マッチ数
       total_records = table.size
       
-      # @todo ここが速度低下の原因？
-      # 
+      # @todo ここが速度低下の原因？と思ったけど、ここは全て選択の部分だけか・・・
+
       # 2010/10/29 ongaeshi
       # 本当はこのようにgroongaAPIでソートしたいのだが上手くいかなかった
       #       # ファイル名順にソート
       #       records = table.sort([{:key => "shortpath", :order => "descending"}],
-      #                            :offset => page * limit,
+      #                            :offset => offset,
       #                            :limit => limit)
-      
+
       # ソート
       if (limit != -1)
         records = table.records.sort_by{|record| record.shortpath.downcase }[offset, limit]
       else
         records = table.records.sort_by{|record| record.shortpath.downcase }[offset..limit]
       end
-        
+
       return records, total_records
     end
 
