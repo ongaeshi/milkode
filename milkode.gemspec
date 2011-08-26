@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{milkode}
-  s.version = "0.2.1"
+  s.version = "0.2.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ongaeshi"]
-  s.date = %q{2011-08-12}
+  s.date = %q{2011-08-26}
   s.description = %q{Line based local source code search engine & web-app.}
   s.email = %q{ongaeshi0621@gmail.com}
   s.executables = ["cdv", "milk", "cdview"]
@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
     ".document",
     "Gemfile",
     "Gemfile.lock",
+    "HISTORY.ja.rdoc",
     "HISTORY.rdoc",
     "LICENSE.txt",
     "README.rdoc",
@@ -45,11 +46,15 @@ Gem::Specification.new do |s|
     "lib/milkode/cdweb/lib/query.rb",
     "lib/milkode/cdweb/lib/search_contents.rb",
     "lib/milkode/cdweb/lib/search_files.rb",
+    "lib/milkode/cdweb/public/css/coderay-patch.css",
     "lib/milkode/cdweb/public/css/coderay.css",
-    "lib/milkode/cdweb/public/css/gren.css",
+    "lib/milkode/cdweb/public/css/milkode.css",
     "lib/milkode/cdweb/public/images/MilkodeIcon135.png",
     "lib/milkode/cdweb/public/images/directory.png",
+    "lib/milkode/cdweb/public/images/document-new-4.png",
     "lib/milkode/cdweb/public/images/file.png",
+    "lib/milkode/cdweb/public/images/go-home-5.png",
+    "lib/milkode/cdweb/public/js/milkode.js",
     "lib/milkode/cdweb/views/filelist.haml",
     "lib/milkode/cdweb/views/help.haml",
     "lib/milkode/cdweb/views/index.haml",
@@ -135,6 +140,7 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<archive-zip>, [">= 0.3.0"])
       s.add_runtime_dependency(%q<haml>, [">= 3.1.2"])
       s.add_runtime_dependency(%q<sass>, [">= 3.1.3"])
+      s.add_runtime_dependency(%q<nokogiri>, [">= 1.5.0"])
     else
       s.add_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
@@ -149,6 +155,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<archive-zip>, [">= 0.3.0"])
       s.add_dependency(%q<haml>, [">= 3.1.2"])
       s.add_dependency(%q<sass>, [">= 3.1.3"])
+      s.add_dependency(%q<nokogiri>, [">= 1.5.0"])
     end
   else
     s.add_dependency(%q<bundler>, ["~> 1.0.0"])
@@ -164,6 +171,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<archive-zip>, [">= 0.3.0"])
     s.add_dependency(%q<haml>, [">= 3.1.2"])
     s.add_dependency(%q<sass>, [">= 3.1.3"])
+    s.add_dependency(%q<nokogiri>, [">= 1.5.0"])
   end
 end
 
