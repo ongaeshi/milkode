@@ -8,6 +8,7 @@
 require 'milkode/cdweb/lib/query'
 require 'milkode/cdweb/lib/mkurl'
 require 'milkode/cdweb/lib/command'
+require 'milkode/common/util'
 
 module Milkode
   class SearchFiles
@@ -16,6 +17,7 @@ module Milkode
     DISP_NUM = 100              # 1ページの表示数
     
     def initialize(path, params, query)
+      @path = path
       @params = params
       @q = query
       
@@ -77,7 +79,7 @@ EOF
 
     def result_record(record)
       <<EOS
-    <dt class='result-file'>#{file_or_dirimg(true)}<a href='#{"/home/" + record_link(record)}'>#{record.shortpath}</a></dt>
+    <dt class='result-file'>#{file_or_dirimg(true)}<a href='#{"/home/" + record_link(record)}'>#{Util::relative_path record.shortpath, @path}</a></dt>
 EOS
     end
 

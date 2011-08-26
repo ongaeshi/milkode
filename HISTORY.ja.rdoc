@@ -1,0 +1,70 @@
+=== 0.2.2 2011/08/26
+
+* ファイル内grepを追加
+  * マッチ行へのアンカーリンクが画面上部に表示されるように
+* 駆け上がり検索を検索
+  * トピックパス(ディレクトリのリンク)をクリックした時、検索クエリーを引き継ぐように
+  * 検索ワード入力→トピックパスクリックで検索範囲の変更が可能に
+  * その都度「検索」ボタンを押さなくても、テキスト入力→トピックパスクリック、で入力した新しいキーワードで再検索出来る。
+* トピックパスの先頭に"home"を追加
+  * milkode/lib/file.rb -> home/milkode/lib/file.rb
+* 検索結果ファイル名は相対パスで表示する
+* [ファイル一覧] ボタンを追加
+* 検索ワードを入力せず検索(Enterを押す)と、エラーになる問題を修正  (thanks ryo)
+
+=== 0.2.1 2011/08/12
+
+Milkode レポジトリがバージョンアップしました。
+レポジトリをリビルドして下さい。
+
+  milk rebuild
+
+* AutoPagerizeのサポート (thanks awasira)
+* 'documents' groongaテーブル形式の変更, 'Groonga::Array -> Groonga:: Hash'.
+  * 'milk update' の高速化 (thanks kou)
+  * Issues#6 CentOS 5.5 (32bit) in 'milk update' fails (thanks yoshikaw)
+
+=== 0.2.0 2011/08/10
+
+* Issues#4 Bug fix, wrong display of search results. (thanks rakkoyaku, ryo)
+* Issues#5 Delete GoogleAnalytics code. (thanks vividtone)
+
+=== 0.1.9 2011/08/05
+
+* Bug fix, can't move 'milk web'.
+
+=== 0.1.8, 0.1.7 2011/08/04
+
+* archive-zip patch for Ruby1.9.2.
+
+=== 0.1.6 2011/08/03
+
+* Bug fix, faild 'milk init' for Ubunts. (thanks kumonopanya, and maroekun)
+
+=== 0.1.5 2011/08/02
+
+* Compatibility Ruby 1.9.2p290.
+
+=== 0.1.4 2011/08/01
+
+* To act reasonably even if it fails to require 'readline'.
+
+=== 0.1.3 2011/07/30
+
+* Change Icon.
+* Change web-app design.
+* Change text, lib/milkode/cdweb/views/help.haml.
+
+=== 0.1.2 2011/07/26
+
+* milk web --host, default value "127.0.0.1" (for Windows).
+* to update all packages at 'milk update' (no arg).
+
+=== 0.1.1 2011/07/25
+
+* Add comment.
+
+=== 0.1.0 2011/07/25
+
+* 1st release.
+

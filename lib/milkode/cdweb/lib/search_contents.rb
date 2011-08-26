@@ -8,6 +8,7 @@
 require 'milkode/cdweb/lib/query'
 require 'milkode/cdweb/lib/grep'
 require 'milkode/cdweb/lib/mkurl'
+require 'milkode/common/util'
 
 module Milkode
   class SearchContents
@@ -23,6 +24,7 @@ module Milkode
 #     NTH = 3                      # 表示範囲
     
     def initialize(path, params, query)
+      @path = path
       @params = params
       @q = query
       @page = params[:page].to_i || 0
@@ -95,7 +97,7 @@ EOF
       coderay.set_range(first_index..last_index)
 
       <<EOS
-    <dt class='result-record'><a href='#{"/home/" + record_link(record) + "##{coderay.line_number_start}"}'>#{record.shortpath}</a></dt>
+    <dt class='result-record'><a href='#{"/home/" + record_link(record) + "##{coderay.line_number_start}"}'>#{Util::relative_path record.shortpath, @path}</a></dt>
     <dd>
 #{coderay.to_html}
     </dd>

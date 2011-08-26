@@ -18,23 +18,23 @@ require 'milkode/cdweb/lib/mkurl'
 set :haml, :format => :html5
 
 get '/' do
-  @version = "0.2.1"
+  @version = "0.2.2"
   @package_num = Database.instance.fileList('').size
   @file_num = Database.instance.fileNum
   haml :index
 end
 
-post '/home*' do |path|
-  path = path.sub(/^\//, "")
-
+post '/search*' do
+  path = unescape(params[:pathname])
+  
   case params[:shead]
   when 'all'
-    path = ""
+    path = "/home"
   when 'package'
-    path = path.split('/')[0]
+    path = path.split('/')[0,3].join('/')
   end
 
-  redirect Mkurl.new("home/#{path}", params).inherit_query_shead
+  redirect Mkurl.new("#{path}", params).inherit_query_shead
 end
 
 get '/home*' do |path|
@@ -45,10 +45,10 @@ get '/home*' do |path|
   if (record)
     view(record, params, before)
   else
-    unless (params[:query])
-      filelist(path, params, before)
-    else
+    if (params[:query] and !params[:query].empty?)
       search(path, params, before)
+    else
+      filelist(path, params, before)
     end
   end
 end
@@ -79,16 +79,22 @@ helpers do
     # こっちにすると'検索'ボタンを押した時に新しくウィンドウが開く
     # <form action='' target='_blank' method='post'>
     <<EOF
-  <form action='' method='post'>
+  <script type="text/javascript">
+  function set_pathname() {
+    document.searchform.pathname.value = location.pathname;
+  }
+  </script>
+  <form name="searchform" action='/search' method='post'>
     <p>
       <input name='query' size='60' type='text' value='#{query}' />
-      <input type='submit' value='検索'><br></input>
+      <input type='submit' value='検索' onclick='set_pathname()'><br></input>
       #{create_radio('all', shead)}
       <label>全体を検索</label>
       #{create_radio('package', shead)}
       <label> #{package_name(path)} 以下</label>
       #{create_radio('directory', shead)}
       <label> #{current_name(path)} 以下</label>
+      <input name='pathname' type='hidden' value=''></input>
     </p>
   </form>
 EOF
@@ -99,21 +105,27 @@ EOF
     "<input name='shead' type='radio' value='#{value}' #{str}/>"
   end
 
-  def create_headmenu(path, query)
-    # href = "#{request.path_info}?'#{request.query_string}"
-    # href = '/home/rack-1.3.0/lib/rack/handler/cgi.rb?shead=directory'
+  def create_headmenu(path, query, flistpath = '')
     href = Mkurl.new('/home/' + path, params).inherit_query_shead
+    flist = File.join("/home/#{path}", flistpath)
     <<EOF
-    <a href="/home" class="headmenu">全てのパッケージ</a>
-    <a href="#{href}" class="headmenu" onclick="window.open('#{href}'); return false;">新しい検索</a>
+    #{headicon('go-home-5.png')} <a href="/home" class="headmenu">全てのパッケージ</a>
+    #{headicon('document-new-4.png')} <a href="#{href}" class="headmenu" onclick="window.open('#{href}'); return false;">新しい検索</a>
+    #{headicon('directory.png')} <a href="#{flist}" class="headmenu">ファイル一覧</a> 
 EOF
   end
 
+  def headicon(name)
+    "<img alt='' style='vertical-align:center; border: 0px; margin: 0px;' src='/images/#{name}'>"
+  end
+
   def topic_path(path, params)
-    href = '/home'
-    path.split('/').map {|v|
+    href = ''
+    path = File.join('home', path)
+
+    path.split('/').map_with_index {|v, index|
       href += '/' + v
-      "<a href='#{Mkurl.new(href, params).inherit_shead}'>#{v}</a>"
+      "<a id='topic_#{index}' href='#{Mkurl.new(href, params).inherit_query_shead}' onclick='topic_path(\"topic_#{index}\");'>#{v}</a>"
     }.join('/')
   end
 
@@ -134,3 +146,12 @@ EOF
   end
 end
 
+class Array
+  def map_with_index!
+    each_with_index do |e, idx| self[idx] = yield(e, idx); end
+  end
+
+  def map_with_index(&block)
+    dup.map_with_index!(&block)
+  end
+end

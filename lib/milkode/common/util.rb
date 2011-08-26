@@ -3,6 +3,7 @@
 require 'rubygems'
 require 'milkode/common/archive-zip'
 require 'fileutils'
+require 'pathname'
 
 module Milkode
   module Util
@@ -40,6 +41,12 @@ module Milkode
       end
 
       list
+    end
+
+    def relative_path(path, basedir)
+      path = Pathname.new(path)
+      basedir = Pathname.new(basedir)
+      path.relative_path_from(basedir)
     end
   end
 end

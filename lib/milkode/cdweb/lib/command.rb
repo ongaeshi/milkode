@@ -21,7 +21,7 @@ module Milkode
     if (q and !q.keywords.empty?)
       grep = Grep.new(record.content)
       match_lines = grep.match_lines_and(q.keywords)
-      @record_content = CodeRayWrapper.new(record.content, record.shortpath, match_lines).to_html
+      @record_content = CodeRayWrapper.new(record.content, record.shortpath, match_lines).to_html_anchor
     else
       @record_content = CodeRayWrapper.new(record.content, record.shortpath).to_html
     end

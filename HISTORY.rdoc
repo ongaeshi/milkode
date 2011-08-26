@@ -1,3 +1,17 @@
+=== 0.2.2 2011/08/26
+
+* Add a file grep.
+  * To be displayed at the top of the anchor link to match the line.
+* Implement search 'topic path'.
+  * Breadcrumbs (link directory) when you click, to take over the search query.
+  * 'Enter search words -> click breadcrumbs', search scope can be changed.
+  * Each time "search" without pressing any button on a new keyword search can be entered in 'the text entry → click breadcrumbs'.
+* Add breadcrumbs at the top "home".
+  * milkode/lib/file.rb -> home/milkode/lib/file.rb
+* Results will be displayed in the file name relative path.
+* Add [List of files] button
+* Search without entering a search word (hit Enter), and fixed the problem that the error (thanks ryo)
+
 === 0.2.1 2011/08/12
 
 Milkode repository is version up.
