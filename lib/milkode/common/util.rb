@@ -4,6 +4,7 @@ require 'rubygems'
 require 'milkode/common/archive-zip'
 require 'fileutils'
 require 'pathname'
+require 'kconv'
 
 module Milkode
   module Util
@@ -47,6 +48,40 @@ module Milkode
       path = Pathname.new(path)
       basedir = Pathname.new(basedir)
       path.relative_path_from(basedir)
+    end
+
+    def ruby19?
+      RUBY_VERSION >= '1.9.0'
+    end
+
+    def platform_win?
+      RUBY_PLATFORM =~ /mswin(?!ce)|mingw|cygwin|bccwin/
+    end
+
+    def platform_osx?
+      RUBY_PLATFORM =~ /darwin/
+    end
+
+    def shell_kcode
+      if platform_win?
+        Kconv::SJIS             # win7? cygwin utf8?
+      else
+        Kconv::UTF8
+      end
+    end
+
+    def filename_to_utf8(str_from_file)
+      if platform_osx?
+        if (ruby19?)
+          str_from_file.encode('UTF-8', 'UTF8-MAC')
+        else
+          str_from_file
+        end
+      elsif platform_win?
+        Kconv.kconv(filename, Kconv::UTF8)        
+      else
+        str_from_file
+      end
     end
   end
 end
