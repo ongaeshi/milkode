@@ -435,6 +435,7 @@ module Milkode
       # ファイル名を全てUTF-8に変換
       filename_utf8 = Util::filename_to_utf8(filename)
       shortpath_utf8 = Util::filename_to_utf8(shortpath)
+      suffix_utf8 = File::extname(filename_utf8)
       
       # 格納するデータ
       values = {
@@ -442,7 +443,7 @@ module Milkode
         :shortpath => shortpath_utf8,
         :content => nil,
         :timestamp => File.mtime(filename),
-        :suffix => File::extname(filename),
+        :suffix => suffix_utf8,
       }
       
       # 検索するデータベース
