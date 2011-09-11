@@ -78,7 +78,7 @@ module Milkode
           str_from_file
         end
       elsif platform_win?
-        Kconv.kconv(filename, Kconv::UTF8)        
+        Kconv.kconv(str_from_file, Kconv::UTF8)        
       else
         str_from_file
       end

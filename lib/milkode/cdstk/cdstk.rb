@@ -433,13 +433,13 @@ module Milkode
 
     def db_add_file(stdout, filename, shortpath)
       # ファイル名を全てUTF-8に変換
-      filename = Util::filename_to_utf8(filename)
-      shortpath = Util::filename_to_utf8(shortpath)
+      filename_utf8 = Util::filename_to_utf8(filename)
+      shortpath_utf8 = Util::filename_to_utf8(shortpath)
       
       # 格納するデータ
       values = {
-        :path => filename,
-        :shortpath => shortpath,
+        :path => filename_utf8,
+        :shortpath => shortpath_utf8,
         :content => nil,
         :timestamp => File.mtime(filename),
         :suffix => File::extname(filename),
