@@ -58,9 +58,15 @@ Rake::TestTask.new(:test) do |test|
   test.verbose = true
 end
 
-# task :test do
-#   load "test/runner.rb"
-# end
+task :test_all do
+  puts "--- rvm 1.9.2@milkode ---"
+  system('rvm 1.9.2@milkode')
+  system('rake test')
+
+  puts "--- rvm system ---"
+  system('rvm system')
+  system('rake test')
+end
 
 require 'rcov/rcovtask'
 Rcov::RcovTask.new do |test|
