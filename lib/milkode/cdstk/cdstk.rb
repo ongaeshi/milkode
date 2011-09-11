@@ -432,6 +432,10 @@ module Milkode
     private :db_add_dir
 
     def db_add_file(stdout, filename, shortpath)
+      # ファイル名を全てUTF-8に変換
+      filename = Util::filename_to_utf8(filename)
+      shortpath = Util::filename_to_utf8(shortpath)
+      
       # 格納するデータ
       values = {
         :path => filename,
