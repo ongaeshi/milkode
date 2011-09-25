@@ -19,9 +19,12 @@ module Milkode
     DISP_NUM = 20              # 1ページの表示数
     LIMIT_NUM = 50             # 最大検索ファイル数
     NTH = 3                    # 表示範囲
+    COL_LIMIT = 200            # 1行の桁制限
+    
 #     DISP_NUM = 1000              # 1ページの表示数
 #     LIMIT_NUM = 1000             # 最大検索ファイル数
 #     NTH = 3                      # 表示範囲
+#     COL_LIMIT = 200              # 1行の桁制限
     
     def initialize(path, params, query)
       @path = path
@@ -98,6 +101,7 @@ EOF
       last_index = match_line.index + NTH
 
       coderay = CodeRayWrapper.new(record.content, record.shortpath, [match_line])
+      coderay.col_limit(COL_LIMIT)
       coderay.set_range(first_index..last_index)
 
       <<EOS

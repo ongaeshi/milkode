@@ -23,6 +23,18 @@ module Milkode
       @line_number_start = 1
     end
 
+    def col_limit(limit_num)
+      content_a = @content.split("\n")
+
+      @content = content_a.map{|v|
+        if (v.length > limit_num)
+          v[0...limit_num] + " ..."
+        else
+          v
+        end
+      }.join("\n")
+    end
+
     def set_range(range)
       content_a = @content.split("\n")
       range = limit_range(range, content_a)
