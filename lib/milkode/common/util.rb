@@ -83,6 +83,10 @@ module Milkode
         str_from_file
       end
     end
+
+    def larger_than_oneline(content)
+      content.count("\n") > 1
+    end
   end
 end
 

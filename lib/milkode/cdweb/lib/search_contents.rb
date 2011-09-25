@@ -75,9 +75,13 @@ EOF
       @next_index = @records.size
       
       @records.each_with_index do |record, index|
-        grep = Grep.new(record.content)
-        match_line = grep.one_match_and(@q.keywords)
-        @match_records << MatchRecord.new(record, match_line) if match_line
+        if (Util::larger_than_oneline(record.content))
+          grep = Grep.new(record.content)
+          match_line = grep.one_match_and(@q.keywords)
+          @match_records << MatchRecord.new(record, match_line) if match_line
+        else
+          @match_records << MatchRecord.new(record, Grep::MatchLineResult.new(0, nil))
+        end
 
         if @match_records.size >= DISP_NUM
           @next_index = index + 1

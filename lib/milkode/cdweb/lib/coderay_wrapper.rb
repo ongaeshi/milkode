@@ -9,6 +9,7 @@ require 'rubygems'
 require 'coderay'
 require 'coderay/helpers/file_type'
 require 'nokogiri'
+require 'milkode/common/util'
 
 module Milkode
   class CodeRayWrapper
@@ -44,8 +45,12 @@ module Milkode
              :line_number_start => @line_number_start
              )
 
-      html_doc = Nokogiri::HTML(html)
-      add_spanid(html_doc)
+      if (is_ornament?)
+        html_doc = Nokogiri::HTML(html)
+        add_spanid(html_doc)
+      else
+        html
+      end
     end
 
     def to_html_anchor
@@ -58,11 +63,14 @@ module Milkode
              :line_number_start => @line_number_start
              )
 
-      html_doc = Nokogiri::HTML(html)
-      anchor = create_anchorlink(html_doc.at_css("table.CodeRay td.code pre").inner_html)
-      body = add_spanid(html_doc)
-
-      return anchor + body
+      if (is_ornament?)
+        html_doc = Nokogiri::HTML(html)
+        anchor = create_anchorlink(html_doc.at_css("table.CodeRay td.code pre").inner_html)
+        body = add_spanid(html_doc)
+        anchor + body
+      else
+        html
+      end
     end
 
     def add_spanid(html_doc)
@@ -123,6 +131,11 @@ EOF
         ""
       end
     end
+
+    def is_ornament?
+      Util::larger_than_oneline(@content)
+    end
+
   end
 end
 
