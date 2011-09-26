@@ -29,7 +29,7 @@ Jeweler::Tasks.new do |gem|
   gem.add_runtime_dependency 'launchy', '>=0.3.7'
   gem.add_runtime_dependency 'coderay', '=0.9.8'
   gem.add_runtime_dependency 'thin', '>=1.2.10'
-  gem.add_runtime_dependency 'archive-zip', '>=0.3.0'
+  gem.add_runtime_dependency 'archive-zip', '>=0.4.0'
   gem.add_runtime_dependency 'haml', '>=3.1.2'
   gem.add_runtime_dependency 'sass', '>=3.1.3'
   gem.add_runtime_dependency 'nokogiri', '>=1.5.0'
