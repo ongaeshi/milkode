@@ -2,5 +2,5 @@
 
 Line based local source code search engine & web-app.
 
-{History.rdoc}[https://github.com/ongaeshi/milkode/blob/master/HISTORY.rdoc]
-{更新履歴}[https://github.com/ongaeshi/milkode/blob/master/HISTORY.ja.rdoc]
+* {History.rdoc}[https://github.com/ongaeshi/milkode/blob/master/HISTORY.rdoc]
+* {更新履歴}[https://github.com/ongaeshi/milkode/blob/master/HISTORY.ja.rdoc]
