@@ -91,11 +91,12 @@ module Milkode
       # 存在しないコンテンツがあった場合はその場で終了
       contents.each do |v|
         shortname = File.basename v
-        if (yaml.exist? shortname)
+
+        if (yaml.cant_add_directory? v)
           error_alert("already exist '#{shortname}'.")
           return
         end
-        
+          
         unless (File.exist? v)
           error_alert("not found '#{v}'.")
           return
