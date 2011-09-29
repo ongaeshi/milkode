@@ -34,6 +34,7 @@ module Milkode
       @db_dir = db_dir
       Database.setup(@db_dir)
       @out = io
+      # @out = $stdout # 強制出力
       clear_count
     end
 
@@ -524,7 +525,11 @@ module Milkode
     private :ignoreFile?
 
     def alert(title, msg)
-      @out.puts "#{title.ljust(10)} : #{msg}"
+      if (Util::platform_win?)
+        @out.puts "#{title.ljust(10)} : #{Kconv.kconv(msg, Kconv::SJIS)}"
+      else
+        @out.puts "#{title.ljust(10)} : #{msg}"
+      end
     end
 
     def error_alert(msg)
