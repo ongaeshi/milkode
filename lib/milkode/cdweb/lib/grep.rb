@@ -58,7 +58,7 @@ module Milkode
       strs.each do |v|
         option = 0
         option |= Regexp::IGNORECASE if (ignore)
-        regs << Regexp.new(v, option)
+        regs << Regexp.new(Regexp.escape(v), option)
       end
 
       regs

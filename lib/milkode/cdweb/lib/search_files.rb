@@ -24,7 +24,7 @@ module Milkode
       @offset = params[:offset].to_i
 
       fpaths = @q.fpaths
-      fpaths << path unless path == ""
+      fpaths << path + "/" unless path == ""
 
       if (fpaths.include?("*"))
         @records, @total_records = Database.instance.selectAll(@offset, DISP_NUM)

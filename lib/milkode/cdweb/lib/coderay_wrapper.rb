@@ -9,6 +9,7 @@ require 'rubygems'
 require 'coderay'
 require 'coderay/helpers/file_type'
 require 'nokogiri'
+require 'milkode/common/util'
 
 module Milkode
   class CodeRayWrapper
@@ -20,6 +21,18 @@ module Milkode
       @match_lines = match_lines
       @highlight_lines = match_lines.map{|v|v.index+1}
       @line_number_start = 1
+    end
+
+    def col_limit(limit_num)
+      content_a = @content.split("\n")
+
+      @content = content_a.map{|v|
+        if (v.length > limit_num)
+          v[0...limit_num] + " ..."
+        else
+          v
+        end
+      }.join("\n")
     end
 
     def set_range(range)
@@ -43,7 +56,13 @@ module Milkode
              :highlight_lines => @highlight_lines,
              :line_number_start => @line_number_start
              )
-      milkode_ornament(html)
+
+      if (is_ornament?)
+        html_doc = Nokogiri::HTML(html)
+        add_spanid(html_doc)
+      else
+        html
+      end
     end
 
     def to_html_anchor
@@ -55,39 +74,36 @@ module Milkode
              :highlight_lines => @highlight_lines,
              :line_number_start => @line_number_start
              )
-      
-      html_doc = Nokogiri::HTML(html)
-      anchor = create_anchorlink(html_doc.at_css("table.CodeRay td.code pre").inner_html)
-      body = milkode_ornament(html)
-      return anchor + body
+
+      if (is_ornament?)
+        html_doc = Nokogiri::HTML(html)
+        anchor = create_anchorlink(html_doc.at_css("table.CodeRay td.code pre").inner_html)
+        body = add_spanid(html_doc)
+        anchor + body
+      else
+        html
+      end
     end
 
-    def milkode_ornament(html)
-      # @todo nokogiri使う？
-      a = html.split("\n")
+    def add_spanid(html_doc)
+      table = html_doc.at_css("table.CodeRay")
+      
+      # preに<span id="行番号"> を付ける
+      pre = table.at_css("td.code pre")
+      pre.inner_html = add_spanid_in(pre.inner_html)
+      
+      # 結果を文字列で返す
+      table.to_html
+    end
 
+    def add_spanid_in(html)
+      lines = html.split("<tt>\n</tt>")
       line_number = @line_number_start
-      is_code_content = false
 
-      a.each_with_index do |l, index|
-        if (l =~ /  <td class="code"><pre (.*?)>(.*)<tt>/)
-          a[index] = "  <td class=\"code\"><pre #{$1}><span #{line_attr(line_number)}>#{$2}</span><tt>"
-          is_code_content = true
-          line_number += 1
-          next
-        elsif (l =~ %r|</tt></pre></td>|)
-          is_code_content = false
-        end
-
-        if (is_code_content)
-          if (l =~ %r|</tt>(.*)<tt>|)
-            a[index] = "</tt><span #{line_attr(line_number)}>#{$1}</span><tt>"
-            line_number += 1
-          end
-        end
-      end
-          
-      a.join("\n") + "\n"
+      lines.map {|l|
+        line_number += 1
+        "<span #{line_attr(line_number - 1)}>#{l}</span>"
+      }.join("<tt>\n</tt>") + "<tt>\n</tt>"
     end
 
     def file_type
@@ -127,6 +143,11 @@ EOF
         ""
       end
     end
+
+    def is_ornament?
+      Util::larger_than_oneline(@content)
+    end
+
   end
 end
 

@@ -34,6 +34,7 @@ module Milkode
       @db_dir = db_dir
       Database.setup(@db_dir)
       @out = io
+      # @out = $stdout # 強制出力
       clear_count
     end
 
@@ -91,11 +92,12 @@ module Milkode
       # 存在しないコンテンツがあった場合はその場で終了
       contents.each do |v|
         shortname = File.basename v
-        if (yaml.exist? shortname)
+
+        if (yaml.cant_add_directory? v)
           error_alert("already exist '#{shortname}'.")
           return
         end
-        
+          
         unless (File.exist? v)
           error_alert("not found '#{v}'.")
           return
@@ -432,13 +434,18 @@ module Milkode
     private :db_add_dir
 
     def db_add_file(stdout, filename, shortpath)
+      # ファイル名を全てUTF-8に変換
+      filename_utf8 = Util::filename_to_utf8(filename)
+      shortpath_utf8 = Util::filename_to_utf8(shortpath)
+      suffix_utf8 = File::extname(filename_utf8)
+      
       # 格納するデータ
       values = {
-        :path => filename,
-        :shortpath => shortpath,
+        :path => filename_utf8,
+        :shortpath => shortpath_utf8,
         :content => nil,
         :timestamp => File.mtime(filename),
-        :suffix => File::extname(filename),
+        :suffix => suffix_utf8,
       }
       
       # 検索するデータベース
@@ -518,7 +525,11 @@ module Milkode
     private :ignoreFile?
 
     def alert(title, msg)
-      @out.puts "#{title.ljust(10)} : #{msg}"
+      if (Util::platform_win?)
+        @out.puts "#{title.ljust(10)} : #{Kconv.kconv(msg, Kconv::SJIS)}"
+      else
+        @out.puts "#{title.ljust(10)} : #{msg}"
+      end
     end
 
     def error_alert(msg)

@@ -76,6 +76,13 @@ module Milkode
       @data['contents'].find {|v| File.basename(v['directory']) == shortname }   
     end
 
+    def cant_add_directory?(dir)
+      @data['contents'].find {|v|
+        v['directory'] != File.expand_path(dir) &&
+        File.basename(v['directory']) == File.basename(dir)
+      }
+    end
+
     def cleanup
       contents.delete_if do |v|
         if (!File.exist? v['directory'])

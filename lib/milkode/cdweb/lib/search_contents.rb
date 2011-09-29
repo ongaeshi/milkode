@@ -19,9 +19,12 @@ module Milkode
     DISP_NUM = 20              # 1ページの表示数
     LIMIT_NUM = 50             # 最大検索ファイル数
     NTH = 3                    # 表示範囲
+    COL_LIMIT = 200            # 1行の桁制限
+    
 #     DISP_NUM = 1000              # 1ページの表示数
 #     LIMIT_NUM = 1000             # 最大検索ファイル数
 #     NTH = 3                      # 表示範囲
+#     COL_LIMIT = 200              # 1行の桁制限
     
     def initialize(path, params, query)
       @path = path
@@ -30,7 +33,7 @@ module Milkode
       @page = params[:page].to_i || 0
       @offset = params[:offset].to_i
       fpaths = @q.fpaths
-      fpaths << path unless path == ""
+      fpaths << path + "/" unless path == ""
       @records, @total_records, @elapsed = Database.instance.search(@q.keywords, @q.packages, fpaths, @q.suffixs, @offset, LIMIT_NUM)
       grep_contents
     end
@@ -75,9 +78,13 @@ EOF
       @next_index = @records.size
       
       @records.each_with_index do |record, index|
-        grep = Grep.new(record.content)
-        match_line = grep.one_match_and(@q.keywords)
-        @match_records << MatchRecord.new(record, match_line) if match_line
+        if (Util::larger_than_oneline(record.content))
+          grep = Grep.new(record.content)
+          match_line = grep.one_match_and(@q.keywords)
+          @match_records << MatchRecord.new(record, match_line) if match_line
+        else
+          @match_records << MatchRecord.new(record, Grep::MatchLineResult.new(0, nil))
+        end
 
         if @match_records.size >= DISP_NUM
           @next_index = index + 1
@@ -94,6 +101,7 @@ EOF
       last_index = match_line.index + NTH
 
       coderay = CodeRayWrapper.new(record.content, record.shortpath, [match_line])
+      coderay.col_limit(COL_LIMIT)
       coderay.set_range(first_index..last_index)
 
       <<EOS
