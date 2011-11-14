@@ -44,7 +44,8 @@ module Milkode
     
     @total_records = searcher.total_records
     @range = searcher.data_range
-    @record_content = "<dl class='autopagerize_page_element'>#{searcher.html_contents}</dl>#{searcher.html_pagination}";
+    @html_contents = searcher.html_contents
+    @html_pagination = searcher.html_pagination
     @match_num = searcher.match_num
     @elapsed = Time.now - before
     haml :search

@@ -14,4 +14,11 @@
     <span class="match-num">#{@match_num}</span>件マッチ</span>
     （#{@elapsed}秒）
     
-  ~ @record_content
+    %dl.autopagerize_page_element
+      - @html_contents.each do |item|
+        %dt.result-record
+          %a{:href => url_for(item[:href])}= item[:content]
+        %dd
+          ~ item[:coderay]
+    = @html_pagination
+
