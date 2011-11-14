@@ -8,7 +8,7 @@
 require 'rubygems'
 require 'coderay'
 require 'coderay/helpers/file_type'
-require 'nokogiri'
+require 'hpricot'
 
 module Milkode
   class CodeRayWrapper
@@ -44,7 +44,7 @@ module Milkode
              :line_number_start => @line_number_start
              )
 
-      html_doc = Nokogiri::HTML(html)
+      html_doc = Hpricot(html)
       add_spanid(html_doc)
     end
 
@@ -58,18 +58,18 @@ module Milkode
              :line_number_start => @line_number_start
              )
 
-      html_doc = Nokogiri::HTML(html)
-      anchor = create_anchorlink(html_doc.at_css("table.CodeRay td.code pre").inner_html)
+      html_doc = Hpricot(html)
+      anchor = create_anchorlink(html_doc.search("table.CodeRay td.code pre").inner_html)
       body = add_spanid(html_doc)
 
       return anchor + body
     end
 
     def add_spanid(html_doc)
-      table = html_doc.at_css("table.CodeRay")
+      table = html_doc.search("table.CodeRay")
       
       # preに<span id="行番号"> を付ける
-      pre = table.at_css("td.code pre")
+      pre = table.search("td.code pre")
       pre.inner_html = add_spanid_in(pre.inner_html)
       
       # 結果を文字列で返す
