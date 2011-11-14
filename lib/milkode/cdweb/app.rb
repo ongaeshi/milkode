@@ -30,7 +30,7 @@ post '/search*' do
   
   case params[:shead]
   when 'all'
-    path = "/home"
+    path = url_for("/home")
   when 'package'
     path = path.split('/')[0,3].join('/')
   end
