@@ -70,7 +70,7 @@ EOF
       tmpp = @params
       tmpp[:offset] = offset.to_s
       href = Mkurl.new("", tmpp).inherit_query_shead_offset
-      pagination_span("<a href='#{href}' rel='next'>#{label}</a>")
+      pagination_span("<a href='#{url_for(href)}' rel='next'>#{label}</a>")
     end
 
     def pagination_span(content)

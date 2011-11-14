@@ -4,10 +4,8 @@
   %head
     %meta(charset='utf-8')
     %title= [@title, 'Milkode'].compact.join(' - ')
-    %link(rel="stylesheet" href="/css/milkode.css"  type="text/css" media="all")
-    %link(rel="stylesheet" href="/css/coderay.css"  type="text/css" media="all")
-    %link(rel="stylesheet" href="/css/coderay-patch.css"  type="text/css" media="all")
-    %script(type='text/javascript' src='/js/milkode.js')
+    = stylesheet_link_tag "/css/milkode.css", "/css/coderay.css", "/css/coderay-patch.css", :media => "all"
+    = javascript_script_tag "js/milkode.js"
 
   %body
     -# %header

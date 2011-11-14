@@ -35,7 +35,7 @@ post '/search*' do
     path = path.split('/')[0,3].join('/')
   end
 
-  redirect Mkurl.new("#{path}", params).inherit_query_shead
+  redirect Mkurl.new(path, params).inherit_query_shead
 end
 
 get '/home*' do |path|
@@ -71,7 +71,7 @@ helpers do
   
   # -- utility -- 
   def link(query)
-    "<a href='#{'/home?query=' + escape_url(query)}'>#{query}</a>"
+    "<a href='#{url_for('/home?query=') + escape_url(query)}'>#{query}</a>"
   end
 
   def create_form(path, query, shead)
@@ -85,7 +85,7 @@ helpers do
     document.searchform.pathname.value = location.pathname;
   }
   </script>
-  <form name="searchform" action='/search' method='post'>
+  <form name="searchform" action='#{url_for("/search")}' method='post'>
     <p>
       <input name='query' size='60' type='text' value='#{query}' />
       <input type='submit' value='検索' onclick='set_pathname()'><br></input>
@@ -110,14 +110,14 @@ EOF
     href = Mkurl.new('/home/' + path, params).inherit_query_shead
     flist = File.join("/home/#{path}", flistpath)
     <<EOF
-    #{headicon('go-home-5.png')} <a href="/home" class="headmenu">全てのパッケージ</a>
-    #{headicon('document-new-4.png')} <a href="#{href}" class="headmenu" onclick="window.open('#{href}'); return false;">新しい検索</a>
-    #{headicon('directory.png')} <a href="#{flist}" class="headmenu">ファイル一覧</a> 
+    #{headicon('go-home-5.png')} <a href="#{url_for('/home')}" class="headmenu">全てのパッケージ</a>
+    #{headicon('document-new-4.png')} <a href="#{url_for(href)}" class="headmenu" onclick="window.open('#{url_for(href)}'); return false;">新しい検索</a>
+    #{headicon('directory.png')} <a href="#{url_for(flist)}" class="headmenu">ファイル一覧</a> 
 EOF
   end
 
   def headicon(name)
-    "<img alt='' style='vertical-align:center; border: 0px; margin: 0px;' src='/images/#{name}'>"
+    "<img alt='' style='vertical-align:center; border: 0px; margin: 0px;' src='#{url_for("/images/") + name}'>"
   end
 
   def topic_path(path, params)
@@ -126,7 +126,7 @@ EOF
 
     path.split('/').map_with_index {|v, index|
       href += '/' + v
-      "<a id='topic_#{index}' href='#{Mkurl.new(href, params).inherit_query_shead}' onclick='topic_path(\"topic_#{index}\");'>#{v}</a>"
+      "<a id='topic_#{index}' href='#{url_for(Mkurl.new(href, params).inherit_query_shead)}' onclick='topic_path(\"topic_#{index}\");'>#{v}</a>"
     }.join('/')
   end
 
