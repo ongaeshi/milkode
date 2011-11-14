@@ -9,6 +9,7 @@ require 'rubygems'
 require 'sinatra'
 require 'haml'
 require 'sass'
+require 'sinatra/static_assets'
 
 $LOAD_PATH.unshift '../..'
 require 'milkode/cdweb/lib/database'
