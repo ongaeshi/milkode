@@ -51,7 +51,7 @@ module Milkode
     end
 
     def html_contents
-      @match_records.map {|match_record| result_match_record(match_record)}.join
+      @match_records.map {|match_record| result_match_record(match_record)}
     end
     
     def html_pagination
@@ -110,6 +110,10 @@ EOF
 #{coderay.to_html}
     </dd>
 EOS
+      href = "/home/" + record_link(record) + "#" + coderay.line_number_start.to_s
+      content = Util::relative_path record.shortpath, @path
+      
+      {:href => href, :content => content, :coderay => coderay.to_html}
     end
 
     def pagination_link(offset, label)
