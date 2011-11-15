@@ -109,6 +109,8 @@ module Milkode
         is_file = parts.length == base_depth + 1
         path = parts[0, base_depth + 1].join("/")
         [path, is_file]
+      }.sort_by {|parts|
+          [if parts[1] then 1 else 0 end, parts[0]]
       }.uniq
       
       paths
