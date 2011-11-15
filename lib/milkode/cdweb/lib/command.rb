@@ -44,7 +44,8 @@ module Milkode
     
     @total_records = searcher.total_records
     @range = searcher.data_range
-    @record_content = "<dl class='autopagerize_page_element'>#{searcher.html_contents}</dl>#{searcher.html_pagination}";
+    @html_contents = searcher.html_contents
+    @html_pagination = searcher.html_pagination
     @match_num = searcher.match_num
     @elapsed = Time.now - before
     haml :search
@@ -56,7 +57,7 @@ module Milkode
     fileList = Database.instance.fileList(path)
     @total_records = fileList.size
     @record_content = fileList.map do |v|
-      "<dt class='result-file'>#{file_or_dirimg(v[1])}<a href='#{Mkurl.new('/home/' + v[0], params).inherit_query_shead}'>#{File.basename v[0]}</a></dt>"
+      "<dt class='result-file'>#{file_or_dirimg(v[1])}<a href='#{url_for(Mkurl.new('/home/' + v[0], params).inherit_query_shead)}'>#{File.basename v[0]}</a></dt>"
     end.join
     @elapsed = Time.now - before
     haml :filelist
@@ -64,6 +65,6 @@ module Milkode
 
   def file_or_dirimg(is_file)
     src = (is_file) ? '/images/file.png' : '/images/directory.png'
-    "<img alt='' style='vertical-align:bottom; border: 0; margin: 1px;' src='#{src}'>"
+    "<img alt='' style='vertical-align:bottom; border: 0; margin: 1px;' src='#{url_for(src)}'>"
   end
 end
