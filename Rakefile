@@ -23,8 +23,8 @@ Jeweler::Tasks.new do |gem|
 
   # Include your dependencies below. Runtime dependencies are required when using your gem,
   gem.add_runtime_dependency 'termcolor','>= 1.2.0'
-  gem.add_runtime_dependency 'rroonga','>= 1.0.0'
-  gem.add_runtime_dependency 'rack','>=1.2.1'
+  gem.add_runtime_dependency 'rroonga','>= 1.1.0'
+  gem.add_runtime_dependency 'rack','>=1.3.4'
   gem.add_runtime_dependency 'sinatra', '>=1.2.6'
   gem.add_runtime_dependency 'launchy', '>=0.3.7'
   gem.add_runtime_dependency 'coderay', '=0.9.8'
