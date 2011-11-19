@@ -110,7 +110,7 @@ module Milkode
         path = parts[0, base_depth + 1].join("/")
         [path, is_file]
       }.sort_by {|parts|
-          [if parts[1] then 1 else 0 end, parts[0]]
+        [if parts[1] then 1 else 0 end, parts[0].downcase]
       }.uniq
       
       paths
