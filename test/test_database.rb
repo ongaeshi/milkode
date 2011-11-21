@@ -49,7 +49,7 @@ module Milkode
 
     def t_fileList
       db = Database.instance
-      assert_equal [['test', false], ['lib', false], ["notfound.file", true]], db.fileList('')
+      assert_equal [['lib', false], ['test', false], ["notfound.file", true]], db.fileList('')
       assert db.fileList('test').include? ['test/test_database.rb', true]
       assert_equal ['lib/milkode', false],              db.fileList('lib')[0]
       assert_equal ['lib/milkode/cdstk/cdstk.rb', true],      db.fileList('lib/milkode/cdstk')[0]
