@@ -23,7 +23,6 @@ module Milkode
   class MyNokogiri
     def self.HTML(html)
       if Util::ruby19?
-        # Nokogiri::HTML(html, nil, 'UTF-8')
         Nokogiri::HTML(html)
       else
         Hpricot(html)
