@@ -8,8 +8,8 @@
 require 'rubygems'
 require 'coderay'
 require 'coderay/helpers/file_type'
-require 'hpricot'
 require 'milkode/common/util'
+require 'milkode/cdweb/lib/my_nokogiri'
 
 module Milkode
   class CodeRayWrapper
@@ -58,7 +58,7 @@ module Milkode
              )
 
       if (is_ornament?)
-        html_doc = Hpricot(html)
+        html_doc = MyNokogiri::HTML(html)
         add_spanid(html_doc)
       else
         html
@@ -76,8 +76,8 @@ module Milkode
              )
 
       if (is_ornament?)
-        html_doc = Hpricot(html)
-        anchor = create_anchorlink(html_doc.search("table.CodeRay td.code pre").inner_html)
+        html_doc = MyNokogiri::HTML(html)
+        anchor = create_anchorlink(html_doc.at_css("table.CodeRay td.code pre").inner_html)
         body = add_spanid(html_doc)
         anchor + body
       else
@@ -86,10 +86,9 @@ module Milkode
     end
 
     def add_spanid(html_doc)
-      table = html_doc.search("table.CodeRay")
-      
       # preに<span id="行番号"> を付ける
-      pre = table.search("td.code pre")
+      table = html_doc.at_css("table.CodeRay")
+      pre = table.at_css("td.code pre")
       pre.inner_html = add_spanid_in(pre.inner_html)
       
       # 結果を文字列で返す
