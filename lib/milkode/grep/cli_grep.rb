@@ -1,10 +1,18 @@
 # -*- coding: utf-8 -*-
 
 require 'optparse'
+require 'milkode/findgrep/findgrep'
+require 'milkode/common/dbdir'
 
 module Milkode
   class CLI_Grep
     def self.execute(stdout, arguments=[])
+      old_option = FindGrep::FindGrep::DEFAULT_OPTION
+      old_option.dbFile = Dbdir.groonga_path(Dbdir.default_dir)
+
+      path = File.expand_path('.')
+      old_option.filePatterns = [path]
+
       optvalue = Hash.new
       
       opt = OptionParser.new "#{File.basename($0)} [option] pattern"
@@ -12,7 +20,8 @@ module Milkode
       opt.order!(arguments)
 
       if (arguments.size > 0)
-        p "Main #{optvalue.to_a.join(',')} #{arguments.join(" ")}"
+        findGrep = FindGrep::FindGrep.new(arguments, old_option)
+        findGrep.searchAndPrint(stdout)
       else
         stdout.print opt.help
       end

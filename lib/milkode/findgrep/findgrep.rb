@@ -11,6 +11,7 @@ require 'groonga'
 require 'milkode/common/util'
 include Gren
 require 'cgi'
+require 'pathname'
 
 module FindGrep
   class FindGrep
@@ -326,7 +327,10 @@ module FindGrep
 
         if ( result )
           unless (@option.dispHtml)
-            header = "#{path}:#{index + 1}:"
+            # header = "#{path}:#{index + 1}:"
+            rpath = Pathname.new(path).relative_path_from( Pathname.new(Pathname.pwd.to_s) ).to_s
+            header = "#{rpath}:#{index + 1}:"
+            
             line = GrenSnip::snip(line, match_datas) unless (@option.noSnip)
 
             unless (@option.colorHighlight)
