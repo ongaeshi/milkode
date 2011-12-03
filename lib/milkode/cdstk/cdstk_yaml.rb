@@ -94,6 +94,12 @@ module Milkode
       end
     end
 
+    def package_root(dir)
+      directorys.find do |v|
+        dir =~ /^#{v}/
+      end
+    end
+
     def self.yaml_file(path)
       Dbdir.yaml_path(path)
     end

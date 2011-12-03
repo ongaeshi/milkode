@@ -142,6 +142,23 @@ EOF
     assert_nil yaml.exist?('dir123')
     assert_nil yaml.exist?('dir')
   end
+
+  def test_package_root
+    src = <<EOF
+version: 0.1
+contents: 
+- directory: /a/dir1
+- directory: /path/to/dir
+- directory: /a/b/c
+EOF
+
+    yaml = CdstkYaml.new('dummy.yaml', YAML.load(src))
+
+    assert_equal nil           , yaml.package_root('/not_dir')
+    assert_equal "/a/dir1"     , yaml.package_root('/a/dir1/dir3')
+    assert_equal nil           , yaml.package_root('/hoge/a/dir1/dir3')
+    assert_equal '/path/to/dir', yaml.package_root('/path/to/dir')
+  end
   
   def teardown
     FileUtils.cd(@prev_dir)

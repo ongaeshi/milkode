@@ -18,7 +18,9 @@ module Milkode
       opt.on('-f KEYWORD', '--file-keyword KEYWORD', 'File path. (Enable multiple call)') {|v| option.filePatterns << v}
       opt.on('-d DIR', '--directory DIR', 'Start directory. (deafult:".")') {|v| current_dir = File.expand_path(v) } 
       opt.on('-s SUFFIX', '--suffix SUFFIX', 'suffix.') {|v| option.suffixs << v } 
-      opt.on('-p', '--package-root', 'Search package root.') {|v| optvalue[:package_root] = true }
+      opt.on('-p', '--package-root', 'Search from package root.') {|v|
+        current_dir = '/Users/ongaeshi/Documents/milkode'
+      }
       opt.parse!(arguments)
      
       option.filePatterns << current_dir
