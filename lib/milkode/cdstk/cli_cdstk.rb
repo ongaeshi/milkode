@@ -19,6 +19,7 @@ The most commonly used #{File.basename($0)} are:
   web         Run web-app.
   remove      Remove packages.
   list        List packages. 
+  dir         Disp package dir.
   pwd         Disp current db.
   cleanup     Cleanup garbage records.
   rebuild     Rebuild db.
@@ -38,6 +39,7 @@ EOF
       subopt['rebuild'] = OptionParser.new("#{File.basename($0)} rebuild")
       subopt['dump'] = OptionParser.new("#{File.basename($0)} dump")
       subopt['web'], suboptions['web'] = CLI_Cdstksub.setup_web
+      subopt['dir'], suboptions['dir'] = CLI_Cdstksub.setup_dir
 
       opt.order!(arguments)
       subcommand = arguments.shift
@@ -72,6 +74,8 @@ EOF
         when 'web'
           obj.compatible?
           Milkode::CLI_Cdweb.execute_with_options(stdout, suboptions[subcommand])
+        when 'dir'
+          obj.dir(arguments, suboptions[subcommand])
         end
       else
         if subcommand

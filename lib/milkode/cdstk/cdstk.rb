@@ -305,6 +305,11 @@ module Milkode
       @out.puts "total #{records.size} record."
     end
 
+    def dir(args, options)
+      yaml = yaml_load
+      puts yaml.package_root(File.expand_path('.'))
+    end
+
     private
 
     def db_file

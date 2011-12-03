@@ -98,5 +98,13 @@ EOF
       
       return opts, options
     end
+
+    def self.setup_dir
+      options = {}
+      
+      opt = OptionParser.new("#{File.basename($0)} dir")
+
+      return opt, options
+    end
   end
 end
