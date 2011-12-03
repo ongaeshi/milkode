@@ -309,9 +309,16 @@ module Milkode
       yaml = yaml_load
       
       if args.empty?
-        puts yaml.package_root File.expand_path('.')
+        path = File.expand_path('.')
+        root = yaml.package_root path
+
+        if (root)
+          @out.puts root
+        else
+          @out.puts "Not registered. If you want to add, 'milk add #{path}'."
+        end
       else
-        puts yaml.list(CdstkYaml::Query.new(args)).map{|v|v['directory']}
+        @out.puts yaml.list(CdstkYaml::Query.new(args)).map{|v|v['directory']}
       end
     end
 
