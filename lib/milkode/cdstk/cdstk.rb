@@ -307,7 +307,12 @@ module Milkode
 
     def dir(args, options)
       yaml = yaml_load
-      puts yaml.package_root(File.expand_path('.'))
+      
+      if args.empty?
+        puts yaml.package_root File.expand_path('.')
+      else
+        puts yaml.list(CdstkYaml::Query.new(args)).map{|v|v['directory']}
+      end
     end
 
     private
