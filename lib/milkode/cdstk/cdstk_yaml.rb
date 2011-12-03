@@ -111,7 +111,7 @@ module Milkode
 
       def select(contents)
         contents.find_all do |v|
-          @keywords.any? {|s| File.basename(v['directory']).include? s }
+          @keywords.all? {|s| File.basename(v['directory']).include? s }
         end
       end
     end
