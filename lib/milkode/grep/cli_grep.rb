@@ -10,15 +10,17 @@ module Milkode
       option = FindGrep::FindGrep::DEFAULT_OPTION
       option.dbFile = Dbdir.groonga_path(Dbdir.default_dir)
 
-      path = File.expand_path('.')
-      option.filePatterns << path
-
       optvalue = Hash.new
+
+      current_dir = File.expand_path('.')
       
       opt = OptionParser.new "#{File.basename($0)} [option] pattern"
       opt.on('-f KEYWORD', '--file-keyword KEYWORD', 'File path. (Enable multiple call)') {|v| option.filePatterns << v}
+      opt.on('-d DIR', '--directory DIR', 'Start directory. (deafult:".")') {|v| current_dir = File.expand_path(v) } 
       opt.on('-p', '--package-root', 'Search package root.') {|v| optvalue[:package_root] = true }
       opt.parse!(arguments)
+     
+      option.filePatterns << current_dir
 
       # p option
 
