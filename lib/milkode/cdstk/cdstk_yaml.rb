@@ -100,6 +100,11 @@ module Milkode
       end
     end
 
+    def package_root_dir(dir)
+      package = package_root(dir)
+      (package) ? package['directory'] : nil
+    end
+
     def self.yaml_file(path)
       Dbdir.yaml_path(path)
     end
