@@ -3,6 +3,7 @@
 require 'optparse'
 require 'milkode/findgrep/findgrep'
 require 'milkode/common/dbdir'
+require 'milkode/cdstk/cdstk_yaml'
 
 module Milkode
   class CLI_Grep
@@ -10,17 +11,14 @@ module Milkode
       option = FindGrep::FindGrep::DEFAULT_OPTION
       option.dbFile = Dbdir.groonga_path(Dbdir.default_dir)
 
-      optvalue = Hash.new
-
       current_dir = File.expand_path('.')
       
       opt = OptionParser.new "#{File.basename($0)} [option] pattern"
       opt.on('-f KEYWORD', '--file-keyword KEYWORD', 'File path. (Enable multiple call)') {|v| option.filePatterns << v}
       opt.on('-d DIR', '--directory DIR', 'Start directory. (deafult:".")') {|v| current_dir = File.expand_path(v) } 
       opt.on('-s SUFFIX', '--suffix SUFFIX', 'suffix.') {|v| option.suffixs << v } 
-      opt.on('-p', '--package-root', 'Search from package root.') {|v|
-        current_dir = '/Users/ongaeshi/Documents/milkode'
-      }
+      opt.on('-r', '--root', 'XXX') {|v| current_dir = package_root_dir(File.expand_path(".")) }
+      opt.on('-p PACKAGE', '--package PACKAGE', 'XXX') {|v| }
       opt.parse!(arguments)
      
       option.filePatterns << current_dir
@@ -33,6 +31,22 @@ module Milkode
       else
         stdout.print opt.help
       end
+    end
+
+    private 
+
+    def self.package_root_dir(dir)
+      package_root = yaml_load.package_root_dir(dir)
+
+      if (package_root)
+        package_root
+      else
+        raise "XXX(Not found root)."
+      end
+    end
+
+    def self.yaml_load
+      CdstkYaml.load(Dbdir.select_dbdir)
     end
   end
 end

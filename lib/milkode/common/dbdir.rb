@@ -34,6 +34,14 @@ module Milkode
     def dbdir?(path = '.')
       FileTest.exist? yaml_path(path)
     end
+
+    def select_dbdir
+      if (Dbdir.dbdir?('.') || !Dbdir.dbdir?(Dbdir.default_dir))
+        '.'
+      else
+        Dbdir.default_dir
+      end
+    end
   end
 end
 
