@@ -23,6 +23,7 @@ module FindGrep
                         :colorHighlight,
                         :isSilent,
                         :debugMode,
+                        :packages,
                         :filePatterns,
                         :suffixs,
                         :ignoreFiles,
@@ -42,6 +43,7 @@ module FindGrep
                                 false,
                                 false,
                                 false,
+                                [],
                                 [],
                                 [],
                                 [],
@@ -144,6 +146,16 @@ module FindGrep
           end
         end
         
+        # パッケージ(OR)
+        pe = package_expression(record, @option.packages)
+        if (pe)
+          if expression.nil?
+            expression = pe
+          else
+            expression &= pe
+          end
+        end
+        
         # パス
         @option.filePatterns.each do |word|
           sub_expression = record.path =~ word
@@ -193,6 +205,24 @@ module FindGrep
 
       sub
     end
+
+    def package_expression(record, packages)
+      sub = nil
+
+      # @todo 専用カラム package が欲しいところ
+      #       でも今でもpackageはORとして機能してるからいいっちゃいい
+      packages.each do |word|
+        e = record.path =~ word
+        if sub.nil?
+          sub = e
+        else
+          sub |= e
+        end
+      end
+
+      sub
+    end
+    private :package_expression
 
     def suffix_expression(record)
       sub = nil

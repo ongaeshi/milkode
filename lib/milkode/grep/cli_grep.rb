@@ -18,10 +18,12 @@ module Milkode
       opt.on('-d DIR', '--directory DIR', 'Start directory. (deafult:".")') {|v| current_dir = File.expand_path(v) } 
       opt.on('-s SUFFIX', '--suffix SUFFIX', 'suffix.') {|v| option.suffixs << v } 
       opt.on('-r', '--root', 'XXX') {|v| current_dir = package_root_dir(File.expand_path(".")) }
-      opt.on('-p PACKAGE', '--package PACKAGE', 'XXX') {|v| }
+      opt.on('-p PACKAGE', '--package PACKAGE', 'XXX') {|v| setup_package(option, v) }
       opt.parse!(arguments)
-     
-      option.filePatterns << current_dir
+      
+      if option.packages.empty?
+          option.filePatterns << current_dir
+      end
 
       # p option
 
@@ -33,7 +35,12 @@ module Milkode
       end
     end
 
-    private 
+    private
+
+    def self.setup_package(option, keyword)
+      packages = yaml_load.list( CdstkYaml::Query.new(keyword) ).map{|v| v['directory']}
+      option.packages += packages
+    end
 
     def self.package_root_dir(dir)
       package_root = yaml_load.package_root_dir(dir)
