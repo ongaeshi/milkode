@@ -362,6 +362,10 @@ module Milkode
       File.expand_path(@db_dir)
     end
 
+    def custom_db?
+      db_dir_expand != Dbdir.default_dir
+    end
+
     def yaml_file
       CdstkYaml.yaml_file @db_dir
     end
