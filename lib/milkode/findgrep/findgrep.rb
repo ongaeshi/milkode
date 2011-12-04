@@ -80,7 +80,7 @@ module FindGrep
       
       if dbfile.exist?
         Groonga::Database.open(dbfile.to_s)
-        puts "open    : #{dbfile} open."
+        puts "open    : #{dbfile} open." unless @option.isSilent
       else
         raise "error    : #{dbfile.to_s} not found!!"
       end
@@ -183,7 +183,7 @@ module FindGrep
                             {:key => "timestamp", :order => "descending"}])
 
       # データベースにヒット
-      stdout.puts "Found   : #{records.size} records." unless (@option.dispHtml)
+      stdout.puts "Found   : #{records.size} records." if (!@option.dispHtml && !@option.isSilent)
 
       # 検索にヒットしたファイルを実際に検索
       begin

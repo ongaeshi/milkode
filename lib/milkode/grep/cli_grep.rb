@@ -10,7 +10,7 @@ module Milkode
     def self.execute(stdout, arguments=[])
       option = FindGrep::FindGrep::DEFAULT_OPTION
       option.dbFile = Dbdir.groonga_path(Dbdir.default_dir)
-      # option.isSilent = true
+      option.isSilent = true
 
       current_dir = File.expand_path('.')
       all_package = false
