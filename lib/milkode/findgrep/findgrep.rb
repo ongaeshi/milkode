@@ -200,6 +200,8 @@ module FindGrep
             path = record.path
             relative_path = Pathname.new(path).relative_path_from( Pathname.new(Pathname.pwd.to_s) ).to_s
             stdout.puts relative_path
+            @result.match_file_count += 1
+            raise MatchCountOverError if (0 < @option.matchCountLimit && @option.matchCountLimit <= @result.match_file_count)
           end
         end
       rescue MatchCountOverError
