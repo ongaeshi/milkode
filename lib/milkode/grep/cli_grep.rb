@@ -10,8 +10,10 @@ module Milkode
     def self.execute(stdout, arguments=[])
       option = FindGrep::FindGrep::DEFAULT_OPTION
       option.dbFile = Dbdir.groonga_path(Dbdir.default_dir)
+      # option.isSilent = true
 
       current_dir = File.expand_path('.')
+      all_package = false
       
       opt = OptionParser.new "#{File.basename($0)} [option] pattern"
       opt.on('-f KEYWORD', '--file-keyword KEYWORD', 'File path. (Enable multiple call)') {|v| option.filePatterns << v}
@@ -19,9 +21,12 @@ module Milkode
       opt.on('-s SUFFIX', '--suffix SUFFIX', 'suffix.') {|v| option.suffixs << v } 
       opt.on('-r', '--root', 'XXX') {|v| current_dir = package_root_dir(File.expand_path(".")) }
       opt.on('-p PACKAGE', '--package PACKAGE', 'XXX') {|v| setup_package(option, v) }
+      opt.on('-a', '--all', 'XXX') {|v| all_package = true }
+      opt.on('-n NUM', 'Limits the number of match to show.') {|v| option.matchCountLimit = v.to_i }
+      
       opt.parse!(arguments)
       
-      if option.packages.empty?
+      if option.packages.empty? && !all_package
           option.filePatterns << current_dir
       end
 

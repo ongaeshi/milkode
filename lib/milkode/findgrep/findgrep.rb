@@ -33,7 +33,8 @@ module FindGrep
                         :dbFile,
                         :groongaOnly,
                         :isMatchFile,
-                        :dispHtml)
+                        :dispHtml,
+                        :matchCountLimit)
     
     DEFAULT_OPTION = Option.new([],
                                 [],
@@ -53,8 +54,11 @@ module FindGrep
                                 nil,
                                 false,
                                 false,
-                                false)
+                                false,
+                                -1)
     
+    class MatchCountOverError < RuntimeError ; end
+
     attr_reader :documents
     
     def initialize(patterns, option)
@@ -182,12 +186,15 @@ module FindGrep
       stdout.puts "Found   : #{records.size} records." unless (@option.dispHtml)
 
       # 検索にヒットしたファイルを実際に検索
-      records.each do |record|
-        if (@option.groongaOnly)
-          searchGroongaOnly(stdout, record)
-        else
-          searchFile(stdout, record.path, record.path) if FileTest.exist?(record.path)
+      begin
+        records.each do |record|
+          if (@option.groongaOnly)
+            searchGroongaOnly(stdout, record)
+          else
+            searchFile(stdout, record.path, record.path) if FileTest.exist?(record.path)
+          end
         end
+      rescue MatchCountOverError
       end
     end
 
@@ -270,7 +277,7 @@ module FindGrep
           searchFromDir(stdout, fpath, depth + 1)
         when "file"
           searchFile(stdout, fpath, fpath_disp)
-        end          
+        end
       end
     end
     private :searchFromDir
@@ -388,6 +395,9 @@ EOF
           end
 
           @result.match_count += 1
+         if (0 < @option.matchCountLimit && @option.matchCountLimit <= @result.match_count)
+           raise MatchCountOverError
+         end
         end
       }
     end
