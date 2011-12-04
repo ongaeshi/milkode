@@ -14,16 +14,16 @@ module Milkode
 
       current_dir = File.expand_path('.')
       all_package = false
+      find_mode = false
       
       opt = OptionParser.new "#{File.basename($0)} [option] pattern"
-      opt.on('-f KEYWORD', '--file-keyword KEYWORD', 'File path. (Enable multiple call)') {|v| option.filePatterns << v}
-      opt.on('-d DIR', '--directory DIR', 'Start directory. (deafult:".")') {|v| current_dir = File.expand_path(v) } 
+      opt.on('-f KEYWORD', '--file-keyword KEYWORD', 'File path. (Enable multiple call)') {|v| option.filePatterns << v; find_mode = true }
+      opt.on('-d DIR', '--directory DIR', 'Start directory. (deafult:".")') {|v| current_dir = File.expand_path(v); find_mode = true} 
       opt.on('-s SUFFIX', '--suffix SUFFIX', 'suffix.') {|v| option.suffixs << v } 
       opt.on('-r', '--root', 'XXX') {|v| current_dir = package_root_dir(File.expand_path(".")) }
       opt.on('-p PACKAGE', '--package PACKAGE', 'XXX') {|v| setup_package(option, v) }
       opt.on('-a', '--all', 'XXX') {|v| all_package = true }
       opt.on('-n NUM', 'Limits the number of match to show.') {|v| option.matchCountLimit = v.to_i }
-      
       opt.parse!(arguments)
       
       if option.packages.empty? && !all_package
@@ -32,7 +32,7 @@ module Milkode
 
       # p option
 
-      if (arguments.size > 0)
+      if (arguments.size > 0 || find_mode)
         findGrep = FindGrep::FindGrep.new(arguments, option)
         findGrep.searchAndPrint(stdout)
       else

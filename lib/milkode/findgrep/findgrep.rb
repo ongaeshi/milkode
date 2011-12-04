@@ -187,11 +187,19 @@ module FindGrep
 
       # 検索にヒットしたファイルを実際に検索
       begin
-        records.each do |record|
-          if (@option.groongaOnly)
-            searchGroongaOnly(stdout, record)
-          else
-            searchFile(stdout, record.path, record.path) if FileTest.exist?(record.path)
+        if (@patterns.size > 0)
+          records.each do |record|
+            if (@option.groongaOnly)
+              searchGroongaOnly(stdout, record)
+            else
+              searchFile(stdout, record.path, record.path) if FileTest.exist?(record.path)
+            end
+          end
+        else
+          records.each do |record|
+            path = record.path
+            relative_path = Pathname.new(path).relative_path_from( Pathname.new(Pathname.pwd.to_s) ).to_s
+            stdout.puts relative_path
           end
         end
       rescue MatchCountOverError
