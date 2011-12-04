@@ -155,9 +155,9 @@ EOF
     yaml = CdstkYaml.new('dummy.yaml', YAML.load(src))
 
     assert_equal nil           , yaml.package_root('/not_dir')
-    assert_equal "/a/dir1"     , yaml.package_root('/a/dir1/dir3')
+    assert_equal "/a/dir1"     , yaml.package_root('/a/dir1/dir3')['directory']
     assert_equal nil           , yaml.package_root('/hoge/a/dir1/dir3')
-    assert_equal '/path/to/dir', yaml.package_root('/path/to/dir')
+    assert_equal '/path/to/dir', yaml.package_root('/path/to/dir')['directory']
   end
   
   def teardown

@@ -95,12 +95,6 @@ module Milkode
     end
 
     def package_root(dir)
-      directorys.find do |v|
-        dir =~ /^#{v}/
-      end
-    end
-
-    def package_root2(dir)
       @data['contents'].find do |v|
         v if dir =~ /^#{v['directory']}/
       end

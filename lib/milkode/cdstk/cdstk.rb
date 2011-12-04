@@ -78,7 +78,7 @@ module Milkode
       else
         if (args.empty?)
           path = File.expand_path('.')
-          package = yaml_load.package_root2( path )
+          package = yaml_load.package_root( path )
 
           if (package)
             print_result do
@@ -336,10 +336,10 @@ module Milkode
       
       if args.empty?
         path = File.expand_path('.')
-        root = yaml.package_root path
+        package = yaml.package_root(path)
 
-        if (root)
-          @out.puts root
+        if (package)
+          @out.puts package['directory']
         else
           @out.puts "Not registered. If you want to add, 'milk add #{path}'."
         end
