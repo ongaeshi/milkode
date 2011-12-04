@@ -44,7 +44,7 @@ module Milkode
     end
 
     def remove(query)
-      r = query.select(contents)
+      r = query.select_any?(contents)
       r.each {|v| contents.delete v}
     end
 
@@ -69,7 +69,7 @@ module Milkode
     end
 
     def list(query = nil)
-      query ? query.select(contents) : contents
+      query ? query.select_all?(contents) : contents
     end
 
     def exist?(shortname)
@@ -109,7 +109,13 @@ module Milkode
         @keywords = keywords
       end
 
-      def select(contents)
+      def select_any?(contents)
+        contents.find_all do |v|
+          @keywords.any? {|s| File.basename(v['directory']).include? s }
+        end
+      end
+
+      def select_all?(contents)
         contents.find_all do |v|
           @keywords.all? {|s| File.basename(v['directory']).include? s }
         end

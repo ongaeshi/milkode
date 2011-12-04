@@ -73,14 +73,14 @@ class TestCdstkYaml < Test::Unit::TestCase
     contents = [{d => 'key'}, {d => 'keyword'}, {d => 'not'}]
 
     query = CdstkYaml::Query.new(['key'])
-    assert_equal [{d => 'key'}, {d => 'keyword'}], query.select(contents)
+    assert_equal [{d => 'key'}, {d => 'keyword'}], query.select_any?(contents)
 
     query = CdstkYaml::Query.new(['word'])
-    assert_equal [{d => 'keyword'}], query.select(contents)
+    assert_equal [{d => 'keyword'}], query.select_any?(contents)
 
     contents = [{d => 'a/dir'}, {d => 'b/dia'}]
     query = CdstkYaml::Query.new(['a'])
-    assert_equal [{d => 'b/dia'}], query.select(contents) # ディレクトリ名は含めない
+    assert_equal [{d => 'b/dia'}], query.select_any?(contents) # ディレクトリ名は含めない
   end
 
   def test_list
