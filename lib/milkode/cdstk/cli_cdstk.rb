@@ -31,7 +31,7 @@ EOF
       
       subopt['init'], suboptions['init'] = CLI_Cdstksub.setup_init
       subopt['add'] = CLI_Cdstksub.setup_add
-      subopt['update'] = OptionParser.new("#{File.basename($0)} update package1 [package2 ...]")
+      subopt['update'], suboptions['update'] = CLI_Cdstksub.setup_update
       subopt['remove'], suboptions['remove'] = CLI_Cdstksub.setup_remove
       subopt['list'], suboptions['list'] = CLI_Cdstksub.setup_list
       subopt['pwd'], suboptions['pwd'] = CLI_Cdstksub.setup_pwd
@@ -56,7 +56,7 @@ EOF
           FileUtils.mkdir_p db_dir if (init_default)
           obj.init 
         when 'update'
-          obj.update(arguments)
+          obj.update(arguments, suboptions[subcommand])
         when 'add'
           obj.add(arguments)
         when 'remove'

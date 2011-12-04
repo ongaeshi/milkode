@@ -100,6 +100,12 @@ module Milkode
       end
     end
 
+    def package_root2(dir)
+      @data['contents'].find do |v|
+        v if dir =~ /^#{v['directory']}/
+      end
+    end
+
     def self.yaml_file(path)
       Dbdir.yaml_path(path)
     end

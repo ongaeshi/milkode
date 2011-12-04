@@ -60,16 +60,42 @@ module Milkode
       db_open(db_file)
     end
 
-    def update(args = nil)
+    def update_all
       print_result do 
         yaml = yaml_load
-        
-        update_list = (!args || args.empty?) ? yaml_load.list : yaml_load.list(CdstkYaml::Query.new(args))
-        
+
         db_open(db_file)
 
-        update_list.each do |content|
+        yaml.list.each do |content|
           update_dir_in(content["directory"])
+        end
+      end
+    end
+
+    def update(args, options)
+      if (options[:all])
+        update_all
+      else
+        if (args.empty?)
+          path = File.expand_path('.')
+          package = yaml_load.package_root2( path )
+
+          if (package)
+            print_result do
+              db_open(db_file)
+              update_dir_in(package["directory"])
+            end
+          else
+            @out.puts "Not registered. If you want to add, 'milk add #{path}'."
+          end
+        else
+          print_result do
+            update_list = yaml_load.list CdstkYaml::Query.new(args)
+            db_open(db_file)
+            update_list.each do |content|
+              update_dir_in(content["directory"])
+            end
+          end
         end
       end
     end
@@ -285,7 +311,7 @@ module Milkode
     def rebuild
       db_delete(db_file)
       db_create(db_file)
-      update
+      update_all
     end
 
     def dump

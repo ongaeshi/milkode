@@ -33,6 +33,15 @@ EOF
       opt
     end
 
+    def self.setup_update
+      options = {:force => false}
+
+      opt = OptionParser.new("#{File.basename($0)} update [keyword1 keyword2 ...]")
+      opt.on('--all', 'Update all.') { options[:all] = true }
+
+      return opt, options
+    end
+
     def self.setup_remove
       options = {:force => false}
 
@@ -45,7 +54,7 @@ EOF
     def self.setup_list
       options = {:verbose => false}
 
-      opt = OptionParser.new("#{File.basename($0)} list package1 [package2 ...]")
+      opt = OptionParser.new("#{File.basename($0)} list package1 [package2 ...]") # @todo コメント修正
       opt.on('-v', '--verbose', 'Be verbose.') { options[:verbose] = true }
 
       return opt, options
