@@ -24,6 +24,7 @@ module Milkode
       opt.on('-p PACKAGE', '--package PACKAGE', 'XXX') {|v| setup_package(option, v) }
       opt.on('-a', '--all', 'XXX') {|v| all_package = true }
       opt.on('-n NUM', 'Limits the number of match to show.') {|v| option.matchCountLimit = v.to_i }
+      opt.on('-i', '--ignore', 'Ignore case.') {|v| option.ignoreCase = true}
       opt.parse!(arguments)
       
       if option.packages.empty? && !all_package
