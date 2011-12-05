@@ -11,8 +11,22 @@ module Milkode
   module Dbdir
     module_function
 
+    @@milkode_db_dir = File.expand_path('~/.milkode_db_dir')
+
+    def milkode_db_dir
+      @@milkode_db_dir
+    end
+
+    def set_milkode_db_dir(dir)
+      @@milkode_db_dir = dir
+    end
+
     def default_dir
-      if (ENV['MILKODE_DEFAULT_DIR'])
+      path = @@milkode_db_dir
+
+      if (File.exist? path)
+        File.read path
+      elsif (ENV['MILKODE_DEFAULT_DIR'])
         File.expand_path ENV['MILKODE_DEFAULT_DIR']
       else
         File.expand_path '~/.milkode'
