@@ -25,6 +25,10 @@ module Milkode
       opt.on('-a', '--all', 'XXX') {|v| all_package = true }
       opt.on('-n NUM', 'Limits the number of match to show.') {|v| option.matchCountLimit = v.to_i }
       opt.on('-i', '--ignore', 'Ignore case.') {|v| option.ignoreCase = true}
+      opt.on('-c', '--color', 'Color highlight.') {|v| option.colorHighlight = true}
+      opt.on('--no-snip', 'There being a long line, it does not snip.') {|v| option.noSnip = true }
+      opt.on('--groonga-only', 'Search only groonga db.') {|v| option.groongaOnly = true }
+      opt.on('--verbose', 'XXX') {|v| option.isSilent = false }
       opt.parse!(arguments)
       
       if option.packages.empty? && !all_package
