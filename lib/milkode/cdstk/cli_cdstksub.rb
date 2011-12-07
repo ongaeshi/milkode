@@ -115,5 +115,14 @@ EOF
 
       return opt, options
     end
+
+    def self.setup_setdb
+      options = {}
+      
+      opt = OptionParser.new("#{File.basename($0)} setdb")
+      opt.on('--reset', 'Reset default db.') {|v| options[:reset] = true }
+
+      return opt, options
+    end
   end
 end

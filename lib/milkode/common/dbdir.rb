@@ -21,6 +21,13 @@ module Milkode
       @@milkode_db_dir = dir
     end
 
+    def tmp_milkode_db_dir(path)
+      old_path = Dbdir.milkode_db_dir
+      Dbdir.set_milkode_db_dir path
+      yield
+      Dbdir.set_milkode_db_dir old_path
+    end
+
     def default_dir
       path = @@milkode_db_dir
 

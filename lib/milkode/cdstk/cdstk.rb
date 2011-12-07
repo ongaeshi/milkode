@@ -348,6 +348,19 @@ module Milkode
       end
     end
 
+    def setdb(args, options)
+      if (options[:reset])
+        FileUtils.rm_f(Dbdir.milkode_db_dir)
+        @out.puts "Reset default db\n  remove:      #{Dbdir.milkode_db_dir}\n  default_db:  #{Dbdir.default_dir}"
+      elsif (args.empty?)
+        @out.puts Dbdir.default_dir
+      else
+        path = File.expand_path(args[0])
+        open(Dbdir.milkode_db_dir, "w") {|f| f.print path }
+        @out.puts "Set default db #{path}."
+      end
+    end
+
     private
 
     def db_file

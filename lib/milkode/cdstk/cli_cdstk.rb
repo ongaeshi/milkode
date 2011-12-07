@@ -20,6 +20,7 @@ The most commonly used #{File.basename($0)} are:
   remove      Remove packages.
   list        List packages. 
   dir         Disp package dir.
+  setdb       Set default db. 
   pwd         Disp current db.
   cleanup     Cleanup garbage records.
   rebuild     Rebuild db.
@@ -40,6 +41,7 @@ EOF
       subopt['dump'] = OptionParser.new("#{File.basename($0)} dump")
       subopt['web'], suboptions['web'] = CLI_Cdstksub.setup_web
       subopt['dir'], suboptions['dir'] = CLI_Cdstksub.setup_dir
+      subopt['setdb'], suboptions['setdb'] = CLI_Cdstksub.setup_setdb
 
       opt.order!(arguments)
       subcommand = arguments.shift
@@ -76,6 +78,8 @@ EOF
           Milkode::CLI_Cdweb.execute_with_options(stdout, suboptions[subcommand])
         when 'dir'
           obj.dir(arguments, suboptions[subcommand])
+        when 'setdb'
+          obj.setdb(arguments, suboptions[subcommand])
         end
       else
         if subcommand
