@@ -4,6 +4,7 @@ require 'optparse'
 require 'milkode/findgrep/findgrep'
 require 'milkode/common/dbdir'
 require 'milkode/cdstk/cdstk_yaml'
+require 'milkode/cdstk/cdstk'
 
 module Milkode
   class CLI_Grep
@@ -11,7 +12,8 @@ module Milkode
       option = FindGrep::FindGrep::DEFAULT_OPTION
       option.dbFile = Dbdir.groonga_path(Dbdir.default_dir)
       option.isSilent = true
-
+      
+      my_option = {}
       current_dir = File.expand_path('.')
       all_package = false
       find_mode = false
@@ -29,15 +31,21 @@ module Milkode
       opt.on('--no-snip', 'There being a long line, it does not snip.') {|v| option.noSnip = true }
       opt.on('--groonga-only', 'Search only groonga db.') {|v| option.groongaOnly = true }
       opt.on('--verbose', 'XXX') {|v| option.isSilent = false }
+      opt.on('-u', '--update', '') {|v| my_option[:update] = true }
       opt.parse!(arguments)
       
       if option.packages.empty? && !all_package
           option.filePatterns << current_dir
       end
 
-      # p option
-
       if (arguments.size > 0 || find_mode)
+        # update
+        if my_option[:update]
+          cdstk = Cdstk.new(stdout, Dbdir.select_dbdir)
+          cdstk.update([], {});
+        end
+
+        # findgrep
         findGrep = FindGrep::FindGrep.new(arguments, option)
         findGrep.searchAndPrint(stdout)
       else
