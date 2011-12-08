@@ -25,6 +25,7 @@ The most commonly used #{File.basename($0)} are:
   cleanup     Cleanup garbage records.
   rebuild     Rebuild db.
   dump        Dump records.
+  mcd         Print 'mcd' command.
 EOF
 
       subopt = Hash.new
@@ -42,6 +43,7 @@ EOF
       subopt['web'], suboptions['web'] = CLI_Cdstksub.setup_web
       subopt['dir'], suboptions['dir'] = CLI_Cdstksub.setup_dir
       subopt['setdb'], suboptions['setdb'] = CLI_Cdstksub.setup_setdb
+      subopt['mcd'], suboptions['mcd'] = CLI_Cdstksub.setup_mcd
 
       opt.order!(arguments)
       subcommand = arguments.shift
@@ -80,6 +82,8 @@ EOF
           obj.dir(arguments, suboptions[subcommand])
         when 'setdb'
           obj.setdb(arguments, suboptions[subcommand])
+        when 'mcd'
+          obj.mcd(arguments, suboptions[subcommand])
         end
       else
         if subcommand

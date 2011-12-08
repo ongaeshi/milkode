@@ -124,5 +124,13 @@ EOF
 
       return opt, options
     end
+
+    def self.setup_mcd
+      options = {}
+      
+      opt = OptionParser.new("#{File.basename($0)} mcd")
+
+      return opt, options
+    end
   end
 end

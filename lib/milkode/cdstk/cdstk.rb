@@ -361,6 +361,15 @@ module Milkode
       end
     end
 
+    def mcd(args, options)
+      @out.print <<EOF
+# Copy to '.bashrc'.
+mcd() {
+    cd `milk dir $1 $2 $3 $4 $5 $6 $7 $8 $9`; pwd
+}
+EOF
+    end
+
     private
 
     def db_file

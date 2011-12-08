@@ -24,6 +24,12 @@ class TestCLI_Cdstk < Test::Unit::TestCase
     end
   end
 
+  def test_mcd
+    io = StringIO.new
+    CLI_Cdstk.execute(io, "mcd".split)
+    assert_match /mcd/, io.string
+  end
+
   private
 
   def t_read(path)
