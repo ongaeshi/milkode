@@ -100,6 +100,11 @@ module Milkode
       end
     end
 
+    def update_package(dir)
+      db_open(db_file)
+      update_dir(dir)
+    end
+
     def update_dir(dir)
       update_dir_in(dir)
     end

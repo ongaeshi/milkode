@@ -14,6 +14,8 @@ module Milkode
       option.isSilent = true
       
       my_option = {}
+      my_option[:packages] = []
+      
       current_dir = File.expand_path('.')
       all_package = false
       find_mode = false
@@ -23,7 +25,7 @@ module Milkode
       opt.on('-d DIR', '--directory DIR', 'Start directory. (deafult:".")') {|v| current_dir = File.expand_path(v); find_mode = true} 
       opt.on('-s SUFFIX', '--suffix SUFFIX', 'suffix.') {|v| option.suffixs << v } 
       opt.on('-r', '--root', 'XXX') {|v| current_dir = package_root_dir(File.expand_path(".")) }
-      opt.on('-p PACKAGE', '--package PACKAGE', 'XXX') {|v| setup_package(option, v) }
+      opt.on('-p PACKAGE', '--package PACKAGE', 'XXX') {|v| setup_package(option, my_option, v) }
       opt.on('-a', '--all', 'XXX') {|v| all_package = true }
       opt.on('-n NUM', 'Limits the number of match to show.') {|v| option.matchCountLimit = v.to_i }
       opt.on('-i', '--ignore', 'Ignore case.') {|v| option.ignoreCase = true}
@@ -42,7 +44,16 @@ module Milkode
         # update
         if my_option[:update]
           cdstk = Cdstk.new(stdout, Dbdir.select_dbdir)
-          cdstk.update([], {});
+
+          if (all_package)
+            # todo
+          elsif (my_option[:packages].empty?)
+            cdstk.update_package(package_root_dir(File.expand_path(".")))
+          else
+            my_option[:packages].each do |v|
+              cdstk.update_package(v)
+            end
+          end
         end
 
         # findgrep
@@ -55,9 +66,10 @@ module Milkode
 
     private
 
-    def self.setup_package(option, keyword)
+    def self.setup_package(option, my_option, keyword)
       packages = yaml_load.list( CdstkYaml::Query.new(keyword) ).map{|v| v['directory']}
       option.packages += packages
+      my_option[:packages] += packages
     end
 
     def self.package_root_dir(dir)
