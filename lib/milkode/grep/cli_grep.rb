@@ -17,7 +17,6 @@ module Milkode
       my_option[:packages] = []
       
       current_dir = File.expand_path('.')
-      all_package = false
       find_mode = false
       
       opt = OptionParser.new "#{File.basename($0)} [option] pattern"
@@ -26,7 +25,7 @@ module Milkode
       opt.on('-s SUFFIX', '--suffix SUFFIX', 'suffix.') {|v| option.suffixs << v } 
       opt.on('-r', '--root', 'XXX') {|v| current_dir = package_root_dir(File.expand_path(".")) }
       opt.on('-p PACKAGE', '--package PACKAGE', 'XXX') {|v| setup_package(option, my_option, v) }
-      opt.on('-a', '--all', 'XXX') {|v| all_package = true }
+      opt.on('-a', '--all', 'XXX') {|v| my_option[:all] = true }
       opt.on('-n NUM', 'Limits the number of match to show.') {|v| option.matchCountLimit = v.to_i }
       opt.on('-i', '--ignore', 'Ignore case.') {|v| option.ignoreCase = true}
       opt.on('-c', '--color', 'Color highlight.') {|v| option.colorHighlight = true}
@@ -36,7 +35,7 @@ module Milkode
       opt.on('-u', '--update', '') {|v| my_option[:update] = true }
       opt.parse!(arguments)
       
-      if option.packages.empty? && !all_package
+      if option.packages.empty? && !my_option[:all]
           option.filePatterns << current_dir
       end
 
@@ -45,8 +44,8 @@ module Milkode
         if my_option[:update]
           cdstk = Cdstk.new(stdout, Dbdir.select_dbdir)
 
-          if (all_package)
-            # todo
+          if (my_option[:all])
+            cdstk.update_all
           elsif (my_option[:packages].empty?)
             cdstk.update_package(package_root_dir(File.expand_path(".")))
           else
@@ -54,6 +53,8 @@ module Milkode
               cdstk.update_package(v)
             end
           end
+          
+          stdout.puts
         end
 
         # findgrep
