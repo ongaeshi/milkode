@@ -8,20 +8,12 @@
 require 'milkode/cdstk/cli_cdstk.rb'
 require 'milkode/common/dbdir'
 require 'test_helper'
-require 'file_test_utils'
+require 'milkode/cdstk/cdstk_command'
 
 class TestCLI_Cdstk < Test::Unit::TestCase
-  include FileTestUtils
-
-  def test_setdb
-    path = File.expand_path(".milkode_db_dir")
-    
-    Dbdir.tmp_milkode_db_dir(path) do
-      @first_default_dir = Dbdir.default_dir
-      t_read(path)
-      t_write(path)
-      t_reset(path)
-    end
+  def setup
+    @first_default_dir = Dbdir.default_dir
+    @work = MilkodeTestWork.new({:default_db => true})
   end
 
   def test_mcd
@@ -29,43 +21,39 @@ class TestCLI_Cdstk < Test::Unit::TestCase
     CLI_Cdstk.execute(io, "mcd".split)
     assert_match /mcd/, io.string
   end
-
-  private
-
-  def t_read(path)
+  
+  def test_setdb
     # 引数無しで現在の値を表示
     io = StringIO.new
     CLI_Cdstk.execute(io, "setdb".split)
-    # assert_equal "ENV['MILKODE_DEFAULT_DIR']", io.string  # 環境によって異なる
+    assert_equal @work.expand_path("db1") + "\n", io.string
     
     # .milkode_db_dir を書き換えてテスト
     io = StringIO.new
-    open(path, "w") {|f| f.print "/a/custom/db" }
+    open(@work.path(".milkode_db_dir"), "w") {|f| f.print "/a/custom/db" }
     CLI_Cdstk.execute(io, "setdb".split)
     assert_equal "/a/custom/db\n", io.string
-  end
 
-  def t_write(path)
+    # データベースではないディレクトリに切り替ようとするとエラー
     io = StringIO.new
     CLI_Cdstk.execute(io, "setdb /a/write/test".split)
-    io = StringIO.new
-    CLI_Cdstk.execute(io, "setdb".split)
-    assert_equal "/a/write/test\n", io.string
+    assert_match /fatal:/, io.string
     
-    io = StringIO.new
-    CLI_Cdstk.execute(io, "setdb relative/path/test".split)
-    io = StringIO.new
-    CLI_Cdstk.execute(io, "setdb".split)
-    assert_match /relative\/path\/test/, io.string
-  end
+    @work.init_db("db2")
 
-  def t_reset(path)
+    # 切り替え
     io = StringIO.new
+    CLI_Cdstk.execute(io, "setdb #{@work.path "db2"}".split)
+    assert_match "Set default db", io.string
+
+    # リセット
+    io = StringIO.new
+    assert_not_equal @first_default_dir, Dbdir.default_dir
     CLI_Cdstk.execute(io, "setdb --reset".split)
     assert_equal @first_default_dir, Dbdir.default_dir
   end
+
+  def teardown
+    @work.teardown
+  end
 end
-
-
-
-

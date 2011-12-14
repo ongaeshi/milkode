@@ -19,6 +19,7 @@ rescue LoadError
 end
 require 'milkode/cdweb/lib/database'
 require 'open-uri'
+require 'milkode/cdstk/cdstk_command'
 
 module Milkode
   class Cdstk
@@ -355,14 +356,18 @@ module Milkode
 
     def setdb(args, options)
       if (options[:reset])
-        FileUtils.rm_f(Dbdir.milkode_db_dir)
+        CdstkCommand.setdb_reset
         @out.puts "Reset default db\n  remove:      #{Dbdir.milkode_db_dir}\n  default_db:  #{Dbdir.default_dir}"
       elsif (args.empty?)
         @out.puts Dbdir.default_dir
       else
         path = File.expand_path(args[0])
-        open(Dbdir.milkode_db_dir, "w") {|f| f.print path }
-        @out.puts "Set default db #{path}."
+        begin
+          CdstkCommand.setdb_set path
+          @out.puts "Set default db #{path}."
+        rescue CdstkCommand::NotExistDatabase
+          @out.puts "fatal: '#{path}' is not database."
+        end
       end
     end
 

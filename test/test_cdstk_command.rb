@@ -14,28 +14,24 @@ class TestCdstkCommand < Test::Unit::TestCase
   end
 
   def test_setdb_set
-    obj = CdstkCommand.new 
-
     # デフォルトデータベースの切り替え
-    obj.setdb_set(@work.expand_path "db1")
+    CdstkCommand.setdb_set(@work.expand_path "db1")
 
     # デフォルトデータベースの切り替え
     @work.init_db("db2")
-    obj.setdb_set(@work.expand_path "db2")
+    CdstkCommand.setdb_set(@work.expand_path "db2")
     
     # 存在していないデータベースを指定するとエラー
-    assert_raise(Milkode::CdstkCommand::NotExistDatabase) { obj.setdb_set("not_found") } 
+    assert_raise(Milkode::CdstkCommand::NotExistDatabase) { CdstkCommand.setdb_set("not_found") } 
   end
 
   def test_setdb_reset
-    obj = CdstkCommand.new
-
     path = @work.expand_path '.milkode_db_dir'
 
-    obj.setdb_set(@work.expand_path "db1")
+    CdstkCommand.setdb_set(@work.expand_path "db1")
     assert File.exist?(path)
 
-    obj.setdb_reset
+    CdstkCommand.setdb_reset
     assert !File.exist?(path)
   end
 
