@@ -34,12 +34,11 @@ class MilkodeTestWork
   end
 
   def add_package(name, package_path)
-    # @todo 未完成
-#     dbdir = path(name)
+    dbdir = path(name)
     
-#     Dir.chdir(dbdir) do
-#       @cdstk.add [package_path]
-#     end
+    Dir.chdir(dbdir) do
+      @cdstk.add [package_path]
+    end
   end
 
   def teardown

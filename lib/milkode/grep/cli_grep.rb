@@ -37,7 +37,7 @@ module Milkode
         opt.parse!(arguments)
       rescue NotFoundPackage => e
         stdout.puts "fatal: Not found package '#{e}'."
-        exit
+        return
       end
       
       if option.packages.empty? && !my_option[:all]
