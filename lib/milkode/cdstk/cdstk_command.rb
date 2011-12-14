@@ -10,7 +10,7 @@ require 'milkode/common/dbdir'
 module Milkode
   class CdstkCommand
     def setdb_set(path)
-      raise NotExistDatabase unless Dbdir.dbdir? path
+      raise NotExistDatabase unless Dbdir.dbdir?(path)
       open(Dbdir.milkode_db_dir, "w") {|f| f.print path }
     end
 
