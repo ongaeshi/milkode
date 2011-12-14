@@ -33,7 +33,12 @@ module Milkode
       opt.on('--groonga-only', 'Search only groonga db.') {|v| option.groongaOnly = true }
       opt.on('--verbose', 'XXX') {|v| option.isSilent = false }
       opt.on('-u', '--update', '') {|v| my_option[:update] = true }
-      opt.parse!(arguments)
+      begin
+        opt.parse!(arguments)
+      rescue NotFoundPackage => e
+        stdout.puts "fatal: Not found package '#{e}'."
+        exit
+      end
       
       if option.packages.empty? && !my_option[:all]
           option.filePatterns << current_dir
@@ -69,6 +74,7 @@ module Milkode
 
     def self.setup_package(option, my_option, keyword)
       packages = yaml_load.list( CdstkYaml::Query.new(keyword) ).map{|v| v['directory']}
+      raise NotFoundPackage.new keyword if (packages.empty?)
       option.packages += packages
       my_option[:packages] += packages
     end
@@ -86,5 +92,9 @@ module Milkode
     def self.yaml_load
       CdstkYaml.load(Dbdir.select_dbdir)
     end
+
+    # --- error ---
+    class NotFoundPackage < RuntimeError ; end
+
   end
 end
