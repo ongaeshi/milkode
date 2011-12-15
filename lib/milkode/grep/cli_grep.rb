@@ -41,7 +41,12 @@ module Milkode
       end
       
       if option.packages.empty? && !my_option[:all]
+        if (package_dir_in? current_dir)
           option.filePatterns << current_dir
+        else
+          stdout.puts "fatal: Not package dir '#{current_dir}'."
+          return 
+        end
       end
 
       if (arguments.size > 0 || find_mode)
@@ -77,6 +82,10 @@ module Milkode
       raise NotFoundPackage.new keyword if (packages.empty?)
       option.packages += packages
       my_option[:packages] += packages
+    end
+
+    def self.package_dir_in?(dir)
+      yaml_load.package_root_dir(dir)
     end
 
     def self.package_root_dir(dir)
