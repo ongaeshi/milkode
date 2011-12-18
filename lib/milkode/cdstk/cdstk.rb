@@ -351,7 +351,7 @@ module Milkode
           # @out.puts "Not registered. If you want to add, 'milk add #{path}'."
         end
       else
-        @out.puts yaml.list(CdstkYaml::Query.new(args)).map{|v|v['directory']}
+        @out.puts yaml.list(CdstkYaml::Query.new(args)).map{|v|v['directory']}.reverse
       end
     end
 
