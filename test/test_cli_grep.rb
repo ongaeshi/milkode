@@ -51,6 +51,12 @@ class TestCLI_Grep < Test::Unit::TestCase
       CLI_Grep.execute(io, "require".split)
       assert_match "fatal:", io.string
     end
+    
+    Dir.chdir(File.join(File.dirname(__FILE__), "data/a_project")) do
+      io = StringIO.new
+      CLI_Grep.execute(io, "require".split)
+      assert_no_match /fatal:/, io.string
+    end
   end
 end
 
