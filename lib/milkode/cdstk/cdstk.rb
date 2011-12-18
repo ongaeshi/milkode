@@ -347,7 +347,8 @@ module Milkode
         if (package)
           @out.puts package['directory']
         else
-          @out.puts "Not registered. If you want to add, 'milk add #{path}'."
+          @out.puts "Not registered." # for mcd
+          # @out.puts "Not registered. If you want to add, 'milk add #{path}'."
         end
       else
         @out.puts yaml.list(CdstkYaml::Query.new(args)).map{|v|v['directory']}
@@ -375,7 +376,17 @@ module Milkode
       @out.print <<EOF
 # Copy to '.bashrc'.
 mcd() {
-    cd `milk dir $1 $2 $3 $4 $5 $6 $7 $8 $9`; pwd
+    local args="$1 $2 $3 $4 $5 $6 $7 $8 $9"
+    local dir=`milk dir $args`
+
+    if [ "$dir" = "" ]; then
+        echo "fatal: Not found package: $1 $2 $3 $4 $5 $6 $7 $8 $9"
+    elif [ "$dir" = "Not registered." ]; then
+        echo "fatal: Not a package dir: `pwd`"
+    else
+        cd "${dir}"
+        pwd
+    fi
 }
 EOF
     end
