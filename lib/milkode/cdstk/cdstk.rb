@@ -384,7 +384,22 @@ mcd() {
     elif [ "$dir" = "Not registered." ]; then
         echo "fatal: Not a package dir: `pwd`"
     else
-        cd "${dir}"
+        cd $dir
+        pwd
+    fi
+}
+
+# For Cygwin.
+mcd() {
+    local args="$1 $2 $3 $4 $5 $6 $7 $8 $9"
+    local dir=`milk.bat dir $args`
+
+    if [ "$dir" = "" ]; then
+        echo "fatal: Not found package: $1 $2 $3 $4 $5 $6 $7 $8 $9"
+    elif [ "$dir" = "Not registered." ]; then
+        echo "fatal: Not a package dir: `pwd`"
+    else
+        cd $dir
         pwd
     fi
 }
