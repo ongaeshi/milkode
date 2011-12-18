@@ -9,7 +9,7 @@ require 'milkode/cdstk/cdstk'
 module Milkode
   class CLI_Grep
     def self.execute(stdout, arguments=[])
-      option = FindGrep::FindGrep::DEFAULT_OPTION
+      option = FindGrep::FindGrep::DEFAULT_OPTION.dup
       option.dbFile = Dbdir.groonga_path(Dbdir.default_dir)
       option.isSilent = true
       
@@ -39,7 +39,7 @@ module Milkode
         stdout.puts "fatal: Not found package '#{e}'."
         return
       end
-      
+
       if option.packages.empty? && !my_option[:all]
         if (package_dir_in? current_dir)
           option.filePatterns << current_dir
