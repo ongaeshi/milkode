@@ -34,8 +34,8 @@ module FindGrep
     end
 
     def print(stdout)
-      stdout.puts "dir   : #{@start_dir} (#{Util::time_s(time)})"
-      stdout.puts "files : #{@search_count} in #{@count} (#{Util::size_s(@search_size)} in #{Util::size_s(@size)})"
+      stdout.puts "dir   : #{@start_dir} (#{Gren::Util::time_s(time)})"
+      stdout.puts "files : #{@search_count} in #{@count} (#{Gren::Util::size_s(@search_size)} in #{Gren::Util::size_s(@size)})"
       stdout.puts "match : #{@match_file_count} files, #{match_count} hit"
     end
 
