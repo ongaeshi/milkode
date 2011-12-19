@@ -4,6 +4,7 @@ require 'milkode/cdstk/cli_cdstksub'
 require 'milkode/cdstk/cdstk'
 require 'milkode/common/dbdir.rb'
 require 'milkode/cdweb/cli_cdweb'
+require 'milkode/grep/cli_grep'
 include Milkode
 
 module Milkode
@@ -13,21 +14,36 @@ module Milkode
 #{File.basename($0)} COMMAND [ARGS]
 
 The most commonly used #{File.basename($0)} are:
-  init        Init db.
   add         Add packages.
+  cleanup     Cleanup garbage records.
+  dir         Disp package dir.
+  dump        Dump records.
+  grep        Print lines matching a pattern
+  init        Init db.
+  list        List packages. 
+  mcd         Print 'mcd' command.
+  pwd         Disp current db.
+  rebuild     Rebuild db.
+  remove      Remove packages.
+  setdb       Set default db. 
   update      Update packages.
   web         Run web-app.
-  remove      Remove packages.
-  list        List packages. 
-  dir         Disp package dir.
-  setdb       Set default db. 
-  pwd         Disp current db.
-  cleanup     Cleanup garbage records.
-  rebuild     Rebuild db.
-  dump        Dump records.
-  mcd         Print 'mcd' command.
 EOF
 
+      opt.order!(arguments)
+      subcommand = arguments.shift
+      
+      case subcommand
+      when 'grep'
+        Milkode::CLI_Grep.execute(stdout, arguments)
+      else
+        subcommand_default(stdout, opt, subcommand, arguments)
+      end
+    end
+
+    private
+
+    def self.subcommand_default(stdout, opt, subcommand, arguments)
       subopt = Hash.new
       suboptions = Hash.new
       
@@ -44,10 +60,7 @@ EOF
       subopt['dir'], suboptions['dir'] = CLI_Cdstksub.setup_dir
       subopt['setdb'], suboptions['setdb'] = CLI_Cdstksub.setup_setdb
       subopt['mcd'], suboptions['mcd'] = CLI_Cdstksub.setup_mcd
-
-      opt.order!(arguments)
-      subcommand = arguments.shift
-
+      
       if (subopt[subcommand])
         subopt[subcommand].parse!(arguments) unless arguments.empty?
         init_default = suboptions['init'][:init_default]
@@ -93,8 +106,6 @@ EOF
         end
       end
     end
-
-    private
 
     def self.select_dbdir(subcommand, init_default)
       if (subcommand == 'init')
