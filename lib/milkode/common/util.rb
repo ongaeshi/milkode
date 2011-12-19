@@ -87,6 +87,10 @@ module Milkode
     def larger_than_oneline(content)
       content.count("\n") > 1
     end
+
+    def normalize_filename(str)
+      str.gsub(/\A([a-z]):/) { "#{$1.upcase}:" } if platform_win?
+    end
   end
 end
 

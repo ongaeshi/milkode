@@ -36,6 +36,15 @@ module Milkode
     def initialize(yaml_file, data)
       @yaml_file = yaml_file
       @data = data
+      normalize
+    end
+
+    def normalize
+      if (Util::platform_win?)
+        contents.each do |v|
+          v['directory'] = Util::normalize_filename v['directory']
+        end
+      end
     end
 
     def add(dirs)
