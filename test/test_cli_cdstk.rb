@@ -15,9 +15,11 @@ class TestCLI_Cdstk < Test::Unit::TestCase
   def setup
     @first_default_dir = Dbdir.default_dir
     @work = MilkodeTestWork.new({:default_db => true})
+    @work.add_package "db1", @work.expand_path("../data/a_project")
   end
 
   def test_main
+    t_grep
     t_mcd
     t_setdb
   end
@@ -28,40 +30,42 @@ class TestCLI_Cdstk < Test::Unit::TestCase
 
   private
 
+  def t_grep
+    command("grep")
+    command("grep not_found")
+    command("grep require -a")
+  end
+
   def t_mcd
-    io = StringIO.new
-    CLI_Cdstk.execute(io, "mcd".split)
-    assert_match /mcd/, io.string
+    assert_match /mcd/, command("mcd")
   end
   
   def t_setdb
     # 引数無しで現在の値を表示
-    io = StringIO.new
-    CLI_Cdstk.execute(io, "setdb".split)
-    assert_equal @work.expand_path("db1") + "\n", io.string
+    assert_equal @work.expand_path("db1") + "\n", command("setdb")
     
     # .milkode_db_dir を書き換えてテスト
-    io = StringIO.new
     open(@work.path(".milkode_db_dir"), "w") {|f| f.print "/a/custom/db" }
-    CLI_Cdstk.execute(io, "setdb".split)
-    assert_equal "/a/custom/db\n", io.string
+    assert_equal "/a/custom/db\n", command("setdb")
 
     # データベースではないディレクトリに切り替ようとするとエラー
-    io = StringIO.new
-    CLI_Cdstk.execute(io, "setdb /a/write/test".split)
-    assert_match /fatal:/, io.string
+    assert_match(/fatal:/, command("setdb /a/write/test"))
     
-    @work.init_db("db2")
-
     # 切り替え
-    io = StringIO.new
-    CLI_Cdstk.execute(io, "setdb #{@work.path "db2"}".split)
-    assert_match "Set default db", io.string
+    @work.init_db("db2")
+    assert_match "Set default db", command("setdb #{@work.path "db2"}")
 
     # リセット
-    io = StringIO.new
     assert_not_equal @first_default_dir, Dbdir.default_dir
-    CLI_Cdstk.execute(io, "setdb --reset".split)
+    command("setdb --reset")
     assert_equal @first_default_dir, Dbdir.default_dir
+  end
+
+  private
+
+  def command(arg)
+    io = StringIO.new
+    CLI_Cdstk.execute(io, arg.split)
+    io.string
   end
 end
