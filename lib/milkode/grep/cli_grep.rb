@@ -23,16 +23,17 @@ module Milkode
       opt.on('-f KEYWORD', '--file-keyword KEYWORD', 'File path. (Enable multiple call)') {|v| option.filePatterns << v; find_mode = true }
       opt.on('-d DIR', '--directory DIR', 'Start directory. (deafult:".")') {|v| current_dir = File.expand_path(v); find_mode = true} 
       opt.on('-s SUFFIX', '--suffix SUFFIX', 'suffix.') {|v| option.suffixs << v } 
-      opt.on('-r', '--root', 'XXX') {|v| current_dir = package_root_dir(File.expand_path(".")) }
-      opt.on('-p PACKAGE', '--package PACKAGE', 'XXX') {|v| setup_package(option, my_option, v) }
-      opt.on('-a', '--all', 'XXX') {|v| my_option[:all] = true }
+      opt.on('-s SUFFIX', '--suffix SUFFIX', 'Suffix.') {|v| option.suffixs << v } 
+      opt.on('-r', '--root', 'Search from package root.') {|v| current_dir = package_root_dir(File.expand_path(".")) }
+      opt.on('-p PACKAGE', '--package PACKAGE', 'Specify search package.') {|v| setup_package(option, my_option, v) }
+      opt.on('-a', '--all', 'Search all package.') {|v| my_option[:all] = true }
       opt.on('-n NUM', 'Limits the number of match to show.') {|v| option.matchCountLimit = v.to_i }
       opt.on('-i', '--ignore', 'Ignore case.') {|v| option.ignoreCase = true}
-      opt.on('-c', '--color', 'Color highlight.') {|v| option.colorHighlight = true}
+      opt.on('--color', 'Color highlight.') {|v| option.colorHighlight = true}
       opt.on('--no-snip', 'There being a long line, it does not snip.') {|v| option.noSnip = true }
-      opt.on('--groonga-only', 'Search only groonga db.') {|v| option.groongaOnly = true }
-      opt.on('--verbose', 'XXX') {|v| option.isSilent = false }
-      opt.on('-u', '--update', '') {|v| my_option[:update] = true }
+      opt.on('--cache', 'Search only db.') {|v| option.groongaOnly = true }
+      opt.on('--verbose', 'Set the verbose level of output.') {|v| option.isSilent = false }
+      opt.on('-u', '--update', 'With update db.') {|v| my_option[:update] = true }
       begin
         opt.parse!(arguments)
       rescue NotFoundPackage => e
@@ -94,7 +95,7 @@ module Milkode
       if (package_root)
         package_root
       else
-        raise "XXX(Not found root)."
+        raise NotFoundPackage.new dir
       end
     end
 
