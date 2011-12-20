@@ -112,6 +112,7 @@ EOF
       options = {}
       
       opt = OptionParser.new("#{File.basename($0)} dir")
+      opt.on('--top', 'XXX') {|v| options[:top] = true }
 
       return opt, options
     end
