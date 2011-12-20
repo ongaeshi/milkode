@@ -15,8 +15,8 @@ module Milkode
       
       my_option = {}
       my_option[:packages] = []
-      
-      current_dir = File.expand_path('.')
+
+      current_dir = package_root_dir(File.expand_path("."))
       find_mode = false
       
       # opt = OptionParser.new "#{File.basename($0)} [option] pattern"
