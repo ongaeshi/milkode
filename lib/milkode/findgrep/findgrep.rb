@@ -198,7 +198,7 @@ module FindGrep
         else
           records.each do |record|
             path = record.path
-            relative_path = Pathname.new(Milkode::Util::normalize_filename path).relative_path_from( Pathname.new(Pathname.pwd.to_s) ).to_s
+            relative_path = Milkode::Util::relative_path(path, Dir.pwd).to_s
             stdout.puts relative_path
             @result.match_file_count += 1
             raise MatchCountOverError if (0 < @option.matchCountLimit && @option.matchCountLimit <= @result.match_file_count)
@@ -375,7 +375,7 @@ module FindGrep
         if ( result )
           unless (@option.dispHtml)
             # header = "#{path}:#{index + 1}:"
-            rpath = Pathname.new(Milkode::Util::normalize_filename(path)).relative_path_from( Pathname.new(Pathname.pwd.to_s) ).to_s
+            rpath = Milkode::Util::relative_path(path, Dir.pwd).to_s
             header = "#{rpath}:#{index + 1}:"
             
             line = GrenSnip::snip(line, match_datas) unless (@option.noSnip)

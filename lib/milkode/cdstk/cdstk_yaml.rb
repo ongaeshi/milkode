@@ -104,8 +104,9 @@ module Milkode
     end
 
     def package_root(dir)
+      nd = Util::normalize_filename dir
       @data['contents'].find do |v|
-        v if dir =~ /^#{v['directory']}/
+        v if nd =~ /^#{v['directory']}/
       end
     end
 
