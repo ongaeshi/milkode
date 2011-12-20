@@ -89,7 +89,11 @@ module Milkode
     end
 
     def normalize_filename(str)
-      str.gsub(/\A([a-z]):/) { "#{$1.upcase}:" } if platform_win?
+      if platform_win?
+        str.gsub(/\A([a-z]):/) { "#{$1.upcase}:" }
+      else
+        str
+      end
     end
   end
 end
