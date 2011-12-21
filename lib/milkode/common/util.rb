@@ -47,7 +47,11 @@ module Milkode
     def relative_path(path, basedir)
       path = Pathname.new(normalize_filename path)
       basedir = Pathname.new(normalize_filename basedir)
-      path.relative_path_from(basedir)
+      begin
+        path.relative_path_from(basedir)
+      rescue ArgumentError
+        path
+      end
     end
 
     def ruby19?
