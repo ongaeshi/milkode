@@ -22,13 +22,11 @@ module Milkode
         current_dir = File.expand_path(".")
       end
       
-      find_mode = false
-      
       # opt = OptionParser.new "#{File.basename($0)} [option] pattern"
       opt = OptionParser.new "gmilk [option] pattern" # @memo milk grep からも呼ばれるため
-      opt.on('-f KEYWORD', '--file-keyword KEYWORD', 'File path. (Enable multiple call)') {|v| option.filePatterns << v; find_mode = true }
-      opt.on('-d DIR', '--directory DIR', 'Start directory. (deafult:".")') {|v| current_dir = File.expand_path(v); find_mode = true} 
-      opt.on('-s SUFFIX', '--suffix SUFFIX', 'Suffix.') {|v| option.suffixs << v } 
+      opt.on('-f KEYWORD', '--file-keyword KEYWORD', 'File path. (Enable multiple call)') {|v| option.filePatterns << v; my_option[:find_mode] = true }
+      opt.on('-d DIR', '--directory DIR', 'Start directory. (deafult:".")') {|v| current_dir = File.expand_path(v); my_option[:find_mode] = true} 
+      opt.on('-s SUFFIX', '--suffix SUFFIX', 'Suffix.') {|v| option.suffixs << v; my_option[:find_mode] = true } 
       opt.on('-r', '--root', 'Search from package root.') {|v| current_dir = package_root_dir(File.expand_path(".")) }
       opt.on('-p PACKAGE', '--package PACKAGE', 'Specify search package.') {|v| setup_package(option, my_option, v) }
       opt.on('-a', '--all', 'Search all package.') {|v| my_option[:all] = true }
@@ -55,7 +53,7 @@ module Milkode
         end
       end
 
-      if (arguments.size > 0 || find_mode)
+      if (arguments.size > 0 || my_option[:find_mode])
         # update
         if my_option[:update]
           cdstk = Cdstk.new(stdout, Dbdir.select_dbdir)

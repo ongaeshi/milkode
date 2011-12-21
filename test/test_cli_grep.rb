@@ -21,6 +21,7 @@ class TestCLI_Grep < Test::Unit::TestCase
     t_basic
     t_not_found_package
     t_not_package_root
+    t_exec_onlysuffix
   end
 
   def teardown
@@ -36,7 +37,7 @@ class TestCLI_Grep < Test::Unit::TestCase
     CLI_Grep.execute(io, "-a test".split)
     CLI_Grep.execute(io, "-p a_project test".split)
 
-    # io.puts
+    # puts io.string
   end
 
   def t_not_found_package
@@ -57,6 +58,12 @@ class TestCLI_Grep < Test::Unit::TestCase
       CLI_Grep.execute(io, "require".split)
       assert_no_match /fatal:/, io.string
     end
+  end
+
+  def t_exec_onlysuffix
+    io = StringIO.new
+    CLI_Grep.execute(io, "-p a_project -s rb".split)
+    assert_match "a_project/cdstk.rb\n", io.string
   end
 end
 
