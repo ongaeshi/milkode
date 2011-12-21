@@ -172,7 +172,13 @@ module FindGrep
 
         # 拡張子(OR)
         se = suffix_expression(record) 
-        expression &= se if (se)
+        if (se)
+          if expression.nil?
+            expression = se
+          else
+            expression &= se
+          end
+        end
         
         # 検索式
         expression
