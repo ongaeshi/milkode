@@ -184,9 +184,13 @@ module FindGrep
         expression
       end
       
+      # @todo オプションで出来るようにする？
       # タイムスタンプでソート
-      records = table.sort([{:key => "_score", :order => "descending"},
-                            {:key => "timestamp", :order => "descending"}])
+      # records = table.sort([{:key => "_score", :order => "descending"},
+      #                       {:key => "timestamp", :order => "descending"}])
+
+      # ファイル名でソート
+      records = table.sort([{:key => "shortpath", :order => "ascending"}])
 
       # データベースにヒット
       stdout.puts "Found   : #{records.size} records." if (!@option.dispHtml && !@option.isSilent)
