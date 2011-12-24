@@ -372,7 +372,7 @@ module FindGrep
       
       @result.search_files << record.path if (@option.debugMode)
 
-      searchData(stdout, record.content, record.path)
+      searchData(stdout, record.content.split("\n"), record.path)
     end
     private :searchGroongaOnly
 

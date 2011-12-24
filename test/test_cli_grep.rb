@@ -22,6 +22,7 @@ class TestCLI_Grep < Test::Unit::TestCase
     t_not_found_package
     t_not_package_root
     t_exec_onlysuffix
+    t_cache
   end
 
   def teardown
@@ -64,6 +65,12 @@ class TestCLI_Grep < Test::Unit::TestCase
     io = StringIO.new
     CLI_Grep.execute(io, "-p a_project -s rb".split)
     assert_match "a_project/cdstk.rb\n", io.string
+  end
+
+  def t_cache
+    io = StringIO.new
+    CLI_Grep.execute(io, "-p a_project test --cache".split)
+    assert_match "grenfiletest", io.string
   end
 end
 
