@@ -1,3 +1,28 @@
+=== 0.2.9 2011/12/24
+
+* gmilk
+ * 'gmilk' search from the command line available the grep.
+* mcd
+ * 'mcd', you can easy directory move package registered in the database
+* milk
+ * Add 'milk setdb'.
+ * Add 'milk update'.
+ * Add 'milk dir'.
+ * Add 'milk mcd'.
+* milk web
+  * Ruby1.8 -> hpricot, Ruby1.9 -> nokogiri.
+  * Sort the file list folder, and name
+* Add MilkodeTestWork class.
+
+=== 0.2.4 2011/10/02
+
+* Fixed not installing gem 1.3.6, 1.3.7.
+
+=== 0.2.3 2011/09/29
+
+* Search web interface speed.
+* Corresponds to the Japan language file names.
+
 === 0.2.2 2011/08/26
 
 * Add a file grep.
