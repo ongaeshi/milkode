@@ -424,18 +424,22 @@ EOF
     private :searchData
 
     def file2data(file)
-        data = file.read
-
+      data = file.read
+      
+      unless Milkode::Util::ruby19?
         if (@option.kcode != Kconv::NOCONV)
           file_kcode = Kconv::guess(data)
 
           if (file_kcode != @option.kcode)
-#            puts "encode!! #{fpath} : #{@option.kcode} <- #{file_kcode}"
+            #            puts "encode!! #{fpath} : #{@option.kcode} <- #{file_kcode}"
             data = data.kconv(@option.kcode, file_kcode)
           end
         end
+      else
+        data = data.kconv(@option.kcode)
+      end
 
-        data = data.split("\n");
+      data = data.split("\n");
     end
     private :file2data
 
