@@ -82,7 +82,7 @@ module Milkode
     private
 
     def self.setup_package(option, my_option, keyword)
-      packages = yaml_load.list( CdstkYaml::Query.new(keyword) ).map{|v| v['directory']}
+      packages = yaml_load.list( CdstkYaml::Query.new([keyword]) ).map{|v| v['directory']}
       raise NotFoundPackage.new keyword if (packages.empty?)
       option.packages += packages
       my_option[:packages] += packages
