@@ -15,6 +15,11 @@ class TestDbDir< Test::Unit::TestCase
   include FileTestUtils
 
   def test_default_dir
+    old_path = Dbdir.milkode_db_dir
+    path = File.expand_path(".milkode_db_dir")
+
+    Dbdir.set_milkode_db_dir path
+
     ENV['MILKODE_DEFAULT_DIR'] = nil
     assert_equal File.expand_path('~/.milkode'), Dbdir.default_dir
 
@@ -24,6 +29,12 @@ class TestDbDir< Test::Unit::TestCase
     ENV['MILKODE_DEFAULT_DIR'] = nil
     ENV['CODESTOCK_DEFAULT_DIRR'] = "~/DummyDir"
     assert_equal File.expand_path('~/.milkode'), Dbdir.default_dir
+
+    open(path, "w") {|f| f.print "/a/custom/db" }
+    ENV['MILKODE_DEFAULT_DIR'] = "~/DefaultDir"
+    assert_equal "/a/custom/db", Dbdir.default_dir
+    
+    Dbdir.set_milkode_db_dir old_path
   end
 
   def test_is_dbdir

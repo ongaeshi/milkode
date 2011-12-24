@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+#
+#  milg command.
+#  
+
+require 'rubygems'
+require 'milkode/grep/cli_grep'
+
+Version = "0.2.9"
+Milkode::CLI_Grep.execute(STDOUT, ARGV)

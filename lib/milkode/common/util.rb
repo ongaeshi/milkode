@@ -45,9 +45,13 @@ module Milkode
     end
 
     def relative_path(path, basedir)
-      path = Pathname.new(path)
-      basedir = Pathname.new(basedir)
-      path.relative_path_from(basedir)
+      path = Pathname.new(normalize_filename path)
+      basedir = Pathname.new(normalize_filename basedir)
+      begin
+        path.relative_path_from(basedir)
+      rescue ArgumentError
+        path
+      end
     end
 
     def ruby19?
@@ -86,6 +90,14 @@ module Milkode
 
     def larger_than_oneline(content)
       content.count("\n") > 1
+    end
+
+    def normalize_filename(str)
+      if platform_win?
+        str.gsub(/\A([a-z]):/) { "#{$1.upcase}:" }
+      else
+        str
+      end
     end
   end
 end

@@ -345,23 +345,12 @@ module Milkode
         package = yaml.package_root(path)
 
         if (package)
-          @out.print package['directory'] + (options[:top] ? "" : "\n")
+          @out.puts package['directory']
         else
-          # Use mcd.
-          @out.print "Not registered." + (options[:top] ? "" : "\n")
+          @out.puts "Not registered. If you want to add, 'milk add #{path}'."
         end
       else
-        dirs = yaml.list(CdstkYaml::Query.new(args)).map{|v|v['directory']}.reverse
-
-        if options[:top]
-          unless (dirs.empty?)
-            @out.print dirs[0]
-          else
-            @out.print ""
-          end
-        else
-          @out.puts dirs
-        end
+        @out.puts yaml.list(CdstkYaml::Query.new(args)).map{|v|v['directory']}
       end
     end
 
@@ -386,32 +375,7 @@ module Milkode
       @out.print <<EOF
 # Copy to '.bashrc'.
 mcd() {
-    local args="$1 $2 $3 $4 $5 $6 $7 $8 $9"
-    local dir=`milk dir --top $args`
-
-    if [ "$dir" = "" ]; then
-        echo "fatal: Not found package: $1 $2 $3 $4 $5 $6 $7 $8 $9"
-    elif [ "$dir" = "Not registered." ]; then
-        echo "fatal: Not a package dir: `pwd`"
-    else
-        cd $dir
-        pwd
-    fi
-}
-
-# For Cygwin.
-mcd() {
-    local args="$1 $2 $3 $4 $5 $6 $7 $8 $9"
-    local dir=`milk.bat dir --top $args`
-
-    if [ "$dir" = "" ]; then
-        echo "fatal: Not found package: $1 $2 $3 $4 $5 $6 $7 $8 $9"
-    elif [ "$dir" = "Not registered." ]; then
-        echo "fatal: Not a package dir: `pwd`"
-    else
-        cd $dir
-        pwd
-    fi
+    cd `milk dir $1 $2 $3 $4 $5 $6 $7 $8 $9`; pwd
 }
 EOF
     end

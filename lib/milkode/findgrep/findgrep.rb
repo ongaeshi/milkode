@@ -11,6 +11,7 @@ require 'groonga'
 require 'milkode/common/util'
 include Gren
 require 'cgi'
+require 'pathname'
 
 module FindGrep
   class FindGrep
@@ -22,6 +23,7 @@ module FindGrep
                         :colorHighlight,
                         :isSilent,
                         :debugMode,
+                        :packages,
                         :filePatterns,
                         :suffixs,
                         :ignoreFiles,
@@ -31,7 +33,8 @@ module FindGrep
                         :dbFile,
                         :groongaOnly,
                         :isMatchFile,
-                        :dispHtml)
+                        :dispHtml,
+                        :matchCountLimit)
     
     DEFAULT_OPTION = Option.new([],
                                 [],
@@ -45,13 +48,17 @@ module FindGrep
                                 [],
                                 [],
                                 [],
+                                [],
                                 Platform.get_shell_kcode,
                                 false,
                                 nil,
                                 false,
                                 false,
-                                false)
+                                false,
+                                -1)
     
+    class MatchCountOverError < RuntimeError ; end
+
     attr_reader :documents
     
     def initialize(patterns, option)
@@ -73,7 +80,7 @@ module FindGrep
       
       if dbfile.exist?
         Groonga::Database.open(dbfile.to_s)
-        puts "open    : #{dbfile} open."
+        puts "open    : #{dbfile} open." unless @option.isSilent
       else
         raise "error    : #{dbfile.to_s} not found!!"
       end
@@ -143,6 +150,16 @@ module FindGrep
           end
         end
         
+        # パッケージ(OR)
+        pe = package_expression(record, @option.packages)
+        if (pe)
+          if expression.nil?
+            expression = pe
+          else
+            expression &= pe
+          end
+        end
+        
         # パス
         @option.filePatterns.each do |word|
           sub_expression = record.path =~ word
@@ -155,26 +172,49 @@ module FindGrep
 
         # 拡張子(OR)
         se = suffix_expression(record) 
-        expression &= se if (se)
+        if (se)
+          if expression.nil?
+            expression = se
+          else
+            expression &= se
+          end
+        end
         
         # 検索式
         expression
       end
       
+      # @todo オプションで出来るようにする？
       # タイムスタンプでソート
-      records = table.sort([{:key => "_score", :order => "descending"},
-                            {:key => "timestamp", :order => "descending"}])
+      # records = table.sort([{:key => "_score", :order => "descending"},
+      #                       {:key => "timestamp", :order => "descending"}])
+
+      # ファイル名でソート
+      records = table.sort([{:key => "shortpath", :order => "ascending"}])
 
       # データベースにヒット
-      stdout.puts "Found   : #{records.size} records." unless (@option.dispHtml)
+      stdout.puts "Found   : #{records.size} records." if (!@option.dispHtml && !@option.isSilent)
 
       # 検索にヒットしたファイルを実際に検索
-      records.each do |record|
-        if (@option.groongaOnly)
-          searchGroongaOnly(stdout, record)
+      begin
+        if (@patterns.size > 0)
+          records.each do |record|
+            if (@option.groongaOnly)
+              searchGroongaOnly(stdout, record)
+            else
+              searchFile(stdout, record.path, record.path) if FileTest.exist?(record.path)
+            end
+          end
         else
-          searchFile(stdout, record.path, record.path) if FileTest.exist?(record.path)
+          records.each do |record|
+            path = record.path
+            relative_path = Milkode::Util::relative_path(path, Dir.pwd).to_s
+            stdout.puts relative_path
+            @result.match_file_count += 1
+            raise MatchCountOverError if (0 < @option.matchCountLimit && @option.matchCountLimit <= @result.match_file_count)
+          end
         end
+      rescue MatchCountOverError
       end
     end
 
@@ -192,6 +232,24 @@ module FindGrep
 
       sub
     end
+
+    def package_expression(record, packages)
+      sub = nil
+
+      # @todo 専用カラム package が欲しいところ
+      #       でも今でもpackageはORとして機能してるからいいっちゃいい
+      packages.each do |word|
+        e = record.path =~ word
+        if sub.nil?
+          sub = e
+        else
+          sub |= e
+        end
+      end
+
+      sub
+    end
+    private :package_expression
 
     def suffix_expression(record)
       sub = nil
@@ -239,7 +297,7 @@ module FindGrep
           searchFromDir(stdout, fpath, depth + 1)
         when "file"
           searchFile(stdout, fpath, fpath_disp)
-        end          
+        end
       end
     end
     private :searchFromDir
@@ -314,7 +372,7 @@ module FindGrep
       
       @result.search_files << record.path if (@option.debugMode)
 
-      searchData(stdout, record.content, record.path)
+      searchData(stdout, record.content.split("\n"), record.path)
     end
     private :searchGroongaOnly
 
@@ -326,7 +384,10 @@ module FindGrep
 
         if ( result )
           unless (@option.dispHtml)
-            header = "#{path}:#{index + 1}:"
+            # header = "#{path}:#{index + 1}:"
+            rpath = Milkode::Util::relative_path(path, Dir.pwd).to_s
+            header = "#{rpath}:#{index + 1}:"
+            
             line = GrenSnip::snip(line, match_datas) unless (@option.noSnip)
 
             unless (@option.colorHighlight)
@@ -354,24 +415,31 @@ EOF
           end
 
           @result.match_count += 1
+         if (0 < @option.matchCountLimit && @option.matchCountLimit <= @result.match_count)
+           raise MatchCountOverError
+         end
         end
       }
     end
     private :searchData
 
     def file2data(file)
-        data = file.read
-
+      data = file.read
+      
+      unless Milkode::Util::ruby19?
         if (@option.kcode != Kconv::NOCONV)
           file_kcode = Kconv::guess(data)
 
           if (file_kcode != @option.kcode)
-#            puts "encode!! #{fpath} : #{@option.kcode} <- #{file_kcode}"
+            #            puts "encode!! #{fpath} : #{@option.kcode} <- #{file_kcode}"
             data = data.kconv(@option.kcode, file_kcode)
           end
         end
+      else
+        data = data.kconv(@option.kcode)
+      end
 
-        data = data.split("\n");
+      data = data.split("\n");
     end
     private :file2data
 

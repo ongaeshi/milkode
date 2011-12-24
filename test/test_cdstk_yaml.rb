@@ -73,14 +73,14 @@ class TestCdstkYaml < Test::Unit::TestCase
     contents = [{d => 'key'}, {d => 'keyword'}, {d => 'not'}]
 
     query = CdstkYaml::Query.new(['key'])
-    assert_equal [{d => 'key'}, {d => 'keyword'}], query.select(contents)
+    assert_equal [{d => 'key'}, {d => 'keyword'}], query.select_any?(contents)
 
     query = CdstkYaml::Query.new(['word'])
-    assert_equal [{d => 'keyword'}], query.select(contents)
+    assert_equal [{d => 'keyword'}], query.select_any?(contents)
 
     contents = [{d => 'a/dir'}, {d => 'b/dia'}]
     query = CdstkYaml::Query.new(['a'])
-    assert_equal [{d => 'b/dia'}], query.select(contents) # ディレクトリ名は含めない
+    assert_equal [{d => 'b/dia'}], query.select_any?(contents) # ディレクトリ名は含めない
   end
 
   def test_list
@@ -141,6 +141,23 @@ EOF
     assert_not_nil yaml.exist?('dir12')
     assert_nil yaml.exist?('dir123')
     assert_nil yaml.exist?('dir')
+  end
+
+  def test_package_root
+    src = <<EOF
+version: 0.1
+contents: 
+- directory: /a/dir1
+- directory: /path/to/dir
+- directory: /a/b/c
+EOF
+
+    yaml = CdstkYaml.new('dummy.yaml', YAML.load(src))
+
+    assert_equal nil           , yaml.package_root_dir('/not_dir')
+    assert_equal "/a/dir1"     , yaml.package_root_dir('/a/dir1/dir3')
+    assert_equal nil           , yaml.package_root_dir('/hoge/a/dir1/dir3')
+    assert_equal '/path/to/dir', yaml.package_root_dir('/path/to/dir')
   end
   
   def teardown

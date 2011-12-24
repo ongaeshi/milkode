@@ -50,10 +50,20 @@ class TestCdstk < Test::Unit::TestCase
       io.puts('--- add notfound ---')
       obj.add(['notfound.html'])
 
-      io.puts('--- update ---')
+      io.puts('--- update_all ---')
       FileUtils.touch('packages/zip/abc/c.txt')
       FileUtils.touch('packages/zip/abc/d.txt')
-      obj.update
+      obj.update_all
+
+      io.puts('--- update --all ---')
+      FileUtils.touch('packages/zip/abc/e.txt')
+      obj.update([], {:all => true})
+
+      io.puts('--- update in package dir ---')
+      Dir.chdir('packages/zip/abc') do
+        # setdbコマンドが無いので上手く動かせない
+        # obj.update([], {})
+      end
 
       io.puts('--- remove ---')
       obj.remove(['findgrep'], {:force => true})
