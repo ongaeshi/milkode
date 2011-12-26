@@ -1,6 +1,0 @@
-#!/usr/bin/env ruby
-#
-#  Created on 2010-8-25.
-#  Copyright (c) 2010. All rights reserved.
-
-load File.join(File.dirname(__FILE__), "cdview")
