@@ -99,6 +99,11 @@ module Milkode
         str
       end
     end
+
+    def downcase?(str)
+      str == str.downcase
+    end
+      
   end
 end
 
@@ -197,6 +202,5 @@ module Gren
       puts
     end
     module_function :p_classtree_sub
-
   end
 end
