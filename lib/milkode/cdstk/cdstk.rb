@@ -416,6 +416,10 @@ mcd() {
 EOF
     end
 
+    def info(args, options)
+      milkode_info
+    end
+
     private
 
     def db_file
