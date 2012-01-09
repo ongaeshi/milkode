@@ -276,6 +276,13 @@ module Milkode
       }.join("\n")
 
       @out.puts str
+
+      # print information
+      if args.empty?
+        milkode_info
+      else
+        list_info(a) unless a.empty?
+      end
     end
 
     def pwd(options)
@@ -500,6 +507,17 @@ EOF
       else
         @out.puts "message    : #{filename} already exist."
       end
+    end
+
+    def list_info(packages)
+      option = FindGrep::FindGrep::DEFAULT_OPTION.dup
+      option.dbFile = Dbdir.groonga_path(Dbdir.default_dir)
+      option.isSilent = true
+      option.packages = packages.map{|v| v[1]}
+      findGrep = FindGrep::FindGrep.new([], option)
+      records = findGrep.pickupRecords
+      
+      alert('*milk_list*', "#{packages.size} packages, #{records.size} records in #{db_file}.")
     end
 
     def db_define

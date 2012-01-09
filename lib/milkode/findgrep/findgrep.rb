@@ -135,7 +135,42 @@ module FindGrep
       end
     end
 
+    def pickupRecords
+      raise unless @option.dbFile
+      searchDatabase
+    end
+
     def searchFromDB(stdout, dir)
+      # データベースを検索
+      records = searchDatabase
+
+      # ヒットしたレコード数
+      stdout.puts "Found   : #{records.size} records." if (!@option.dispHtml && !@option.isSilent)
+
+      # 検索にヒットしたファイルを実際に検索
+      begin
+        if (@patterns.size > 0)
+          records.each do |record|
+            if (@option.groongaOnly)
+              searchGroongaOnly(stdout, record)
+            else
+              searchFile(stdout, record.path, record.path) if FileTest.exist?(record.path)
+            end
+          end
+        else
+          records.each do |record|
+            path = record.path
+            relative_path = Milkode::Util::relative_path(path, Dir.pwd).to_s
+            stdout.puts relative_path
+            @result.match_file_count += 1
+            raise MatchCountOverError if (0 < @option.matchCountLimit && @option.matchCountLimit <= @result.match_file_count)
+          end
+        end
+      rescue MatchCountOverError
+      end
+    end
+
+    def searchDatabase
       # 全てのパターンを検索
       table = @documents.select do |record|
         expression = nil
@@ -190,32 +225,7 @@ module FindGrep
       #                       {:key => "timestamp", :order => "descending"}])
 
       # ファイル名でソート
-      records = table.sort([{:key => "shortpath", :order => "ascending"}])
-
-      # データベースにヒット
-      stdout.puts "Found   : #{records.size} records." if (!@option.dispHtml && !@option.isSilent)
-
-      # 検索にヒットしたファイルを実際に検索
-      begin
-        if (@patterns.size > 0)
-          records.each do |record|
-            if (@option.groongaOnly)
-              searchGroongaOnly(stdout, record)
-            else
-              searchFile(stdout, record.path, record.path) if FileTest.exist?(record.path)
-            end
-          end
-        else
-          records.each do |record|
-            path = record.path
-            relative_path = Milkode::Util::relative_path(path, Dir.pwd).to_s
-            stdout.puts relative_path
-            @result.match_file_count += 1
-            raise MatchCountOverError if (0 < @option.matchCountLimit && @option.matchCountLimit <= @result.match_file_count)
-          end
-        end
-      rescue MatchCountOverError
-      end
+      table.sort([{:key => "shortpath", :order => "ascending"}])
     end
 
     def and_expression(key, list)
