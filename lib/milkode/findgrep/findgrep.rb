@@ -15,8 +15,8 @@ require 'pathname'
 
 module FindGrep
   class FindGrep
-    Option = Struct.new(:keywordsNot,
-                        :keywordsOr,
+    Option = Struct.new(:patternsNot,
+                        :patternsOr,
                         :directory,
                         :depth,
                         :ignoreCase,
@@ -34,7 +34,8 @@ module FindGrep
                         :groongaOnly,
                         :isMatchFile,
                         :dispHtml,
-                        :matchCountLimit)
+                        :matchCountLimit,
+                        :keywords)
     
     DEFAULT_OPTION = Option.new([],
                                 [],
@@ -55,7 +56,8 @@ module FindGrep
                                 false,
                                 false,
                                 false,
-                                -1)
+                                -1,
+                                [])
     
     class MatchCountOverError < RuntimeError ; end
 
@@ -65,8 +67,8 @@ module FindGrep
       @patterns = patterns
       @option = option
       @patternRegexps = strs2regs(patterns, @option.ignoreCase)
-      @subRegexps = strs2regs(option.keywordsNot, @option.ignoreCase)
-      @orRegexps = strs2regs(option.keywordsOr, @option.ignoreCase)
+      @subRegexps = strs2regs(option.patternsNot, @option.ignoreCase)
+      @orRegexps = strs2regs(option.patternsOr, @option.ignoreCase)
       @filePatterns = (!@option.dbFile) ? strs2regs(option.filePatterns) : []
       @ignoreFiles = strs2regs(option.ignoreFiles)
       @ignoreDirs = strs2regs(option.ignoreDirs)
@@ -175,9 +177,20 @@ module FindGrep
       table = @documents.select do |record|
         expression = nil
 
-        # キーワード
+        # パターン(マッチ行)
         @patterns.each do |word|
           sub_expression = record.content =~ word
+          if expression.nil?
+            expression = sub_expression
+          else
+            expression &= sub_expression
+          end
+        end
+
+        # キーワード(絞り込むための手がかり)
+        @option.keywords.each do |word|
+          sub_expression = record.content =~ word
+          sub_expression |= record.path =~ word
           if expression.nil?
             expression = sub_expression
           else
