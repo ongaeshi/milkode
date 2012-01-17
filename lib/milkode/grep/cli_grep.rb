@@ -10,9 +10,12 @@ module Milkode
   class CLI_Grep
     def self.execute(stdout, arguments=[])
       option = FindGrep::FindGrep::DEFAULT_OPTION.dup
+
+      # default option
       option.dbFile = Dbdir.groonga_path(Dbdir.default_dir)
       option.isSilent = true
-      
+
+      # local option
       my_option = {}
       my_option[:packages] = []
 
@@ -31,12 +34,14 @@ module Milkode
       opt.on('-p PACKAGE', '--package PACKAGE', 'Specify search package.') {|v| setup_package(option, my_option, v) }
       opt.on('-a', '--all', 'Search all package.') {|v| my_option[:all] = true }
       opt.on('-n NUM', 'Limits the number of match to show.') {|v| option.matchCountLimit = v.to_i }
-      opt.on('-i', '--ignore', 'Ignore case.') {|v| option.ignoreCase = true}
+      # opt.on('-i', '--ignore', 'Ignore case.') {|v| option.ignoreCase = true}
+      opt.on('--cs', '--case-sensitive', 'Case sensitivity.') {|v| my_option[:case_sensitive] = true }
       opt.on('--color', 'Color highlight.') {|v| option.colorHighlight = true}
       opt.on('--no-snip', 'There being a long line, it does not snip.') {|v| option.noSnip = true }
       opt.on('--cache', 'Search only db.') {|v| option.groongaOnly = true }
       opt.on('--verbose', 'Set the verbose level of output.') {|v| option.isSilent = false }
       opt.on('-u', '--update', 'With update db.') {|v| my_option[:update] = true }
+      
       begin
         opt.parse!(arguments)
       rescue NotFoundPackage => e
@@ -54,6 +59,10 @@ module Milkode
       end
 
       if (arguments.size > 0 || my_option[:find_mode])
+        # ignore?
+        downcase_all = arguments.all? {|v| Util::downcase? v}
+        option.ignoreCase = true if downcase_all && !my_option[:case_sensitive]
+
         # update
         if my_option[:update]
           cdstk = Cdstk.new(stdout, Dbdir.select_dbdir)
