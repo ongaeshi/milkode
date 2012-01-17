@@ -31,9 +31,9 @@ gmilk [option] pattern
 gmilk is 'milk grep'.
 
 Stateful:
-    -k,                              Change state 'keyword'. (Match file-content or file-path.)
     -l,                              Change state 'line'. (Match line words.)
-
+    -k,                              Change state 'keyword'. (Match file-content or file-path.)
+    First state is 'line'.
     Example: gmilk pattern1 pattern2 -k keyword1 keyword2 -l pattern3 -k keyword3 ...
 
 Normal:
@@ -44,6 +44,7 @@ EOF
       opt.on('--cs', '--case-sensitive', 'Case sensitivity.') {|v| my_option[:case_sensitive] = true }
       opt.on('-d DIR', '--directory DIR', 'Start directory. (deafult:".")') {|v| current_dir = File.expand_path(v); my_option[:find_mode] = true} 
       opt.on('-f FILE_PATH', '--file-path FILE_PATH', 'File path. (Enable multiple call)') {|v| option.filePatterns << v; my_option[:find_mode] = true }
+      opt.on('-k KEYWORD', '--keyword KEYWORD', 'Keyword(XXX)') {|v| option.keywords << v; my_option[:find_mode] = true } # @todo 削除予定
       opt.on('-n NUM', 'Limits the number of match to show.') {|v| option.matchCountLimit = v.to_i }
       opt.on('--no-snip', 'There being a long line, it does not snip.') {|v| option.noSnip = true }
       opt.on('-p PACKAGE', '--package PACKAGE', 'Specify search package.') {|v| setup_package(option, my_option, v) }
