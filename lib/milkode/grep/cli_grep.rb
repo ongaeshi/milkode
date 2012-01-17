@@ -27,20 +27,19 @@ module Milkode
       
       # opt = OptionParser.new "#{File.basename($0)} [option] pattern"
       opt = OptionParser.new "gmilk [option] pattern" # @memo milk grep からも呼ばれるため
-      opt.on('-f KEYWORD', '--file-keyword KEYWORD', 'File path. (Enable multiple call)') {|v| option.filePatterns << v; my_option[:find_mode] = true }
-      opt.on('-d DIR', '--directory DIR', 'Start directory. (deafult:".")') {|v| current_dir = File.expand_path(v); my_option[:find_mode] = true} 
-      opt.on('-s SUFFIX', '--suffix SUFFIX', 'Suffix.') {|v| option.suffixs << v; my_option[:find_mode] = true } 
-      opt.on('-r', '--root', 'Search from package root.') {|v| current_dir = package_root_dir(File.expand_path(".")) }
-      opt.on('-p PACKAGE', '--package PACKAGE', 'Specify search package.') {|v| setup_package(option, my_option, v) }
       opt.on('-a', '--all', 'Search all package.') {|v| my_option[:all] = true }
-      opt.on('-n NUM', 'Limits the number of match to show.') {|v| option.matchCountLimit = v.to_i }
-      # opt.on('-i', '--ignore', 'Ignore case.') {|v| option.ignoreCase = true}
-      opt.on('--cs', '--case-sensitive', 'Case sensitivity.') {|v| my_option[:case_sensitive] = true }
-      opt.on('--color', 'Color highlight.') {|v| option.colorHighlight = true}
-      opt.on('--no-snip', 'There being a long line, it does not snip.') {|v| option.noSnip = true }
       opt.on('--cache', 'Search only db.') {|v| option.groongaOnly = true }
-      opt.on('--verbose', 'Set the verbose level of output.') {|v| option.isSilent = false }
+      opt.on('--color', 'Color highlight.') {|v| option.colorHighlight = true}
+      opt.on('--cs', '--case-sensitive', 'Case sensitivity.') {|v| my_option[:case_sensitive] = true }
+      opt.on('-d DIR', '--directory DIR', 'Start directory. (deafult:".")') {|v| current_dir = File.expand_path(v); my_option[:find_mode] = true} 
+      opt.on('-f KEYWORD', '--file-keyword KEYWORD', 'File path. (Enable multiple call)') {|v| option.filePatterns << v; my_option[:find_mode] = true }
+      opt.on('-n NUM', 'Limits the number of match to show.') {|v| option.matchCountLimit = v.to_i }
+      opt.on('--no-snip', 'There being a long line, it does not snip.') {|v| option.noSnip = true }
+      opt.on('-p PACKAGE', '--package PACKAGE', 'Specify search package.') {|v| setup_package(option, my_option, v) }
+      opt.on('-r', '--root', 'Search from package root.') {|v| current_dir = package_root_dir(File.expand_path(".")) }
+      opt.on('-s SUFFIX', '--suffix SUFFIX', 'Suffix.') {|v| option.suffixs << v; my_option[:find_mode] = true } 
       opt.on('-u', '--update', 'With update db.') {|v| my_option[:update] = true }
+      opt.on('--verbose', 'Set the verbose level of output.') {|v| option.isSilent = false }
       
       begin
         opt.parse!(arguments)
