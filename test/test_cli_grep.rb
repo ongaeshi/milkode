@@ -90,8 +90,7 @@ class TestCLI_Grep < Test::Unit::TestCase
     CLI_Grep.execute(io, "a b -k c d".split)
     CLI_Grep.execute(io, "a -n 5 b -k c d".split)
     CLI_Grep.execute(io, "a b -k -p a_project c d".split)
-
-    # CLI_Grep.execute(io, "a b -k c d -l e -k f".split)
+    CLI_Grep.execute(io, "a b -k c d -l e -k f".split)
   end
 end
 

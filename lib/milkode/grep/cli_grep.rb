@@ -35,7 +35,7 @@ Stateful:
     -k,                              Change state 'keyword'. (Match file-content or file-path.)
     --nk,                            Change state 'not keyword'. (Except if match file-content or file-path.)
     First state is 'line'.
-    Example: gmilk pattern1 pattern2 -k keyword1 keyword2 -l pattern3 -k keyword3 ...
+    Example: gmilk line1 line2 -k keyword1 keyword2 -l line3 -k keyword3 ...
 
 Normal:
 EOF
@@ -149,7 +149,8 @@ EOF
 
       def prev
         @arguments.map! do |v|
-          v.gsub "-k", ":k"
+          v.gsub("-l", ":l").
+            gsub("-k", ":k")
         end
       end
 
@@ -158,6 +159,9 @@ EOF
         
         @arguments.each do |v|
           case v
+          when ":l"
+            @state = :line
+            next
           when ":k"
             @state = :keyword
             next
