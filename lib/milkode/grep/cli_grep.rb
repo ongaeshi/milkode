@@ -26,13 +26,14 @@ module Milkode
       end
       
       # opt = OptionParser.new "#{File.basename($0)} [option] pattern"
-      opt = OptionParser.new <<EOF # @memo milk grep からも呼ばれるため
+      opt = OptionParser.new <<EOF
 gmilk [option] pattern
 gmilk is 'milk grep'.
 
 Stateful:
     -l,                              Change state 'line'. (Match line words.)
     -k,                              Change state 'keyword'. (Match file-content or file-path.)
+    --nk,                            Change state 'not keyword'. (Except if match file-content or file-path.)
     First state is 'line'.
     Example: gmilk pattern1 pattern2 -k keyword1 keyword2 -l pattern3 -k keyword3 ...
 
