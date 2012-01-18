@@ -65,6 +65,7 @@ EOF
 
         # p ap.arguments
         # p ap.keywords
+        # p ap.not_keywords
 
       rescue NotFoundPackage => e
         stdout.puts "fatal: Not found package '#{e}'."
@@ -140,17 +141,20 @@ EOF
     class ArgumentParser
       attr_reader :arguments
       attr_reader :keywords
+      attr_reader :not_keywords
       
       def initialize(arguments)
         @arguments = arguments
         @keywords = []
+        @not_keywords = []
         @state = :line
       end
 
       def prev
         @arguments.map! do |v|
           v.gsub("-l", ":l").
-            gsub("-k", ":k")
+            gsub("-k", ":k").
+            gsub("--nk", ":nk")
         end
       end
 
@@ -165,6 +169,9 @@ EOF
           when ":k"
             @state = :keyword
             next
+          when ":nk"
+            @state = :not_keyword
+            next
           end
 
           case @state
@@ -172,6 +179,8 @@ EOF
             result << v
           when :keyword
             @keywords << v
+          when :not_keyword
+            @not_keywords << v
           end
         end
 
