@@ -24,6 +24,7 @@ class TestCLI_Grep < Test::Unit::TestCase
     t_exec_onlysuffix
     t_cache
     t_case_sensitive
+    t_keyword
   end
 
   def teardown
@@ -82,6 +83,15 @@ class TestCLI_Grep < Test::Unit::TestCase
     io = StringIO.new
     CLI_Grep.execute(io, "-p a_project default tokenizer --cs".split)
     assert_equal 1, io.string.split("\n").count
+  end
+
+  def t_keyword
+    io = StringIO.new
+    CLI_Grep.execute(io, "a b -k c d".split)
+    CLI_Grep.execute(io, "a -n 5 b -k c d".split)
+    CLI_Grep.execute(io, "a b -k -p a_project c d".split)
+
+    # CLI_Grep.execute(io, "a b -k c d -l e -k f".split)
   end
 end
 
