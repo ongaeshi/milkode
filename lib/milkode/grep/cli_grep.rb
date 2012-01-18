@@ -33,7 +33,6 @@ gmilk is 'milk grep'.
 Stateful:
     -l,                              Change state 'line'. (Match line words.)
     -k,                              Change state 'keyword'. (Match file-content or file-path.)
-    --nk,                            Change state 'not keyword'. (Except if match file-content or file-path.)
     First state is 'line'.
     Example: gmilk line1 line2 -k keyword1 keyword2 -l line3 -k keyword3 ...
 
@@ -65,7 +64,6 @@ EOF
 
         # p ap.arguments
         # p ap.keywords
-        # p ap.not_keywords
 
       rescue NotFoundPackage => e
         stdout.puts "fatal: Not found package '#{e}'."
@@ -141,20 +139,17 @@ EOF
     class ArgumentParser
       attr_reader :arguments
       attr_reader :keywords
-      attr_reader :not_keywords
       
       def initialize(arguments)
         @arguments = arguments
         @keywords = []
-        @not_keywords = []
         @state = :line
       end
 
       def prev
         @arguments.map! do |v|
           v.gsub("-l", ":l").
-            gsub("-k", ":k").
-            gsub("--nk", ":nk")
+            gsub("-k", ":k")
         end
       end
 
@@ -169,9 +164,6 @@ EOF
           when ":k"
             @state = :keyword
             next
-          when ":nk"
-            @state = :not_keyword
-            next
           end
 
           case @state
@@ -179,8 +171,6 @@ EOF
             result << v
           when :keyword
             @keywords << v
-          when :not_keyword
-            @not_keywords << v
           end
         end
 
