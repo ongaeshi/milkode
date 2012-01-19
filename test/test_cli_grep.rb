@@ -23,6 +23,8 @@ class TestCLI_Grep < Test::Unit::TestCase
     t_not_package_root
     t_exec_onlysuffix
     t_cache
+    t_case_sensitive
+    t_keyword
   end
 
   def teardown
@@ -71,6 +73,24 @@ class TestCLI_Grep < Test::Unit::TestCase
     io = StringIO.new
     CLI_Grep.execute(io, "-p a_project test --cache".split)
     assert_match "grenfiletest", io.string
+  end
+
+  def t_case_sensitive
+    io = StringIO.new
+    CLI_Grep.execute(io, "-p a_project default tokenizer".split)
+    assert_equal 3, io.string.split("\n").count
+
+    io = StringIO.new
+    CLI_Grep.execute(io, "-p a_project default tokenizer --cs".split)
+    assert_equal 1, io.string.split("\n").count
+  end
+
+  def t_keyword
+    io = StringIO.new
+    CLI_Grep.execute(io, "a b -k c d".split)
+    CLI_Grep.execute(io, "a -n 5 b -k c d".split)
+    CLI_Grep.execute(io, "a b -k -p a_project c d".split)
+    CLI_Grep.execute(io, "a b -k c d -l e -k f".split)
   end
 end
 

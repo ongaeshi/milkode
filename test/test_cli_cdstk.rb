@@ -22,6 +22,7 @@ class TestCLI_Cdstk < Test::Unit::TestCase
     t_grep
     t_mcd
     t_setdb
+    t_info
   end
 
   def teardown
@@ -38,6 +39,10 @@ class TestCLI_Cdstk < Test::Unit::TestCase
 
   def t_mcd
     assert_match /mcd/, command("mcd")
+  end
+  
+  def t_info
+    assert_match /.*packages.*records/, command("info")
   end
   
   def t_setdb

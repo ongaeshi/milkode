@@ -133,5 +133,13 @@ EOF
 
       return opt, options
     end
+
+    def self.setup_info
+      options = {}
+      
+      opt = OptionParser.new("#{File.basename($0)} info")
+
+      return opt, options
+    end
   end
 end

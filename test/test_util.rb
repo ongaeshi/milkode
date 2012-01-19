@@ -63,6 +63,13 @@ class TestUtil < Test::Unit::TestCase
       Milkode::Util::filename_to_utf8(create_filename_str('ダミー'))
     end
   end
+
+  def test_downcase?
+    assert !Milkode::Util::downcase?("DUMMY")
+    assert Milkode::Util::downcase?("dummy")    
+    assert !Milkode::Util::downcase?("Dummy")
+    assert !Milkode::Util::downcase?("dummyNode")    
+  end
   
   def teardown
     teardown_custom(true)

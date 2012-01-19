@@ -19,6 +19,7 @@ The most commonly used #{File.basename($0)} are:
   dir         Disp package dir.
   dump        Dump records.
   grep        Print lines matching a pattern
+  info        Disp information.
   init        Init db.
   list        List packages. 
   mcd         Print 'mcd' command.
@@ -60,6 +61,7 @@ EOF
       subopt['dir'], suboptions['dir'] = CLI_Cdstksub.setup_dir
       subopt['setdb'], suboptions['setdb'] = CLI_Cdstksub.setup_setdb
       subopt['mcd'], suboptions['mcd'] = CLI_Cdstksub.setup_mcd
+      subopt['info'], suboptions['info'] = CLI_Cdstksub.setup_info
       
       if (subopt[subcommand])
         subopt[subcommand].parse!(arguments) unless arguments.empty?
@@ -97,6 +99,8 @@ EOF
           obj.setdb(arguments, suboptions[subcommand])
         when 'mcd'
           obj.mcd(arguments, suboptions[subcommand])
+        when 'info'
+          obj.info(arguments, suboptions[subcommand])
         end
       else
         if subcommand
