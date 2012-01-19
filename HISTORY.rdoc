@@ -1,3 +1,14 @@
+=== 0.3.0 2012/01/20
+
+* gmilk
+  * Add -k -l option.
+  * If you type lowercase all ignore case, case is one of the strictly search.
+* milk 
+  * Add 'milk info'.
+  * To display the number of files in the package when 'milk list'.
+* etc
+  * Delete cdv, cdview.
+
 === 0.2.9 2011/12/24
 
 * gmilk
