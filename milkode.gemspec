@@ -5,14 +5,14 @@
 
 Gem::Specification.new do |s|
   s.name = %q{milkode}
-  s.version = "0.2.9"
+  s.version = "0.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ongaeshi"]
-  s.date = %q{2011-12-24}
-  s.description = %q{Line based local source code search engine & web-app.}
+  s.date = %q{2012-01-20}
+  s.description = %q{Line based local source code search engine & grep-command & web-app.}
   s.email = %q{ongaeshi0621@gmail.com}
-  s.executables = ["cdv", "gmilk", "milk", "cdview"]
+  s.executables = ["gmilk", "milk"]
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.rdoc"
@@ -27,8 +27,6 @@ Gem::Specification.new do |s|
     "README.rdoc",
     "Rakefile",
     "VERSION",
-    "bin/cdv",
-    "bin/cdview",
     "bin/gmilk",
     "bin/milk",
     "lib/milkode/cdstk/cdstk.rb",
@@ -36,7 +34,6 @@ Gem::Specification.new do |s|
     "lib/milkode/cdstk/cdstk_yaml.rb",
     "lib/milkode/cdstk/cli_cdstk.rb",
     "lib/milkode/cdstk/cli_cdstksub.rb",
-    "lib/milkode/cdview/cli_cdview.rb",
     "lib/milkode/cdweb/app.rb",
     "lib/milkode/cdweb/cli_cdweb.rb",
     "lib/milkode/cdweb/config.ru",
@@ -111,7 +108,7 @@ Gem::Specification.new do |s|
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.6}
-  s.summary = %q{Line based local source code search engine & web-app.}
+  s.summary = %q{Line based local source code search engine & grep-command & web-app.}
   s.test_files = [
     "test/data/a_project/cdstk.rb",
     "test/data/a_project/cdstk_yaml.rb",
