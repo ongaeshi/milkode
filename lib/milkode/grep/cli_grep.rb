@@ -61,6 +61,7 @@ EOF
 
         arguments = ap.arguments
         option.keywords = ap.keywords
+        my_option[:find_mode] = true unless ap.keywords.empty?
 
         # p ap.arguments
         # p ap.keywords
