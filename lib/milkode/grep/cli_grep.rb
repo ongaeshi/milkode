@@ -39,6 +39,7 @@ Stateful:
 Normal:
 EOF
       opt.on('-a', '--all', 'Search all package.') {|v| my_option[:all] = true }
+      opt.on('-c', '--count', 'Disp count num.') {|v| my_option[:count] = true }
       opt.on('--cache', 'Search only db.') {|v| option.groongaOnly = true }
       opt.on('--color', 'Color highlight.') {|v| option.colorHighlight = true}
       opt.on('--cs', '--case-sensitive', 'Case sensitivity.') {|v| my_option[:case_sensitive] = true }
@@ -102,9 +103,18 @@ EOF
           stdout.puts
         end
 
-        # findgrep
-        findGrep = FindGrep::FindGrep.new(arguments, option)
-        findGrep.searchAndPrint(stdout)
+        if (my_option[:count])
+          # count mode
+          option.isSilent = true
+          findGrep = FindGrep::FindGrep.new(arguments, option)
+          records = findGrep.pickupRecords
+          # stdout.puts "#{records.size} records (#{findGrep.time_s})"
+          stdout.puts "#{records.size} records"
+        else
+          # search mode
+          findGrep = FindGrep::FindGrep.new(arguments, option)
+          findGrep.searchAndPrint(stdout)
+        end
       else
         stdout.print opt.help
       end

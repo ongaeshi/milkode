@@ -139,7 +139,13 @@ module FindGrep
 
     def pickupRecords
       raise unless @option.dbFile
-      searchDatabase
+      records = searchDatabase
+      @result.time_stop
+      records
+    end
+
+    def time_s
+      Gren::Util::time_s(@result.time)
     end
 
     def searchFromDB(stdout, dir)
