@@ -70,11 +70,18 @@ EOF
         ap.after
 
         arguments = ap.arguments
+
         option.keywords = ap.keywords
         my_option[:find_mode] = true unless ap.keywords.empty?
 
+        unless ap.gotowords.empty?
+          option.filePatterns += ap.gotowords
+          my_option[:find_mode] = true
+        end
+
         # p ap.arguments
         # p ap.keywords
+        # p ap.gotowords
 
       rescue NotFoundPackage => e
         stdout.puts "fatal: Not found package '#{e}'."
@@ -159,17 +166,20 @@ EOF
     class ArgumentParser
       attr_reader :arguments
       attr_reader :keywords
+      attr_reader :gotowords
       
       def initialize(arguments)
         @arguments = arguments
-        @keywords = []
         @state = :line
+        @keywords = []
+        @gotowords = []
       end
 
       def prev
         @arguments.map! do |v|
           v.gsub("-l", ":l").
-            gsub("-k", ":k")
+            gsub("-k", ":k").
+            gsub("-g", ":g")            
         end
       end
 
@@ -184,6 +194,9 @@ EOF
           when ":k"
             @state = :keyword
             next
+          when ":g"
+            @state = :gotoline
+            next
           end
 
           case @state
@@ -191,6 +204,8 @@ EOF
             result << v
           when :keyword
             @keywords << v
+          when :gotoline
+            @gotowords << v
           end
         end
 
