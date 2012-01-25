@@ -34,7 +34,16 @@ Stateful:
     -l,                              Change state 'line'. (Match line words.)
     -k,                              Change state 'keyword'. (Match file-content or file-path.)
     First state is 'line'.
-    Example: gmilk line1 line2 -k keyword1 keyword2 -l line3 -k keyword3 ...
+    Example:
+      gmilk line1 line2 -k keyword1 keyword2 -l line3 -k keyword3 ...
+
+Gotoline:
+    -g,                              Go to line mode.
+    Enter a file name and line number. If you omit the line number jumps to the line:1.
+    Example:
+      gmilk -g database lib 7
+      lib/database.rb:7:xxxxxxxxxxxxxxx
+      database_lib.rb:7:yyyyyyyyyyyyyyy
 
 Normal:
 EOF
