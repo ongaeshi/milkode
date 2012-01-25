@@ -75,7 +75,9 @@ EOF
         my_option[:find_mode] = true unless ap.keywords.empty?
 
         unless ap.gotowords.empty?
-          option.filePatterns += ap.gotowords
+          r = Util::parse_gotoline(ap.gotowords)
+          option.filePatterns += r[0]
+          option.gotoline = r[1]
           my_option[:find_mode] = true
         end
 

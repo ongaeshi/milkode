@@ -35,7 +35,8 @@ module FindGrep
                         :isMatchFile,
                         :dispHtml,
                         :matchCountLimit,
-                        :keywords)
+                        :keywords,
+                        :gotoline)
     
     DEFAULT_OPTION = Option.new([],
                                 [],
@@ -57,7 +58,8 @@ module FindGrep
                                 false,
                                 false,
                                 -1,
-                                [])
+                                [],
+                                -1)
     
     class MatchCountOverError < RuntimeError ; end
 
@@ -157,7 +159,16 @@ module FindGrep
 
       # 検索にヒットしたファイルを実際に検索
       begin
-        if (@patterns.size > 0)
+        if (@option.gotoline > 0)
+          records.each do |record|
+            path = record.path
+            relative_path = Milkode::Util::relative_path(path, Dir.pwd).to_s
+            line = getTextLineno(relative_path, @option.gotoline)
+            stdout.puts "#{relative_path}:#{@option.gotoline}:#{line}" if (line)
+            @result.match_file_count += 1
+            raise MatchCountOverError if (0 < @option.matchCountLimit && @option.matchCountLimit <= @result.match_file_count)
+          end
+        elsif (@patterns.size > 0)
           records.each do |record|
             if (@option.groongaOnly)
               searchGroongaOnly(stdout, record)
@@ -175,6 +186,20 @@ module FindGrep
           end
         end
       rescue MatchCountOverError
+      end
+    end
+
+    def getTextLineno(path, no)
+      index = no - 1
+
+      open(path, "r") do |file|
+        lines = file2data(file)
+
+        if (index < lines.size)
+          lines[index]
+        else
+          nil
+        end
       end
     end
 
