@@ -103,7 +103,29 @@ module Milkode
     def downcase?(str)
       str == str.downcase
     end
-      
+
+    # parse_gotoline(['a', '123', 'b']) #=> [['a', 'b'], 123]]
+    # parse_gotoline(['a', '123', 'b', 55]) #=> [['a', 'b', '123'], 55]]
+    def parse_gotoline(words)
+      lineno = -1
+      index = -1
+
+      words.each_with_index do |v, idx|
+        n = v.to_i
+        if (n != 0)
+          lineno = n
+          index = idx
+        end
+      end
+
+      if (lineno == -1)
+        [words, 1]              # 行番号らしきものは見つからなかった
+      else
+        words.delete_at(index)
+        [words, lineno]        
+      end
+    end
+
   end
 end
 

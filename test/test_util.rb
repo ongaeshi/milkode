@@ -70,6 +70,12 @@ class TestUtil < Test::Unit::TestCase
     assert !Milkode::Util::downcase?("Dummy")
     assert !Milkode::Util::downcase?("dummyNode")    
   end
+
+  def test_parse_gotoline
+    assert_equal [['a', 'b'], 123],       Milkode::Util::parse_gotoline(['a', '123', 'b']) 
+    assert_equal [['a', '123', 'b'], 55], Milkode::Util::parse_gotoline(['a', '123', 'b', '55'])
+    assert_equal [['a', 'b'], 1], Milkode::Util::parse_gotoline(['a', 'b'])
+  end
   
   def teardown
     teardown_custom(true)
