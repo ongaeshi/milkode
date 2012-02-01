@@ -18,7 +18,7 @@ require 'milkode/cdweb/lib/mkurl'
 set :haml, :format => :html5
 
 get '/' do
-  @version = "0.3.0"
+  @version = "0.4.0"
   @package_num = Database.instance.fileList('').size
   @file_num = Database.instance.fileNum
   haml :index

@@ -1,3 +1,10 @@
+=== 0.4.0 2012/02/02
+
+* gmilk 
+  * Revert -i option
+  * Add -g option (Goto line mode)
+  * Add -c option (Disp count num)
+
 === 0.3.0 2012/01/20
 
 * gmilk
