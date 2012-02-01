@@ -34,16 +34,27 @@ Stateful:
     -l,                              Change state 'line'. (Match line words.)
     -k,                              Change state 'keyword'. (Match file-content or file-path.)
     First state is 'line'.
-    Example: gmilk line1 line2 -k keyword1 keyword2 -l line3 -k keyword3 ...
+    Example:
+      gmilk line1 line2 -k keyword1 keyword2 -l line3 -k keyword3 ...
+
+Gotoline:
+    -g,                              Go to line mode.
+    Enter a file name and line number. If you omit the line number jumps to the line:1.
+    Example:
+      gmilk -g database lib 7
+      lib/database.rb:7:xxxxxxxxxxxxxxx
+      database_lib.rb:7:yyyyyyyyyyyyyyy
 
 Normal:
 EOF
       opt.on('-a', '--all', 'Search all package.') {|v| my_option[:all] = true }
+      opt.on('-c', '--count', 'Disp count num.') {|v| my_option[:count] = true }
       opt.on('--cache', 'Search only db.') {|v| option.groongaOnly = true }
       opt.on('--color', 'Color highlight.') {|v| option.colorHighlight = true}
       opt.on('--cs', '--case-sensitive', 'Case sensitivity.') {|v| my_option[:case_sensitive] = true }
       opt.on('-d DIR', '--directory DIR', 'Start directory. (deafult:".")') {|v| current_dir = File.expand_path(v); my_option[:find_mode] = true} 
       opt.on('-f FILE_PATH', '--file-path FILE_PATH', 'File path. (Enable multiple call)') {|v| option.filePatterns << v; my_option[:find_mode] = true }
+      opt.on('-i', '--ignore', 'Ignore case.') {|v| option.ignoreCase = true}
       opt.on('-n NUM', 'Limits the number of match to show.') {|v| option.matchCountLimit = v.to_i }
       opt.on('--no-snip', 'There being a long line, it does not snip.') {|v| option.noSnip = true }
       opt.on('-p PACKAGE', '--package PACKAGE', 'Specify search package.') {|v| setup_package(option, my_option, v) }
@@ -60,11 +71,20 @@ EOF
         ap.after
 
         arguments = ap.arguments
+
         option.keywords = ap.keywords
         my_option[:find_mode] = true unless ap.keywords.empty?
 
+        unless ap.gotowords.empty?
+          r = Util::parse_gotoline(ap.gotowords)
+          option.filePatterns += r[0]
+          option.gotoline = r[1]
+          my_option[:find_mode] = true
+        end
+
         # p ap.arguments
         # p ap.keywords
+        # p ap.gotowords
 
       rescue NotFoundPackage => e
         stdout.puts "fatal: Not found package '#{e}'."
@@ -102,9 +122,18 @@ EOF
           stdout.puts
         end
 
-        # findgrep
-        findGrep = FindGrep::FindGrep.new(arguments, option)
-        findGrep.searchAndPrint(stdout)
+        if (my_option[:count])
+          # count mode
+          option.isSilent = true
+          findGrep = FindGrep::FindGrep.new(arguments, option)
+          records = findGrep.pickupRecords
+          # stdout.puts "#{records.size} records (#{findGrep.time_s})"
+          stdout.puts "#{records.size} records"
+        else
+          # search mode
+          findGrep = FindGrep::FindGrep.new(arguments, option)
+          findGrep.searchAndPrint(stdout)
+        end
       else
         stdout.print opt.help
       end
@@ -140,17 +169,20 @@ EOF
     class ArgumentParser
       attr_reader :arguments
       attr_reader :keywords
+      attr_reader :gotowords
       
       def initialize(arguments)
         @arguments = arguments
-        @keywords = []
         @state = :line
+        @keywords = []
+        @gotowords = []
       end
 
       def prev
         @arguments.map! do |v|
           v.gsub("-l", ":l").
-            gsub("-k", ":k")
+            gsub("-k", ":k").
+            gsub("-g", ":g")            
         end
       end
 
@@ -165,6 +197,11 @@ EOF
           when ":k"
             @state = :keyword
             next
+          when ":g"
+            @state = :gotoline
+            @gotowords += result
+            result = []
+            next
           end
 
           case @state
@@ -172,6 +209,8 @@ EOF
             result << v
           when :keyword
             @keywords << v
+          when :gotoline
+            @gotowords << v
           end
         end
 
