@@ -106,9 +106,14 @@ module Milkode
 
     # parse_gotoline(['a', '123', 'b']) #=> [['a', 'b'], 123]]
     # parse_gotoline(['a', '123', 'b', 55]) #=> [['a', 'b', '123'], 55]]
+    # parse_gotoline(['a:5']) #=> [['a'], 55]]
     def parse_gotoline(words)
       lineno = -1
       index = -1
+
+      words = words.map{|v|
+        v.split(':')
+      }.flatten
 
       words.each_with_index do |v, idx|
         n = v.to_i

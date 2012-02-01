@@ -75,6 +75,7 @@ class TestUtil < Test::Unit::TestCase
     assert_equal [['a', 'b'], 123],       Milkode::Util::parse_gotoline(['a', '123', 'b']) 
     assert_equal [['a', '123', 'b'], 55], Milkode::Util::parse_gotoline(['a', '123', 'b', '55'])
     assert_equal [['a', 'b'], 1], Milkode::Util::parse_gotoline(['a', 'b'])
+    assert_equal [['a'], 55],    Milkode::Util::parse_gotoline(['a:55'])
   end
   
   def teardown
