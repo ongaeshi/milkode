@@ -198,6 +198,8 @@ EOF
             next
           when ":g"
             @state = :gotoline
+            @gotowords += result
+            result = []
             next
           end
 
