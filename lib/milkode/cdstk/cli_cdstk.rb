@@ -55,7 +55,7 @@ EOF
       subopt['list'], suboptions['list'] = CLI_Cdstksub.setup_list
       subopt['pwd'], suboptions['pwd'] = CLI_Cdstksub.setup_pwd
       subopt['cleanup'], suboptions['cleanup'] = CLI_Cdstksub.setup_cleanup
-      subopt['rebuild'] = OptionParser.new("#{File.basename($0)} rebuild")
+      subopt['rebuild'], suboptions['rebuild'] = CLI_Cdstksub.setup_rebuild
       subopt['dump'] = OptionParser.new("#{File.basename($0)} dump")
       subopt['web'], suboptions['web'] = CLI_Cdstksub.setup_web
       subopt['dir'], suboptions['dir'] = CLI_Cdstksub.setup_dir
@@ -87,7 +87,7 @@ EOF
         when 'cleanup'
           obj.cleanup(suboptions[subcommand])
         when 'rebuild'
-          obj.rebuild
+          obj.rebuild(suboptions[subcommand])
         when 'dump'
           obj.dump
         when 'web'

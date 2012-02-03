@@ -208,34 +208,49 @@ module Milkode
       filename
     end
 
-    def remove(args, options)
-      print_result do 
-        db_open(db_file)
-        
+    def remove_all
+      print_result do
         yaml = yaml_load
-        query = CdstkYaml::Query.new(args)
-        
-        remove_list = yaml_load.list(query)
-        return if remove_list.empty?
-        
-        list(args, {:verbose => true})
-        
-        if options[:force] or yes_or_no("Remove #{remove_list.size} contents? (yes/no)")
-          # yamlから削除
-          yaml.remove(query)
-          yaml.save
-          
-          # データベースからも削除
-          packages = remove_list.map{|v| File.basename v['directory']}
 
-          # 本当はパッケージの配列をまとめて渡した方が効率が良いのだが、表示を綺麗にするため
-          packages.each do |package|
-            alert("rm_package", package)
-            @package_count += 1
-            
-            Database.instance.remove([package]) do |record|
-              alert("rm_record", record.path)
-              @file_count += 1
+        list([], {:verbose => true})
+        
+        if yes_or_no("Remove #{yaml.list.size} contents? (yes/no)")
+          db_open(db_file)
+
+          yaml.list.each do |content|
+            remove_dir(content["directory"])
+          end
+        end
+      end
+    end
+
+    def remove(args, options)
+      if (options[:all])
+        remove_all
+      else
+        if (args.empty?)
+          path = File.expand_path('.')
+          package = yaml_load.package_root( path )
+
+          if (package)
+            print_result do
+              db_open(db_file)
+              remove_dir(package["directory"])
+            end
+          else
+            @out.puts "Not registered. '#{path}'."
+          end
+        else
+          remove_list = yaml_load.list CdstkYaml::Query.new(args)
+
+          list(args, {:verbose => true})
+          
+          if options[:force] or yes_or_no("Remove #{remove_list.size} contents? (yes/no)")
+            print_result do
+              db_open(db_file)
+              remove_list.each do |content|
+                remove_dir(content["directory"])
+              end
             end
           end
         end
@@ -321,7 +336,7 @@ module Milkode
       end
     end
 
-    def rebuild
+    def rebuild(options)
       db_delete(db_file)
       db_create(db_file)
       update_all
@@ -465,6 +480,24 @@ EOF
         db_add_dir(dir)
       else
         db_add_file(STDOUT, dir, File.basename(dir))
+      end
+    end
+
+    def remove_dir(dir)
+      # yamlから削除
+      yaml = yaml_load
+      yaml.remove_dir(dir)
+      yaml.save
+        
+      # データベースからも削除
+      dir = File.expand_path(dir)
+
+      alert("rm_package", dir)
+      @package_count += 1
+
+      Database.instance.remove([File.basename(dir)]) do |record|
+        alert("rm_record", record.path)
+        @file_count += 1
       end
     end
 

@@ -46,6 +46,7 @@ EOF
       options = {:force => false}
 
       opt = OptionParser.new("#{File.basename($0)} remove package1 [package2 ...]")
+      opt.on('--all', 'Update all.') { options[:all] = true }
       opt.on('-f', '--force', 'Force remove.') { options[:force] = true }
 
       return opt, options
@@ -74,6 +75,15 @@ EOF
       
       opt = OptionParser.new("#{File.basename($0)} cleanup")
       opt.on('-f', '--force', 'Force cleanup.') { options[:force] = true }
+
+      return opt, options
+    end
+
+    def self.setup_rebuild
+      options = {}
+      
+      opt = OptionParser.new("#{File.basename($0)} cleanup")
+      opt.on('--all', 'Rebuild all.') { option[:all] = true}
 
       return opt, options
     end

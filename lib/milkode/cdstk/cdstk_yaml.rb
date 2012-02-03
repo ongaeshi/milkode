@@ -57,6 +57,12 @@ module Milkode
       r.each {|v| contents.delete v}
     end
 
+    def remove_dir(dir)
+      contents.delete_if do |v|
+        dir == v['directory']
+      end
+    end
+
     def save
       open(@yaml_file, "w") { |f| YAML.dump(@data, f) }
     end
