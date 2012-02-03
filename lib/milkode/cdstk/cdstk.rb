@@ -111,6 +111,28 @@ module Milkode
     end
 
     def add(contents)
+      # 追加
+      add_in(contents)
+
+      # 部分アップデート
+      print_result do 
+        db_open(db_file)
+        contents.each do |dir|
+          update_dir(dir)
+        end
+      end
+    end
+
+    def add_dir(dir)
+      # 追加
+      add_in([dir])
+
+      # 更新
+      db_open(db_file)
+      update_dir(dir)
+    end
+
+    def add_in(contents)
       # YAMLを読み込み
       yaml = yaml_load
 
@@ -139,14 +161,6 @@ module Milkode
       # YAML更新
       yaml.add(contents)
       yaml.save
-
-      # 部分アップデート
-      print_result do 
-        db_open(db_file)
-        contents.each do |dir|
-          update_dir(dir)
-        end
-      end
     end
 
     def convert_content(src)
@@ -337,9 +351,24 @@ module Milkode
     end
 
     def rebuild(options)
-      db_delete(db_file)
-      db_create(db_file)
-      update_all
+      if (options[:all])
+        db_delete(db_file)
+        db_create(db_file)
+        update_all
+      else
+        path = File.expand_path('.')
+        package = yaml_load.package_root( path )
+
+        if (package)
+          print_result do
+            db_open(db_file)
+            remove_dir(package["directory"])
+            add_dir(package["directory"])
+          end
+        else
+          @out.puts "Not registered. '#{path}'."
+        end
+      end
     end
 
     def dump

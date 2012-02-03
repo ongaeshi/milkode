@@ -83,7 +83,7 @@ EOF
       options = {}
       
       opt = OptionParser.new("#{File.basename($0)} cleanup")
-      opt.on('--all', 'Rebuild all.') { option[:all] = true}
+      opt.on('--all', 'Rebuild all.') { options[:all] = true}
 
       return opt, options
     end
