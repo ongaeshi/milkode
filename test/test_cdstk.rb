@@ -79,7 +79,7 @@ class TestCdstk < Test::Unit::TestCase
       # obj.cleanup({:force=>true})
 
       io.puts('--- rebuild ---')
-      obj.rebuild({:all => true})
+      obj.rebuild([], {:all => true})
 
       io.puts('--- remove ---')
       obj.remove(['findgrep', 'common'], {:force => true})

@@ -87,7 +87,7 @@ EOF
         when 'cleanup'
           obj.cleanup(suboptions[subcommand])
         when 'rebuild'
-          obj.rebuild(suboptions[subcommand])
+          obj.rebuild(arguments, suboptions[subcommand])
         when 'dump'
           obj.dump
         when 'web'

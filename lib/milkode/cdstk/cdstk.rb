@@ -350,23 +350,37 @@ module Milkode
       end
     end
 
-    def rebuild(options)
+    def rebuild(args, options)
       if (options[:all])
         db_delete(db_file)
         db_create(db_file)
         update_all
       else
-        path = File.expand_path('.')
-        package = yaml_load.package_root( path )
+        if (args.empty?)
+          path = File.expand_path('.')
+          package = yaml_load.package_root( path )
 
-        if (package)
-          print_result do
-            db_open(db_file)
-            remove_dir(package["directory"])
-            add_dir(package["directory"])
+          if (package)
+            print_result do
+              db_open(db_file)
+              remove_dir(package["directory"])
+              add_dir(package["directory"])
+            end
+          else
+            @out.puts "Not registered. '#{path}'."
           end
         else
-          @out.puts "Not registered. '#{path}'."
+          a_list = yaml_load.list CdstkYaml::Query.new(args)
+          
+          list(args, {:verbose => true})
+
+          print_result do
+            db_open(db_file)
+            a_list.each do |content|
+              remove_dir(content["directory"])
+              add_dir(content["directory"])
+            end
+          end
         end
       end
     end
