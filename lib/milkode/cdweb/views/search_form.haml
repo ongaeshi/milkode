@@ -1,0 +1,19 @@
+:javascript
+  function set_pathname() {
+    document.searchform.pathname.value = location.pathname;
+  }
+%form{name: "searchform", action: '/search', method: 'post'}
+  %p
+    %input{name: 'query', size: '60', type: 'text', value: params[:query]}
+    %input{type: 'submit', value: '検索', onclick: 'set_pathname()'}
+    %br
+    %label
+      = create_radio('all', params[:shead])
+      全体を検索
+    %label
+      = create_radio('package', params[:shead])
+      = package_name(@path) + '以下'
+    %label
+      = create_radio('directory', params[:shead])
+      = current_name(@path) + '以下'
+    %input{name: 'pathname', type: 'hidden', value: ''}
