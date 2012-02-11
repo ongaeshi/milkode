@@ -2,10 +2,10 @@
   function set_pathname() {
     document.searchform.pathname.value = location.pathname;
   }
-%form{name: "searchform", action: '/search', method: 'post'}
+%form(name="searchform" action="/search" method="post")
   %p
-    %input{name: 'query', size: '60', type: 'text', value: params[:query]}
-    %input{type: 'submit', value: '検索', onclick: 'set_pathname()'}
+    %input(name="query" size="60" type="text"){:value => params[:query]}
+    %input(type="submit" value="検索" onclick="set_pathname()")
     %br
     %label
       = create_radio('all', params[:shead])
@@ -16,4 +16,4 @@
     %label
       = create_radio('directory', params[:shead])
       = current_name(@path) + '以下'
-    %input{name: 'pathname', type: 'hidden', value: ''}
+    %input(name="pathname" type="hidden" value="")
