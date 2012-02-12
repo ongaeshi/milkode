@@ -80,8 +80,9 @@ EOF
       @records.each_with_index do |record, index|
         if (Util::larger_than_oneline(record.content))
           grep = Grep.new(record.content)
-          match_line = grep.one_match_and(@q.keywords)
-          @match_records << MatchRecord.new(record, match_line) if match_line
+          grep.match_lines_and(@q.keywords).each do |match_line|
+            @match_records << MatchRecord.new(record, match_line) if match_line
+          end
         else
           @match_records << MatchRecord.new(record, Grep::MatchLineResult.new(0, nil))
         end
