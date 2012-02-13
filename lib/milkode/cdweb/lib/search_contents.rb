@@ -82,9 +82,9 @@ EOF
 
       @records.each_with_index do |record, index|
         if (Util::larger_than_oneline(record.content))
-          grep = Grep.new(record.content)
 
           if @is_onematch
+            grep = Grep.new(record.content)
             match_line = grep.one_match_and(@q.keywords)
             @match_records << MatchRecord.new(record, match_line) if match_line
 
@@ -93,21 +93,7 @@ EOF
               break
             end
           else
-            r = grep.match_lines_stopover(@q.keywords, DISP_NUM - @match_records.size, (index == 0) ? @line : 0)
-
-            r[:result].each do |match_line|
-              @match_records << MatchRecord.new(record, match_line) if match_line
-            end
-
-            if @match_records.size >= DISP_NUM
-              if (r[:next_line] == 0)
-                @next_index = index + 1
-              else
-                @next_index = index
-                @next_line = r[:next_line]
-              end
-              break
-            end
+            break if grep_match_lines_stopover(record, index)
           end
         else
           @match_records << MatchRecord.new(record, Grep::MatchLineResult.new(0, nil))
@@ -118,6 +104,27 @@ EOF
           end
         end
       end
+    end
+
+    def grep_match_lines_stopover(record, index)
+      grep = Grep.new(record.content)      
+      r = grep.match_lines_stopover(@q.keywords, DISP_NUM - @match_records.size, (index == 0) ? @line : 0)
+
+      r[:result].each do |match_line|
+        @match_records << MatchRecord.new(record, match_line) if match_line
+      end
+
+      if @match_records.size >= DISP_NUM
+        if (r[:next_line] == 0)
+          @next_index = index + 1
+        else
+          @next_index = index
+          @next_line = r[:next_line]
+        end
+        return true
+      end
+
+      return false
     end
 
     def result_match_record(match_record)

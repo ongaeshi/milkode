@@ -28,7 +28,7 @@ module Milkode
 
         if (match_datas.all?)
           result << MatchLineResult.new(index, match_datas)
-          if result.size > max_match
+          if result.size >= max_match
             index += 1
             break
           end
