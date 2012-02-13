@@ -33,6 +33,7 @@ module Milkode
       @page = params[:page].to_i || 0
       @offset = params[:offset].to_i
       @line = params[:line].to_i
+      @is_onematch = params[:onematch]
       fpaths = @q.fpaths
       fpaths << path + "/" unless path == ""
       @records, @total_records, @elapsed = Database.instance.search(@q.keywords, @q.packages, fpaths, @q.suffixs, @offset, LIMIT_NUM)
@@ -78,30 +79,35 @@ EOF
       @match_records = []
       @next_index = @records.size
       @next_line = nil
-      
+
       @records.each_with_index do |record, index|
         if (Util::larger_than_oneline(record.content))
           grep = Grep.new(record.content)
 
-          # grep.match_lines_and(@q.keywords).each do |match_line|
-          #   @match_records << MatchRecord.new(record, match_line) if match_line
-          # end
-
-          r = grep.match_lines_stopover(@q.keywords, DISP_NUM - @match_records.size, (index == 0) ? @line : 0)
-
-          r[:result].each do |match_line|
+          if @is_onematch
+            match_line = grep.one_match_and(@q.keywords)
             @match_records << MatchRecord.new(record, match_line) if match_line
-          end
 
-          if @match_records.size >= DISP_NUM
-            if (r[:next_line] == 0)
+            if @match_records.size >= DISP_NUM
               @next_index = index + 1
-            else
-              @next_index = index
-              @next_line = r[:next_line]
+              break
+            end
+          else
+            r = grep.match_lines_stopover(@q.keywords, DISP_NUM - @match_records.size, (index == 0) ? @line : 0)
+
+            r[:result].each do |match_line|
+              @match_records << MatchRecord.new(record, match_line) if match_line
             end
 
-            break
+            if @match_records.size >= DISP_NUM
+              if (r[:next_line] == 0)
+                @next_index = index + 1
+              else
+                @next_index = index
+                @next_line = r[:next_line]
+              end
+              break
+            end
           end
         else
           @match_records << MatchRecord.new(record, Grep::MatchLineResult.new(0, nil))

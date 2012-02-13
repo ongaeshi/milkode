@@ -16,4 +16,7 @@
     %label
       = create_radio('directory', params[:shead])
       = current_name(@path) + '以下'
+    %label
+      = create_checkbox('onematch', params[:onematch])
+      = '1ファイル1マッチ'
     %input(name="pathname" type="hidden" value="")
