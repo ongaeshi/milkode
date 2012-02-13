@@ -49,7 +49,7 @@ module Milkode
     end
 
     def data_range
-      @offset..(next_offset - 1)
+      @offset..(@offset + @end_index)
     end
 
     def html_contents
@@ -77,7 +77,7 @@ EOF
 
     def grep_contents
       @match_records = []
-      @next_index = @records.size
+      @end_index = @next_index = @records.size
       @next_line = nil
 
       @records.each_with_index do |record, index|
@@ -89,6 +89,7 @@ EOF
             @match_records << MatchRecord.new(record, match_line) if match_line
 
             if @match_records.size >= DISP_NUM
+              @end_index = index
               @next_index = index + 1
               break
             end
@@ -99,6 +100,7 @@ EOF
           @match_records << MatchRecord.new(record, Grep::MatchLineResult.new(0, nil))
 
           if @match_records.size >= DISP_NUM
+            @end_index = index
             @next_index = index + 1
             break
           end
@@ -116,8 +118,10 @@ EOF
 
       if @match_records.size >= DISP_NUM
         if (r[:next_line] == 0)
+          @end_index = index
           @next_index = index + 1
         else
+          @end_index = index
           @next_index = index
           @next_line = r[:next_line]
         end
