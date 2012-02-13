@@ -5,8 +5,8 @@
   
   .search-summary
     <span class="keyword">#{topic_path(@path, params)}</span>
-    <span class="hit-num">#{@total_records}</span>件ヒット中</span>
-    <span class="search-range">#{@range.first}番から#{@range.last - @range.first + 1}件を検索</span>
+    <span class="hit-num">#{@total_records}</span>ファイルヒット中</span>
+    <span class="search-range">#{@range.first}番目から#{@range.last - @range.first + 1}ファイルを検索</span>
     <span class="match-num">#{@match_num}</span>件マッチ</span>
     （#{@elapsed}秒）
     

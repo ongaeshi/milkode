@@ -46,7 +46,9 @@ module Milkode
       qparam = []
       qparam << "query=#{escape(@params[:query])}" if (query_inherit and @params[:query])
       qparam << "shead=#{escape(@params[:shead])}" if (shead_inherit and @params[:shead])
+      qparam << "onematch=#{escape(@params[:onematch])}" if (shead_inherit and @params[:onematch])
       qparam << "offset=#{escape(@params[:offset])}" if (offset_inherit and @params[:offset])
+      qparam << "line=#{escape(@params[:line])}" if (offset_inherit and @params[:line])
       qparam.join('&')
     end
   end

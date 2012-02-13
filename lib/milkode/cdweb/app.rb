@@ -78,6 +78,11 @@ helpers do
     "<input name='shead' type='radio' value='#{value}' #{str}/>"
   end
 
+  def create_checkbox(name, value)
+    str = (value) ? 'checked' : ''
+    "<input type='checkbox' name='#{name}' value='on' #{str}/>"
+  end
+
   def create_headmenu(path, query, flistpath = '')
     href = Mkurl.new('/home/' + path, params).inherit_query_shead
     flist = File.join("/home/#{path}", flistpath)
