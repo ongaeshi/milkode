@@ -67,13 +67,17 @@ EOF
         subopt[subcommand].parse!(arguments) unless arguments.empty?
         init_default = suboptions['init'][:init_default]
 
-        db_dir = select_dbdir(subcommand, init_default)
+        db_dir = select_dbdir(subcommand, init_default, arguments)
         obj = Cdstk.new(stdout, db_dir)
 
         case subcommand
         when 'init'
-          FileUtils.mkdir_p db_dir if (init_default)
-          obj.init 
+          if (arguments.size <= 1)
+            FileUtils.mkdir_p db_dir if (init_default || init_specify_dbddir?(arguments))
+            obj.init
+          else
+            $stderr.puts "milk init [db_dir] (Cannot specify two 'db_dir')"
+          end
         when 'update'
           obj.update(arguments, suboptions[subcommand])
         when 'add'
@@ -111,9 +115,11 @@ EOF
       end
     end
 
-    def self.select_dbdir(subcommand, init_default)
+    def self.select_dbdir(subcommand, init_default, arguments)
       if (subcommand == 'init')
-        if (init_default)
+        if (init_specify_dbddir?(arguments))
+          arguments[0]
+        elsif (init_default)
           Dbdir.default_dir
         else
           '.'
@@ -125,6 +131,10 @@ EOF
           Dbdir.default_dir
         end
       end
+    end
+
+    def self.init_specify_dbddir?(arguments)
+      arguments.size == 1
     end
  
   end
