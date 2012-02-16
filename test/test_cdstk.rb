@@ -33,22 +33,23 @@ class TestCdstk < Test::Unit::TestCase
       obj.init
       
       io.puts('--- add ---')
-      obj.add(['../../lib/milkode/findgrep', '../../lib/milkode/common'])
-      obj.add(['../../lib/milkode/findgrep'])
-      obj.add(['../data/abc.zip'])
-      obj.add(['../data/nodir_abc.zip'])
-      obj.add(['../data/nodir_abc_xpi.xpi'])
-      obj.add(['http://ongaeshi.me/test_data/http_nodir_abc.zip'])
-      assert_raise(OpenURI::HTTPError) { obj.add(['http://ongaeshi.me/test_data/not_found.zip']) }
+      obj.add(['../../lib/milkode/findgrep', '../../lib/milkode/common'], {})
+      obj.add(['../../lib/milkode/findgrep'], {})
+      obj.add(['../data/abc.zip'], {})
+      obj.add(['../data/nodir_abc.zip'], {})
+      obj.add(['../data/nodir_abc_xpi.xpi'], {})
+      # @todo http://ongaeshi.me の調子が悪いので一時的にOFF
+      # obj.add(['http://ongaeshi.me/test_data/http_nodir_abc.zip'])
+      # assert_raise(OpenURI::HTTPError) { obj.add(['http://ongaeshi.me/test_data/not_found.zip']) }
 
       FileUtils.touch('last1.txt')
-      obj.add(['last1.txt'])
+      obj.add(['last1.txt'], {})
       FileUtils.touch('atodekesu.txt')
-      obj.add(['atodekesu.txt'])
+      obj.add(['atodekesu.txt'], {})
       FileUtils.rm('atodekesu.txt')
 
       io.puts('--- add notfound ---')
-      obj.add(['notfound.html'])
+      obj.add(['notfound.html'], {})
 
       io.puts('--- update_all ---')
       FileUtils.touch('packages/zip/abc/c.txt')

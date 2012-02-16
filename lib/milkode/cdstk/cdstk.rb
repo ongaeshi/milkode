@@ -36,6 +36,7 @@ module Milkode
       Database.setup(@db_dir)
       @out = io
       # @out = $stdout # 強制出力
+      @is_display_info = false     # alert_info の表示
       clear_count
     end
 
@@ -74,6 +75,8 @@ module Milkode
     end
 
     def update(args, options)
+      update_display_info(options)
+      
       if (options[:all])
         update_all
       else
@@ -110,7 +113,9 @@ module Milkode
       update_dir_in(dir)
     end
 
-    def add(contents)
+    def add(contents, options)
+      update_display_info(options)
+
       # 追加
       add_in(contents)
 
@@ -239,6 +244,8 @@ module Milkode
     end
 
     def remove(args, options)
+      update_display_info(options)
+      
       if (options[:all])
         remove_all
       else
@@ -351,6 +358,8 @@ module Milkode
     end
 
     def rebuild(args, options)
+      update_display_info(options)
+      
       if (options[:all])
         db_delete(db_file)
         db_create(db_file)
@@ -539,7 +548,7 @@ EOF
       @package_count += 1
 
       Database.instance.remove([File.basename(dir)]) do |record|
-        alert("rm_record", record.path)
+        alert_info("rm_record", record.path)
         @file_count += 1
       end
     end
@@ -686,10 +695,10 @@ EOF
           if (key == :path)
             if (isNewFile)
               @add_count += 1
-              alert("add_record", value)
+              alert_info("add_record", value)
             else
               @update_count += 1
-              alert("update", value)
+              alert_info("update", value)
             end
           end
           document[key] = value
@@ -745,6 +754,10 @@ EOF
       end
     end
 
+    def alert_info(title, msg)
+      alert(title, msg) if @is_display_info
+    end
+
     def error_alert(msg)
       @out.puts "[fatal] #{msg}"
     end
@@ -763,6 +776,10 @@ See 'milk --help' or http://milkode.ongaeshi.me .
 EOF
         exit -1
       end
+    end
+
+    def update_display_info(options)
+      @is_display_info = true if (options[:verbose])
     end
   end
 end

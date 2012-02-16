@@ -49,7 +49,7 @@ EOF
       suboptions = Hash.new
       
       subopt['init'], suboptions['init'] = CLI_Cdstksub.setup_init
-      subopt['add'] = CLI_Cdstksub.setup_add
+      subopt['add'], suboptions['add'] = CLI_Cdstksub.setup_add
       subopt['update'], suboptions['update'] = CLI_Cdstksub.setup_update
       subopt['remove'], suboptions['remove'] = CLI_Cdstksub.setup_remove
       subopt['list'], suboptions['list'] = CLI_Cdstksub.setup_list
@@ -77,7 +77,7 @@ EOF
         when 'update'
           obj.update(arguments, suboptions[subcommand])
         when 'add'
-          obj.add(arguments)
+          obj.add(arguments, suboptions[subcommand])
         when 'remove'
           obj.remove(arguments, suboptions[subcommand])
         when 'list'

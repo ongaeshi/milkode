@@ -19,8 +19,10 @@ module Milkode
     def self.setup_add
       bin = File.basename($0)
       
+      options = {}
+
       opt = OptionParser.new(<<EOF)
-#{bin} add package1 [package2 ...]
+#{bin} add dir1 [dir2 ...]
 usage:
   #{bin} add /path/to/dir1
   #{bin} add /path/to/dir2 /path/to/dir3
@@ -28,9 +30,12 @@ usage:
   #{bin} add /path/to/zipfile.zip
   #{bin} add /path/to/addon.xpi
   #{bin} add http://example.com/urlfile.zip
-EOF
 
-      opt
+option:
+EOF
+      opt.on('-v', '--verbose', 'Be verbose.')   { options[:verbose] = true }
+
+      return opt, options
     end
 
     def self.setup_update
@@ -38,6 +43,7 @@ EOF
 
       opt = OptionParser.new("#{File.basename($0)} update [keyword1 keyword2 ...]")
       opt.on('--all', 'Update all.') { options[:all] = true }
+      opt.on('-v', '--verbose', 'Be verbose.') { options[:verbose] = true }
 
       return opt, options
     end
@@ -47,7 +53,8 @@ EOF
 
       opt = OptionParser.new("#{File.basename($0)} remove keyword1 [keyword2 ...]")
       opt.on('--all', 'Update all.') { options[:all] = true }
-      opt.on('-f', '--force', 'Force remove.') { options[:force] = true }
+      opt.on('-f', '--force',   'Force remove.') { options[:force] = true }
+      opt.on('-v', '--verbose', 'Be verbose.')   { options[:verbose] = true }
 
       return opt, options
     end
@@ -84,6 +91,7 @@ EOF
       
       opt = OptionParser.new("#{File.basename($0)} keyword1 [keyword2 ...]")
       opt.on('--all', 'Rebuild all.') { options[:all] = true}
+      opt.on('-v', '--verbose', 'Be verbose.') { options[:verbose] = true }
 
       return opt, options
     end

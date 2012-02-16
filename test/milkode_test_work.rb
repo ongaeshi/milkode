@@ -39,7 +39,7 @@ class MilkodeTestWork
     dbdir = expand_path(name)
     
     Dir.chdir(dbdir) do
-      cdstk.add [package_path]
+      cdstk.add [package_path], {}
     end
   end
 
