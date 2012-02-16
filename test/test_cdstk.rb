@@ -30,7 +30,7 @@ class TestCdstk < Test::Unit::TestCase
       obj = Cdstk.new(io)
 
       io.puts('--- init ---')
-      obj.init
+      obj.init({})
       
       io.puts('--- add ---')
       obj.add(['../../lib/milkode/findgrep', '../../lib/milkode/common'], {})

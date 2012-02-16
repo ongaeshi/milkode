@@ -48,11 +48,12 @@ module Milkode
       @start_time = Time.now
     end
 
-    def init
+    def init(options)
       if Dir.emptydir?(@db_dir)
         CdstkYaml.create(@db_dir)
         @out.puts "create     : #{yaml_file}"
         db_create(db_file)
+        setdb([@db_dir], {}) if (options[:setdb])
       else
         @out.puts "Can't create milkode db (Because not empty in #{db_dir_expand})"
       end

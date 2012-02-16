@@ -74,7 +74,7 @@ EOF
         when 'init'
           if (arguments.size <= 1)
             FileUtils.mkdir_p db_dir if (init_default || init_specify_dbddir?(arguments))
-            obj.init
+            obj.init(suboptions[subcommand])
           else
             $stderr.puts "milk init [db_dir] (Cannot specify two 'db_dir')"
           end

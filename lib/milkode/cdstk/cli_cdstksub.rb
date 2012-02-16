@@ -12,6 +12,7 @@ module Milkode
       
       opt = OptionParser.new("#{File.basename($0)} init [db_dir]")
       opt.on('--default', 'Init default db, ENV[\'MILKODE_DEFAULT_DIR\'] or ~/.milkode.') { options[:init_default] = true }
+      opt.on('-s', '--setdb', 'With setdb.') { options[:setdb] = true }
 
       return opt, options
     end
