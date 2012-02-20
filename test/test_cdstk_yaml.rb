@@ -24,13 +24,13 @@ class TestCdstkYaml < Test::Unit::TestCase
     # create
     yaml = CdstkYaml.create
     assert_equal yaml.contents, []
-    assert_equal yaml.version, 0.2
+    assert_equal yaml.version, '0.2'
     assert_raise(CdstkYaml::YAMLAlreadyExist) { CdstkYaml.create }
 
     # load
     yaml = CdstkYaml.load
     assert_equal yaml.contents, []
-    assert_equal yaml.version, 0.2
+    assert_equal yaml.version, '0.2'
 
     # load fail
     FileUtils.mkdir 'loadtest'
@@ -52,7 +52,7 @@ class TestCdstkYaml < Test::Unit::TestCase
     # save
     yaml.save
     r = YAML.load(open('milkode.yaml').read)
-    assert_equal 0.2, r['version']
+    assert_equal '0.2', r['version']
     assert_equal([{"directory"=>"dir1", "ignore"=>[]}, {"directory"=>"dir4", "ignore"=>[]}], r['contents'])
   end
 
@@ -63,7 +63,7 @@ class TestCdstkYaml < Test::Unit::TestCase
     
     # save
     r = YAML.load(open('otherpath/milkode.yaml').read)
-    assert_equal 0.2, r['version']
+    assert_equal '0.2', r['version']
     assert_equal([], r['contents'])
   end
 
@@ -91,11 +91,11 @@ contents:
 - directory: /b/dir4
 EOF
 
-    yaml = CdstkYaml.new('dummy.yaml', YAML.load(src))
-    assert_equal [{"directory"=>"/a/dir1"}, {"directory"=>"/b/dir4"}], yaml.list
-    assert_equal [{"directory"=>"/b/dir4"}], yaml.list(CdstkYaml::Query.new(['4']))
+    yaml = CdstkYaml.new('dummy.yaml', YAML.load(src)) # 自動で0.2にアップグレードされる
+    assert_equal [{"directory"=>"/a/dir1", "ignore"=>[]}, {"directory"=>"/b/dir4", "ignore"=>[]}], yaml.list
+    assert_equal [{"directory"=>"/b/dir4", "ignore"=>[]}], yaml.list(CdstkYaml::Query.new(['4']))
     assert_equal [], yaml.list(CdstkYaml::Query.new(['a']))
-    assert_equal [{"directory"=>"/a/dir1"}, {"directory"=>"/b/dir4"}], yaml.list(nil)
+    assert_equal [{"directory"=>"/a/dir1", "ignore"=>[]}, {"directory"=>"/b/dir4", "ignore"=>[]}], yaml.list(nil)
   end
 
   def test_remove
@@ -109,7 +109,7 @@ EOF
     yaml = CdstkYaml.new('dummy.yaml', YAML.load(src))
 
     yaml.remove(CdstkYaml::Query.new(['dir4']))
-    assert_equal [{"directory"=>"/a/dir1"}], yaml.list
+    assert_equal [{"directory"=>"/a/dir1", "ignore"=>[]}], yaml.list
 
     yaml.remove(CdstkYaml::Query.new(['dir1']))
     assert_equal [], yaml.list
@@ -119,10 +119,10 @@ EOF
     yaml = CdstkYaml.new('dummy.yaml', YAML.load(src))
 
     yaml.remove(CdstkYaml::Query.new(['dir1']))
-    assert_equal [{"directory"=>"/b/dir4"}], yaml.list
+    assert_equal [{"directory"=>"/b/dir4", "ignore"=>[]}], yaml.list
 
     yaml.remove(CdstkYaml::Query.new([]))
-    assert_equal [{"directory"=>"/b/dir4"}], yaml.list
+    assert_equal [{"directory"=>"/b/dir4", "ignore"=>[]}], yaml.list
 
   end
 

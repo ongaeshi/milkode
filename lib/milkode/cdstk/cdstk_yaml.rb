@@ -11,7 +11,7 @@ require 'milkode/common/dbdir'
 
 module Milkode
   class CdstkYaml
-    MILKODE_YAML_VERSION = 0.2
+    MILKODE_YAML_VERSION = '0.2'
       
     class YAMLAlreadyExist < RuntimeError
     end
@@ -39,6 +39,7 @@ module Milkode
       @yaml_file = yaml_file
       @data = data
       normalize
+      migrate
     end
 
     def normalize
@@ -142,6 +143,23 @@ module Milkode
         contents.find_all do |v|
           @keywords.all? {|s| File.basename(v['directory']).include? s }
         end
+      end
+    end
+
+    def migrate
+      if (version != MILKODE_YAML_VERSION)
+        puts "milkode.yaml is old '#{version}'. Convert to '#{MILKODE_YAML_VERSION}'."
+        
+        # バージョン更新
+        @data['version'] = MILKODE_YAML_VERSION
+
+        # データ内容更新
+        contents.each do |v|
+          v['ignore'] = [] unless v['ignore']
+        end
+
+        # セーブ
+        save
       end
     end
   end
