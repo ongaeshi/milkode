@@ -8,6 +8,7 @@
 require 'yaml'
 require 'pathname'
 require 'milkode/common/dbdir'
+require 'milkode/common/util.rb'
 
 module Milkode
   class CdstkYaml
@@ -72,6 +73,12 @@ module Milkode
 
     def contents
       @data['contents']
+    end
+
+    def find_content(dir)
+      contents.find do |v|
+        dir == v['directory']
+      end
     end
 
     def package_num
@@ -161,6 +168,10 @@ module Milkode
         # セーブ
         save
       end
+    end
+
+    def ignore(dir)
+      find_content(dir)['ignore']
     end
   end
 end

@@ -159,6 +159,42 @@ EOF
     assert_equal nil           , yaml.package_root_dir('/hoge/a/dir1/dir3')
     assert_equal '/path/to/dir', yaml.package_root_dir('/path/to/dir')
   end
+
+  def test_find_content
+    src = <<EOF
+version: '0.2'
+contents: 
+- directory: /a/dir1
+  ignore: []
+- directory: /path/to/dir
+  ignore: []
+- directory: /a/b/c
+  ignore: []
+EOF
+
+    yaml = CdstkYaml.new('dummy.yaml', YAML.load(src))
+    assert_equal '/a/dir1'           , yaml.find_content('/a/dir1')['directory']
+    assert_equal nil                 , yaml.find_content('/a/dir2')
+    assert_equal '/path/to/dir'      , yaml.find_content('/path/to/dir')['directory']
+    assert_equal '/a/b/c'            , yaml.find_content('/a/b/c')['directory']
+  end
+
+  def test_ignore
+    src = <<EOF
+version: '0.2'
+contents: 
+- directory: /a/dir1
+  ignore: []
+- directory: /path/to/dir
+  ignore: ['*.bak', '/rdoc']
+- directory: /a/b/c
+  ignore: []
+EOF
+
+    yaml = CdstkYaml.new('dummy.yaml', YAML.load(src))
+    assert_equal [], yaml.ignore('/a/dir1')
+    assert_equal ['*.bak', '/rdoc'], yaml.ignore('/path/to/dir')
+  end
   
   def teardown
     FileUtils.cd(@prev_dir)
