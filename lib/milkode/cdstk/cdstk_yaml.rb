@@ -11,6 +11,8 @@ require 'milkode/common/dbdir'
 
 module Milkode
   class CdstkYaml
+    MILKODE_YAML_VERSION = 0.2
+      
     class YAMLAlreadyExist < RuntimeError
     end
     
@@ -20,7 +22,7 @@ module Milkode
     def self.create(path = ".")
       yf = yaml_file(path)
       raise YAMLAlreadyExist.new if FileTest.exist? yf
-      obj = CdstkYaml.new(yf, {'contents' => [], 'version' => 0.1})
+      obj = CdstkYaml.new(yf, {'contents' => [], 'version' => MILKODE_YAML_VERSION})
       obj.save
       return obj
     end
@@ -48,7 +50,7 @@ module Milkode
     end
 
     def add(dirs)
-      contents.concat(dirs.map{|v|{'directory' => v}})
+      contents.concat(dirs.map{|v|{'directory' => v, 'ignore' => []}})
       contents.uniq!
     end
 

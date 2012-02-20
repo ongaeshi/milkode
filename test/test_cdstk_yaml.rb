@@ -24,13 +24,13 @@ class TestCdstkYaml < Test::Unit::TestCase
     # create
     yaml = CdstkYaml.create
     assert_equal yaml.contents, []
-    assert_equal yaml.version, 0.1
+    assert_equal yaml.version, 0.2
     assert_raise(CdstkYaml::YAMLAlreadyExist) { CdstkYaml.create }
 
     # load
     yaml = CdstkYaml.load
     assert_equal yaml.contents, []
-    assert_equal yaml.version, 0.1
+    assert_equal yaml.version, 0.2
 
     # load fail
     FileUtils.mkdir 'loadtest'
@@ -52,8 +52,8 @@ class TestCdstkYaml < Test::Unit::TestCase
     # save
     yaml.save
     r = YAML.load(open('milkode.yaml').read)
-    assert_equal 0.1, r['version']
-    assert_equal([{'directory'=>'dir1'}, {'directory' => 'dir4'}], r['contents'])
+    assert_equal 0.2, r['version']
+    assert_equal([{"directory"=>"dir1", "ignore"=>[]}, {"directory"=>"dir4", "ignore"=>[]}], r['contents'])
   end
 
   def test_001
@@ -63,7 +63,7 @@ class TestCdstkYaml < Test::Unit::TestCase
     
     # save
     r = YAML.load(open('otherpath/milkode.yaml').read)
-    assert_equal 0.1, r['version']
+    assert_equal 0.2, r['version']
     assert_equal([], r['contents'])
   end
 
