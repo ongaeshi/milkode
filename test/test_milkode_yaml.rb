@@ -51,4 +51,38 @@ EOF
     assert_equal 2, obj.contents[1].ignore.size
     assert_equal "/rdoc", obj.contents[1].ignore[1]
   end
+
+  def test_add
+    obj = MilkodeYaml.new(EMPTY)
+    obj.add(MilkodeYaml::Package.create("/path/to/dir", []))
+
+    assert_equal 1, obj.contents.size
+
+    assert_equal <<EOF, obj.dump
+---
+version: '0.2'
+contents:
+- directory: /path/to/dir
+  ignore: []
+EOF
+  end
+
+  def test_delete_name
+    obj = MilkodeYaml.new(SRC)
+    obj.delete_name("/a/b/c")
+
+    assert_equal 2, obj.contents.size
+
+    assert_equal <<EOF, obj.dump
+---
+version: '0.2'
+contents:
+- directory: /a/dir1
+  ignore: []
+- directory: /path/to/dir
+  ignore:
+  - ! '*.bak'
+  - /rdoc
+EOF
+  end
 end
