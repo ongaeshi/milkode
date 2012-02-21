@@ -13,10 +13,16 @@ module Milkode
   class MilkodeYaml
     MILKODE_YAML_VERSION = '0.2'
 
+    EMPTY_YAML = <<EOF
+---
+version: '#{MILKODE_YAML_VERSION}'
+contents: []
+EOF
+
     attr_reader :contents
     
-    def initialize(str)
-      @data = YAML.load(str)
+    def initialize(str = nil)
+      @data = YAML.load(str || EMPTY_YAML)
       @contents = parse_contents
     end
 

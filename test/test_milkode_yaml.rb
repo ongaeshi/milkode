@@ -11,12 +11,6 @@ require 'milkode/cdstk/milkode_yaml.rb'
 class TestMilkodeYaml < Test::Unit::TestCase
   include Milkode
 
-  EMPTY = <<EOF
----
-version: '0.2'
-contents: []
-EOF
-
   SRC = <<EOF
 ---
 version: '0.2'
@@ -42,7 +36,7 @@ EOF
   end
 
   def test_contents
-    obj = MilkodeYaml.new(EMPTY)
+    obj = MilkodeYaml.new
     assert_equal [], obj.contents
 
     obj = MilkodeYaml.new(SRC)
@@ -53,7 +47,7 @@ EOF
   end
 
   def test_add
-    obj = MilkodeYaml.new(EMPTY)
+    obj = MilkodeYaml.new
     obj.add(MilkodeYaml::Package.create("/path/to/dir", []))
 
     assert_equal 1, obj.contents.size
