@@ -51,6 +51,21 @@ EOF
       update_contents
     end
 
+    def migrate
+      if (version != MILKODE_YAML_VERSION)
+        # バージョン番号
+        @data['version'] = MILKODE_YAML_VERSION
+
+        # パッケージ
+        contents.each{|v| v.migrate}
+
+        # migrateが起きた
+        true
+      else
+        false
+      end
+    end
+
     private
 
     def parse_contents

@@ -40,17 +40,8 @@ module Milkode
     def initialize(yaml_file, data)
       @yaml_file = yaml_file
       @data = data
-      # normalize
-      # migrate
+      migrate
     end
-
-    # def normalize
-    #   if (Util::platform_win?)
-    #     contents.each do |v|
-    #       v.directory = Util::normalize_filename v.directory
-    #     end
-    #   end
-    # end
 
     def add(dirs)
       contents.concat(dirs.map{|v|{'directory' => v, 'ignore' => []}})
@@ -154,22 +145,12 @@ module Milkode
       end
     end
 
-    # def migrate
-    #   if (version != MILKODE_YAML_VERSION)
-    #     puts "milkode.yaml is old '#{version}'. Convert to '#{MILKODE_YAML_VERSION}'."
-        
-    #     # バージョン更新
-    #     @data['version'] = MILKODE_YAML_VERSION
-
-    #     # データ内容更新
-    #     contents.each do |v|
-    #       v['ignore'] = [] unless v['ignore']
-    #     end
-
-    #     # セーブ
-    #     save
-    #   end
-    # end
+    def migrate
+      if (@data.migrate)
+        puts "milkode.yaml is old '#{version}'. Convert to '#{MILKODE_YAML_VERSION}'."
+        save
+      end
+    end
 
     def ignore(dir)
       find_content(dir)['ignore']

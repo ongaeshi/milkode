@@ -25,6 +25,14 @@ contents:
   ignore: []
 EOF
 
+  V_0_1 = <<EOF
+---
+version: 0.1
+contents:
+- directory: /a/dir1
+- directory: /path/to/dir
+EOF
+
   def test_dump
     obj = MilkodeYaml.new(SRC)
     assert_equal SRC, obj.dump
@@ -78,5 +86,24 @@ contents:
   - ! '*.bak'
   - /rdoc
 EOF
+  end
+
+  def test_migrate
+    obj = MilkodeYaml.new(SRC)
+    assert_equal false, obj.migrate
+
+    obj = MilkodeYaml.new(V_0_1)
+    assert_equal true, obj.migrate
+
+    assert_equal <<EOF, obj.dump
+---
+version: '0.2'
+contents:
+- directory: /a/dir1
+  ignore: []
+- directory: /path/to/dir
+  ignore: []
+EOF
+    
   end
 end
