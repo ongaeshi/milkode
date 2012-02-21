@@ -7,7 +7,8 @@
 
 require 'yaml'
 require 'pathname'
-require 'milkode/common/util.rb'
+require 'milkode/common/util'
+require 'milkode/cdstk/package'
 
 module Milkode
   class MilkodeYaml
@@ -32,30 +33,6 @@ EOF
 
     def version
       @data['version']
-    end
-
-    class Package
-      def initialize(hash)
-        @hash = hash
-      end
-
-      def self.create(dir, ignore)
-        Package.new({"directory" => dir, "ignore" => ignore})
-      end
-
-      def directory
-        @hash['directory']
-      end
-
-      alias :dir :directory
-
-      def ignore
-        @hash['ignore']
-      end
-
-      def hash
-        @hash
-      end
     end
 
     # パッケージの追加

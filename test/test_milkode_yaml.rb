@@ -41,14 +41,14 @@ EOF
 
     obj = MilkodeYaml.new(SRC)
     assert_equal 3, obj.contents.size
-    assert_equal "/path/to/dir", obj.contents[1].dir
+    assert_equal "/path/to/dir", obj.contents[1].directory
     assert_equal 2, obj.contents[1].ignore.size
     assert_equal "/rdoc", obj.contents[1].ignore[1]
   end
 
   def test_add
     obj = MilkodeYaml.new
-    obj.add(MilkodeYaml::Package.create("/path/to/dir", []))
+    obj.add(Package.create("/path/to/dir", []))
 
     assert_equal 1, obj.contents.size
 
