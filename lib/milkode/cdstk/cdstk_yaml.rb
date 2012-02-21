@@ -8,20 +8,22 @@
 require 'yaml'
 require 'pathname'
 require 'milkode/common/dbdir'
-require 'milkode/common/util'
-require 'milkode/cdstk/milkode_yaml'
+require 'milkode/common/util.rb'
 
 module Milkode
   class CdstkYaml
     MILKODE_YAML_VERSION = '0.2'
       
-    class YAMLAlreadyExist < RuntimeError ; end
-    class YAMLNotExist < RuntimeError     ; end
+    class YAMLAlreadyExist < RuntimeError
+    end
+    
+    class YAMLNotExist < RuntimeError
+    end
 
     def self.create(path = ".")
       yf = yaml_file(path)
       raise YAMLAlreadyExist.new if FileTest.exist? yf
-      obj = CdstkYaml.new(yf, MilkodeYaml.new)
+      obj = CdstkYaml.new(yf, {'contents' => [], 'version' => MILKODE_YAML_VERSION})
       obj.save
       return obj
     end
@@ -30,147 +32,146 @@ module Milkode
       yf = yaml_file(path)
       raise YAMLNotExist.new unless FileTest.exist? yf
       open(yf) do |f|
-        return CdstkYaml.new(yf, MilkodeYaml.new(f.read()))
+        return CdstkYaml.new(yf, YAML.load(f.read()))
       end
     end
 
     def initialize(yaml_file, data)
       @yaml_file = yaml_file
       @data = data
+      normalize
       migrate
     end
 
-    def contents
-      @data.contents
+    def normalize
+      if (Util::platform_win?)
+        contents.each do |v|
+          v['directory'] = Util::normalize_filename v['directory']
+        end
+      end
     end
 
-    def find_name(name)
-      @data.find_name(name)
+    def add(dirs)
+      contents.concat(dirs.map{|v|{'directory' => v, 'ignore' => []}})
+      contents.uniq!
     end
 
-    def find_dir(dir)
-      @data.find_dir(dir)
+    def remove(query)
+      r = query.select_any?(contents)
+      r.each {|v| contents.delete v}
     end
 
-    def add(package)
-      @data.add package
+    def remove_dir(dir)
+      contents.delete_if do |v|
+        dir == v['directory']
+      end
     end
-
-    def update(package)
-      @data.update package
-    end
-
-    def remove(package)
-      @data.remove package
-    end
-
-    # def add(package)
-    #   contents.concat(dirs.map{|v|{'directory' => v, 'ignore' => []}})
-    #   contents.uniq!
-    # end
-
-    # def remove(query)
-    #   r = query.select_any?(contents)
-    #   r.each {|v| contents.delete v}
-    # end
-
-    # def remove_dir(dir)
-    #   contents.delete_if do |v|
-    #     dir == v.directory
-    #   end
-    # end
 
     def save
-      open(@yaml_file, "w") { |f| f.write(@data.dump) }
+      open(@yaml_file, "w") { |f| YAML.dump(@data, f) }
     end
 
-    # def find_content(dir)
-    #   contents.find do |v|
-    #     dir == v.directory
-    #   end
-    # end
+    def contents
+      @data['contents']
+    end
 
-    # def package_num
-    #   @data.contents.size
-    # end
+    def find_content(dir)
+      contents.find do |v|
+        dir == v['directory']
+      end
+    end
 
-    # def directorys
-    #   contents.map{|v|v.directory}
-    # end
+    def package_num
+      @data['contents'].size
+    end
+
+    def directorys
+      contents.map{|v|v['directory']}
+    end
 
     def version
-      @data.version
+      @data['version']
     end
 
-    # def list(query = nil)
-    #   query ? query.select_all?(contents) : contents
-    # end
+    def list(query = nil)
+      query ? query.select_all?(contents) : contents
+    end
 
-    # def exist?(shortname)
-    #   @data.contents.find {|v| File.basename(v.directory) == shortname }
-    # end
+    def exist?(shortname)
+      @data['contents'].find {|v| File.basename(v['directory']) == shortname }   
+    end
 
-    # def cant_add_directory?(dir)
-    #   contents.find {|v|
-    #     v.directory != File.expand_path(dir) &&
-    #     File.basename(v.directory) == File.basename(dir)
-    #   }
-    # end
+    def cant_add_directory?(dir)
+      @data['contents'].find {|v|
+        v['directory'] != File.expand_path(dir) &&
+        File.basename(v['directory']) == File.basename(dir)
+      }
+    end
 
-    # def cleanup
-    #   contents.delete_if do |v|
-    #     if (!File.exist? v.directory)
-    #       yield v if block_given?
-    #       true
-    #     else
-    #       false
-    #     end
-    #   end
-    # end
+    def cleanup
+      contents.delete_if do |v|
+        if (!File.exist? v['directory'])
+          yield v if block_given?
+          true
+        else
+          false
+        end
+      end
+    end
 
-    # def package_root(dir)
-    #   nd = Util::normalize_filename dir
-    #   contents.find do |v|
-    #     v if nd =~ /^#{v.directory}/
-    #   end
-    # end
+    def package_root(dir)
+      nd = Util::normalize_filename dir
+      @data['contents'].find do |v|
+        v if nd =~ /^#{v['directory']}/
+      end
+    end
 
-    # def package_root_dir(dir)
-    #   package = package_root(dir)
-    #   (package) ? package.directory : nil
-    # end
+    def package_root_dir(dir)
+      package = package_root(dir)
+      (package) ? package['directory'] : nil
+    end
 
     def self.yaml_file(path)
       Dbdir.yaml_path(path)
     end
 
-    # class Query
-    #   def initialize(keywords)
-    #     @keywords = keywords
-    #   end
+    class Query
+      def initialize(keywords)
+        @keywords = keywords
+      end
 
-    #   def select_any?(contents)
-    #     contents.find_all do |v|
-    #       @keywords.any? {|s| File.basename(v.directory).include? s }
-    #     end
-    #   end
+      def select_any?(contents)
+        contents.find_all do |v|
+          @keywords.any? {|s| File.basename(v['directory']).include? s }
+        end
+      end
 
-    #   def select_all?(contents)
-    #     contents.find_all do |v|
-    #       @keywords.all? {|s| File.basename(v.directory).include? s }
-    #     end
-    #   end
-    # end
+      def select_all?(contents)
+        contents.find_all do |v|
+          @keywords.all? {|s| File.basename(v['directory']).include? s }
+        end
+      end
+    end
 
     def migrate
-      if (@data.migrate)
+      if (version != MILKODE_YAML_VERSION)
         puts "milkode.yaml is old '#{version}'. Convert to '#{MILKODE_YAML_VERSION}'."
+        
+        # バージョン更新
+        @data['version'] = MILKODE_YAML_VERSION
+
+        # データ内容更新
+        contents.each do |v|
+          v['ignore'] = [] unless v['ignore']
+        end
+
+        # セーブ
         save
       end
     end
 
-    # def ignore(dir)
-    #   find_content(dir)['ignore']
-    # end
+    def ignore(dir)
+      find_content(dir)['ignore']
+    end
   end
 end
