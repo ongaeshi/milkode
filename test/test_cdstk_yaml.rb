@@ -7,6 +7,7 @@
 
 require 'test_helper'
 require 'milkode/cdstk/cdstk_yaml.rb'
+require 'milkode/cdstk/package'
 require 'fileutils'
 
 class TestCdstkYaml < Test::Unit::TestCase
@@ -20,7 +21,7 @@ class TestCdstkYaml < Test::Unit::TestCase
     FileUtils.cd(@tmp_dir.to_s)
   end
 
-  def test_000
+  def test_basic
     # create
     yaml = CdstkYaml.create
     assert_equal yaml.contents, []
@@ -38,34 +39,56 @@ class TestCdstkYaml < Test::Unit::TestCase
       assert_raise(CdstkYaml::YAMLNotExist) { CdstkYaml.load }
     end
 
-    # # add
-    # yaml.add(['dir1'])
-    # yaml.add(['dir2', 'dir3'])
-    # assert_equal ['dir1', 'dir2', 'dir3'], yaml.directorys
+    # add
+    yaml.add(Package.create('/path/to/dir1'))
+    yaml.add(Package.create('/path/to/dir2'))
+    yaml.add(Package.create('/path/to/dir3'))
+    assert_equal ['dir1', 'dir2', 'dir3'], yaml.contents.map{|v| v.name }
 
-    # # remove
-    # yaml.add(['dir2', 'dir4', 'dir5'])
-    # yaml.remove(CdstkYaml::Query.new ['dir5'])
-    # yaml.remove(CdstkYaml::Query.new ['dir2', 'dir3'])
-    # assert_equal ['dir1', 'dir4'], yaml.directorys
+    # remove
+    yaml.remove(Package.create('/path/to/dir2'))
+    assert_equal ['dir1', 'dir3'], yaml.contents.map{|v| v.name }
 
-    # # save
-    # yaml.save
-    # r = YAML.load(open('milkode.yaml').read)
-    # assert_equal '0.2', r['version']
-    # assert_equal([{"directory"=>"dir1", "ignore"=>[]}, {"directory"=>"dir4", "ignore"=>[]}], r['contents'])
+    # update
+    yaml.update(Package.create('/path/to/dir1', ["*.bak"]))
+    assert_equal ['*.bak'], yaml.contents[0].ignore
+
+    # find_name
+    assert yaml.find_name('dir1')
+    assert_nil yaml.find_name('dir2')
+
+    # find_dir
+    assert yaml.find_dir('/path/to/dir1')
+    assert_nil yaml.find_dir('/path/to/dir2')
+
+    # save
+    yaml.save
+    r = open('milkode.yaml'){|f|f.read}
+    assert_equal <<EOF, r
+---
+version: '0.2'
+contents:
+- directory: /path/to/dir1
+  ignore:
+  - ! '*.bak'
+- directory: /path/to/dir3
+  ignore: []
+EOF
   end
 
-#   def test_001
-#     FileUtils.mkdir 'otherpath'
-#     yaml = CdstkYaml.create('otherpath')
-#     yaml.save
+  def test_save_otherpath
+    FileUtils.mkdir 'otherpath'
+    yaml = CdstkYaml.create('otherpath')
+    yaml.save
     
-#     # save
-#     r = YAML.load(open('otherpath/milkode.yaml').read)
-#     assert_equal '0.2', r['version']
-#     assert_equal([], r['contents'])
-#   end
+    # save
+    r = open('otherpath/milkode.yaml'){|f|f.read}
+    assert_equal <<EOF, r
+---
+version: '0.2'
+contents: []
+EOF
+  end
 
 #   def test_query
 #     d = 'directory'

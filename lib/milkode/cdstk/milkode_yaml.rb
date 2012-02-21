@@ -60,6 +60,11 @@ EOF
       @contents.find {|v| v.same_name?(name)}
     end
 
+    # ディレクトリ名が同じパッケージを検索
+    def find_dir(directory)
+      @contents.find {|v| v.directory == directory}
+    end
+
     # マイグレーション
     def migrate
       if (version != MILKODE_YAML_VERSION)

@@ -138,4 +138,10 @@ EOF
     p = Package.create("not_found")
     assert_raise(RuntimeError) { obj.update(p) }
   end
+
+  def test_find_dir
+    obj = MilkodeYaml.new(SRC)
+    assert_not_nil obj.find_dir('/path/to/dir')
+  end
+
 end
