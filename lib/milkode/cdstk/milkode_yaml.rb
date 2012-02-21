@@ -35,22 +35,32 @@ EOF
       @data['version']
     end
 
-    # パッケージの追加
-    # @todo 重複チェック、別名で保存等
+    # パッケージを追加
     def add(package)
       @contents.push package
       update_contents
     end
 
-    # 名前で削除
-    # @todo nameパラメーターに対応予定
-    def delete_name(name)
-      @contents.delete_if do |v|
-        v.directory == name
-      end
+    # 同名パッケージの内容を置き換え
+    def update(package)
+      i = @contents.find_index {|v| v.same_name?(package.name) }
+      raise unless i
+      @contents[i] = package
       update_contents
     end
 
+    # パッケージを削除
+    def remove(package)
+      @contents.delete(package)
+      update_contents
+    end
+
+    # 名前が同じパッケージを検索
+    def find_name(name)
+      @contents.find {|v| v.same_name?(name)}
+    end
+
+    # マイグレーション
     def migrate
       if (version != MILKODE_YAML_VERSION)
         # バージョン番号

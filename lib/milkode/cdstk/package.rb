@@ -38,8 +38,13 @@ module Milkode
     end
 
     # 同名パッケージか？
-    def same_name?(rhs)
-      name == rhs.name
+    def same_name?(a_name)
+      name == a_name
+    end
+
+    # 同値検査
+    def ==(rhs)
+      name == rhs.name && directory == rhs.directory && ignore == rhs.ignore
     end
 
     private

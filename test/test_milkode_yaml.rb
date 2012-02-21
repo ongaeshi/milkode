@@ -69,9 +69,9 @@ contents:
 EOF
   end
 
-  def test_delete_name
+  def test_remove
     obj = MilkodeYaml.new(SRC)
-    obj.delete_name("/a/b/c")
+    obj.remove(Package.create("/a/b/c"))
 
     assert_equal 2, obj.contents.size
 
@@ -105,5 +105,37 @@ contents:
   ignore: []
 EOF
     
+  end
+
+  def test_find_name
+    obj = MilkodeYaml.new(SRC)
+    assert_not_nil obj.find_name('dir')
+    assert_nil obj.find_name('not')
+  end
+
+  def test_update
+    obj = MilkodeYaml.new(SRC)
+
+    p = obj.find_name('dir')
+    p = Package.create(p.directory, p.ignore + ['*.a'])
+    obj.update(p)
+
+    assert_equal <<EOF, obj.dump
+---
+version: '0.2'
+contents:
+- directory: /a/dir1
+  ignore: []
+- directory: /path/to/dir
+  ignore:
+  - ! '*.bak'
+  - /rdoc
+  - ! '*.a'
+- directory: /a/b/c
+  ignore: []
+EOF
+
+    p = Package.create("not_found")
+    assert_raise(RuntimeError) { obj.update(p) }
   end
 end
