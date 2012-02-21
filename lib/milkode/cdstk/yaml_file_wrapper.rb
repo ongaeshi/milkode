@@ -34,6 +34,14 @@ module Milkode
       end
     end
 
+    def self.load_if(path = ".")
+      begin
+        load(path)
+      rescue YAMLNotExist
+        nil
+      end
+    end
+
     def initialize(yaml_file, data)
       @yaml_file = yaml_file
       @data = data

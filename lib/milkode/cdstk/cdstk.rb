@@ -19,7 +19,9 @@ rescue LoadError
 end
 require 'milkode/cdweb/lib/database'
 require 'open-uri'
-require 'milkode/cdstk/cdstk_command'
+
+require 'milkode/cdstk/cdstk_command' # @todo 削除予定
+require 'milkode/cdstk/yaml_file_wrapper'
 
 module Milkode
   class Cdstk
@@ -38,6 +40,7 @@ module Milkode
       # @out = $stdout # 強制出力
       @is_display_info = false     # alert_info の表示
       clear_count
+      @yaml = YamlFileWrapper.load_if
     end
 
     def clear_count
@@ -50,7 +53,7 @@ module Milkode
 
     def init(options)
       if Dir.emptydir?(@db_dir)
-        CdstkYaml.create(@db_dir)
+        YamlFileWrapper.create(@db_dir)
         @out.puts "create     : #{yaml_file}"
         db_create(db_file)
         setdb([@db_dir], {}) if (options[:setdb])
