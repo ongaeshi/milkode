@@ -6,8 +6,6 @@
 # @date   2012/02/21
 
 require 'yaml'
-require 'pathname'
-require 'milkode/common/util'
 require 'milkode/cdstk/package'
 
 module Milkode
