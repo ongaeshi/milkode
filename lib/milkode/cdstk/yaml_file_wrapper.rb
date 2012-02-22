@@ -72,6 +72,10 @@ module Milkode
       @data.remove package
     end
 
+    def package_root(dir)
+      @data.package_root(dir)
+    end
+
     def save
       open(@yaml_file, "w") { |f| f.write(@data.dump) }
     end

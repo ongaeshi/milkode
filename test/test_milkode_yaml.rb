@@ -144,4 +144,11 @@ EOF
     assert_not_nil obj.find_dir('/path/to/dir')
   end
 
+  def test_package_root
+    obj = MilkodeYaml.new(SRC)
+    assert_equal nil           , obj.package_root('/not_dir')
+    assert_equal "/a/dir1"     , obj.package_root('/a/dir1/dir3').directory
+    assert_equal nil           , obj.package_root('/hoge/a/dir1/dir3')
+    assert_equal '/path/to/dir', obj.package_root('/path/to/dir').directory
+  end
 end

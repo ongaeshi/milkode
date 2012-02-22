@@ -7,6 +7,7 @@
 
 require 'yaml'
 require 'milkode/cdstk/package'
+require 'milkode/common/util'
 
 module Milkode
   class MilkodeYaml
@@ -61,6 +62,15 @@ EOF
     # ディレクトリ名が同じパッケージを検索
     def find_dir(directory)
       @contents.find {|v| v.directory == directory}
+    end
+
+    # 指定ディレクトリの所属するパッケージのルートディレクトリを得る。
+    # 見つからない場合はnilを返す。
+    def package_root(dir)
+      nd = Util::normalize_filename dir
+      @contents.find do |v|
+        v if nd =~ /^#{v.directory}/
+      end
     end
 
     # マイグレーション

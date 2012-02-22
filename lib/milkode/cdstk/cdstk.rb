@@ -41,7 +41,7 @@ module Milkode
       # @out = $stdout # 強制出力
       @is_display_info = false     # alert_info の表示
       clear_count
-      @yaml = YamlFileWrapper.load_if
+      @yaml = YamlFileWrapper.load_if(@db_dir)
     end
 
     def clear_count
@@ -69,12 +69,10 @@ module Milkode
 
     def update_all
       print_result do 
-        yaml = yaml_load
-
         db_open(db_file)
 
-        yaml.list.each do |content|
-          update_dir_in(content["directory"])
+        @yaml.contents.each do |package|
+          update_dir_in(package.directory)
         end
       end
     end
@@ -87,22 +85,26 @@ module Milkode
       else
         if (args.empty?)
           path = File.expand_path('.')
-          package = yaml_load.package_root( path )
+          package = @yaml.package_root(path)
 
           if (package)
             print_result do
               db_open(db_file)
-              update_dir_in(package["directory"])
+              update_dir_in(package.directory)
             end
           else
             @out.puts "Not registered. If you want to add, 'milk add #{path}'."
           end
         else
           print_result do
-            update_list = yaml_load.list CdstkYaml::Query.new(args)
             db_open(db_file)
-            update_list.each do |content|
-              update_dir_in(content["directory"])
+            args.each do |name|
+              package = @yaml.find_name(name)
+              if (package)
+                update_dir_in(package.directory)                
+              else
+                @out.puts "Not found package '#{name}'."
+              end
             end
           end
         end
