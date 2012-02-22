@@ -22,6 +22,7 @@ require 'open-uri'
 
 require 'milkode/cdstk/cdstk_command' # @todo 削除予定
 require 'milkode/cdstk/yaml_file_wrapper'
+require 'milkode/cdstk/package'
 
 module Milkode
   class Cdstk
@@ -53,7 +54,7 @@ module Milkode
 
     def init(options)
       if Dir.emptydir?(@db_dir)
-        YamlFileWrapper.create(@db_dir)
+        @yaml = YamlFileWrapper.create(@db_dir)
         @out.puts "create     : #{yaml_file}"
         db_create(db_file)
         setdb([@db_dir], {}) if (options[:setdb])
@@ -117,59 +118,53 @@ module Milkode
       update_dir_in(dir)
     end
 
-    def add(contents, options)
+    def add(dirs, options)
       update_display_info(options)
 
-      # 追加
-      add_in(contents)
+      begin
+        dirs.each do |v|
+          # コンテンツを読み込める形に変換
+          dir = convert_content(v)
 
+          # YAMLに追加
+          add_yaml(Package.create(dir))
+        end
+      rescue ConvetError
+        return
+      end
+      
       # 部分アップデート
       print_result do 
         db_open(db_file)
-        contents.each do |dir|
+        dirs.each do |dir|
           update_dir(dir)
         end
       end
     end
 
     def add_dir(dir)
-      # 追加
-      add_in([dir])
-
-      # 更新
+      add_yaml(Package.create(dir))
       db_open(db_file)
       update_dir(dir)
     end
 
-    def add_in(contents)
-      # YAMLを読み込み
-      yaml = yaml_load
-
-      # コンテンツを読み込める形に変換
-      begin
-        contents.map!{|v|convert_content(v)}
-      rescue ConvetError
+    # yamlにパッケージを追加
+    def add_yaml(package)
+      # すでに同名パッケージがある
+      if @yaml.find_name(package.name)
+        error_alert("already exist '#{package.name}'.")
         return
       end
 
-      # 存在しないコンテンツがあった場合はその場で終了
-      contents.each do |v|
-        shortname = File.basename v
-
-        if (yaml.cant_add_directory? v)
-          error_alert("already exist '#{shortname}'.")
-          return
-        end
-          
-        unless (File.exist? v)
-          error_alert("not found '#{v}'.")
-          return
-        end
+      # ファイルが存在しない
+      unless File.exist?(package.directory)
+        error_alert("not found '#{package.directory}'.")
+        return
       end
 
       # YAML更新
-      yaml.add(contents)
-      yaml.save
+      @yaml.add(package)
+      @yaml.save
     end
 
     def convert_content(src)

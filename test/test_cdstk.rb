@@ -38,9 +38,8 @@ class TestCdstk < Test::Unit::TestCase
       obj.add(['../data/abc.zip'], {})
       obj.add(['../data/nodir_abc.zip'], {})
       obj.add(['../data/nodir_abc_xpi.xpi'], {})
-      # @todo http://ongaeshi.me の調子が悪いので一時的にOFF
-      # obj.add(['http://ongaeshi.me/test_data/http_nodir_abc.zip'])
-      # assert_raise(OpenURI::HTTPError) { obj.add(['http://ongaeshi.me/test_data/not_found.zip']) }
+      obj.add(['http://ongaeshi.me/test_data/http_nodir_abc.zip'], {})
+      assert_raise(OpenURI::HTTPError) { obj.add(['http://ongaeshi.me/test_data/not_found.zip'], {}) }
 
       FileUtils.touch('last1.txt')
       obj.add(['last1.txt'], {})
