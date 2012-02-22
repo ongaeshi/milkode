@@ -230,15 +230,13 @@ module Milkode
 
     def remove_all
       print_result do
-        yaml = yaml_load
-
         list([], {:verbose => true})
         
-        if yes_or_no("Remove #{yaml.list.size} contents? (yes/no)")
+        if yes_or_no("Remove #{@yaml.contents.size} contents? (yes/no)")
           db_open(db_file)
 
-          yaml.list.each do |content|
-            remove_dir(content["directory"])
+          @yaml.contents.each do |package|
+            remove_dir(package.directory)
           end
         end
       end
@@ -252,26 +250,25 @@ module Milkode
       else
         if (args.empty?)
           path = File.expand_path('.')
-          package = yaml_load.package_root( path )
+          package = @yaml.package_root(path)
 
           if (package)
             print_result do
               db_open(db_file)
-              remove_dir(package["directory"])
+              remove_dir(package.directory)
             end
           else
             @out.puts "Not registered. '#{path}'."
           end
         else
-          remove_list = yaml_load.list CdstkYaml::Query.new(args)
-
-          list(args, {:verbose => true})
-          
-          if options[:force] or yes_or_no("Remove #{remove_list.size} contents? (yes/no)")
-            print_result do
-              db_open(db_file)
-              remove_list.each do |content|
-                remove_dir(content["directory"])
+          print_result do
+            db_open(db_file)
+            args.each do |name|
+              package = @yaml.find_name(name)
+              if (package)
+                remove_dir(package.directory)                
+              else
+                @out.puts "Not found package '#{name}'."
               end
             end
           end
