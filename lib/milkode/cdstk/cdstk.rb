@@ -295,17 +295,20 @@ module Milkode
     end
 
     def list(args, options)
-      query = (args.empty?) ? nil : CdstkYaml::Query.new(args)
-      a = yaml_load.list(query).map {|v| [File.basename(v['directory']), v['directory']] }
-      max = a.map{|v|v[0].length}.max
-      str = a.sort_by {|v|
-        v[0]
-      }.map {|v|
-        h = File.exist?(v[1]) ? '' : '? '
+      match_p = @yaml.contents.find_all do |p|
+        args.all? {|k| p.name.include? k }
+      end
+
+      max = match_p.map{|p| p.name.length}.max
+
+      str = match_p.sort_by {|p|
+        p.name
+      }.map {|p|
+        h = File.exist?(p.directory) ? '' : '? '
         if (options[:verbose])
-          "#{(h + v[0]).ljust(max+2)} #{v[1]}"
+          "#{(h + p.name).ljust(max+2)} #{p.directory}"
         else
-          "#{h}#{v[0]}"
+          "#{h}#{p.name}"
         end
       }.join("\n")
 
@@ -315,7 +318,7 @@ module Milkode
       if args.empty?
         milkode_info
       else
-        list_info(a) unless a.empty?
+        list_info(match_p) unless match_p.empty?
       end
     end
 
@@ -596,7 +599,7 @@ EOF
       option = FindGrep::FindGrep::DEFAULT_OPTION.dup
       option.dbFile = Dbdir.groonga_path(Dbdir.default_dir)
       option.isSilent = true
-      option.packages = packages.map{|v| v[1]}
+      option.packages = packages.map{|p| p.directory}
       findGrep = FindGrep::FindGrep.new([], option)
       records = findGrep.pickupRecords
       
