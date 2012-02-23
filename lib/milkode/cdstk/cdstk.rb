@@ -144,8 +144,8 @@ module Milkode
       end
     end
 
-    def add_dir(dir)
-      add_yaml(Package.create(dir))
+    def add_dir(dir, no_yaml = false)
+      add_yaml(Package.create(dir)) unless no_yaml
       db_open(db_file)
       update_dir(dir)
     end
@@ -366,27 +366,28 @@ module Milkode
       else
         if (args.empty?)
           path = File.expand_path('.')
-          package = yaml_load.package_root( path )
+          package = @yaml.package_root(path)
 
           if (package)
             print_result do
               db_open(db_file)
-              remove_dir(package["directory"])
-              add_dir(package["directory"])
+              remove_dir(package.directory, true)
+              add_dir(package.directory, true)
             end
           else
             @out.puts "Not registered. '#{path}'."
           end
         else
-          a_list = yaml_load.list CdstkYaml::Query.new(args)
-          
-          list(args, {:verbose => true})
-
           print_result do
-            db_open(db_file)
-            a_list.each do |content|
-              remove_dir(content["directory"])
-              add_dir(content["directory"])
+            args.each do |name|
+              package = @yaml.find_name(name)
+              if (package)
+                db_open(db_file)
+                remove_dir(package.directory, true)
+                add_dir(package.directory, true)
+              else
+                @out.puts "Not found package '#{name}'."
+              end
             end
           end
         end
@@ -534,11 +535,13 @@ EOF
       end
     end
 
-    def remove_dir(dir)
+    def remove_dir(dir, no_yaml = false)
       # yamlから削除
-      yaml = yaml_load
-      yaml.remove_dir(dir)
-      yaml.save
+      unless (no_yaml)
+        yaml = yaml_load
+        yaml.remove_dir(dir)
+        yaml.save
+      end
         
       # データベースからも削除
       dir = File.expand_path(dir)
