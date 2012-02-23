@@ -340,14 +340,12 @@ module Milkode
       if (options[:force] or yes_or_no("cleanup contents? (yes/no)"))
         print_result do 
           # yamlファイルのクリーンアップ
-          yaml = yaml_load
-          
-          yaml.cleanup do |v|
-            alert("rm_package", v['directory'])
+          @yaml.contents.find_all {|v| !File.exist? v.directory }.each do |p|
+            @yaml.remove(p)
+            alert("rm_package", p.directory)
             @package_count += 1
           end
-          
-          yaml.save
+          @yaml.save
           
           # データベースのクリーンアップ
           Database.instance.cleanup do |record|
