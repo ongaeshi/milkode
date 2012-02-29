@@ -650,6 +650,7 @@ EOF
     private :db_delete
       
     def db_add_dir(dirname)
+      @current_package = @yaml.package_root(dirname)
       searchDirectory(STDOUT, dirname, File.basename(dirname), 0)
     end
     private :db_add_dir
@@ -714,7 +715,7 @@ EOF
         shortpath = File.join(shortdir,name)
         
         # 除外ディレクトリならばパス
-        next if ignoreDir?(fpath)
+        next if ignoreDir?(fpath, shortpath)
 
         # 読み込み不可ならばパス
         next unless FileTest.readable?(fpath)
@@ -733,9 +734,21 @@ EOF
       end
     end
 
-    def ignoreDir?(fpath)
+    def package_ignore?(shortpath)
+      # p shortpath
+      @current_package.ignore.any? do |v|
+        # @todo 仮
+        shortpath.include? v
+        # r = shortpath.include? v
+        # puts "ignore #{shortpath}" if r
+        # r
+      end
+    end
+
+    def ignoreDir?(fpath, shortpath)
       FileTest.directory?(fpath) &&
-      GrenFileTest::ignoreDir?(fpath)
+        (GrenFileTest::ignoreDir?(fpath) ||
+         package_ignore?(shortpath))
     end
     private :ignoreDir?
 
