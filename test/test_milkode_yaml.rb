@@ -25,6 +25,14 @@ contents:
   ignore: []
 EOF
 
+  V_0_1 = <<EOF
+---
+version: 0.1
+contents:
+- directory: /a/dir1
+- directory: /path/to/dir
+EOF
+
   def test_dump
     obj = MilkodeYaml.new(SRC)
     assert_equal SRC, obj.dump
@@ -41,14 +49,14 @@ EOF
 
     obj = MilkodeYaml.new(SRC)
     assert_equal 3, obj.contents.size
-    assert_equal "/path/to/dir", obj.contents[1].dir
+    assert_equal "/path/to/dir", obj.contents[1].directory
     assert_equal 2, obj.contents[1].ignore.size
     assert_equal "/rdoc", obj.contents[1].ignore[1]
   end
 
   def test_add
     obj = MilkodeYaml.new
-    obj.add(MilkodeYaml::Package.create("/path/to/dir", []))
+    obj.add(Package.create("/path/to/dir", []))
 
     assert_equal 1, obj.contents.size
 
@@ -61,9 +69,9 @@ contents:
 EOF
   end
 
-  def test_delete_name
+  def test_remove
     obj = MilkodeYaml.new(SRC)
-    obj.delete_name("/a/b/c")
+    obj.remove(Package.create("/a/b/c"))
 
     assert_equal 2, obj.contents.size
 
@@ -78,5 +86,69 @@ contents:
   - ! '*.bak'
   - /rdoc
 EOF
+  end
+
+  def test_migrate
+    obj = MilkodeYaml.new(SRC)
+    assert_equal false, obj.migrate
+
+    obj = MilkodeYaml.new(V_0_1)
+    assert_equal true, obj.migrate
+
+    assert_equal <<EOF, obj.dump
+---
+version: '0.2'
+contents:
+- directory: /a/dir1
+  ignore: []
+- directory: /path/to/dir
+  ignore: []
+EOF
+    
+  end
+
+  def test_find_name
+    obj = MilkodeYaml.new(SRC)
+    assert_not_nil obj.find_name('dir')
+    assert_nil obj.find_name('not')
+  end
+
+  def test_update
+    obj = MilkodeYaml.new(SRC)
+
+    p = obj.find_name('dir')
+    p = Package.create(p.directory, p.ignore + ['*.a'])
+    obj.update(p)
+
+    assert_equal <<EOF, obj.dump
+---
+version: '0.2'
+contents:
+- directory: /a/dir1
+  ignore: []
+- directory: /path/to/dir
+  ignore:
+  - ! '*.bak'
+  - /rdoc
+  - ! '*.a'
+- directory: /a/b/c
+  ignore: []
+EOF
+
+    p = Package.create("not_found")
+    assert_raise(RuntimeError) { obj.update(p) }
+  end
+
+  def test_find_dir
+    obj = MilkodeYaml.new(SRC)
+    assert_not_nil obj.find_dir('/path/to/dir')
+  end
+
+  def test_package_root
+    obj = MilkodeYaml.new(SRC)
+    assert_equal nil           , obj.package_root('/not_dir')
+    assert_equal "/a/dir1"     , obj.package_root('/a/dir1/dir3').directory
+    assert_equal nil           , obj.package_root('/hoge/a/dir1/dir3')
+    assert_equal '/path/to/dir', obj.package_root('/path/to/dir').directory
   end
 end

@@ -6,7 +6,6 @@ require 'rubygems'
 require 'groonga'
 require 'fileutils'
 require 'pathname'
-require 'milkode/cdstk/cdstk_yaml'
 require 'milkode/common/grenfiletest'
 require 'milkode/common/util'
 require 'milkode/common/dir'
@@ -19,7 +18,11 @@ rescue LoadError
 end
 require 'milkode/cdweb/lib/database'
 require 'open-uri'
+
 require 'milkode/cdstk/cdstk_command'
+
+require 'milkode/cdstk/yaml_file_wrapper'
+require 'milkode/cdstk/package'
 
 module Milkode
   class Cdstk
@@ -38,6 +41,7 @@ module Milkode
       # @out = $stdout # 強制出力
       @is_display_info = false     # alert_info の表示
       clear_count
+      @yaml = YamlFileWrapper.load_if(@db_dir)
     end
 
     def clear_count
@@ -50,7 +54,7 @@ module Milkode
 
     def init(options)
       if Dir.emptydir?(@db_dir)
-        CdstkYaml.create(@db_dir)
+        @yaml = YamlFileWrapper.create(@db_dir)
         @out.puts "create     : #{yaml_file}"
         db_create(db_file)
         setdb([@db_dir], {}) if (options[:setdb])
@@ -65,12 +69,10 @@ module Milkode
 
     def update_all
       print_result do 
-        yaml = yaml_load
-
         db_open(db_file)
 
-        yaml.list.each do |content|
-          update_dir_in(content["directory"])
+        @yaml.contents.each do |package|
+          update_dir_in(package.directory)
         end
       end
     end
@@ -83,22 +85,26 @@ module Milkode
       else
         if (args.empty?)
           path = File.expand_path('.')
-          package = yaml_load.package_root( path )
+          package = @yaml.package_root(path)
 
           if (package)
             print_result do
               db_open(db_file)
-              update_dir_in(package["directory"])
+              update_dir_in(package.directory)
             end
           else
             @out.puts "Not registered. If you want to add, 'milk add #{path}'."
           end
         else
           print_result do
-            update_list = yaml_load.list CdstkYaml::Query.new(args)
             db_open(db_file)
-            update_list.each do |content|
-              update_dir_in(content["directory"])
+            args.each do |name|
+              package = @yaml.find_name(name)
+              if (package)
+                update_dir_in(package.directory)                
+              else
+                @out.puts "Not found package '#{name}'."
+              end
             end
           end
         end
@@ -114,59 +120,53 @@ module Milkode
       update_dir_in(dir)
     end
 
-    def add(contents, options)
+    def add(dirs, options)
       update_display_info(options)
 
-      # 追加
-      add_in(contents)
+      begin
+        dirs.each do |v|
+          # コンテンツを読み込める形に変換
+          dir = convert_content(v)
 
+          # YAMLに追加
+          add_yaml(Package.create(dir))
+        end
+      rescue ConvetError
+        return
+      end
+      
       # 部分アップデート
       print_result do 
         db_open(db_file)
-        contents.each do |dir|
+        dirs.each do |dir|
           update_dir(dir)
         end
       end
     end
 
-    def add_dir(dir)
-      # 追加
-      add_in([dir])
-
-      # 更新
+    def add_dir(dir, no_yaml = false)
+      add_yaml(Package.create(dir)) unless no_yaml
       db_open(db_file)
       update_dir(dir)
     end
 
-    def add_in(contents)
-      # YAMLを読み込み
-      yaml = yaml_load
-
-      # コンテンツを読み込める形に変換
-      begin
-        contents.map!{|v|convert_content(v)}
-      rescue ConvetError
+    # yamlにパッケージを追加
+    def add_yaml(package)
+      # すでに同名パッケージがある
+      if @yaml.find_name(package.name)
+        error_alert("already exist '#{package.name}'.")
         return
       end
 
-      # 存在しないコンテンツがあった場合はその場で終了
-      contents.each do |v|
-        shortname = File.basename v
-
-        if (yaml.cant_add_directory? v)
-          error_alert("already exist '#{shortname}'.")
-          return
-        end
-          
-        unless (File.exist? v)
-          error_alert("not found '#{v}'.")
-          return
-        end
+      # ファイルが存在しない
+      unless File.exist?(package.directory)
+        error_alert("not found '#{package.directory}'.")
+        return
       end
 
       # YAML更新
-      yaml.add(contents)
-      yaml.save
+      @yaml.add(package)
+      @yaml.save
     end
 
     def convert_content(src)
@@ -230,15 +230,13 @@ module Milkode
 
     def remove_all
       print_result do
-        yaml = yaml_load
-
         list([], {:verbose => true})
         
-        if yes_or_no("Remove #{yaml.list.size} contents? (yes/no)")
+        if yes_or_no("Remove #{@yaml.contents.size} contents? (yes/no)")
           db_open(db_file)
 
-          yaml.list.each do |content|
-            remove_dir(content["directory"])
+          @yaml.contents.each do |package|
+            remove_dir(package.directory)
           end
         end
       end
@@ -252,26 +250,25 @@ module Milkode
       else
         if (args.empty?)
           path = File.expand_path('.')
-          package = yaml_load.package_root( path )
+          package = @yaml.package_root(path)
 
           if (package)
             print_result do
               db_open(db_file)
-              remove_dir(package["directory"])
+              remove_dir(package.directory)
             end
           else
             @out.puts "Not registered. '#{path}'."
           end
         else
-          remove_list = yaml_load.list CdstkYaml::Query.new(args)
-
-          list(args, {:verbose => true})
-          
-          if options[:force] or yes_or_no("Remove #{remove_list.size} contents? (yes/no)")
-            print_result do
-              db_open(db_file)
-              remove_list.each do |content|
-                remove_dir(content["directory"])
+          print_result do
+            db_open(db_file)
+            args.each do |name|
+              package = @yaml.find_name(name)
+              if (package)
+                remove_dir(package.directory)                
+              else
+                @out.puts "Not found package '#{name}'."
               end
             end
           end
@@ -298,17 +295,20 @@ module Milkode
     end
 
     def list(args, options)
-      query = (args.empty?) ? nil : CdstkYaml::Query.new(args)
-      a = yaml_load.list(query).map {|v| [File.basename(v['directory']), v['directory']] }
-      max = a.map{|v|v[0].length}.max
-      str = a.sort_by {|v|
-        v[0]
-      }.map {|v|
-        h = File.exist?(v[1]) ? '' : '? '
+      match_p = @yaml.contents.find_all do |p|
+        args.all? {|k| p.name.include? k }
+      end
+
+      max = match_p.map{|p| p.name.length}.max
+
+      str = match_p.sort_by {|p|
+        p.name
+      }.map {|p|
+        h = File.exist?(p.directory) ? '' : '? '
         if (options[:verbose])
-          "#{(h + v[0]).ljust(max+2)} #{v[1]}"
+          "#{(h + p.name).ljust(max+2)} #{p.directory}"
         else
-          "#{h}#{v[0]}"
+          "#{h}#{p.name}"
         end
       }.join("\n")
 
@@ -318,7 +318,7 @@ module Milkode
       if args.empty?
         milkode_info
       else
-        list_info(a) unless a.empty?
+        list_info(match_p) unless match_p.empty?
       end
     end
 
@@ -340,14 +340,12 @@ module Milkode
       if (options[:force] or yes_or_no("cleanup contents? (yes/no)"))
         print_result do 
           # yamlファイルのクリーンアップ
-          yaml = yaml_load
-          
-          yaml.cleanup do |v|
-            alert("rm_package", v['directory'])
+          @yaml.contents.find_all {|v| !File.exist? v.directory }.each do |p|
+            @yaml.remove(p)
+            alert("rm_package", p.directory)
             @package_count += 1
           end
-          
-          yaml.save
+          @yaml.save
           
           # データベースのクリーンアップ
           Database.instance.cleanup do |record|
@@ -368,27 +366,28 @@ module Milkode
       else
         if (args.empty?)
           path = File.expand_path('.')
-          package = yaml_load.package_root( path )
+          package = @yaml.package_root(path)
 
           if (package)
             print_result do
               db_open(db_file)
-              remove_dir(package["directory"])
-              add_dir(package["directory"])
+              remove_dir(package.directory, true)
+              add_dir(package.directory, true)
             end
           else
             @out.puts "Not registered. '#{path}'."
           end
         else
-          a_list = yaml_load.list CdstkYaml::Query.new(args)
-          
-          list(args, {:verbose => true})
-
           print_result do
-            db_open(db_file)
-            a_list.each do |content|
-              remove_dir(content["directory"])
-              add_dir(content["directory"])
+            args.each do |name|
+              package = @yaml.find_name(name)
+              if (package)
+                db_open(db_file)
+                remove_dir(package.directory, true)
+                add_dir(package.directory, true)
+              else
+                @out.puts "Not found package '#{name}'."
+              end
             end
           end
         end
@@ -413,20 +412,22 @@ module Milkode
     end
 
     def dir(args, options)
-      yaml = yaml_load
-      
       if args.empty?
         path = File.expand_path('.')
-        package = yaml.package_root(path)
+        package = @yaml.package_root(path)
 
         if (package)
-          @out.print package['directory'] + (options[:top] ? "" : "\n")
+          @out.print package.directory + (options[:top] ? "" : "\n")
         else
           # Use mcd.
           @out.print "Not registered." + (options[:top] ? "" : "\n")
         end
       else
-        dirs = yaml.list(CdstkYaml::Query.new(args)).map{|v|v['directory']}.reverse
+        match_p = @yaml.contents.find_all do |p|
+          args.all? {|k| p.name.include? k }
+        end
+
+        dirs = match_p.map{|v|v.directory}.reverse
 
         if options[:top]
           unless (dirs.empty?)
@@ -514,11 +515,7 @@ EOF
     end
 
     def yaml_file
-      CdstkYaml.yaml_file @db_dir
-    end
-
-    def yaml_load
-      CdstkYaml.load(@db_dir)
+      YamlFileWrapper.yaml_file @db_dir
     end
 
     def update_dir_in(dir)
@@ -536,11 +533,12 @@ EOF
       end
     end
 
-    def remove_dir(dir)
+    def remove_dir(dir, no_yaml = false)
       # yamlから削除
-      yaml = yaml_load
-      yaml.remove_dir(dir)
-      yaml.save
+      unless (no_yaml)
+        @yaml.remove(@yaml.find_dir(dir))
+        @yaml.save
+      end
         
       # データベースからも削除
       dir = File.expand_path(dir)
@@ -578,7 +576,7 @@ EOF
     end
 
     def milkode_info
-      alert('*milkode*', "#{yaml_load.package_num} packages, #{Database.instance.totalRecords} records in #{db_file}.")
+      alert('*milkode*', "#{@yaml.contents.size} packages, #{Database.instance.totalRecords} records in #{db_file}.")
     end
 
     def db_create(filename)
@@ -599,7 +597,7 @@ EOF
       option = FindGrep::FindGrep::DEFAULT_OPTION.dup
       option.dbFile = Dbdir.groonga_path(Dbdir.default_dir)
       option.isSilent = true
-      option.packages = packages.map{|v| v[1]}
+      option.packages = packages.map{|p| p.directory}
       findGrep = FindGrep::FindGrep.new([], option)
       records = findGrep.pickupRecords
       
