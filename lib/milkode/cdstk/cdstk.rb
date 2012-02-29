@@ -412,20 +412,22 @@ module Milkode
     end
 
     def dir(args, options)
-      yaml = yaml_load
-      
       if args.empty?
         path = File.expand_path('.')
-        package = yaml.package_root(path)
+        package = @yaml.package_root(path)
 
         if (package)
-          @out.print package['directory'] + (options[:top] ? "" : "\n")
+          @out.print package.directory + (options[:top] ? "" : "\n")
         else
           # Use mcd.
           @out.print "Not registered." + (options[:top] ? "" : "\n")
         end
       else
-        dirs = yaml.list(CdstkYaml::Query.new(args)).map{|v|v['directory']}.reverse
+        match_p = @yaml.contents.find_all do |p|
+          args.all? {|k| p.name.include? k }
+        end
+
+        dirs = match_p.map{|v|v.directory}.reverse
 
         if options[:top]
           unless (dirs.empty?)
