@@ -6,7 +6,6 @@ require 'rubygems'
 require 'groonga'
 require 'fileutils'
 require 'pathname'
-require 'milkode/cdstk/cdstk_yaml'
 require 'milkode/common/grenfiletest'
 require 'milkode/common/util'
 require 'milkode/common/dir'
@@ -20,7 +19,8 @@ end
 require 'milkode/cdweb/lib/database'
 require 'open-uri'
 
-require 'milkode/cdstk/cdstk_command' # @todo 削除予定
+require 'milkode/cdstk/cdstk_command'
+
 require 'milkode/cdstk/yaml_file_wrapper'
 require 'milkode/cdstk/package'
 
@@ -515,7 +515,7 @@ EOF
     end
 
     def yaml_file
-      CdstkYaml.yaml_file @db_dir
+      YamlFileWrapper.yaml_file @db_dir
     end
 
     def update_dir_in(dir)
