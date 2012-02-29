@@ -518,10 +518,6 @@ EOF
       CdstkYaml.yaml_file @db_dir
     end
 
-    def yaml_load
-      CdstkYaml.load(@db_dir)
-    end
-
     def update_dir_in(dir)
       alert("package", File.basename(dir) )
       @package_count += 1
@@ -540,9 +536,8 @@ EOF
     def remove_dir(dir, no_yaml = false)
       # yamlから削除
       unless (no_yaml)
-        yaml = yaml_load
-        yaml.remove_dir(dir)
-        yaml.save
+        @yaml.remove(@yaml.find_dir(dir))
+        @yaml.save
       end
         
       # データベースからも削除
@@ -581,7 +576,7 @@ EOF
     end
 
     def milkode_info
-      alert('*milkode*', "#{yaml_load.package_num} packages, #{Database.instance.totalRecords} records in #{db_file}.")
+      alert('*milkode*', "#{@yaml.contents.size} packages, #{Database.instance.totalRecords} records in #{db_file}.")
     end
 
     def db_create(filename)
