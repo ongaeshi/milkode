@@ -8,18 +8,27 @@
 require 'milkode/common/ignore_setting.rb'
 
 module Milkode
+  #
+  # Sample:
+  #   c = IgnoreChecker.new
+  #   c.add IgnoreSetting.new("/", ["/rdoc", "/test/data", "*.lock"])
+  #   c.add IgnoreSetting.new("/pkg", ["*.gem"])
+  #   c.ignore?('/lib/test.rb')  #=> false
+  #   c.ignore?('/pkg/hoge.gem') #=> true
+  #
   class IgnoreChecker
     attr_reader :settings
     
-    def initialize(ignore_settings)
-      @settings = ignore_settings
+    def initialize
+      @settings = []
     end
 
-    # ex.
-    #   /lib/test.rb
-    #   /pkg/test.gem
+    def add(setting)
+      @settings << setting
+    end
+
     def ignore?(path)
-      false
+      @settings.any?{|s| s.ignore? path }
     end
   end
 end
