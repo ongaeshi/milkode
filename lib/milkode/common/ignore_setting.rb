@@ -16,7 +16,7 @@ module Milkode
 
       @matcher = @ignores.map do |i|
         if (i.include? '*')
-          /#{Regexp.escape(i).gsub('\\*', ".*")}/
+          Regexp.new(Regexp.escape(i).gsub('\\*', "[^/]*"))
         else
           i
         end
@@ -26,19 +26,34 @@ module Milkode
     def ignore?(path)
       return false unless path.start_with?(@path)
 
-      path = path[@path.size..-1]
+      if (path.size == @path.size)
+        false
+      else
+        ignore_in?(path[@path.size..-1])
+      end
+    end
 
-      return false if path.empty?
-
-      is_ignore = @matcher.any? do |i|
-        if i.is_a?(Regexp)
-          path.match i
+    def ignore_in?(path)
+      @matcher.each_with_index do |value, index|
+        is_match_start_pos = @ignores[index].start_with?('/')
+        
+        if value.is_a?(Regexp)
+          if is_match_start_pos
+            match = path.match(value)
+            return true if match && match.begin(0) == 0
+          else
+            return true if path.match(value)
+          end
         else
-          path.include? i
+          if is_match_start_pos
+            return true if path.start_with?(value)
+          else
+            return true if path.include?(value)
+          end
         end
       end
-
-      return is_ignore
+      
+      return false
     end
   end
 end
