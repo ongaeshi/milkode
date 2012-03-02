@@ -29,7 +29,11 @@ module Milkode
       if (path.size == @path.size)
         false
       else
-        ignore_in?(path[@path.size..-1])
+        if (@path == '/')
+          ignore_in?(path)
+        else
+          ignore_in?(path[@path.size..-1])
+        end
       end
     end
 

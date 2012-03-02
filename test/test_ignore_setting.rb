@@ -52,6 +52,14 @@ class TestIgnoreSetting < Test::Unit::TestCase
     assert_equal true,  is.ignore?("/doc/hoge.bak")
     assert_equal false,  is.ignore?("/doc/dummy/foo.bak")
   end
+
+  def test_root_ignore?
+    is = IgnoreSetting.new("/", ["/rdoc", "/test/data", "/*.lock"])
+
+    assert_equal true,  is.ignore?("/rdoc")
+    assert_equal true,  is.ignore?("/test/data")
+    assert_equal true,  is.ignore?("/dummy.lock")
+  end
 end
 
 
