@@ -38,6 +38,9 @@ module Milkode
     end
 
     def ignore_in?(path)
+      path_a = path.split('/')
+      path_a.delete("")
+      
       @matcher.each_with_index do |value, index|
         is_match_start_pos = @ignores[index].start_with?('/')
         
@@ -50,9 +53,9 @@ module Milkode
           end
         else
           if is_match_start_pos
-            return true if path.start_with?(value)
+            return true if path_a[0] == value[1..-1] # 先頭の'/'を除く
           else
-            return true if path.include?(value)
+            return true if path_a.any?{|v| v == value}
           end
         end
       end
