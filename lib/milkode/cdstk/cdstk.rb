@@ -752,9 +752,9 @@ EOF
       end
     end
 
-    def package_ignore?(mini_path)
+    def package_ignore?(fpath, mini_path)
       if @current_ignore.ignore?(mini_path)
-        alert_info("ignore", mini_path)
+        alert_info("ignore", fpath)
         true
       else
         false
@@ -764,14 +764,14 @@ EOF
     def ignoreDir?(fpath, mini_path)
       FileTest.directory?(fpath) &&
         (GrenFileTest::ignoreDir?(fpath) ||
-         package_ignore?(mini_path))
+         package_ignore?(fpath, mini_path))
     end
     private :ignoreDir?
 
     def ignoreFile?(fpath, mini_path)
       GrenFileTest::ignoreFile?(fpath) ||
         GrenFileTest::binary?(fpath) ||
-        package_ignore?(mini_path)
+        package_ignore?(fpath, mini_path)
     end
     private :ignoreFile?
 
