@@ -92,10 +92,12 @@ EOF
   end
 
   def test_create_from_gitignore
-    open("data/.gitignore") do |f|
-      is = IgnoreSetting.create_from_gitignore("/doc", f.read)
-      assert_equal "/doc", is.path
-      assert_equal ["coverage", "rdoc", "doc", ".yardoc", ".bundle", "pkg"], is.ignores
+    Dir.chdir(File.join(File.dirname(__FILE__))) do
+      open("data/.gitignore") do |f|
+        is = IgnoreSetting.create_from_gitignore("/doc", f.read)
+        assert_equal "/doc", is.path
+        assert_equal ["coverage", "rdoc", "doc", ".yardoc", ".bundle", "pkg"], is.ignores
+      end
     end
   end
 end
