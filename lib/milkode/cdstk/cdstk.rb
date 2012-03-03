@@ -709,6 +709,10 @@ EOF
     end
 
     def searchDirectory(stdout, dirname, packname, path, depth)
+      # 現在位置に.gitignoreがあれば無視設定に加える
+      add_current_gitignore(dirname, packname, path)
+
+      # 子の要素を追加
       Dir.foreach(File.join(dirname, packname, path)) do |name|
         next if (name == '.' || name == '..')
 
@@ -736,8 +740,25 @@ EOF
       end
     end
 
+    def add_current_gitignore(dirname, packname, path)
+      git_ignore = File.join(dirname, packname, path, ".gitignore")
+      
+      if File.exist? git_ignore
+        alert_info("add_ignore", git_ignore)
+        
+        open(git_ignore) do |f|
+          @current_ignore.add IgnoreSetting.create_from_gitignore(path, f.read)
+        end
+      end
+    end
+
     def package_ignore?(mini_path)
-      @current_ignore.ignore? mini_path
+      if @current_ignore.ignore?(mini_path)
+        alert_info("ignore", mini_path)
+        true
+      else
+        false
+      end
     end
 
     def ignoreDir?(fpath, mini_path)
