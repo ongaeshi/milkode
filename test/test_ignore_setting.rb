@@ -40,6 +40,13 @@ class TestIgnoreSetting < Test::Unit::TestCase
     assert_equal true,  is.ignore?("/doc/bar")
   end
 
+  def test_slash_ignore?
+    is = IgnoreSetting.new "/doc", ["/foo"]
+
+    assert_equal true,  is.ignore?("/doc/foo")
+    assert_equal false, is.ignore?("/doc/bar/foo")
+  end
+
   # def test_ignore?
   #   is = IgnoreSetting.new "/doc", ["test", "*.bak"]
 

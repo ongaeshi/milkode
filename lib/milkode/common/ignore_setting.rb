@@ -49,8 +49,8 @@ module Milkode
     end
 
     def ignore_in?(path)
-      path_a = path.split('/')
-      path_a.delete("")
+      # path_a = path.split('/')
+      # path_a.delete("")
       
       # @matcher.each_with_index do |value, index|
       #   is_match_start_pos = @ignores[index].start_with?('/')
@@ -72,10 +72,13 @@ module Milkode
       # end
 
       @regexp.each_with_index do |value, index|
-        is_match_start_pos = @ignores[index].start_with?('/')
-
         match = path.match(value)
-        return true if path.match(value)
+
+        if @ignores[index].start_with?('/')
+          return true if match && match.begin(0) == 0
+        else
+          return true if match
+        end
         
         # if value.is_a?(Regexp)
         #   if is_match_start_pos
