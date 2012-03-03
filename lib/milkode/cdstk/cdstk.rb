@@ -23,6 +23,7 @@ require 'milkode/cdstk/cdstk_command'
 
 require 'milkode/cdstk/yaml_file_wrapper'
 require 'milkode/cdstk/package'
+require 'milkode/common/ignore_checker'
 
 module Milkode
   class Cdstk
@@ -650,8 +651,9 @@ EOF
     private :db_delete
       
     def db_add_dir(dirname)
-      @current_package = @yaml.package_root(dirname)
-      searchDirectory(STDOUT, dirname, File.basename(dirname), 0)
+      @current_ignore = IgnoreChecker.new
+      # @current_ignore.add  IgnoreSetting.new("/", ["/rdoc", "/test/data", "*.lock", "*.rb"])
+      searchDirectory(STDOUT, File.dirname(dirname), File.basename(dirname), "/", 0)
     end
     private :db_add_dir
 
@@ -704,18 +706,18 @@ EOF
           document[key] = value
         end
       end
-
     end
 
-    def searchDirectory(stdout, dir, shortdir, depth)
-      Dir.foreach(dir) do |name|
+    def searchDirectory(stdout, dirname, packname, path, depth)
+      Dir.foreach(File.join(dirname, packname, path)) do |name|
         next if (name == '.' || name == '..')
-          
-        fpath = File.join(dir,name)
-        shortpath = File.join(shortdir,name)
-        
+
+        next_path = File.join(path, name)
+        fpath     = File.join(dirname, packname, next_path)
+        shortpath = File.join(packname, next_path)
+
         # 除外ディレクトリならばパス
-        next if ignoreDir?(fpath, shortpath)
+        next if ignoreDir?(fpath, next_path)
 
         # 読み込み不可ならばパス
         next unless FileTest.readable?(fpath)
@@ -723,9 +725,9 @@ EOF
         # ファイルならば中身を探索、ディレクトリならば再帰
         case File.ftype(fpath)
         when "directory"
-          searchDirectory(stdout, fpath, shortpath, depth + 1)
+          searchDirectory(stdout, dirname, packname, next_path, depth + 1)
         when "file"
-          unless ignoreFile?(fpath)
+          unless ignoreFile?(fpath, next_path)
             db_add_file(stdout, fpath, shortpath)
             @file_count += 1
             # @out.puts "file_count : #{@file_count}" if (@file_count % 100 == 0)
@@ -734,27 +736,21 @@ EOF
       end
     end
 
-    def package_ignore?(shortpath)
-      # p shortpath
-      @current_package.ignore.any? do |v|
-        # @todo 仮
-        shortpath.include? v
-        # r = shortpath.include? v
-        # puts "ignore #{shortpath}" if r
-        # r
-      end
+    def package_ignore?(mini_path)
+      @current_ignore.ignore? mini_path
     end
 
-    def ignoreDir?(fpath, shortpath)
+    def ignoreDir?(fpath, mini_path)
       FileTest.directory?(fpath) &&
         (GrenFileTest::ignoreDir?(fpath) ||
-         package_ignore?(shortpath))
+         package_ignore?(mini_path))
     end
     private :ignoreDir?
 
-    def ignoreFile?(fpath)
+    def ignoreFile?(fpath, mini_path)
       GrenFileTest::ignoreFile?(fpath) ||
-      GrenFileTest::binary?(fpath)
+        GrenFileTest::binary?(fpath) ||
+        package_ignore?(mini_path)
     end
     private :ignoreFile?
 
