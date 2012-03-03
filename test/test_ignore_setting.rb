@@ -79,8 +79,15 @@ class TestIgnoreSetting < Test::Unit::TestCase
     assert_equal true,  is.ignore?("/doc/test/data/a.txt")
     assert_equal false, is.ignore?("/doc/test/dataa/a.txt")
   end
+
+  def test_parse_gitignore
+    ignores = IgnoreSetting.parse_gitignore <<EOF
+# comment
+rdoc
+# comment2
+*~
+/test/data
+EOF
+    assert_equal ignores, ["rdoc", "*~", "/test/data"]
+  end
 end
-
-
-
-

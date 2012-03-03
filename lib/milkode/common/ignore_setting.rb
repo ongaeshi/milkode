@@ -9,6 +9,18 @@ module Milkode
   class IgnoreSetting
     attr_reader :path
     attr_reader :ignores
+
+    # def self.create_from_gitignore(path, str)
+    #   ignores = str.split($/)
+    #   ignores.delete_if{|v| v =~ /\A#.*/}
+    #   IgnoreSetting.new(path, ignores)
+    # end
+
+    def self.parse_gitignore(str)
+      ignores = str.split($/)
+      ignores.delete_if{|v| v =~ /\A#.*/}
+      ignores
+    end
     
     def initialize(path, ignores)
       @path = path
@@ -33,6 +45,8 @@ module Milkode
         end
       end
     end
+
+    private
 
     def ignore_in?(path)
       @regexp.each_with_index do |value, index|
