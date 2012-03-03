@@ -10,15 +10,13 @@ module Milkode
     attr_reader :path
     attr_reader :ignores
 
-    # def self.create_from_gitignore(path, str)
-    #   ignores = str.split($/)
-    #   ignores.delete_if{|v| v =~ /\A#.*/}
-    #   IgnoreSetting.new(path, ignores)
-    # end
+    def self.create_from_gitignore(path, str)
+      IgnoreSetting.new(path, parse_gitignore(str))
+    end
 
     def self.parse_gitignore(str)
       ignores = str.split($/)
-      ignores.delete_if{|v| v =~ /\A#.*/}
+      ignores.delete_if{|v| v =~ /(\A#.*)|(\A\Z)/}
       ignores
     end
     
