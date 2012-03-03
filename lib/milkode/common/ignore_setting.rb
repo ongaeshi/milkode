@@ -25,7 +25,7 @@ module Milkode
       @ignores = ignores
 
       @regexp = @ignores.map do |v|
-        v = Regexp.escape(v).gsub('\\*', "[^/]*") + "(\/|\\Z)"
+        v = "(\/|\\A)" + Regexp.escape(v).gsub('\\*', "[^/]*") + "(\/|\\Z)"
         Regexp.new(v)
       end
     end

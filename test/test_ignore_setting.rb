@@ -47,6 +47,7 @@ class TestIgnoreSetting < Test::Unit::TestCase
     assert_equal false, is.ignore?("/doc/foo_a")
     assert_equal true,  is.ignore?("/doc/foo/a.txt")
     assert_equal true,  is.ignore?("/doc/bar")
+    assert_equal false, is.ignore?("/doc/hoge.foo")
   end
 
   def test_slash_ignore?
