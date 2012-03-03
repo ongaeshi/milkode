@@ -21,6 +21,15 @@ class TestIgnoreSetting < Test::Unit::TestCase
     assert_not_match r, "testa/foo"
   end
   
+  def test_glob_regexp
+    r = /[^\/]*bak(\/|\Z)/
+
+    assert_match r, "hoge.bak"
+    assert_not_match r, "hoge.cpp"
+    assert_match r, "a/hoge.bak/test"
+    assert_not_match r, "hoge.baka/test"
+  end
+  
   def test_reader
     is = IgnoreSetting.new "/pkg", ["rdoc", "*.bak"]
 
@@ -47,44 +56,29 @@ class TestIgnoreSetting < Test::Unit::TestCase
     assert_equal false, is.ignore?("/doc/bar/foo")
   end
 
-  # def test_ignore?
-  #   is = IgnoreSetting.new "/doc", ["test", "*.bak"]
+  def test_glob_ignore?
+    is = IgnoreSetting.new "/doc", ["*.bak"]
 
-  #   assert_equal false, is.ignore?("/lib/hoge.rb")
-  #   assert_equal false, is.ignore?("/doc")
-    
-  #   assert_equal true,  is.ignore?("/doc/test")
-  #   assert_equal false, is.ignore?("/doc/test_a")
-  #   assert_equal true,  is.ignore?("/doc/foo/test")
-    
-  #   assert_equal false, is.ignore?("/doc/tesa")
-  #   # assert_equal true,  is.ignore?("/doc/test.html")
-    
-  #   assert_equal false, is.ignore?("/hoge.bak")
-  #   assert_equal true,  is.ignore?("/doc/hoge.bak")
-  #   assert_equal false, is.ignore?("/doc/hoge@bak")
-  #   assert_equal false, is.ignore?("/doc/hoge.c")
-  # end
+    assert_equal false, is.ignore?("/hoge.bak")
+    assert_equal true,  is.ignore?("/doc/hoge.bak")
+    assert_equal true,  is.ignore?("/doc/test/a.bak")
+    assert_equal false, is.ignore?("/doc/hoge.baka")
+    assert_equal false, is.ignore?("/doc/hoge@bak")
+  end
 
-  # def test_ignore_slash?
-  #   is = IgnoreSetting.new "/doc", ["/test", "/*.bak"]
+  def test_slash_glob_ignore?
+    is = IgnoreSetting.new "/doc", ["/*.bak"]
 
-  #   assert_equal true,  is.ignore?("/doc/test")
-  #   assert_equal true,  is.ignore?("/doc/test/hoge.c")
-  #   assert_equal false,  is.ignore?("/doc/a/test")
-    
-  #   # assert_equal false, is.ignore?("/hoge.bak")
-  #   # assert_equal true,  is.ignore?("/doc/hoge.bak")
-  #   # assert_equal false,  is.ignore?("/doc/dummy/foo.bak")
-  # end
+    assert_equal true,  is.ignore?("/doc/hoge.bak")
+    assert_equal false,  is.ignore?("/doc/test/a.bak")
+  end
 
-  # def test_root_ignore?
-  #   is = IgnoreSetting.new("/", ["/rdoc", "/test/data", "/*.lock"])
+  def test_multipath_ignore?
+    is = IgnoreSetting.new "/doc", ["test/data"]
 
-  #   assert_equal true,  is.ignore?("/rdoc")
-  #   assert_equal true,  is.ignore?("/test/data")
-  #   assert_equal true,  is.ignore?("/dummy.lock")
-  # end
+    assert_equal true,  is.ignore?("/doc/test/data/a.txt")
+    assert_equal false, is.ignore?("/doc/test/dataa/a.txt")
+  end
 end
 
 

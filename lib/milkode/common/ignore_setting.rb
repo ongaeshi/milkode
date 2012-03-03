@@ -14,23 +14,9 @@ module Milkode
       @path = path
       @ignores = ignores
 
-      # @matcher = @ignores.map do |i|
-      #   if (i.include? '*')
-      #     Regexp.new(Regexp.escape(i).gsub('\\*', "[^/]*"))
-      #   else
-      #     i
-      #   end
-      # end
-
       @regexp = @ignores.map do |v|
-        v = Regexp.escape(v)
-        Regexp.new("#{v}(\/|\\Z)")
-
-        # if (i.include? '*')
-        #   Regexp.new(Regexp.escape(i).gsub('\\*', "[^/]*"))
-        # else
-        #   i
-        # end
+        v = Regexp.escape(v).gsub('\\*', "[^/]*") + "(\/|\\Z)"
+        Regexp.new(v)
       end
     end
 
@@ -49,51 +35,13 @@ module Milkode
     end
 
     def ignore_in?(path)
-      # path_a = path.split('/')
-      # path_a.delete("")
-      
-      # @matcher.each_with_index do |value, index|
-      #   is_match_start_pos = @ignores[index].start_with?('/')
-        
-      #   if value.is_a?(Regexp)
-      #     if is_match_start_pos
-      #       match = path.match(value)
-      #       return true if match && match.begin(0) == 0
-      #     else
-      #       return true if path.match(value)
-      #     end
-      #   else
-      #     if is_match_start_pos
-      #       return true if path_a[0] == value[1..-1] # 先頭の'/'を除く
-      #     else
-      #       return true if path_a.any?{|v| v == value}
-      #     end
-      #   end
-      # end
-
       @regexp.each_with_index do |value, index|
         match = path.match(value)
+        is_match_start_pos = @ignores[index].start_with?('/')
 
-        if @ignores[index].start_with?('/')
-          return true if match && match.begin(0) == 0
-        else
-          return true if match
+        if match && (!is_match_start_pos || match.begin(0) == 0)
+          return true
         end
-        
-        # if value.is_a?(Regexp)
-        #   if is_match_start_pos
-        #     match = path.match(value)
-        #     return true if match && match.begin(0) == 0
-        #   else
-        #     return true if path.match(value)
-        #   end
-        # else
-        #   if is_match_start_pos
-        #     return true if path_a[0] == value[1..-1] # 先頭の'/'を除く
-        #   else
-        #     return true if path_a.any?{|v| v == value}
-        #   end
-        # end
       end
       
       return false
