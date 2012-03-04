@@ -522,6 +522,41 @@ EOF
       milkode_info
     end
 
+    def ignore(args, options)
+      current_dir = File.expand_path('.')
+      package = @yaml.package_root(current_dir)
+
+      unless package
+        @out.puts "Not a package dir: '#{current_dir}'"
+        return
+      end
+
+      if options[:delete_all]
+        package.set_ignore([])
+        @yaml.update(package)
+        @yaml.save
+      elsif args.empty?
+        @out.puts package.ignore
+      else
+        path = Util::relative_path(File.expand_path('.'), package.directory).to_s
+        ignore = package.ignore
+        add_ignore = args.map {|v| File.join(path, v).sub(/^.\//, "") }
+
+        if options[:delete]
+          ignore -= add_ignore          
+        else
+          ignore += add_ignore
+        end
+        ignore.uniq!
+        package.set_ignore(ignore)
+        
+        @yaml.update(package)
+        @yaml.save
+
+        @out.puts add_ignore
+      end
+    end
+
     private
 
     def db_file
@@ -678,7 +713,7 @@ EOF
     def db_add_dir(dir)
       @current_package = @yaml.package_root(dir)
       @current_ignore = IgnoreChecker.new
-      # @current_ignore.add  IgnoreSetting.new("/", ["/rdoc", "/test/data", "*.lock", "*.rb"])
+      @current_ignore.add IgnoreSetting.new("/", @current_package.ignore) # 手動設定
       searchDirectory(STDOUT, dir, @current_package.name, "/", 0)
     end
     private :db_add_dir

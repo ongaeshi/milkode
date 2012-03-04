@@ -35,7 +35,11 @@ module Milkode
     end
 
     def ignore
-      @hash['ignore'] || {}
+      @hash['ignore'] || []
+    end
+
+    def set_ignore(ignore)
+      @hash['ignore'] = ignore
     end
 
     def options

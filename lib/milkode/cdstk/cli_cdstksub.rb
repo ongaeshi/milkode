@@ -162,5 +162,19 @@ EOF
 
       return opt, options
     end
+
+    def self.setup_ignore
+      bin = File.basename($0)
+      
+      options = {}
+
+      opt = OptionParser.new("#{File.basename($0)} ignore [ignore_dir]")
+      opt.on('-d', '--delete', 'Delete ignore') { options[:delete] = true }
+      opt.on('--delete-all', 'Delete all') { options[:delete_all] = true }
+
+      return opt, options
+    end
+
+
   end
 end
