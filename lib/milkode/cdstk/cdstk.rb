@@ -523,8 +523,13 @@ EOF
     end
 
     def ignore(args, options)
-      package = @yaml.package_root(File.expand_path('.'))
-      # @todo error, not found pakcage
+      current_dir = File.expand_path('.')
+      package = @yaml.package_root(current_dir)
+
+      unless package
+        @out.puts "Not a package dir: '#{current_dir}'"
+        return
+      end
 
       if options[:delete_all]
         package.set_ignore([])
