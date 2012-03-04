@@ -72,7 +72,6 @@ contents:
   ignore:
   - ! '*.bak'
 - directory: /path/to/dir3
-  ignore: []
 EOF
   end
 

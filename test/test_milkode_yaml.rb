@@ -16,13 +16,11 @@ class TestMilkodeYaml < Test::Unit::TestCase
 version: '0.2'
 contents:
 - directory: /a/dir1
-  ignore: []
 - directory: /path/to/dir
   ignore:
   - ! '*.bak'
   - /rdoc
 - directory: /a/b/c
-  ignore: []
 EOF
 
   V_0_1 = <<EOF
@@ -71,7 +69,7 @@ EOF
 
   def test_remove
     obj = MilkodeYaml.new(SRC)
-    obj.remove(Package.create("/a/b/c"))
+    obj.remove(obj.find_name("c"))
 
     assert_equal 2, obj.contents.size
 
@@ -80,7 +78,6 @@ EOF
 version: '0.2'
 contents:
 - directory: /a/dir1
-  ignore: []
 - directory: /path/to/dir
   ignore:
   - ! '*.bak'
@@ -100,9 +97,7 @@ EOF
 version: '0.2'
 contents:
 - directory: /a/dir1
-  ignore: []
 - directory: /path/to/dir
-  ignore: []
 EOF
     
   end
@@ -125,14 +120,12 @@ EOF
 version: '0.2'
 contents:
 - directory: /a/dir1
-  ignore: []
 - directory: /path/to/dir
   ignore:
   - ! '*.bak'
   - /rdoc
   - ! '*.a'
 - directory: /a/b/c
-  ignore: []
 EOF
 
     p = Package.create("not_found")

@@ -9,8 +9,12 @@ require 'milkode/common/util'
 
 module Milkode
   class Package
-    def self.create(dir, ignore=[])
-      Package.new({"directory" => dir, "ignore" => ignore})
+    def self.create(dir, ignore=nil)
+      if ignore
+        Package.new({"directory" => dir, "ignore" => ignore})
+      else
+        Package.new({"directory" => dir})
+      end
     end
 
     def initialize(hash)
@@ -31,7 +35,7 @@ module Milkode
     end
 
     def ignore
-      @hash['ignore']
+      @hash['ignore'] || {}
     end
 
     def options
@@ -47,7 +51,8 @@ module Milkode
     end
 
     def migrate
-      @hash['ignore'] = [] unless ignore
+      # 色々あって、ignore値はデフォルトで設定しないようにした
+      # @hash['ignore'] = [] unless ignore
     end
 
     # 同名パッケージか？
