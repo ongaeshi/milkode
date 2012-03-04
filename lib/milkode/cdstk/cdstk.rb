@@ -132,7 +132,7 @@ module Milkode
           # YAMLに追加
           package = Package.create(dir)
           add_yaml(package)
-          set_no_auto_ignore(package, options)
+          set_yaml_options(package, options)
         end
       rescue ConvetError
         return
@@ -147,13 +147,24 @@ module Milkode
       end
     end
 
-    def set_no_auto_ignore(package, options)
-      if options[:no_auto_ignore]
-        # update package
-        options = package.options
-        options[:no_auto_ignore] = true
-        package.set_options(options)
-        # update yaml
+    def set_yaml_options(package, src)
+      is_dirty = false
+      
+      if src[:no_auto_ignore]
+        dst = package.options
+        dst[:no_auto_ignore] = true
+        package.set_options(dst)
+        is_dirty = true
+      end
+
+      if src[:name]
+        dst = package.options
+        dst[:name] = src[:name]
+        package.set_options(dst)
+        is_dirty = true
+      end
+
+      if is_dirty
         @yaml.update(package)
         @yaml.save
       end

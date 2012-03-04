@@ -16,10 +16,15 @@ module Milkode
     def initialize(hash)
       @hash = hash
       normalize
-      @name = File.basename(directory) # @todo nameメンバに対応
     end
 
-    attr_reader :name
+    def name
+      if options[:name]
+        options[:name]
+      else
+        File.basename(directory)
+      end
+    end
 
     def directory
       @hash['directory']

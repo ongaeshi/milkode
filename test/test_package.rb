@@ -49,4 +49,14 @@ class TestPackage < Test::Unit::TestCase
     # p p.hash
   end
 
+  def test_name
+    p = Package.create('/path/to/dir')
+
+    options = p.options
+    options[:name] = 'foo'
+    p.set_options options
+
+    assert_equal('foo', p.name)
+  end
+
 end
