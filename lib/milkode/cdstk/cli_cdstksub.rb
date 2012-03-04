@@ -34,7 +34,7 @@ usage:
 
 option:
 EOF
-      opt.on('-n NAME', '--name NAME', 'Specify name (default: File.basename(dir))') {|v| options[:name] = v }
+      # opt.on('-n NAME', '--name NAME', 'Specify name (default: File.basename(dir))') {|v| options[:name] = v }
       opt.on('--no-auto-ignore', 'Disable auto ignore (Find ".gitignore")') { options[:no_auto_ignore] = true }
       opt.on('-v', '--verbose', 'Be verbose.')   { options[:verbose] = true }
 
