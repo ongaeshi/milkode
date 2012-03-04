@@ -523,7 +523,27 @@ EOF
     end
 
     def ignore(args, options)
-      p args, options
+      package = @yaml.package_root(File.expand_path('.'))
+      # @todo error, not found pakcage
+
+      if args.empty?
+        # @todo 整形
+        # @out.puts "'#{package.name}' ignore setting:"
+        @out.puts package.ignore
+      else
+        path = Util::relative_path(File.expand_path('.'), package.directory).to_s
+
+        ignore = package.ignore
+        add_ignore = args.map {|v| File.join(path, v) }
+        ignore += add_ignore
+        ignore.uniq!
+        package.set_ignore(ignore)
+        
+        @yaml.update(package)
+        @yaml.save
+
+        @out.puts add_ignore
+      end
     end
 
     private
