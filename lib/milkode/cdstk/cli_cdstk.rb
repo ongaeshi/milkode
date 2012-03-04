@@ -19,6 +19,7 @@ The most commonly used #{File.basename($0)} are:
   dir         Disp package dir.
   dump        Dump records.
   grep        Print lines matching a pattern
+  ignore      Ignore setting.
   info        Disp information.
   init        Init db.
   list        List packages. 
@@ -62,6 +63,7 @@ EOF
       subopt['setdb'], suboptions['setdb'] = CLI_Cdstksub.setup_setdb
       subopt['mcd'], suboptions['mcd'] = CLI_Cdstksub.setup_mcd
       subopt['info'], suboptions['info'] = CLI_Cdstksub.setup_info
+      subopt['ignore'], suboptions['ignore'] = CLI_Cdstksub.setup_ignore
       
       if (subopt[subcommand])
         subopt[subcommand].parse!(arguments) unless arguments.empty?
@@ -105,6 +107,8 @@ EOF
           obj.mcd(arguments, suboptions[subcommand])
         when 'info'
           obj.info(arguments, suboptions[subcommand])
+        when 'ignore'
+          obj.ignore(arguments, suboptions[subcommand])
         end
       else
         if subcommand

@@ -162,5 +162,19 @@ EOF
 
       return opt, options
     end
+
+    def self.setup_ignore
+      bin = File.basename($0)
+      
+      options = {}
+
+      opt = OptionParser.new(<<EOF)
+#{bin} ignore [ignore_dir]
+EOF
+
+      return opt, options
+    end
+
+
   end
 end

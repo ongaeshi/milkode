@@ -522,6 +522,10 @@ EOF
       milkode_info
     end
 
+    def ignore(args, options)
+      p args, options
+    end
+
     private
 
     def db_file
