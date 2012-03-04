@@ -526,16 +526,22 @@ EOF
       package = @yaml.package_root(File.expand_path('.'))
       # @todo error, not found pakcage
 
-      if args.empty?
-        # @todo 整形
-        # @out.puts "'#{package.name}' ignore setting:"
+      if options[:delete_all]
+        package.set_ignore([])
+        @yaml.update(package)
+        @yaml.save
+      elsif args.empty?
         @out.puts package.ignore
       else
         path = Util::relative_path(File.expand_path('.'), package.directory).to_s
-
         ignore = package.ignore
         add_ignore = args.map {|v| File.join(path, v).sub(/^.\//, "") }
-        ignore += add_ignore
+
+        if options[:delete]
+          ignore -= add_ignore          
+        else
+          ignore += add_ignore
+        end
         ignore.uniq!
         package.set_ignore(ignore)
         

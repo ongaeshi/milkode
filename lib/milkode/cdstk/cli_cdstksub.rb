@@ -168,9 +168,9 @@ EOF
       
       options = {}
 
-      opt = OptionParser.new(<<EOF)
-#{bin} ignore [ignore_dir]
-EOF
+      opt = OptionParser.new("#{File.basename($0)} ignore [ignore_dir]")
+      opt.on('-d', '--delete', 'Delete ignore') { options[:delete] = true }
+      opt.on('--delete-all', 'Delete all') { options[:delete_all] = true }
 
       return opt, options
     end
