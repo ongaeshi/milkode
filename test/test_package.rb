@@ -49,6 +49,18 @@ class TestPackage < Test::Unit::TestCase
     # p p.hash
   end
 
+  def test_set_ignore
+    p = Package.create('/path/to/dir')
+
+    ignore = p.ignore
+    ignore << "rdoc"
+    ignore << "*.bak"
+    p.set_ignore ignore
+
+    assert_equal(["rdoc", "*.bak"], p.ignore)
+    # p p.hash
+  end
+
   def test_name
     p = Package.create('/path/to/dir')
 
@@ -58,5 +70,4 @@ class TestPackage < Test::Unit::TestCase
 
     assert_equal('foo', p.name)
   end
-
 end
