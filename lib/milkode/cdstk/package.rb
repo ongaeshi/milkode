@@ -29,6 +29,14 @@ module Milkode
       @hash['ignore']
     end
 
+    def options
+      @hash['options'] || {}
+    end
+
+    def set_options(options)
+      @hash['options'] = options
+    end
+
     def hash
       @hash
     end

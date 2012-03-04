@@ -33,4 +33,20 @@ class TestPackage < Test::Unit::TestCase
     assert p1 != p4
   end
 
+  def test_options
+    p1 = Package.create('/path/to/dir')
+    assert_equal({}, p1.options)
+  end
+
+  def test_set_options
+    p = Package.create('/path/to/dir')
+
+    options = p.options
+    options[:no_auto_ignore] = true
+    p.set_options options
+
+    assert_equal({:no_auto_ignore => true}, p.options)
+    # p p.hash
+  end
+
 end
