@@ -130,7 +130,9 @@ module Milkode
           dir = convert_content(v)
 
           # YAMLに追加
-          add_yaml(Package.create(dir))
+          package = Package.create(dir)
+          add_yaml(package)
+          set_no_auto_ignore(package, options)
         end
       rescue ConvetError
         return
@@ -142,6 +144,18 @@ module Milkode
         dirs.each do |dir|
           update_dir(dir)
         end
+      end
+    end
+
+    def set_no_auto_ignore(package, options)
+      if options[:no_auto_ignore]
+        # update package
+        options = package.options
+        options[:no_auto_ignore] = true
+        package.set_options(options)
+        # update yaml
+        @yaml.update(package)
+        @yaml.save
       end
     end
 
@@ -650,10 +664,11 @@ EOF
     end
     private :db_delete
       
-    def db_add_dir(dirname)
+    def db_add_dir(dir)
+      @current_package = @yaml.package_root(dir)
       @current_ignore = IgnoreChecker.new
       # @current_ignore.add  IgnoreSetting.new("/", ["/rdoc", "/test/data", "*.lock", "*.rb"])
-      searchDirectory(STDOUT, File.dirname(dirname), File.basename(dirname), "/", 0)
+      searchDirectory(STDOUT, File.dirname(dir), File.basename(dir), "/", 0)
     end
     private :db_add_dir
 
@@ -710,7 +725,7 @@ EOF
 
     def searchDirectory(stdout, dirname, packname, path, depth)
       # 現在位置に.gitignoreがあれば無視設定に加える
-      add_current_gitignore(dirname, packname, path)
+      add_current_gitignore(dirname, packname, path) unless @current_package.options[:no_auto_ignore]
 
       # 子の要素を追加
       Dir.foreach(File.join(dirname, packname, path)) do |name|

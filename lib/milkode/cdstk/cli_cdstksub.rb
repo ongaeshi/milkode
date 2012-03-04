@@ -34,6 +34,7 @@ usage:
 
 option:
 EOF
+      opt.on('-v', '--no-auto-ignore', 'Disable auto ignore (Auto parse ".gitignore").') { options[:no_auto_ignore] = true }
       opt.on('-v', '--verbose', 'Be verbose.')   { options[:verbose] = true }
 
       return opt, options
