@@ -534,7 +534,7 @@ EOF
         path = Util::relative_path(File.expand_path('.'), package.directory).to_s
 
         ignore = package.ignore
-        add_ignore = args.map {|v| File.join(path, v) }
+        add_ignore = args.map {|v| File.join(path, v).sub(/^.\//, "") }
         ignore += add_ignore
         ignore.uniq!
         package.set_ignore(ignore)
@@ -702,7 +702,7 @@ EOF
     def db_add_dir(dir)
       @current_package = @yaml.package_root(dir)
       @current_ignore = IgnoreChecker.new
-      # @current_ignore.add  IgnoreSetting.new("/", ["/rdoc", "/test/data", "*.lock", "*.rb"])
+      @current_ignore.add IgnoreSetting.new("/", @current_package.ignore) # 手動設定
       searchDirectory(STDOUT, dir, @current_package.name, "/", 0)
     end
     private :db_add_dir
