@@ -132,7 +132,7 @@ module Milkode
           # YAMLに追加
           package = Package.create(dir)
           add_yaml(package)
-          set_no_auto_ignore(package, options)
+          set_yaml_options(package, options)
         end
       rescue ConvetError
         return
@@ -147,13 +147,24 @@ module Milkode
       end
     end
 
-    def set_no_auto_ignore(package, options)
-      if options[:no_auto_ignore]
-        # update package
-        options = package.options
-        options[:no_auto_ignore] = true
-        package.set_options(options)
-        # update yaml
+    def set_yaml_options(package, src)
+      is_dirty = false
+      
+      if src[:no_auto_ignore]
+        dst = package.options
+        dst[:no_auto_ignore] = true
+        package.set_options(dst)
+        is_dirty = true
+      end
+
+      if src[:name]
+        dst = package.options
+        dst[:name] = src[:name]
+        package.set_options(dst)
+        is_dirty = true
+      end
+
+      if is_dirty
         @yaml.update(package)
         @yaml.save
       end
@@ -668,7 +679,7 @@ EOF
       @current_package = @yaml.package_root(dir)
       @current_ignore = IgnoreChecker.new
       # @current_ignore.add  IgnoreSetting.new("/", ["/rdoc", "/test/data", "*.lock", "*.rb"])
-      searchDirectory(STDOUT, File.dirname(dir), File.basename(dir), "/", 0)
+      searchDirectory(STDOUT, dir, @current_package.name, "/", 0)
     end
     private :db_add_dir
 
@@ -725,14 +736,14 @@ EOF
 
     def searchDirectory(stdout, dirname, packname, path, depth)
       # 現在位置に.gitignoreがあれば無視設定に加える
-      add_current_gitignore(dirname, packname, path) unless @current_package.options[:no_auto_ignore]
+      add_current_gitignore(dirname, path) unless @current_package.options[:no_auto_ignore]
 
       # 子の要素を追加
-      Dir.foreach(File.join(dirname, packname, path)) do |name|
+      Dir.foreach(File.join(dirname, path)) do |name|
         next if (name == '.' || name == '..')
 
         next_path = File.join(path, name)
-        fpath     = File.join(dirname, packname, next_path)
+        fpath     = File.join(dirname, next_path)
         shortpath = File.join(packname, next_path)
 
         # 除外ディレクトリならばパス
@@ -755,8 +766,8 @@ EOF
       end
     end
 
-    def add_current_gitignore(dirname, packname, path)
-      git_ignore = File.join(dirname, packname, path, ".gitignore")
+    def add_current_gitignore(dirname, path)
+      git_ignore = File.join(dirname, path, ".gitignore")
       
       if File.exist? git_ignore
         alert_info("add_ignore", git_ignore)
