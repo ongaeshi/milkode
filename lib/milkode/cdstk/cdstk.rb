@@ -130,7 +130,7 @@ module Milkode
           dir = convert_content(v)
 
           # YAMLに追加
-          package = Package.create(dir)
+          package = Package.create(dir, options[:ignore])
           add_yaml(package)
           set_yaml_options(package, options)
         end

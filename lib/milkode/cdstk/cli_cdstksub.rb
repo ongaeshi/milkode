@@ -20,7 +20,7 @@ module Milkode
     def self.setup_add
       bin = File.basename($0)
       
-      options = {}
+      options = {:ignore => []}
 
       opt = OptionParser.new(<<EOF)
 #{bin} add dir1 [dir2 ...]
@@ -35,7 +35,8 @@ usage:
 option:
 EOF
       # opt.on('-n NAME', '--name NAME', 'Specify name (default: File.basename(dir))') {|v| options[:name] = v }
-      opt.on('--no-auto-ignore', 'Disable auto ignore (Find ".gitignore")') { options[:no_auto_ignore] = true }
+      opt.on('-i PATH', '--ignore PATH', 'Ignore path.') {|v| options[:ignore] << v }
+      opt.on('--no-auto-ignore', 'Disable auto ignore (.gitignore)') { options[:no_auto_ignore] = true }
       opt.on('-v', '--verbose', 'Be verbose.')   { options[:verbose] = true }
 
       return opt, options
@@ -168,7 +169,7 @@ EOF
       
       options = {}
 
-      opt = OptionParser.new("#{File.basename($0)} ignore [ignore_dir]")
+      opt = OptionParser.new("#{File.basename($0)} ignore [path ...]")
       opt.on('-d', '--delete', 'Delete ignore') { options[:delete] = true }
       opt.on('--delete-all', 'Delete all') { options[:delete_all] = true }
 
