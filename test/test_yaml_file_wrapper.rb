@@ -9,6 +9,7 @@ require 'test_helper'
 require 'milkode/cdstk/yaml_file_wrapper.rb'
 require 'milkode/cdstk/package'
 require 'fileutils'
+require 'milkode/common/util'
 
 class TestYamlFileWrapper < Test::Unit::TestCase
   include Milkode
@@ -64,7 +65,7 @@ class TestYamlFileWrapper < Test::Unit::TestCase
     # save
     yaml.save
     r = open('milkode.yaml'){|f|f.read}
-    assert_equal <<EOF, r
+    assert_equal <<EOF, r if Milkode::Util::ruby19?
 ---
 version: '0.2'
 contents:
@@ -82,7 +83,7 @@ EOF
     
     # save
     r = open('otherpath/milkode.yaml'){|f|f.read}
-    assert_equal <<EOF, r
+    assert_equal <<EOF, r if Milkode::Util::ruby19?
 ---
 version: '0.2'
 contents: []

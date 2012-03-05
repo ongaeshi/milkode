@@ -6,7 +6,9 @@
 # @date   2012/03/02
 
 require 'milkode/common/ignore_setting.rb'
+require 'milkode/common/util'
 require 'test_helper'
+require 'test/unit'
 
 class TestIgnoreSetting < Test::Unit::TestCase
   include Milkode
@@ -16,18 +18,18 @@ class TestIgnoreSetting < Test::Unit::TestCase
 
     assert_match r, "test"
     assert_match r, "test/"
-    assert_not_match r, "testa"
+    assert_no_match r, "testa"
     assert_match r, "test/foo"
-    assert_not_match r, "testa/foo"
+    assert_no_match r, "testa/foo"
   end
   
   def test_glob_regexp
     r = /[^\/]*bak(\/|\Z)/
 
     assert_match r, "hoge.bak"
-    assert_not_match r, "hoge.cpp"
+    assert_no_match r, "hoge.cpp"
     assert_match r, "a/hoge.bak/test"
-    assert_not_match r, "hoge.baka/test"
+    assert_no_match r, "hoge.baka/test"
   end
   
   def test_reader
