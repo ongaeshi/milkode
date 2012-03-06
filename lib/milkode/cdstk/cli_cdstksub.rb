@@ -143,7 +143,7 @@ EOF
       options = {}
       
       opt = OptionParser.new("#{File.basename($0)} setdb")
-      opt.on('--reset', 'Reset default db.') {|v| options[:reset] = true }
+      opt.on('--default', '--reset', 'Reset default db.') {|v| options[:reset] = true }
 
       return opt, options
     end
