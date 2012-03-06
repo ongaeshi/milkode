@@ -103,4 +103,11 @@ EOF
       end
     end
   end
+
+  def test_last_slash
+    is = IgnoreSetting.new "/doc", ["/lib/"]
+
+    assert_equal true,  is.ignore?("/doc/lib")
+    assert_equal true,  is.ignore?("/doc/lib/test")
+  end
 end

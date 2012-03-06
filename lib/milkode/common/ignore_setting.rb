@@ -22,7 +22,7 @@ module Milkode
     
     def initialize(path, ignores)
       @path = path
-      @ignores = ignores
+      @ignores = ignores.map{|v| v.sub(/\/\Z/, "")}
 
       @regexp = @ignores.map do |v|
         v = "(\/|\\A)" + Regexp.escape(v).gsub('\\*', "[^/]*") + "(\/|\\Z)"
