@@ -105,6 +105,7 @@ module Milkode
                 update_dir_in(package.directory)                
               else
                 @out.puts "Not found package '#{name}'."
+                return
               end
             end
           end
@@ -264,6 +265,8 @@ module Milkode
           @yaml.contents.each do |package|
             remove_dir(package.directory)
           end
+        else
+          return
         end
       end
     end
@@ -295,6 +298,7 @@ module Milkode
                 remove_dir(package.directory)                
               else
                 @out.puts "Not found package '#{name}'."
+                return
               end
             end
           end
@@ -413,6 +417,7 @@ module Milkode
                 add_dir(package.directory, true)
               else
                 @out.puts "Not found package '#{name}'."
+                return
               end
             end
           end
