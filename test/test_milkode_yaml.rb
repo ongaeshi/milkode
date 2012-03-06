@@ -66,7 +66,6 @@ EOF
 version: '0.2'
 contents:
 - directory: /path/to/dir
-  ignore: []
 EOF
   end
 

@@ -10,7 +10,7 @@ require 'milkode/common/util'
 module Milkode
   class Package
     def self.create(dir, ignore=nil)
-      if ignore
+      if ignore && ignore.size > 0
         Package.new({"directory" => dir, "ignore" => ignore})
       else
         Package.new({"directory" => dir})
