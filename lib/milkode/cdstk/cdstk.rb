@@ -125,25 +125,26 @@ module Milkode
     def add(dirs, options)
       update_display_info(options)
 
-      begin
-        dirs.each do |v|
-          # コンテンツを読み込める形に変換
-          dir = convert_content(v)
-
-          # YAMLに追加
-          package = Package.create(dir, options[:ignore])
-          add_yaml(package)
-          set_yaml_options(package, options)
-        end
-      rescue ConvetError
-        return
-      end
-      
-      # 部分アップデート
-      print_result do 
+      print_result do
+        # データベースを開く
         db_open(db_file)
-        dirs.each do |dir|
-          update_dir(dir)
+
+        # メイン処理
+        begin
+          dirs.each do |v|
+            # コンテンツを読み込める形に変換
+            dir = convert_content(v)
+
+            # YAMLに追加
+            package = Package.create(dir, options[:ignore])
+            add_yaml(package)
+            set_yaml_options(package, options)
+
+            # アップデート
+            update_dir(dir)
+          end
+        rescue ConvetError
+          return
         end
       end
     end
