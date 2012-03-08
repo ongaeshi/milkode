@@ -1,3 +1,45 @@
+=== 0.5.0 2012/03/09
+
+* milk
+  * 仕様を見直して使い勝手を大幅に改善
+  * milk add
+    * パッケージ内の.gitignoreを自動で読み込み、検索対象から外すように
+    * .gitignoreを読み込みたくない場合は --no-auto-ignore オプションを指定して下さい
+    * 大量に表示されるメッセージを抑制 (-vオプションで表示)
+    * 除外対象を指定する -i オプションを追加
+    * 'milk add .' の時に 'package : .' -> 'package : milkode' に
+  * milk ignore
+    * 検索対象に含めないファイルやディレクトリを指定することが出来る
+    * milk ignore --test で.gitignoreも含めて除外される可能性のあるファイルとディレクトリを表示
+    * milk ignore -p PACKAGE_NAME でパッケージ指定
+    * milk ignore -d IGNORE_PATH .. で除外対象から削除
+  * milk init
+    * milk init 'a_dir' でディレクトリを自動で掘ってくれるように。
+    * milk init --setdb オプションを追加
+  * milk rebuild
+    * 正確にパッケージ名を指定しなければリビルド出来ないように
+    * 引数無しで実行すると現在位置のパッケージをリビルド
+  * milk remove
+    * 正確にパッケージ名を指定しなければ削除出来ないように
+    * 引数無しで実行すると現在位置のパッケージを削除
+  * milk update
+    * 大量に表示されるメッセージを抑制 (-vオプションで表示)
+    * 'milk update NOT_EXIST_PACKAGE'の時に milkode_info が表示されないように
+  * milk setdb
+    * milk setdb --default でデフォルトデータベースに戻るように (milk setdb --reset と同義)
+  * milk pwd
+    * パッケージ名も表示するように 'milkode in ~/.milkode'
+
+* milk web
+  * ファイル毎のすべてのマッチを検索し、結果に表示するようにした (Fix #12) (thanks tomykaira, miau)
+  * ラジオボタンとラベルをタグ付け (Fix #15) (thanks tomykaira, miau)
+  * 1ファイル1マッチ'チェックボックスを追加。
+
+* lib
+  * CdstkYamlを削除
+  * Package, MilkodeYaml, YamlFileWrapperを追加。
+  * 古いバージョンのmilkode.yamlにアクセスしたら自動でアップグレードするように。
+
 === 0.4.0 2012/02/02
 
 * gmilk 

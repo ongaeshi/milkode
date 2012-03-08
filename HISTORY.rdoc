@@ -1,3 +1,27 @@
+=== 0.5.0 2012/03/09
+
+* milk
+  * Review the specifications and significantly improve ease of use
+  * milk add
+    * Reads automatic .gitignore in the package, to ignore from the search
+    * If you do not want to load the .gitignore please specify '--no-auto-ignore'
+  * milk ignore
+    * Can specify the directories and files not included in the search
+  * milk init
+  * milk rebuild
+  * milk remove
+  * milk update
+  * milk setdb
+  * milk pwd
+
+* milk web
+  * Find all the matches every file so that the displayed results (Fix #12) (thanks tomykaira, miau)
+
+* lib
+  * Delete CdstkYaml
+  * Add Package, MilkodeYaml, YamlFileWrapper
+  * milkode.yaml version up, 0.1 -> '0.2'.
+
 === 0.4.0 2012/02/02
 
 * gmilk 
