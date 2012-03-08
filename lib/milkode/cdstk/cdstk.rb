@@ -26,6 +26,8 @@ require 'milkode/cdstk/package'
 require 'milkode/common/ignore_checker'
 
 module Milkode
+  class IgnoreError < RuntimeError ; end
+
   class Cdstk
     # バイグラムでトークナイズする。連続する記号・アルファベット・数字は一語として扱う。
     # DEFAULT_TOKENIZER = "TokenBigram"
@@ -530,23 +532,39 @@ EOF
 
     def ignore(args, options)
       current_dir = File.expand_path('.')
-      package = @yaml.package_root(current_dir)
 
-      unless package
-        @out.puts "Not a package dir: '#{current_dir}'"
-        return
+      if (options[:package])
+        package = @yaml.find_name(options[:package])
+        raise IgnoreError, "Not found package '#{options[:package]}'." unless package
+      else
+        package = @yaml.package_root(current_dir)
+        raise IgnoreError, "Not a package dir: '#{current_dir}'" unless package
       end
 
-      if options[:delete_all]
+      if options[:test]
+        # Test mode
+        db_open(db_file)
+        @is_display_info = true
+        @is_silent = true
+        update_dir(package.directory)
+      elsif options[:delete_all]
+        # Delete all
         package.set_ignore([])
         @yaml.update(package)
         @yaml.save
       elsif args.empty?
+        # Display ignore settting
         @out.puts package.ignore
       else
-        path = Util::relative_path(File.expand_path('.'), package.directory).to_s
+        # Add or Delete
+        if options[:package]
+          add_ignore = args.map {|v| v.sub(/^.\//, "") }
+        else
+          path = Util::relative_path(File.expand_path('.'), package.directory).to_s
+          add_ignore = args.map {|v| File.join(path, v).sub(/^.\//, "") }
+        end
+
         ignore = package.ignore
-        add_ignore = args.map {|v| File.join(path, v).sub(/^.\//, "") }
 
         if options[:delete]
           ignore -= add_ignore          
@@ -725,6 +743,9 @@ EOF
     private :db_add_dir
 
     def db_add_file(stdout, filename, shortpath)
+      # サイレントモード
+      return if @is_silent
+      
       # ファイル名を全てUTF-8に変換
       filename_utf8 = Util::filename_to_utf8(filename)
       shortpath_utf8 = Util::filename_to_utf8(shortpath)

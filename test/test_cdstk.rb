@@ -82,6 +82,10 @@ class TestCdstk < Test::Unit::TestCase
       io.puts('--- rebuild ---')
       obj.rebuild([], {:all => true})
 
+      io.puts('--- ignore ---')
+      obj.ignore(['dir*', '*snip*'], {:package => "common"})
+      obj.ignore([], {:package => "common", :test => true})
+      
       io.puts('--- remove ---')
       obj.remove(['findgrep', 'common'], {:force => true})
 

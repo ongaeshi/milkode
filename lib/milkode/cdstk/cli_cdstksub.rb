@@ -170,8 +170,10 @@ EOF
       options = {}
 
       opt = OptionParser.new("#{File.basename($0)} ignore [path ...]")
+      opt.on('-p PACKAGE', '--package PACKAGE', 'Specify ignore package.') {|v| options[:package] = v }
       opt.on('-d', '--delete', 'Delete ignore') { options[:delete] = true }
       opt.on('--delete-all', 'Delete all') { options[:delete_all] = true }
+      opt.on('--test', 'Ignore test, Display complete list') { options[:test] = true }
 
       return opt, options
     end

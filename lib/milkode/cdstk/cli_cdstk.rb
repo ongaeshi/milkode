@@ -108,7 +108,11 @@ EOF
         when 'info'
           obj.info(arguments, suboptions[subcommand])
         when 'ignore'
-          obj.ignore(arguments, suboptions[subcommand])
+          begin
+            obj.ignore(arguments, suboptions[subcommand])
+          rescue IgnoreError => e
+            stdout.puts e.message
+          end
         end
       else
         if subcommand
