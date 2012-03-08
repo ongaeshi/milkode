@@ -583,7 +583,11 @@ EOF
         @yaml.update(package)
         @yaml.save
 
-        @out.puts add_ignore
+        if options[:delete]
+          @out.puts add_ignore.map{|v| "Delete : #{v}"}
+        else
+          @out.puts add_ignore.map{|v| "Add : #{v}"}
+        end
       end
     end
 
