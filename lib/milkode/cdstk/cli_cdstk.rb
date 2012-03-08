@@ -19,6 +19,7 @@ The most commonly used #{File.basename($0)} are:
   dir         Disp package dir.
   dump        Dump records.
   grep        Print lines matching a pattern
+  ignore      Ignore setting.
   info        Disp information.
   init        Init db.
   list        List packages. 
@@ -49,35 +50,40 @@ EOF
       suboptions = Hash.new
       
       subopt['init'], suboptions['init'] = CLI_Cdstksub.setup_init
-      subopt['add'] = CLI_Cdstksub.setup_add
+      subopt['add'], suboptions['add'] = CLI_Cdstksub.setup_add
       subopt['update'], suboptions['update'] = CLI_Cdstksub.setup_update
       subopt['remove'], suboptions['remove'] = CLI_Cdstksub.setup_remove
       subopt['list'], suboptions['list'] = CLI_Cdstksub.setup_list
       subopt['pwd'], suboptions['pwd'] = CLI_Cdstksub.setup_pwd
       subopt['cleanup'], suboptions['cleanup'] = CLI_Cdstksub.setup_cleanup
-      subopt['rebuild'] = OptionParser.new("#{File.basename($0)} rebuild")
+      subopt['rebuild'], suboptions['rebuild'] = CLI_Cdstksub.setup_rebuild
       subopt['dump'] = OptionParser.new("#{File.basename($0)} dump")
       subopt['web'], suboptions['web'] = CLI_Cdstksub.setup_web
       subopt['dir'], suboptions['dir'] = CLI_Cdstksub.setup_dir
       subopt['setdb'], suboptions['setdb'] = CLI_Cdstksub.setup_setdb
       subopt['mcd'], suboptions['mcd'] = CLI_Cdstksub.setup_mcd
       subopt['info'], suboptions['info'] = CLI_Cdstksub.setup_info
+      subopt['ignore'], suboptions['ignore'] = CLI_Cdstksub.setup_ignore
       
       if (subopt[subcommand])
         subopt[subcommand].parse!(arguments) unless arguments.empty?
         init_default = suboptions['init'][:init_default]
 
-        db_dir = select_dbdir(subcommand, init_default)
+        db_dir = select_dbdir(subcommand, init_default, arguments)
         obj = Cdstk.new(stdout, db_dir)
 
         case subcommand
         when 'init'
-          FileUtils.mkdir_p db_dir if (init_default)
-          obj.init 
+          if (arguments.size <= 1)
+            FileUtils.mkdir_p db_dir if (init_default || init_specify_dbddir?(arguments))
+            obj.init(suboptions[subcommand])
+          else
+            $stderr.puts "milk init [db_dir] (Cannot specify two 'db_dir')"
+          end
         when 'update'
           obj.update(arguments, suboptions[subcommand])
         when 'add'
-          obj.add(arguments)
+          obj.add(arguments, suboptions[subcommand])
         when 'remove'
           obj.remove(arguments, suboptions[subcommand])
         when 'list'
@@ -87,7 +93,7 @@ EOF
         when 'cleanup'
           obj.cleanup(suboptions[subcommand])
         when 'rebuild'
-          obj.rebuild
+          obj.rebuild(arguments, suboptions[subcommand])
         when 'dump'
           obj.dump
         when 'web'
@@ -101,6 +107,12 @@ EOF
           obj.mcd(arguments, suboptions[subcommand])
         when 'info'
           obj.info(arguments, suboptions[subcommand])
+        when 'ignore'
+          begin
+            obj.ignore(arguments, suboptions[subcommand])
+          rescue IgnoreError => e
+            stdout.puts e.message
+          end
         end
       else
         if subcommand
@@ -111,9 +123,11 @@ EOF
       end
     end
 
-    def self.select_dbdir(subcommand, init_default)
+    def self.select_dbdir(subcommand, init_default, arguments)
       if (subcommand == 'init')
-        if (init_default)
+        if (init_specify_dbddir?(arguments))
+          arguments[0]
+        elsif (init_default)
           Dbdir.default_dir
         else
           '.'
@@ -125,6 +139,10 @@ EOF
           Dbdir.default_dir
         end
       end
+    end
+
+    def self.init_specify_dbddir?(arguments)
+      arguments.size == 1
     end
  
   end

@@ -212,6 +212,12 @@ module Milkode
                            :offset => offset,
                            :limit => limit)
       
+      # ファイル名でソート
+      # @todo 本当はこっちが望ましい
+      # records = table.sort([{:key => "shortpath", :order => "ascending"}],
+      #                      :offset => offset,
+      #                      :limit => limit)
+
       # パッケージの条件追加
       if (packages.size > 0)
         records.delete_if do |record|

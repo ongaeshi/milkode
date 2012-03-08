@@ -32,14 +32,14 @@ class MilkodeTestWork
   def init_db(name)
     dbdir = expand_path(name)
     FileUtils.mkdir_p dbdir
-    Dir.chdir(dbdir) { cdstk.init }
+    Dir.chdir(dbdir) { cdstk.init({}) }
   end
 
   def add_package(name, package_path)
     dbdir = expand_path(name)
     
     Dir.chdir(dbdir) do
-      cdstk.add [package_path]
+      cdstk.add [package_path], {}
     end
   end
 

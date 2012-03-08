@@ -12,6 +12,34 @@ module Milkode
     end
 
     MatchLineResult = Struct.new(:index, :match_datas)
+
+    def match_lines_stopover(patterns, max_match, start_index)
+      result = []
+      patternRegexps = strs2regs(patterns, true)
+      index = start_index
+
+      lines = @content.split($/)
+
+      while (index < lines.size) do
+        line = lines[index]
+
+        match_datas = []
+        patternRegexps.each {|v| match_datas << v.match(line)}
+
+        if (match_datas.all?)
+          result << MatchLineResult.new(index, match_datas)
+          if result.size >= max_match
+            index += 1
+            break
+          end
+        end
+
+        index += 1
+      end
+
+      index = 0 if (index >= lines.size)
+      {:result => result, :next_line => index}
+    end
     
     def match_lines_and(patterns)
       result = []

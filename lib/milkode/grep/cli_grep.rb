@@ -3,8 +3,9 @@
 require 'optparse'
 require 'milkode/findgrep/findgrep'
 require 'milkode/common/dbdir'
-require 'milkode/cdstk/cdstk_yaml'
 require 'milkode/cdstk/cdstk'
+require 'milkode/cdstk/yaml_file_wrapper'
+require 'milkode/cdstk/package'
 
 module Milkode
   class CLI_Grep
@@ -142,28 +143,28 @@ EOF
     private
 
     def self.setup_package(option, my_option, keyword)
-      packages = yaml_load.list( CdstkYaml::Query.new([keyword]) ).map{|v| v['directory']}
-      raise NotFoundPackage.new keyword if (packages.empty?)
-      option.packages += packages
-      my_option[:packages] += packages
+      dirs = yaml_load.contents.find_all {|p| p.name.include? keyword }.map{|p| p.directory}
+      raise NotFoundPackage.new keyword if (dirs.empty?)
+      option.packages += dirs
+      my_option[:packages] += dirs
     end
 
     def self.package_dir_in?(dir)
-      yaml_load.package_root_dir(dir)
+      yaml_load.package_root(dir)
     end
 
     def self.package_root_dir(dir)
-      package_root = yaml_load.package_root_dir(dir)
+      package_root = yaml_load.package_root(dir)
 
       if (package_root)
-        package_root
+        package_root.directory
       else
         raise NotFoundPackage.new dir
       end
     end
 
     def self.yaml_load
-      CdstkYaml.load(Dbdir.select_dbdir)
+      YamlFileWrapper.load(Dbdir.select_dbdir)
     end
 
     class ArgumentParser

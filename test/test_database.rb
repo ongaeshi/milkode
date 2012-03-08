@@ -21,12 +21,12 @@ module Milkode
       # データベース作成
       io = StringIO.new
       @obj = Cdstk.new(io)
-      @obj.init
-      @obj.add(['../../test'])
-      @obj.add(['../../lib'])
+      @obj.init({})
+      @obj.add(['../../test'], {})
+      @obj.add(['../../lib'], {})
 
       FileUtils.touch('notfound.file')
-      @obj.add(['notfound.file'])
+      @obj.add(['notfound.file'], {})
       FileUtils.rm('notfound.file')
 
       # puts io.string

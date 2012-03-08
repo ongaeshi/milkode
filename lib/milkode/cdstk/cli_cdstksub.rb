@@ -10,8 +10,9 @@ module Milkode
     def self.setup_init
       options = {:init_default => false}
       
-      opt = OptionParser.new("#{File.basename($0)} init")
+      opt = OptionParser.new("#{File.basename($0)} init [db_dir]")
       opt.on('--default', 'Init default db, ENV[\'MILKODE_DEFAULT_DIR\'] or ~/.milkode.') { options[:init_default] = true }
+      opt.on('-s', '--setdb', 'With setdb.') { options[:setdb] = true }
 
       return opt, options
     end
@@ -19,8 +20,10 @@ module Milkode
     def self.setup_add
       bin = File.basename($0)
       
+      options = {:ignore => []}
+
       opt = OptionParser.new(<<EOF)
-#{bin} add package1 [package2 ...]
+#{bin} add dir1 [dir2 ...]
 usage:
   #{bin} add /path/to/dir1
   #{bin} add /path/to/dir2 /path/to/dir3
@@ -28,9 +31,15 @@ usage:
   #{bin} add /path/to/zipfile.zip
   #{bin} add /path/to/addon.xpi
   #{bin} add http://example.com/urlfile.zip
-EOF
 
-      opt
+option:
+EOF
+      # opt.on('-n NAME', '--name NAME', 'Specify name (default: File.basename(dir))') {|v| options[:name] = v }
+      opt.on('-i PATH', '--ignore PATH', 'Ignore path.') {|v| options[:ignore] << v }
+      opt.on('--no-auto-ignore', 'Disable auto ignore (.gitignore)') { options[:no_auto_ignore] = true }
+      opt.on('-v', '--verbose', 'Be verbose.')   { options[:verbose] = true }
+
+      return opt, options
     end
 
     def self.setup_update
@@ -38,6 +47,7 @@ EOF
 
       opt = OptionParser.new("#{File.basename($0)} update [keyword1 keyword2 ...]")
       opt.on('--all', 'Update all.') { options[:all] = true }
+      opt.on('-v', '--verbose', 'Be verbose.') { options[:verbose] = true }
 
       return opt, options
     end
@@ -45,8 +55,10 @@ EOF
     def self.setup_remove
       options = {:force => false}
 
-      opt = OptionParser.new("#{File.basename($0)} remove package1 [package2 ...]")
-      opt.on('-f', '--force', 'Force remove.') { options[:force] = true }
+      opt = OptionParser.new("#{File.basename($0)} remove keyword1 [keyword2 ...]")
+      opt.on('--all', 'Update all.') { options[:all] = true }
+      opt.on('-f', '--force',   'Force remove.') { options[:force] = true }
+      opt.on('-v', '--verbose', 'Be verbose.')   { options[:verbose] = true }
 
       return opt, options
     end
@@ -74,6 +86,16 @@ EOF
       
       opt = OptionParser.new("#{File.basename($0)} cleanup")
       opt.on('-f', '--force', 'Force cleanup.') { options[:force] = true }
+
+      return opt, options
+    end
+
+    def self.setup_rebuild
+      options = {}
+      
+      opt = OptionParser.new("#{File.basename($0)} keyword1 [keyword2 ...]")
+      opt.on('--all', 'Rebuild all.') { options[:all] = true}
+      opt.on('-v', '--verbose', 'Be verbose.') { options[:verbose] = true }
 
       return opt, options
     end
@@ -121,7 +143,7 @@ EOF
       options = {}
       
       opt = OptionParser.new("#{File.basename($0)} setdb")
-      opt.on('--reset', 'Reset default db.') {|v| options[:reset] = true }
+      opt.on('--default', '--reset', 'Reset default db.') {|v| options[:reset] = true }
 
       return opt, options
     end
@@ -141,5 +163,21 @@ EOF
 
       return opt, options
     end
+
+    def self.setup_ignore
+      bin = File.basename($0)
+      
+      options = {}
+
+      opt = OptionParser.new("#{File.basename($0)} ignore [path ...]")
+      opt.on('-p PACKAGE', '--package PACKAGE', 'Specify ignore package.') {|v| options[:package] = v }
+      opt.on('-d', '--delete', 'Delete ignore') { options[:delete] = true }
+      opt.on('--delete-all', 'Delete all') { options[:delete_all] = true }
+      opt.on('--test', 'Ignore test, Display complete list') { options[:test] = true }
+
+      return opt, options
+    end
+
+
   end
 end

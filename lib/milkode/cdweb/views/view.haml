@@ -1,11 +1,7 @@
-.header
-  %h1
-    <a href="/"><img src="/images/MilkodeIcon135.png" alt="milkode-icon-mini" border="0" height="75px"/></a>
-    Milkode
-    = create_headmenu(@path, params, '..')
+= haml :header_menu, locals => {:flistpath => '..'}
 
 .content
-  = create_form(@path, params[:query], params[:shead])
+  = haml :search_form
 
   .search-summary
     <span class="keyword">#{topic_path(@path, params)}</span>（#{@elapsed}秒）
