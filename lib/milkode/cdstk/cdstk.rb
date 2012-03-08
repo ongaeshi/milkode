@@ -359,7 +359,13 @@ module Milkode
       dir = options[:default] ? Dbdir.default_dir : db_dir_expand
       
       if File.exist? dir
-        @out.puts dir
+        if options[:default]
+          @out.puts dir
+        else
+          package = @yaml.package_root(File.expand_path('.'))
+          name = package ? package.name : "'not_package_dir'"
+          @out.puts "#{name} in #{dir}"
+        end
       else
         @out.puts "Not found db in #{Dir.pwd}"
       end
