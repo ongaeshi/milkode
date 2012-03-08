@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{milkode}
-  s.version = "0.4.0"
+  s.version = "0.5.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ongaeshi"]
-  s.date = %q{2012-02-02}
+  s.date = %q{2012-03-09}
   s.description = %q{Line based local source code search engine & grep-command & web-app.}
   s.email = %q{ongaeshi0621@gmail.com}
   s.executables = ["gmilk", "milk"]
@@ -31,9 +31,11 @@ Gem::Specification.new do |s|
     "bin/milk",
     "lib/milkode/cdstk/cdstk.rb",
     "lib/milkode/cdstk/cdstk_command.rb",
-    "lib/milkode/cdstk/cdstk_yaml.rb",
     "lib/milkode/cdstk/cli_cdstk.rb",
     "lib/milkode/cdstk/cli_cdstksub.rb",
+    "lib/milkode/cdstk/milkode_yaml.rb",
+    "lib/milkode/cdstk/package.rb",
+    "lib/milkode/cdstk/yaml_file_wrapper.rb",
     "lib/milkode/cdweb/app.rb",
     "lib/milkode/cdweb/cli_cdweb.rb",
     "lib/milkode/cdweb/config.ru",
@@ -56,10 +58,12 @@ Gem::Specification.new do |s|
     "lib/milkode/cdweb/public/images/go-home-5.png",
     "lib/milkode/cdweb/public/js/milkode.js",
     "lib/milkode/cdweb/views/filelist.haml",
+    "lib/milkode/cdweb/views/header_menu.haml",
     "lib/milkode/cdweb/views/help.haml",
     "lib/milkode/cdweb/views/index.haml",
     "lib/milkode/cdweb/views/layout.haml",
     "lib/milkode/cdweb/views/search.haml",
+    "lib/milkode/cdweb/views/search_form.haml",
     "lib/milkode/cdweb/views/view.haml",
     "lib/milkode/common/archive-zip.rb",
     "lib/milkode/common/dbdir.rb",
@@ -67,6 +71,8 @@ Gem::Specification.new do |s|
     "lib/milkode/common/display_util.rb",
     "lib/milkode/common/grenfiletest.rb",
     "lib/milkode/common/grensnip.rb",
+    "lib/milkode/common/ignore_checker.rb",
+    "lib/milkode/common/ignore_setting.rb",
     "lib/milkode/common/platform.rb",
     "lib/milkode/common/string_snip.rb",
     "lib/milkode/common/util.rb",
@@ -74,11 +80,14 @@ Gem::Specification.new do |s|
     "lib/milkode/findgrep/result.rb",
     "lib/milkode/grep/cli_grep.rb",
     "milkode.gemspec",
+    "test/data/.gitignore",
     "test/data/a_project/cdstk.rb",
     "test/data/a_project/cdstk_yaml.rb",
     "test/data/abc.zip",
     "test/data/b_project/runner.rb",
     "test/data/b_project/test_dir.rb",
+    "test/data/no_auto_ignore/.gitignore",
+    "test/data/no_auto_ignore/a.txt",
     "test/data/nodir_abc.zip",
     "test/data/nodir_abc_xpi.xpi",
     "test/file_assert.rb",
@@ -89,7 +98,6 @@ Gem::Specification.new do |s|
     "test/test_bin_exec.rb",
     "test/test_cdstk.rb",
     "test/test_cdstk_command.rb",
-    "test/test_cdstk_yaml.rb",
     "test/test_cli_cdstk.rb",
     "test/test_cli_grep.rb",
     "test/test_coderay_wrapper.rb",
@@ -99,10 +107,15 @@ Gem::Specification.new do |s|
     "test/test_dir.rb",
     "test/test_gren_util.rb",
     "test/test_helper.rb",
+    "test/test_ignore_checker.rb",
+    "test/test_ignore_setting.rb",
+    "test/test_milkode_yaml.rb",
     "test/test_mkurl.rb",
+    "test/test_package.rb",
     "test/test_query.rb",
     "test/test_string_snip.rb",
-    "test/test_util.rb"
+    "test/test_util.rb",
+    "test/test_yaml_file_wrapper.rb"
   ]
   s.homepage = %q{http://github.com/ongaeshi/milkode}
   s.licenses = ["MIT"]
