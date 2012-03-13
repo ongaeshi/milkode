@@ -71,3 +71,13 @@ a.headmenu {
     font-weight: normal;
 }
 
+input#search {
+    width: 66px;
+    /* height: 25px; */
+}
+
+input#clear {
+    width: 50px;
+    /* height: 25px; */
+}
+

@@ -5,8 +5,8 @@
 %form(name="searchform" action="/search" method="post")
   %p
     %input(name="query" size="60" type="text"){:value => params[:query]}
-    %input(type="submit" name="search" value="検索" onclick="set_pathname()")
-    %input(type="submit" name="clear" value="クリア" onclick="set_pathname()")
+    %input#search(type="submit" name="search" value="検索" onclick="set_pathname()")
+    %input#clear(type="submit" name="clear" value="クリア" onclick="set_pathname()")
     %br
     %label
       = create_radio('all', params[:shead])
