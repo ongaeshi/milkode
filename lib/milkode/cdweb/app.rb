@@ -24,6 +24,10 @@ get '/' do
   haml :index
 end
 
+def package_path(path)
+  path.split('/')[0,3].join('/')
+end
+
 post '/search*' do
   path = unescape(params[:pathname])
   
@@ -31,7 +35,11 @@ post '/search*' do
   when 'all'
     path = "/home"
   when 'package'
-    path = path.split('/')[0,3].join('/')
+    path = package_path(path)
+  when 'directory'
+    # do nothing
+  else
+    path = package_path(path)
   end
 
   redirect Mkurl.new("#{path}", params).inherit_query_shead
