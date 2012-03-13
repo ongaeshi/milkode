@@ -30,19 +30,23 @@ end
 
 post '/search*' do
   path = unescape(params[:pathname])
-  
-  case params[:shead]
-  when 'all'
-    path = "/home"
-  when 'package'
-    path = package_path(path)
-  when 'directory'
-    # do nothing
-  else
-    path = package_path(path)
-  end
 
-  redirect Mkurl.new("#{path}", params).inherit_query_shead
+  if params[:clear]
+    redirect Mkurl.new("#{path}", params).inherit_shead
+  else
+    case params[:shead]
+    when 'all'
+      path = "/home"
+    when 'package'
+      path = package_path(path)
+    when 'directory'
+      # do nothing
+    else
+      path = package_path(path)
+    end
+
+    redirect Mkurl.new("#{path}", params).inherit_query_shead
+  end
 end
 
 get '/home*' do |path|
