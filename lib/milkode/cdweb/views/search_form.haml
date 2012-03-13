@@ -4,7 +4,7 @@
   }
 %form(name="searchform" action="/search" method="post")
   %p
-    %input(name="query" size="60" type="text"){:value => params[:query]}
+    %input#query(name="query" size="70" type="text"){:value => params[:query]}
     %input#search(type="submit" name="search" value="検索" onclick="set_pathname()")
     %input#clear(type="submit" name="clear" value="クリア" onclick="set_pathname()")
     %br
