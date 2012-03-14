@@ -23,10 +23,16 @@ module Milkode
       @@db_dir = db_dir
     end
 
+    attr_reader :yaml
+
     def initialize
       db_dir = @@db_dir || Dbdir.default_dir
       open(db_dir)
       @yaml = YamlFileWrapper.load_if(db_dir)
+    end
+
+    def yaml_reload
+      @yaml = YamlFileWrapper.load_if(@@db_dir || Dbdir.default_dir)
     end
 
     def open(db_dir)
@@ -96,6 +102,11 @@ module Milkode
     def fileList(base)
       base_parts = base.split("/")
       base_depth = base_parts.length
+
+      # 'depth==0'の時はMilkodeYaml#contentsからファイルリストを生成して高速化
+      if (base_depth == 0)
+        return @yaml.contents.sort_by{|v| v.name}.map{|v| [v.name, false] }
+      end
       
       # shortpathにマッチするものだけに絞り込む
       if (base == "")
