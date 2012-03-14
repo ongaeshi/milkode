@@ -10,6 +10,7 @@ require 'pathname'
 require 'singleton'
 require 'groonga'
 require 'milkode/common/dbdir'
+require 'milkode/cdstk/yaml_file_wrapper'
 include Milkode
 
 module Milkode
@@ -23,7 +24,9 @@ module Milkode
     end
 
     def initialize
-      open(@@db_dir || Dbdir.default_dir)
+      db_dir = @@db_dir || Dbdir.default_dir
+      open(db_dir)
+      @yaml = YamlFileWrapper.load_if(db_dir)
     end
 
     def open(db_dir)
@@ -43,10 +46,6 @@ module Milkode
       return table.records[0]
     end
 
-    def fileNum
-      @documents.select.size
-    end
-    
     def search(patterns, packages, fpaths, suffixs, offset = 0, limit = -1)
       # @todo fpathを厳密に検索するには、検索結果からさらに先頭からのパスではないものを除外する
       records, total_records = searchMain(patterns, packages, fpaths, suffixs, offset, limit)
@@ -88,6 +87,11 @@ module Milkode
       @documents.select.size      
     end
 
+    # yamlからパッケージの総数を得る
+    def yaml_package_num
+      @yaml.contents.size
+    end
+    
     # @sample test/test_database.rb:43 TestDatabase#t_fileList
     def fileList(base)
       base_parts = base.split("/")
@@ -149,7 +153,7 @@ module Milkode
         end
       end
     end
-    
+
     private 
 
     def reopen_patch

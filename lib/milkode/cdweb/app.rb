@@ -19,8 +19,8 @@ set :haml, :format => :html5
 
 get '/' do
   @version = "0.5.0"
-  @package_num = Database.instance.fileList('').size
-  @file_num = Database.instance.fileNum
+  @package_num = Database.instance.yaml_package_num
+  @file_num = Database.instance.totalRecords
   haml :index
 end
 
