@@ -54,7 +54,7 @@ module Milkode
 
     def search(patterns, packages, fpaths, suffixs, offset = 0, limit = -1)
       # @todo fpathを厳密に検索するには、検索結果からさらに先頭からのパスではないものを除外する
-      records, total_records = searchMain(patterns, packages, fpaths, suffixs, offset, limit)
+      records, total_records = searchMain(patterns, convert_packages(packages), fpaths, suffixs, offset, limit)
     end
 
     def selectAll(offset = 0, limit = -1)
@@ -233,13 +233,6 @@ module Milkode
       #                      :offset => offset,
       #                      :limit => limit)
 
-      # パッケージの条件追加
-      if (packages.size > 0)
-        records.delete_if do |record|
-          !packages.any?{|package| record.shortpath.split('/')[0] =~ /#{package}/ }
-        end
-      end
-
       # マッチ数
       total_records = table.size
       
@@ -281,5 +274,19 @@ module Milkode
     end
     private :suffix_expression
     
+    def convert_packages(packages)
+      r = []
+      packages.each {|p| r += expand_packages(p)}
+      r
+    end
+
+    def expand_packages(keyword)
+      dirs = @yaml.contents.find_all {|p| p.name.include? keyword }.map{|p| p.directory}
+      raise NotFoundPackage.new keyword if (dirs.empty?)
+      dirs
+    end
+
+    # --- error ---
+    class NotFoundPackage < RuntimeError ; end
   end
 end
