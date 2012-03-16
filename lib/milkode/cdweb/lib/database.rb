@@ -222,16 +222,15 @@ module Milkode
       end
 
       # スコアとタイムスタンプでソート
-      records = table.sort([{:key => "_score", :order => "descending"},
-                            {:key => "timestamp", :order => "descending"}],
-                           :offset => offset,
-                           :limit => limit)
-      
-      # ファイル名でソート
-      # @todo 本当はこっちが望ましいが、パッケージ検索を正確にしないことには出来ない
-      # records = table.sort([{:key => "shortpath", :order => "ascending"}],
+      # records = table.sort([{:key => "_score", :order => "descending"},
+      #                       {:key => "timestamp", :order => "descending"}],
       #                      :offset => offset,
       #                      :limit => limit)
+      
+      # ファイル名でソート
+      records = table.sort([{:key => "shortpath", :order => "ascending"}],
+                           :offset => offset,
+                           :limit => limit)
 
       # マッチ数
       total_records = table.size
