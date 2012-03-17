@@ -636,12 +636,12 @@ EOF
       end
         
       # データベースからも削除
-      dir = File.expand_path(dir)
+      # dir = File.expand_path(dir)
 
       alert("rm_package", dir)
       @package_count += 1
 
-      Database.instance.remove([File.basename(dir)]) do |record|
+      Database.instance.remove_fpath(dir) do |record|
         alert_info("rm_record", record.path)
         @file_count += 1
       end

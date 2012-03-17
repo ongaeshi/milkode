@@ -142,14 +142,13 @@ module Milkode
       paths
     end
     
-    # コンテンツの削除
-    # @todo パッケージ名完全一致になっていないので直す
-    def remove(packages)
+    # 指定したfpathにマッチするレコードを削除する
+    def remove_fpath(fpath)
       # データベースを開き直す
       reopen_patch
       
-      # 削除したコンテンツをインデックスから削除
-      records, total_records = search([], packages, "", [], [])
+      # 削除したいコンテンツを検索
+      records, total_records = searchMain([], [], [fpath], [], 0, -1)
 
       # 検索結果はHashのレコードなので、これを直接deleteしても駄目
       # 1. Record#record_idを使って主キー(Groonga#Arrayのレコード)を取り出し

@@ -66,8 +66,8 @@ module Milkode
 
     def t_remove
       db = Database.instance
-      db.remove(['test'])
-      db.remove(['lib'])
+      db.remove_fpath(File.expand_path '../../test')
+      db.remove_fpath(File.expand_path '../../lib')
       assert_equal 0, db.totalRecords
     end
 
