@@ -56,6 +56,10 @@ module Milkode
       @data.find_name(name)
     end
 
+    def match_all(keyword)
+      @data.match_all(keyword)
+    end
+
     def find_dir(dir)
       @data.find_dir(dir)
     end

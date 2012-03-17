@@ -274,15 +274,11 @@ module Milkode
     private :suffix_expression
     
     def convert_packages(packages)
-      r = []
-      packages.each {|p| r += expand_packages(p)}
-      r
+      packages.inject([]) {|r, p| r += expand_packages(p)}
     end
 
     def expand_packages(keyword)
-      dirs = @yaml.contents.find_all {|p| p.name.include? keyword }.map{|p| p.directory}
-      raise NotFoundPackage.new keyword if (dirs.empty?)
-      dirs
+      @yaml.match_all(keyword).map{|p| p.directory}
     end
 
     # --- error ---

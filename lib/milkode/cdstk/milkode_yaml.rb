@@ -59,6 +59,11 @@ EOF
       @contents.find {|v| v.same_name?(name)}
     end
 
+    # 指定キーワードにマッチする全てのパッケージを返す
+    def match_all(keyword)
+      @contents.find_all {|p| p.name.include? keyword }
+    end
+
     # ディレクトリ名が同じパッケージを検索
     def find_dir(directory)
       @contents.find {|v| v.directory == directory}
