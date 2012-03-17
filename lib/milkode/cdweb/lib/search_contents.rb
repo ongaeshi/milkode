@@ -34,9 +34,7 @@ module Milkode
       @offset = params[:offset].to_i
       @line = params[:line].to_i
       @is_onematch = params[:onematch]
-      fpaths = @q.fpaths
-      fpaths << path + "/" unless path == ""
-      @records, @total_records, @elapsed = Database.instance.search(@q.keywords, @q.packages, fpaths, @q.suffixs, @offset, LIMIT_NUM)
+      @records, @total_records, @elapsed = Database.instance.search(@q.keywords, @q.packages, path, @q.fpaths, @q.suffixs, @offset, LIMIT_NUM)
       grep_contents
     end
 

@@ -52,13 +52,16 @@ module Milkode
       return table.records[0]
     end
 
-    def search(patterns, packages, fpaths, suffixs, offset = 0, limit = -1)
+    def search(patterns, packages, current_path, fpaths, suffixs, offset = 0, limit = -1)
       # パッケージ名から絶対パスに変換
       unless packages.empty?
         packages = convert_packages(packages)
 
         # キーワードがパッケージ名にマッチしなければ検索しない
         return [], 0 if packages.empty?
+      else
+        # パッケージ名未指定の時は現在位置もfpathsに含める
+        fpaths << current_path + "/" unless current_path == ""
       end
       
       # @todo fpathを厳密に検索するには、検索結果からさらに先頭からのパスではないものを除外する
@@ -146,7 +149,7 @@ module Milkode
       reopen_patch
       
       # 削除したコンテンツをインデックスから削除
-      records, total_records = search([], packages, [], [])
+      records, total_records = search([], packages, "", [], [])
 
       # 検索結果はHashのレコードなので、これを直接deleteしても駄目
       # 1. Record#record_idを使って主キー(Groonga#Arrayのレコード)を取り出し
