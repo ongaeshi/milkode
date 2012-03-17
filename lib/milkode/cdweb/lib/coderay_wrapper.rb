@@ -144,7 +144,8 @@ EOF
     end
 
     def is_ornament?
-      Util::larger_than_oneline(@content)
+      false
+      # Util::larger_than_oneline(@content)
     end
 
   end
