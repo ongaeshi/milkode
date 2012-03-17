@@ -10,13 +10,13 @@
     %br
     %label
       = create_radio('all', params[:shead])
-      全体を検索
+      全て
     %label
       = create_radio('package', params[:shead])
-      = package_name(@path) + '以下'
+      パッケージ(おすすめ)
     %label
       = create_radio('directory', params[:shead])
-      = current_name(@path) + '以下'
+      ディレクトリ
     %label
       = create_checkbox('onematch', params[:onematch])
       = '1ファイル1マッチ'
