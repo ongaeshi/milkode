@@ -53,8 +53,16 @@ module Milkode
     end
 
     def search(patterns, packages, fpaths, suffixs, offset = 0, limit = -1)
+      # パッケージ名から絶対パスに変換
+      unless packages.empty?
+        packages = convert_packages(packages)
+
+        # キーワードがパッケージ名にマッチしなければ検索しない
+        return [], 0 if packages.empty?
+      end
+      
       # @todo fpathを厳密に検索するには、検索結果からさらに先頭からのパスではないものを除外する
-      records, total_records = searchMain(patterns, convert_packages(packages), fpaths, suffixs, offset, limit)
+      records, total_records = searchMain(patterns, packages, fpaths, suffixs, offset, limit)
     end
 
     def selectAll(offset = 0, limit = -1)
