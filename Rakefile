@@ -27,7 +27,7 @@ Jeweler::Tasks.new do |gem|
   gem.add_runtime_dependency 'rack','>=1.3.4'
   gem.add_runtime_dependency 'sinatra', '>=1.2.6'
   gem.add_runtime_dependency 'launchy', '>=0.3.7'
-  gem.add_runtime_dependency 'coderay', '=0.9.8'
+  gem.add_runtime_dependency 'coderay', '>=1.0.5'
   gem.add_runtime_dependency 'thin', '>=1.2.10'
   gem.add_runtime_dependency 'archive-zip', '>=0.4.0'
   gem.add_runtime_dependency 'haml', '>=3.1.2'
