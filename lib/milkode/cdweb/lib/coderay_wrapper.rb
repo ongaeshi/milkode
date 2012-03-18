@@ -62,7 +62,8 @@ module Milkode
     def file_type
       case File.extname(@filename)
       when ".el"
-        :scheme
+        # :scheme
+        CodeRay::FileType.fetch @filename, :plaintext
       else
         CodeRay::FileType.fetch @filename, :plaintext
       end
