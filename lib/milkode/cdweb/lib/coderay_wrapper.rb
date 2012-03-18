@@ -9,7 +9,6 @@ require 'rubygems'
 require 'coderay'
 require 'coderay/helpers/file_type'
 require 'milkode/common/util'
-require 'milkode/cdweb/lib/my_nokogiri'
 require 'milkode/cdweb/lib/coderay_html2'
 
 module Milkode
