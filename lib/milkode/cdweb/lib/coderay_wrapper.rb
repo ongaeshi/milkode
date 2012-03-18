@@ -11,6 +11,43 @@ require 'coderay/helpers/file_type'
 require 'milkode/common/util'
 require 'milkode/cdweb/lib/my_nokogiri'
 
+module CodeRay
+module Encoders
+  class HTML2 < HTML
+    register_for :html2
+
+    def text_token text, kind
+      # p "#{kind}: #{text}"
+      super
+    end
+
+    def finish options
+      @out = ornament_line_attr(options)
+      super
+    end
+
+    def ornament_line_attr(options)
+      # p options
+      line_number = options[:line_number_start]
+
+      lines = @out.split("\n")
+
+      lines.map{|l|
+        line_number += 1
+        "<span #{line_attr(line_number - 1, options[:highlight_lines])}>#{l}</span>"
+      }.join("\n") + "\n"
+    end
+
+    def line_attr(no, highlight_lines)
+      r = []
+      r << "id=\"#{no}\""
+      r << "class=\"highlight-line\"" if highlight_lines.include?(no)
+      r.join(" ")
+    end
+  end
+end
+end
+
 module Milkode
   class CodeRayWrapper
     attr_reader :line_number_start
@@ -49,7 +86,7 @@ module Milkode
 
     def to_html
       html = CodeRay.scan(@content, file_type).
-        html(
+        html2(
              :wrap => nil,
              :line_numbers => :table,
              :css => :class,
@@ -68,7 +105,7 @@ module Milkode
 
     def to_html_anchor
       html = CodeRay.scan(@content, file_type).
-        html(
+        html2(
              :wrap => nil,
              :line_numbers => :table,
              :css => :class,
@@ -125,11 +162,11 @@ module Milkode
     end
 
     def is_ornament?
-      # false
-      Util::larger_than_oneline(@content)
+      false
+      # Util::larger_than_oneline(@content)
     end
 
-    # obsolate
+    ## -- obsolate --
     ANCHOR_OFFSET = 3
     def create_anchorlink(str)
       if @highlight_lines
