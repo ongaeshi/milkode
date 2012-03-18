@@ -141,7 +141,7 @@ EOF
       coderay.set_range(first_index..last_index)
 
       <<EOS
-    <dt class='result-record'><a href='#{"/home/" + record_link(record) + "##{coderay.line_number_start}"}'>#{Util::relative_path record.shortpath, @path}</a></dt>
+    <dt class='result-record'><a href='#{"/home/" + record_link(record) + "#n#{coderay.line_number_start}"}'>#{Util::relative_path record.shortpath, @path}</a></dt>
     <dd>
 #{coderay.to_html}
     </dd>
