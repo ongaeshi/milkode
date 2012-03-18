@@ -10,43 +10,7 @@ require 'coderay'
 require 'coderay/helpers/file_type'
 require 'milkode/common/util'
 require 'milkode/cdweb/lib/my_nokogiri'
-
-module CodeRay
-module Encoders
-  class HTML2 < HTML
-    register_for :html2
-
-    def text_token text, kind
-      # p "#{kind}: #{text}"
-      super
-    end
-
-    def finish options
-      @out = ornament_line_attr(options)
-      super
-    end
-
-    def ornament_line_attr(options)
-      # p options
-      line_number = options[:line_number_start]
-
-      lines = @out.split("\n")
-
-      lines.map{|l|
-        line_number += 1
-        "<span #{line_attr(line_number - 1, options[:highlight_lines])}>#{l}</span>"
-      }.join("\n") + "\n"
-    end
-
-    def line_attr(no, highlight_lines)
-      r = []
-      r << "id=\"#{no}\""
-      r << "class=\"highlight-line\"" if highlight_lines.include?(no)
-      r.join(" ")
-    end
-  end
-end
-end
+require 'milkode/cdweb/lib/coderay_html2'
 
 module Milkode
   class CodeRayWrapper
@@ -85,64 +49,15 @@ module Milkode
     end
 
     def to_html
-      html = CodeRay.scan(@content, file_type).
+      CodeRay.scan(@content, file_type).
         html2(
-             :wrap => nil,
-             :line_numbers => :table,
-             :css => :class,
-             :highlight_lines => @highlight_lines,
-             :line_number_start => @line_number_start,
-             :line_number_anchors => false
-             )
-
-      if (is_ornament?)
-        html_doc = MyNokogiri::HTML(html)
-        add_spanid(html_doc)
-      else
-        html
-      end
-    end
-
-    def to_html_anchor
-      html = CodeRay.scan(@content, file_type).
-        html2(
-             :wrap => nil,
-             :line_numbers => :table,
-             :css => :class,
-             :highlight_lines => @highlight_lines,
-             :line_number_start => @line_number_start,
-             :line_number_anchors => false
-             )
-
-      if (is_ornament?)
-        html_doc = MyNokogiri::HTML(html)
-        # anchor = create_anchorlink(html_doc.at_css("table.CodeRay td.code pre").inner_html)
-        # body = add_spanid(html_doc)
-        # anchor + body
-        add_spanid(html_doc)
-      else
-        html
-      end
-    end
-
-    def add_spanid(html_doc)
-      # preに<span id="行番号"> を付ける
-      table = html_doc.at_css("table.CodeRay")
-      pre = table.at_css("td.code pre")
-      pre.inner_html = add_spanid_in(pre.inner_html)
-      
-      # 結果を文字列で返す
-      table.to_html
-    end
-
-    def add_spanid_in(html)
-      lines = html.split("\n")
-      line_number = @line_number_start
-
-      lines.map {|l|
-        line_number += 1
-        "<span #{line_attr(line_number - 1)}>#{l}</span>"
-      }.join("\n") + "\n"
+              :wrap => nil,
+              :line_numbers => :table,
+              :css => :class,
+              :highlight_lines => @highlight_lines,
+              :line_number_start => @line_number_start,
+              :line_number_anchors => false
+              )
     end
 
     def file_type
@@ -153,41 +68,6 @@ module Milkode
         CodeRay::FileType.fetch @filename, :plaintext
       end
     end
-
-    def line_attr(no)
-      r = []
-      r << "id=\"#{no}\""
-      r << "class=\"highlight-line\"" if @highlight_lines.include?(no)
-      r.join(" ")
-    end
-
-    def is_ornament?
-      false
-      # Util::larger_than_oneline(@content)
-    end
-
-    ## -- obsolate --
-    ANCHOR_OFFSET = 3
-    def create_anchorlink(str)
-      if @highlight_lines
-        lines = str.split("\n")
-
-        codes = @highlight_lines.map {|no|
-          "  <tr><td class=\"line_numbers\">#{no}</td> <td class=\"code\"><pre><a href=\"##{[no - ANCHOR_OFFSET, 1].max}\">#{lines[no - 1]}</a></pre></td> </tr>"
-        }.join("\n")
-        
-        <<EOF
-<span class="match-num">#{@highlight_lines.size} results</span>
-<table class="CodeRay anchor-table">
-#{codes}
-</table>
-<p>
-EOF
-      else
-        ""
-      end
-    end
-
   end
 end
 

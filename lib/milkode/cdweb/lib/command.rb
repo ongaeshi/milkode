@@ -22,7 +22,7 @@ module Milkode
     if (Util::larger_than_oneline(record.content) and q and !q.keywords.empty?)
       grep = Grep.new(record.content)
       match_lines = grep.match_lines_and(q.keywords)
-      @record_content = CodeRayWrapper.new(record.content, record.shortpath, match_lines).to_html_anchor
+      @record_content = CodeRayWrapper.new(record.content, record.shortpath, match_lines).to_html
     else
       @record_content = CodeRayWrapper.new(record.content, record.shortpath).to_html
     end
