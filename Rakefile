@@ -27,13 +27,11 @@ Jeweler::Tasks.new do |gem|
   gem.add_runtime_dependency 'rack','>=1.3.4'
   gem.add_runtime_dependency 'sinatra', '>=1.2.6'
   gem.add_runtime_dependency 'launchy', '>=0.3.7'
-  gem.add_runtime_dependency 'coderay', '=0.9.8'
+  gem.add_runtime_dependency 'coderay', '>=1.0.5'
   gem.add_runtime_dependency 'thin', '>=1.2.10'
   gem.add_runtime_dependency 'archive-zip', '>=0.4.0'
   gem.add_runtime_dependency 'haml', '>=3.1.2'
   gem.add_runtime_dependency 'sass', '>=3.1.3'
-  gem.add_runtime_dependency 'nokogiri', '>=1.5.0'
-  gem.add_runtime_dependency 'hpricot', '>=0.8.2'
 
   # and development dependencies are only needed for development (ie running rake tasks, tests, etc)
   #  gem.add_development_dependency 'rspec', '> 1.2.3'
