@@ -54,7 +54,8 @@ module Milkode
              :line_numbers => :table,
              :css => :class,
              :highlight_lines => @highlight_lines,
-             :line_number_start => @line_number_start
+             :line_number_start => @line_number_start,
+             :line_number_anchors => false
              )
 
       if (is_ornament?)
@@ -72,14 +73,16 @@ module Milkode
              :line_numbers => :table,
              :css => :class,
              :highlight_lines => @highlight_lines,
-             :line_number_start => @line_number_start
+             :line_number_start => @line_number_start,
+             :line_number_anchors => false
              )
 
       if (is_ornament?)
         html_doc = MyNokogiri::HTML(html)
-        anchor = create_anchorlink(html_doc.at_css("table.CodeRay td.code pre").inner_html)
-        body = add_spanid(html_doc)
-        anchor + body
+        # anchor = create_anchorlink(html_doc.at_css("table.CodeRay td.code pre").inner_html)
+        # body = add_spanid(html_doc)
+        # anchor + body
+        add_spanid(html_doc)
       else
         html
       end
@@ -96,13 +99,13 @@ module Milkode
     end
 
     def add_spanid_in(html)
-      lines = html.split("<tt>\n</tt>")
+      lines = html.split("\n")
       line_number = @line_number_start
 
       lines.map {|l|
         line_number += 1
         "<span #{line_attr(line_number - 1)}>#{l}</span>"
-      }.join("<tt>\n</tt>") + "<tt>\n</tt>"
+      }.join("\n") + "\n"
     end
 
     def file_type
@@ -121,8 +124,13 @@ module Milkode
       r.join(" ")
     end
 
+    def is_ornament?
+      # false
+      Util::larger_than_oneline(@content)
+    end
+
+    # obsolate
     ANCHOR_OFFSET = 3
-    
     def create_anchorlink(str)
       if @highlight_lines
         lines = str.split("\n")
@@ -141,11 +149,6 @@ EOF
       else
         ""
       end
-    end
-
-    def is_ornament?
-      false
-      # Util::larger_than_oneline(@content)
     end
 
   end
