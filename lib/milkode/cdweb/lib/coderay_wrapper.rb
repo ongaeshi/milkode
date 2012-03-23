@@ -59,6 +59,19 @@ module Milkode
               )
     end
 
+    def to_html_anchorlink(url)
+      CodeRay.scan(@content, file_type).
+        html2(
+              :wrap => nil,
+              :line_numbers => :table,
+              :css => :class,
+              :highlight_lines => @highlight_lines,
+              :line_number_start => @line_number_start,
+              :line_number_anchors => 'n',
+              :line_number_anchor_url => url
+              )
+    end
+
     def file_type
       case File.extname(@filename)
       when ".el"
