@@ -159,10 +159,12 @@ EOF
       coderay.col_limit(COL_LIMIT)
       coderay.set_range(first_index..last_index)
 
+      url = "/home/" + record_link(record)
+      
       <<EOS
-    <dt class='result-record'><a href='#{"/home/" + record_link(record) + "##{coderay.line_number_start}"}'>#{Util::relative_path record.shortpath, @path}</a></dt>
+    <dt class='result-record'><a href='#{url + "#n#{coderay.line_number_start}"}'>#{Util::relative_path record.shortpath, @path}</a></dt>
     <dd>
-#{coderay.to_html}
+#{coderay.to_html_anchorlink(url)}
     </dd>
 EOS
     end
