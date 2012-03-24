@@ -120,6 +120,7 @@ EOF
       opts.on('-p', '--port PORT', 'use PORT (default: 9292)') {|v| options[:Port] = v }
       opts.on("-s", "--server SERVER", "serve using SERVER (default : thin)") {|s| options[:server] = s }
       opts.on('-n', '--no-browser', 'No launch browser.') {|v| options[:LaunchBrowser] = false }
+      opts.on('--customize', 'Create customize file.') {|v| options[:customize] = true }
       
       # --hostが'-h'を上書きするので、'-h'を再定義してあげる
       opts.on_tail("-h", "-?", "--help", "Show this message") do
