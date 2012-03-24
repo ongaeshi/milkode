@@ -23,16 +23,18 @@ module Milkode
       @@db_dir = db_dir
     end
 
+    def self.dbdir
+      @@db_dir || Dbdir.default_dir
+    end
+
     attr_reader :yaml
 
     def initialize
-      db_dir = @@db_dir || Dbdir.default_dir
-      open(db_dir)
-      @yaml = YamlFileWrapper.load_if(db_dir)
+      open(Database.dbdir)
     end
 
     def yaml_reload
-      @yaml = YamlFileWrapper.load_if(@@db_dir || Dbdir.default_dir)
+      # @yaml = YamlFileWrapper.load_if(@@db_dir || Dbdir.default_dir)
     end
 
     def open(db_dir)
@@ -106,7 +108,7 @@ module Milkode
 
     # yamlからパッケージの総数を得る
     def yaml_package_num
-      @yaml.contents.size
+      yaml_load.contents.size
     end
     
     # @sample test/test_database.rb:43 TestDatabase#t_fileList
@@ -116,7 +118,7 @@ module Milkode
 
       # 'depth==0'の時はMilkodeYaml#contentsからファイルリストを生成して高速化
       if (base_depth == 0)
-        return @yaml.contents.sort_by{|v| v.name}.map{|v| [v.name, false] }
+        return yaml_load.contents.sort_by{|v| v.name}.map{|v| [v.name, false] }
       end
       
       # shortpathにマッチするものだけに絞り込む
@@ -180,7 +182,7 @@ module Milkode
     def reopen_patch
       # 削除系のコマンドが上手く動作しないためのパッチ
       # 本質的な解決にはなっていないと思う
-      open(@@db_dir || Dbdir.default_dir)
+      open(Database.dbdir)
     end
 
     def searchMain(patterns, packages, fpaths, suffixs, offset, limit)
@@ -288,7 +290,11 @@ module Milkode
     end
 
     def expand_packages(keyword)
-      @yaml.match_all(keyword).map{|p| p.directory}
+      yaml_load.match_all(keyword).map{|p| p.directory}
+    end
+
+    def yaml_load
+      YamlFileWrapper.load_if(Database.dbdir)
     end
 
     # --- error ---

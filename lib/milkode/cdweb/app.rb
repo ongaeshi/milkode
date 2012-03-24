@@ -14,10 +14,12 @@ $LOAD_PATH.unshift '../..'
 require 'milkode/cdweb/lib/database'
 require 'milkode/cdweb/lib/command'
 require 'milkode/cdweb/lib/mkurl'
+require 'milkode/cdweb/lib/web_setting'
 
 set :haml, :format => :html5
 
 get '/' do
+  @setting = WebSetting.new
   @version = "0.5.0"
   @package_num = Database.instance.yaml_package_num
   @file_num = Database.instance.totalRecords
@@ -66,6 +68,7 @@ get '/home*' do |path|
 end
 
 get %r{/help} do
+  @setting = WebSetting.new
   haml :help
 end
 
