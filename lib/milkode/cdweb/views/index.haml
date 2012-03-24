@@ -1,6 +1,6 @@
 %div(align="center")
   .header_home
-    %h1 <a href="/"><img src="/images/MilkodeIcon135.png" alt="milkode-icon" border="0" height="135px"/></a> Milkode <font class="version">#{@version}</font>
+    %h1 <a href="/"><img src=#{@setting.top_icon} alt="milkode-icon" border="0" height="135px"/></a> #{@setting.top_title} <font class="version">#{@version}</font>
 
   .content
     %form(method="post" action="/search")
@@ -12,7 +12,7 @@
   .footer_home
     <a href="/home">#{@package_num}</a>のパッケージ<br>
     <a href="/home?query=f:*">#{@file_num}</a>のファイル<br>
-    <a href="/help">ヘルプ</a> , 
-    <a href="http://milkode.ongaeshi.me">milkodeについて</a>
+    <a href="/help">ヘルプ</a>
+    = @setting.about_milkode
 
 
