@@ -8,8 +8,8 @@
 module Milkode
   class WebSetting
     DEFAULT_SETTING = {
-      :top_title    => "Milkode",
-      :top_icon     => "/images/MilkodeIcon135.png",
+      :home_title    => "Milkode",
+      :home_icon     => "/images/MilkodeIcon135.png",
 
       :header_title => "Milkode",
       :header_icon  => "/images/MilkodeIcon135.png",
@@ -27,8 +27,8 @@ module Milkode
       @data = DEFAULT_SETTING
     end
 
-    hash_method :top_title
-    hash_method :top_icon
+    hash_method :home_title
+    hash_method :home_icon
     
     hash_method :header_title
     hash_method :header_icon
