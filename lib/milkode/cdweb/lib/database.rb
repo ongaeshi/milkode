@@ -23,6 +23,10 @@ module Milkode
       @@db_dir = db_dir
     end
 
+    def self.dbdir
+      @@db_dir || Dbdir.default_dir
+    end
+
     attr_reader :yaml
 
     def initialize

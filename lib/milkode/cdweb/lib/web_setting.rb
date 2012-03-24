@@ -5,6 +5,9 @@
 # @author ongaeshi
 # @date   2012/03/24
 
+require 'milkode/cdweb/lib/database'
+require 'yaml'
+
 module Milkode
   class WebSetting
     DEFAULT_SETTING = {
@@ -24,7 +27,14 @@ module Milkode
     end
 
     def initialize
-      @data = DEFAULT_SETTING
+      fname = File.join(Database.dbdir, "milkweb.yaml")
+      if FileTest.exist? fname
+        open(fname) do |f|
+          @data = YAML.load(f.read)
+        end
+      else
+        @data = DEFAULT_SETTING
+      end
     end
 
     hash_method :home_title
