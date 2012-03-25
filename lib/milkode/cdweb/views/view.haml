@@ -1,12 +1,10 @@
 = haml :header_menu, locals => {:flistpath => '..'}
 
-.content
+.content(contextmenu="milkode_menu")
   = haml :search_form
 
   .search-summary
     <span class="keyword">#{topic_path(@path, params)}</span>（#{@elapsed}秒）
   ~ @record_content
-
-
 
 

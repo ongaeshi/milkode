@@ -3,3 +3,6 @@
     <a href="/"><img src=#{@setting.header_icon} alt="milkode-icon-mini" border="0" height="75px"/></a>
     #{@setting.header_title}
     = create_headmenu(@path, params, defined?(flistpath) ? flistpath : '')
+
+  %menu(type="context" id="milkode_menu")
+    %menuitem#searchMenu(label="検索" onclick="alert('検索します！');" icon="#{@setting.header_icon}")
