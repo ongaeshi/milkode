@@ -105,6 +105,7 @@ helpers do
     #{headicon('go-home-5.png')} <a href="/home" class="headmenu">全てのパッケージ</a>
     #{headicon('document-new-4.png')} <a href="#{href}" class="headmenu" onclick="window.open('#{href}'); return false;">新しい検索</a>
     #{headicon('directory.png')} <a href="#{flist}" class="headmenu">ファイル一覧</a> 
+    #{headicon('help.png')} <a href="/help" class="headmenu">ヘルプ</a>
 EOF
   end
 
