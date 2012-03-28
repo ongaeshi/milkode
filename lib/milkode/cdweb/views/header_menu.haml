@@ -5,4 +5,4 @@
     = create_headmenu(@path, params, defined?(flistpath) ? flistpath : '')
 
   %menu(type="context" id="milkode_menu")
-    %menuitem#searchMenu(label="検索" onclick="alert('検索します！');" icon="#{@setting.header_icon}")
+    %menuitem#searchMenu(label="検索" onclick="context_menu_search();" icon="#{@setting.header_icon}")
