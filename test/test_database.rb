@@ -33,6 +33,9 @@ module Milkode
 
       # データベースのセットアップ
       Database.setup('.')
+
+      # yamlファイルのリロード
+      Database.instance.yaml_reload
     end
 
     def test_database
@@ -49,7 +52,7 @@ module Milkode
 
     def t_fileList
       db = Database.instance
-      assert_equal [['lib', false], ['test', false], ["notfound.file", true]], db.fileList('')
+      assert_equal [['lib', false], ["notfound.file", false], ['test', false]], db.fileList('')
       assert db.fileList('test').include? ['test/test_database.rb', true]
       assert_equal ['lib/milkode', false],              db.fileList('lib')[0]
       assert_equal ['lib/milkode/cdstk/cdstk.rb', true],      db.fileList('lib/milkode/cdstk')[0]
@@ -63,8 +66,8 @@ module Milkode
 
     def t_remove
       db = Database.instance
-      db.remove(['test'])
-      db.remove(['lib'])
+      db.remove_fpath(File.expand_path '../../test')
+      db.remove_fpath(File.expand_path '../../lib')
       assert_equal 0, db.totalRecords
     end
 

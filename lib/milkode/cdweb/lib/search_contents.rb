@@ -34,9 +34,7 @@ module Milkode
       @offset = params[:offset].to_i
       @line = params[:line].to_i
       @is_onematch = params[:onematch]
-      fpaths = @q.fpaths
-      fpaths << path + "/" unless path == ""
-      @records, @total_records, @elapsed = Database.instance.search(@q.keywords, @q.packages, fpaths, @q.suffixs, @offset, LIMIT_NUM)
+      @records, @total_records, @elapsed = Database.instance.search(@q.keywords, @q.packages, path, @q.fpaths, @q.suffixs, @offset, LIMIT_NUM)
       grep_contents
     end
 
@@ -53,7 +51,26 @@ module Milkode
     end
 
     def html_contents
-      @match_records.map {|match_record| result_match_record(match_record)}.join
+      match_groups = @match_records.reduce([]) do |g, m|
+        if (g.empty?)
+          g << [m]
+        else
+          prev = g[-1][-1]
+
+          if (m.match_line.index - prev.match_line.index <= NTH * 2 &&
+              m.record.shortpath == prev.record.shortpath)
+            g[-1] << m          # グループの末尾に追加
+            g
+          else
+            g << [m]            # 新規グループ
+          end
+        end
+
+        # 近接マッチ無効
+        # g << [m]
+      end
+      
+      match_groups.map{|g|result_match_record(g)}.join
     end
     
     def html_pagination
@@ -131,21 +148,23 @@ EOF
       return false
     end
 
-    def result_match_record(match_record)
-      record = match_record.record
-      match_line = match_record.match_line
+    def result_match_record(match_group)
+      record = match_group[0].record
 
-      first_index = match_line.index - NTH
-      last_index = match_line.index + NTH
+      first_index = match_group[0].match_line.index - NTH
+      last_index  = match_group[-1].match_line.index + NTH
+      match_lines = match_group.map{|m| m.match_line}
 
-      coderay = CodeRayWrapper.new(record.content, record.shortpath, [match_line])
+      coderay = CodeRayWrapper.new(record.content, record.shortpath, match_lines)
       coderay.col_limit(COL_LIMIT)
       coderay.set_range(first_index..last_index)
 
+      url = "/home/" + record_link(record)
+      
       <<EOS
-    <dt class='result-record'><a href='#{"/home/" + record_link(record) + "##{coderay.line_number_start}"}'>#{Util::relative_path record.shortpath, @path}</a></dt>
+    <dt class='result-record'><a href='#{url + "#n#{coderay.line_number_start}"}'>#{Util::relative_path record.shortpath, @path}</a></dt>
     <dd>
-#{coderay.to_html}
+#{coderay.to_html_anchorlink(url)}
     </dd>
 EOS
     end

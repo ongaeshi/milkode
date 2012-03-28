@@ -1,3 +1,16 @@
+=== 0.6.0 2012/03/28
+
+* milk web
+  * Optimize
+  * Customize title and icon
+  * Usability improvements
+  * CodeRay 1.0.5
+  * Remove the dependency on hpricot, nokogiri
+
+* common
+  * '\n' -> '$/'
+  * 'rroonga','>= 1.1.0','<2.0'
+
 === 0.5.0 2012/03/09
 
 * milk

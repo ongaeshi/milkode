@@ -10,6 +10,7 @@ require 'pathname'
 require 'singleton'
 require 'groonga'
 require 'milkode/common/dbdir'
+require 'milkode/cdstk/yaml_file_wrapper'
 include Milkode
 
 module Milkode
@@ -22,8 +23,18 @@ module Milkode
       @@db_dir = db_dir
     end
 
+    def self.dbdir
+      @@db_dir || Dbdir.default_dir
+    end
+
+    attr_reader :yaml
+
     def initialize
-      open(@@db_dir || Dbdir.default_dir)
+      open(Database.dbdir)
+    end
+
+    def yaml_reload
+      # @yaml = YamlFileWrapper.load_if(@@db_dir || Dbdir.default_dir)
     end
 
     def open(db_dir)
@@ -43,11 +54,18 @@ module Milkode
       return table.records[0]
     end
 
-    def fileNum
-      @documents.select.size
-    end
-    
-    def search(patterns, packages, fpaths, suffixs, offset = 0, limit = -1)
+    def search(patterns, packages, current_path, fpaths, suffixs, offset = 0, limit = -1)
+      # パッケージ名から絶対パスに変換
+      unless packages.empty?
+        packages = convert_packages(packages)
+
+        # キーワードがパッケージ名にマッチしなければ検索しない
+        return [], 0 if packages.empty?
+      else
+        # パッケージ名未指定の時は現在位置もfpathsに含める
+        fpaths << current_path + "/" unless current_path == ""
+      end
+      
       # @todo fpathを厳密に検索するには、検索結果からさらに先頭からのパスではないものを除外する
       records, total_records = searchMain(patterns, packages, fpaths, suffixs, offset, limit)
     end
@@ -88,10 +106,20 @@ module Milkode
       @documents.select.size      
     end
 
+    # yamlからパッケージの総数を得る
+    def yaml_package_num
+      yaml_load.contents.size
+    end
+    
     # @sample test/test_database.rb:43 TestDatabase#t_fileList
     def fileList(base)
       base_parts = base.split("/")
       base_depth = base_parts.length
+
+      # 'depth==0'の時はMilkodeYaml#contentsからファイルリストを生成して高速化
+      if (base_depth == 0)
+        return yaml_load.contents.sort_by{|v| v.name}.map{|v| [v.name, false] }
+      end
       
       # shortpathにマッチするものだけに絞り込む
       if (base == "")
@@ -116,14 +144,13 @@ module Milkode
       paths
     end
     
-    # コンテンツの削除
-    # @todo パッケージ名完全一致になっていないので直す
-    def remove(packages)
+    # 指定したfpathにマッチするレコードを削除する
+    def remove_fpath(fpath)
       # データベースを開き直す
       reopen_patch
       
-      # 削除したコンテンツをインデックスから削除
-      records, total_records = search([], packages, [], [])
+      # 削除したいコンテンツを検索
+      records, total_records = searchMain([], [], [fpath], [], 0, -1)
 
       # 検索結果はHashのレコードなので、これを直接deleteしても駄目
       # 1. Record#record_idを使って主キー(Groonga#Arrayのレコード)を取り出し
@@ -149,13 +176,13 @@ module Milkode
         end
       end
     end
-    
+
     private 
 
     def reopen_patch
       # 削除系のコマンドが上手く動作しないためのパッチ
       # 本質的な解決にはなっていないと思う
-      open(@@db_dir || Dbdir.default_dir)
+      open(Database.dbdir)
     end
 
     def searchMain(patterns, packages, fpaths, suffixs, offset, limit)
@@ -207,23 +234,15 @@ module Milkode
       end
 
       # スコアとタイムスタンプでソート
-      records = table.sort([{:key => "_score", :order => "descending"},
-                            {:key => "timestamp", :order => "descending"}],
-                           :offset => offset,
-                           :limit => limit)
-      
-      # ファイル名でソート
-      # @todo 本当はこっちが望ましい
-      # records = table.sort([{:key => "shortpath", :order => "ascending"}],
+      # records = table.sort([{:key => "_score", :order => "descending"},
+      #                       {:key => "timestamp", :order => "descending"}],
       #                      :offset => offset,
       #                      :limit => limit)
-
-      # パッケージの条件追加
-      if (packages.size > 0)
-        records.delete_if do |record|
-          !packages.any?{|package| record.shortpath.split('/')[0] =~ /#{package}/ }
-        end
-      end
+      
+      # ファイル名でソート
+      records = table.sort([{:key => "shortpath", :order => "ascending"}],
+                           :offset => offset,
+                           :limit => limit)
 
       # マッチ数
       total_records = table.size
@@ -266,5 +285,19 @@ module Milkode
     end
     private :suffix_expression
     
+    def convert_packages(packages)
+      packages.inject([]) {|r, p| r += expand_packages(p)}
+    end
+
+    def expand_packages(keyword)
+      yaml_load.match_all(keyword).map{|p| p.directory}
+    end
+
+    def yaml_load
+      YamlFileWrapper.load_if(Database.dbdir)
+    end
+
+    # --- error ---
+    class NotFoundPackage < RuntimeError ; end
   end
 end

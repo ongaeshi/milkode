@@ -75,6 +75,7 @@ module Milkode
       opts.on('-p', '--port PORT', 'use PORT (default: 9292)') {|v| options[:Port] = v }
       opts.on("-s", "--server SERVER", "serve using SERVER (default : thin)") {|s| options[:server] = s }
       opts.on('-n', '--no-browser', 'No launch browser.') {|v| options[:LaunchBrowser] = false }
+      opts.on('--customize', 'Create customize file.') {|v| options[:customize] = true }
 
       # --hostが'-h'を上書きするので、'-h'を再定義してあげる
       opts.on_tail("-h", "-?", "--help", "Show this message") do
@@ -89,22 +90,53 @@ module Milkode
     end
     
     def self.execute_with_options(stdout, options)
-      # 使用するデータベースの位置設定
-      Database.setup(File.expand_path(options[:DbDir]))
+      dbdir = File.expand_path(options[:DbDir])
+      
+      unless options[:customize]
+        # 使用するデータベースの位置設定
+        Database.setup(dbdir)
 
-      # サーバースクリプトのある場所へ移動
-      FileUtils.cd(File.dirname(__FILE__))
+        # サーバースクリプトのある場所へ移動
+        FileUtils.cd(File.dirname(__FILE__))
 
-      # Rackサーバー起動
-      Rack::Server.start(options)
+        # Rackサーバー起動
+        Rack::Server.start(options)
+      else
+        create_customize_file(dbdir)
+      end
     end
-    
 
     def self.select_dbdir
       if (Dbdir.dbdir?('.') || !Dbdir.dbdir?(Dbdir.default_dir))
         '.'
       else
         Dbdir.default_dir
+      end
+    end
+
+    def self.create_customize_file(dbdir)
+      fname = File.join(dbdir, "milkweb.yaml")
+      
+      if File.exist? fname
+        puts "Already exist '#{fname}'"
+      else
+        puts <<EOF
+Create '#{fname}'.
+  Please customize yaml parameter.
+EOF
+
+        File.open(fname, "w") do |f|
+          f.write <<EOF
+---
+:home_title  : "Milkode"
+:home_icon   : "/images/MilkodeIcon135.png"
+
+:header_title: "Milkode"
+:header_icon : "/images/MilkodeIcon135.png"
+
+:display_about_milkode: true
+EOF
+        end
       end
     end
   end

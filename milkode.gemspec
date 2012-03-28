@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{milkode}
-  s.version = "0.5.0"
+  s.version = "0.6.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ongaeshi"]
-  s.date = %q{2012-03-09}
+  s.date = %q{2012-03-29}
   s.description = %q{Line based local source code search engine & grep-command & web-app.}
   s.email = %q{ongaeshi0621@gmail.com}
   s.executables = ["gmilk", "milk"]
@@ -39,15 +39,16 @@ Gem::Specification.new do |s|
     "lib/milkode/cdweb/app.rb",
     "lib/milkode/cdweb/cli_cdweb.rb",
     "lib/milkode/cdweb/config.ru",
+    "lib/milkode/cdweb/lib/coderay_html2.rb",
     "lib/milkode/cdweb/lib/coderay_wrapper.rb",
     "lib/milkode/cdweb/lib/command.rb",
     "lib/milkode/cdweb/lib/database.rb",
     "lib/milkode/cdweb/lib/grep.rb",
     "lib/milkode/cdweb/lib/mkurl.rb",
-    "lib/milkode/cdweb/lib/my_nokogiri.rb",
     "lib/milkode/cdweb/lib/query.rb",
     "lib/milkode/cdweb/lib/search_contents.rb",
     "lib/milkode/cdweb/lib/search_files.rb",
+    "lib/milkode/cdweb/lib/web_setting.rb",
     "lib/milkode/cdweb/public/css/coderay-patch.css",
     "lib/milkode/cdweb/public/css/coderay.css",
     "lib/milkode/cdweb/public/css/milkode.css",
@@ -56,6 +57,7 @@ Gem::Specification.new do |s|
     "lib/milkode/cdweb/public/images/document-new-4.png",
     "lib/milkode/cdweb/public/images/file.png",
     "lib/milkode/cdweb/public/images/go-home-5.png",
+    "lib/milkode/cdweb/public/images/help.png",
     "lib/milkode/cdweb/public/js/milkode.js",
     "lib/milkode/cdweb/views/filelist.haml",
     "lib/milkode/cdweb/views/header_menu.haml",
@@ -132,50 +134,44 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<jeweler>, ["~> 1.5.2"])
       s.add_development_dependency(%q<rcov>, [">= 0"])
       s.add_runtime_dependency(%q<termcolor>, [">= 1.2.0"])
-      s.add_runtime_dependency(%q<rroonga>, [">= 1.1.0"])
+      s.add_runtime_dependency(%q<rroonga>, [">= 1.1.0", "< 2.0"])
       s.add_runtime_dependency(%q<rack>, [">= 1.3.4"])
       s.add_runtime_dependency(%q<sinatra>, [">= 1.2.6"])
       s.add_runtime_dependency(%q<launchy>, [">= 0.3.7"])
-      s.add_runtime_dependency(%q<coderay>, ["= 0.9.8"])
+      s.add_runtime_dependency(%q<coderay>, [">= 1.0.5"])
       s.add_runtime_dependency(%q<thin>, [">= 1.2.10"])
       s.add_runtime_dependency(%q<archive-zip>, [">= 0.4.0"])
       s.add_runtime_dependency(%q<haml>, [">= 3.1.2"])
       s.add_runtime_dependency(%q<sass>, [">= 3.1.3"])
-      s.add_runtime_dependency(%q<nokogiri>, [">= 1.5.0"])
-      s.add_runtime_dependency(%q<hpricot>, [">= 0.8.2"])
     else
       s.add_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
       s.add_dependency(%q<rcov>, [">= 0"])
       s.add_dependency(%q<termcolor>, [">= 1.2.0"])
-      s.add_dependency(%q<rroonga>, [">= 1.1.0"])
+      s.add_dependency(%q<rroonga>, [">= 1.1.0", "< 2.0"])
       s.add_dependency(%q<rack>, [">= 1.3.4"])
       s.add_dependency(%q<sinatra>, [">= 1.2.6"])
       s.add_dependency(%q<launchy>, [">= 0.3.7"])
-      s.add_dependency(%q<coderay>, ["= 0.9.8"])
+      s.add_dependency(%q<coderay>, [">= 1.0.5"])
       s.add_dependency(%q<thin>, [">= 1.2.10"])
       s.add_dependency(%q<archive-zip>, [">= 0.4.0"])
       s.add_dependency(%q<haml>, [">= 3.1.2"])
       s.add_dependency(%q<sass>, [">= 3.1.3"])
-      s.add_dependency(%q<nokogiri>, [">= 1.5.0"])
-      s.add_dependency(%q<hpricot>, [">= 0.8.2"])
     end
   else
     s.add_dependency(%q<bundler>, ["~> 1.0.0"])
     s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
     s.add_dependency(%q<rcov>, [">= 0"])
     s.add_dependency(%q<termcolor>, [">= 1.2.0"])
-    s.add_dependency(%q<rroonga>, [">= 1.1.0"])
+    s.add_dependency(%q<rroonga>, [">= 1.1.0", "< 2.0"])
     s.add_dependency(%q<rack>, [">= 1.3.4"])
     s.add_dependency(%q<sinatra>, [">= 1.2.6"])
     s.add_dependency(%q<launchy>, [">= 0.3.7"])
-    s.add_dependency(%q<coderay>, ["= 0.9.8"])
+    s.add_dependency(%q<coderay>, [">= 1.0.5"])
     s.add_dependency(%q<thin>, [">= 1.2.10"])
     s.add_dependency(%q<archive-zip>, [">= 0.4.0"])
     s.add_dependency(%q<haml>, [">= 3.1.2"])
     s.add_dependency(%q<sass>, [">= 3.1.3"])
-    s.add_dependency(%q<nokogiri>, [">= 1.5.0"])
-    s.add_dependency(%q<hpricot>, [">= 0.8.2"])
   end
 end
 

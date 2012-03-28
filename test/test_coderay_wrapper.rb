@@ -15,9 +15,6 @@ module Milkode
     def test_basic
       CodeRayWrapper.new(JS_SHORT_CODE, "console-dir.js").to_html
       CodeRayWrapper.new(JS_CODE, "console-dir.js").to_html
-
-      CodeRayWrapper.new(JS_SHORT_CODE, "console-dir.js").to_html_anchor
-      CodeRayWrapper.new(JS_CODE, "console-dir.js").to_html_anchor
     end
   end
 end

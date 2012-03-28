@@ -71,3 +71,20 @@ a.headmenu {
     font-weight: normal;
 }
 
+input#query {
+    height: 24px;
+    font-size: 12px;
+}
+
+input#search {
+    margin-left: 10px;
+    width: 80px;
+    font-size: 20px;
+}
+
+input#clear {
+    margin-left: 0px;
+    width: 80px;
+    font-size: 18px;
+}
+

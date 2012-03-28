@@ -14,27 +14,41 @@ $LOAD_PATH.unshift '../..'
 require 'milkode/cdweb/lib/database'
 require 'milkode/cdweb/lib/command'
 require 'milkode/cdweb/lib/mkurl'
+require 'milkode/cdweb/lib/web_setting'
 
 set :haml, :format => :html5
 
 get '/' do
-  @version = "0.5.0"
-  @package_num = Database.instance.fileList('').size
-  @file_num = Database.instance.fileNum
+  @setting = WebSetting.new
+  @version = "0.6.0"
+  @package_num = Database.instance.yaml_package_num
+  @file_num = Database.instance.totalRecords
   haml :index
+end
+
+def package_path(path)
+  path.split('/')[0,3].join('/')
 end
 
 post '/search*' do
   path = unescape(params[:pathname])
-  
-  case params[:shead]
-  when 'all'
-    path = "/home"
-  when 'package'
-    path = path.split('/')[0,3].join('/')
-  end
 
-  redirect Mkurl.new("#{path}", params).inherit_query_shead
+  if params[:clear]
+    redirect Mkurl.new("#{path}", params).inherit_shead
+  else
+    case params[:shead]
+    when 'all'
+      path = "/home"
+    when 'package'
+      path = package_path(path)
+    when 'directory'
+      # do nothing
+    else
+      path = package_path(path)
+    end
+
+    redirect Mkurl.new("#{path}", params).inherit_query_shead
+  end
 end
 
 get '/home*' do |path|
@@ -54,6 +68,7 @@ get '/home*' do |path|
 end
 
 get %r{/help} do
+  @setting = WebSetting.new
   haml :help
 end
 
@@ -90,6 +105,7 @@ helpers do
     #{headicon('go-home-5.png')} <a href="/home" class="headmenu">全てのパッケージ</a>
     #{headicon('document-new-4.png')} <a href="#{href}" class="headmenu" onclick="window.open('#{href}'); return false;">新しい検索</a>
     #{headicon('directory.png')} <a href="#{flist}" class="headmenu">ファイル一覧</a> 
+    #{headicon('help.png')} <a href="/help" class="headmenu">ヘルプ</a>
 EOF
   end
 

@@ -14,6 +14,7 @@ require 'milkode/common/util'
 
 module Milkode
   def view(record, params, before)
+    @setting = WebSetting.new
     @title = record.shortpath
     @path = record.shortpath
 
@@ -22,7 +23,7 @@ module Milkode
     if (Util::larger_than_oneline(record.content) and q and !q.keywords.empty?)
       grep = Grep.new(record.content)
       match_lines = grep.match_lines_and(q.keywords)
-      @record_content = CodeRayWrapper.new(record.content, record.shortpath, match_lines).to_html_anchor
+      @record_content = CodeRayWrapper.new(record.content, record.shortpath, match_lines).to_html
     else
       @record_content = CodeRayWrapper.new(record.content, record.shortpath).to_html
     end
@@ -32,6 +33,7 @@ module Milkode
   end
 
   def search(path, params, before)
+    @setting = WebSetting.new
     @path = path
     query = Query.new(params[:query])
     @title = "'#{query.query_string}' in #{path_title(path)}"
@@ -51,6 +53,7 @@ module Milkode
   end
 
   def filelist(path, params, before)
+    @setting = WebSetting.new
     @title = filelist_title(path)
     @path = path
     fileList = Database.instance.fileList(path)
