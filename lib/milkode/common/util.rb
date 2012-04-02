@@ -111,7 +111,7 @@ module Milkode
       if gotoline_multi?(words)
         parse_gotoline_multi(words)
       else
-        parse_gotoline_single(words)
+        [parse_gotoline_single(words)]
       end
     end
 

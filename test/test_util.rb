@@ -72,9 +72,9 @@ class TestUtil < Test::Unit::TestCase
   end
 
   def test_parse_gotoline
-    assert_equal [['a', 'b'], 123],       Milkode::Util::parse_gotoline(['a', '123', 'b']) 
-    assert_equal [['a', '123', 'b'], 55], Milkode::Util::parse_gotoline(['a', '123', 'b', '55'])
-    assert_equal [['a', 'b'], 1], Milkode::Util::parse_gotoline(['a', 'b'])
+    assert_equal [[['a', 'b'], 123]],       Milkode::Util::parse_gotoline(['a', '123', 'b']) 
+    assert_equal [[['a', '123', 'b'], 55]], Milkode::Util::parse_gotoline(['a', '123', 'b', '55'])
+    assert_equal [[['a', 'b'], 1]], Milkode::Util::parse_gotoline(['a', 'b'])
     assert_equal [[['a'], 55]],    Milkode::Util::parse_gotoline(['a:55'])
     assert_equal [[['lib/aaa.c'], 8], [['test/bbb.rb'], 9]],    Milkode::Util::parse_gotoline(['lib/aaa.c:8', 'test/bbb.rb:9'])
     assert_equal [[['c:/tmp/ccc.txt'], 99]],    Milkode::Util::parse_gotoline(['c:/tmp/ccc.txt:99'])
