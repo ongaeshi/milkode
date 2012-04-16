@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{milkode}
-  s.version = "0.6.1"
+  s.version = "0.6.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ongaeshi"]
-  s.date = %q{2012-04-05}
+  s.date = %q{2012-04-17}
   s.description = %q{Line based local source code search engine & grep-command & web-app.}
   s.email = %q{ongaeshi0621@gmail.com}
   s.executables = ["gmilk", "milk"]
@@ -107,6 +107,7 @@ Gem::Specification.new do |s|
     "test/test_database.rb",
     "test/test_dbdir.rb",
     "test/test_dir.rb",
+    "test/test_findgrep.rb",
     "test/test_gren_util.rb",
     "test/test_helper.rb",
     "test/test_ignore_checker.rb",
