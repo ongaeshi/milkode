@@ -496,10 +496,18 @@ EOF
           end
         end
       else
-        data = data.kconv(kcode)
+        # @memo ファイルエンコーディングに相違が起きている可能性があるため対策
+        #       本当はファイルを開く時にエンコーディングを指定するのが正しい
+
+        # 方法1 : 強制的にバイナリ化
+        # data.force_encoding("Binary")
+        # data = data.kconv(kcode)
+        
+        # 方法2 : 入力エンコーディングを強制的に指定
+        data = data.kconv(kcode, Kconv::guess(data))
       end
 
-      data = data.split("\n");
+      data = data.split($/)
     end
     
     def match?(line)

@@ -13,6 +13,13 @@ module FindGrep
   class TestFindGrep < Test::Unit::TestCase
     def test_basic
 
+      # 外部エンコーディング
+      # p Encoding.default_external
+      # p $stdout.external_encoding
+      # 内部エンコーディング
+      # p Encoding.default_internal
+      # p $stdout.internal_encoding
+
       # Kconv::NOCONV
       # Kconv::SJIS
       # Kconv::UTF8
