@@ -50,6 +50,7 @@ module Milkode
     end
 
     def record(shortpath)
+      reopen_patch
       table = @documents.select { |record| record.shortpath == shortpath }
       return table.records[0]
     end
