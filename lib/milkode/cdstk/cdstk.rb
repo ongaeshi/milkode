@@ -236,6 +236,8 @@ module Milkode
     def download_file(src)
       if (src =~ /^https?:/)
         download_file_in(src)
+      elsif (src =~ /^git:/)
+        git_clone_in(src)
       else
         src
       end
@@ -254,6 +256,19 @@ module Milkode
           dst.write(src.read)
         end
       end
+
+      filename
+    end
+
+    def git_clone_in(url)
+      alert("git", url)
+
+      dst_dir = File.join(@db_dir, "packages/git")
+      # FileUtils.mkdir_p dst_dir
+
+      filename = File.join(dst_dir, File.basename(url).sub(/\.git\Z/, ""))
+
+      system("git clone #{url} #{filename}")
 
       filename
     end
