@@ -3,6 +3,7 @@ require 'thor'
 require 'milkode/cdstk/cdstk'
 require 'milkode/common/dbdir.rb'
 require 'milkode/cdweb/cli_cdweb'
+require 'milkode/grep/cli_grep'
 
 module Milkode
   class CLI < Thor
@@ -127,6 +128,12 @@ module Milkode
       opts[:customize] = options[:customize]
       cdstk(opts[:DbDir]).assert_compatible
       Milkode::CLI_Cdweb.execute_with_options(STDOUT, opts)
+    end
+
+    desc "grep", "Search projects"
+    long_desc "Search projects. See `grep -h` for detail."
+    def grep(*args)
+      Milkode::CLI_Grep.execute(STDOUT, args)
     end
 
     private
