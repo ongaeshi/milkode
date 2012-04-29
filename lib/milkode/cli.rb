@@ -101,7 +101,7 @@ module Milkode
       begin
         cdstk.ignore(paths, options)
       rescue IgnoreError => e
-        STDOUT.puts e.message
+        $stdout.puts e.message
       end
     end
 
@@ -127,19 +127,19 @@ module Milkode
       }
       opts[:customize] = options[:customize]
       cdstk(opts[:DbDir]).assert_compatible
-      Milkode::CLI_Cdweb.execute_with_options(STDOUT, opts)
+      Milkode::CLI_Cdweb.execute_with_options($stdout, opts)
     end
 
     desc "grep", "Search projects"
     long_desc "Search projects. See `grep -h` for detail."
     def grep(*args)
-      Milkode::CLI_Grep.execute(STDOUT, args)
+      Milkode::CLI_Grep.execute($stdout, args)
     end
 
     private
 
     def cdstk(dir = nil)
-      Cdstk.new(STDOUT, dir || db_dir)
+      Cdstk.new($stdout, dir || db_dir)
     end
 
     # init からはアクセスしてはいけない
