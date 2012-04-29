@@ -20,6 +20,14 @@ module Milkode
     def update(*args)
       cdstk.update(args, options)
     end
+
+    desc "remove keyword1 [keyword2 ...]", "Remove package"
+    option :all, :type => :boolean, :desc => 'Remove all.'
+    option :force, :type => :boolean, :aliases => '-f', :desc => 'Force remove.'
+    option :verbose, :type => :boolean, :aliases => '-v', :desc => 'Be verbose.'
+    def remove(*args)
+      cdstk.remove(args, options)
+    end
   end
 
   private
