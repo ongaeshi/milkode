@@ -9,6 +9,7 @@ require 'pathname'
 require 'milkode/common/grenfiletest'
 require 'milkode/common/util'
 require 'milkode/common/dir'
+require 'milkode/findgrep/findgrep'
 include Milkode
 require 'kconv'
 begin
@@ -66,7 +67,7 @@ module Milkode
       end
     end
 
-    def compatible?
+    def assert_compatible
       db_open(db_file)
     end
 
@@ -500,14 +501,14 @@ module Milkode
       end
     end
 
-    def setdb(args, options)
+    def setdb(dbpath, options)
       if (options[:reset])
         CdstkCommand.setdb_reset
         @out.puts "Reset default db\n  remove:      #{Dbdir.milkode_db_dir}\n  default_db:  #{Dbdir.default_dir}"
-      elsif (args.empty?)
+      elsif (dbpath.nil?)
         @out.puts Dbdir.default_dir
       else
-        path = File.expand_path(args[0])
+        path = File.expand_path(dbpath)
         begin
           CdstkCommand.setdb_set path
           @out.puts "Set default db #{path}."
@@ -517,8 +518,9 @@ module Milkode
       end
     end
 
-    def mcd(args, options)
-      @out.print <<EOF
+    def mcd(options)
+      if options[:shell] != 'cygwin'
+        @out.print <<EOF
 # Copy to '.bashrc'.
 mcd() {
     local args="$1 $2 $3 $4 $5 $6 $7 $8 $9"
@@ -533,7 +535,11 @@ mcd() {
         pwd
     fi
 }
+EOF
+      end
 
+      if options[:shell] != 'sh'
+        @out.print <<EOF
 # For Cygwin.
 mcd() {
     local args="$1 $2 $3 $4 $5 $6 $7 $8 $9"
@@ -549,9 +555,10 @@ mcd() {
     fi
 }
 EOF
+      end
     end
 
-    def info(args, options)
+    def info
       milkode_info
     end
 
@@ -566,7 +573,7 @@ EOF
         raise IgnoreError, "Not a package dir: '#{current_dir}'" unless package
       end
 
-      if options[:test]
+      if options[:dry_run]
         # Test mode
         db_open(db_file)
         @is_display_info = true
