@@ -128,20 +128,20 @@ module Milkode
       cdstk(opts[:DbDir]).assert_compatible
       Milkode::CLI_Cdweb.execute_with_options(STDOUT, opts)
     end
-  end
 
-  private
+    private
 
-  def cdstk(dir = nil)
-    Cdstk.new(STDOUT, dir || db_dir)
-  end
+    def cdstk(dir = nil)
+      Cdstk.new(STDOUT, dir || db_dir)
+    end
 
-  # init からはアクセスしてはいけない
-  def db_dir
-    if (Dbdir.dbdir?('.') || !Dbdir.dbdir?(Dbdir.default_dir))
-      '.'
-    else
-      Dbdir.default_dir
+    # init からはアクセスしてはいけない
+    def db_dir
+      if (Dbdir.dbdir?('.') || !Dbdir.dbdir?(Dbdir.default_dir))
+        '.'
+      else
+        Dbdir.default_dir
+      end
     end
   end
 end
