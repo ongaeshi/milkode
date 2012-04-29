@@ -9,7 +9,6 @@ require 'rubygems'
 require 'groonga'
 require 'test_helper'
 require 'file_test_utils'
-require 'milkode/cdstk/cli_cdstk.rb'
 require 'milkode/cdstk/cdstk'
 require 'stringio'
 
