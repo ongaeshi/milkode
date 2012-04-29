@@ -67,7 +67,7 @@ module Milkode
       end
     end
 
-    def compatible?
+    def assert_compatible
       db_open(db_file)
     end
 

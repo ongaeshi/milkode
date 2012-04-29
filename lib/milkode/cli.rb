@@ -2,6 +2,7 @@
 require 'thor'
 require 'milkode/cdstk/cdstk'
 require 'milkode/common/dbdir.rb'
+require 'milkode/cdweb/cli_cdweb'
 
 module Milkode
   class CLI < Thor
@@ -93,6 +94,31 @@ module Milkode
       rescue IgnoreError => e
         STDOUT.puts e.message
       end
+    end
+
+    desc "web", "Startup web interface"
+    option :db, :default => Milkode::CLI_Cdweb::select_dbdir
+    option :host, :default => '127.0.0.1', :aliases => '-o'
+    option :port, :default => 9292, :aliases => '-p'
+    option :server, :default => 'thin', :aliases => '-s'
+    option :no_browser, :default => 'false', :type => :boolean, :desc => 'Do not launch browser.'
+    option :customize, :type => :boolean, :desc => 'Create customize file.'
+    def web
+      opts = {
+        :environment => ENV['RACK_ENV'] || "development",
+        :pid         => nil,
+        :Port        => options[:port],
+        :Host        => options[:host],
+        :AccessLog   => [],
+        :config      => "config.ru",
+        # ----------------------------
+        :server      => options[:server],
+        :LaunchBrowser => ! options[:no_browser],
+        :DbDir => options[:db],
+      }
+      opts[:customize] = options[:customize]
+      cdstk(opts[:DbDir]).assert_compatible
+      Milkode::CLI_Cdweb.execute_with_options(STDOUT, opts)
     end
   end
 
