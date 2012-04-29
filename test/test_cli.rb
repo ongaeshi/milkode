@@ -37,25 +37,25 @@ class TestCLI_Cdstk < Test::Unit::TestCase
     assert_match /.*packages.*records/, command("info")
   end
 
-  def test_setdb_引数無しで現在の値を表示
+  def test_setdb_no_arg_disp
     assert_equal @work.expand_path("db1") + "\n", command("setdb")
   end
 
-  def test_setdb_milkode_db_dirを書き換えてテスト
+  def test_setdb_milkode_db_dir_rewrite
     open(@work.path(".milkode_db_dir"), "w") {|f| f.print "/a/custom/db" }
     assert_equal "/a/custom/db\n", command("setdb")
   end
 
-  def test_setdb_データベースではないディレクトリに切り替ようとするとエラー
+  def test_setdb_error_not_database_dir
     assert_match(/fatal:/, command("setdb /a/write/test"))
   end
 
-  def test_setdb_切り替え
+  def test_setdb_change
     @work.init_db("db2")
     assert_match "Set default db", command("setdb #{@work.path "db2"}")
   end
 
-  def test_setdb_リセット
+  def test_setdb_reset
     assert_not_equal @first_default_dir, Dbdir.default_dir
     command("setdb --reset")
     assert_equal @first_default_dir, Dbdir.default_dir
