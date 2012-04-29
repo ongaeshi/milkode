@@ -40,6 +40,60 @@ module Milkode
     def pwd()
       cdstk.pwd(options)
     end
+
+    desc "cleanup", "Creanup garbage recoeds"
+    option :force, :type => :boolean, :aliases => '-f'
+    def cleanup
+      cdstk.cleanup(options)
+    end
+
+    desc "rebuild [keyword1 keyword2]", "Rebuild database"
+    option :all, :type => :boolean, :desc => 'Remove all.'
+    option :verbose, :type => :boolean, :aliases => '-v', :desc => 'Be verbose.'
+    def rebuild(*args)
+      cdstk.rebuild(args, options)
+    end
+
+    desc "dump", "Dump records"
+    def dump
+      cdstk.dump
+    end
+
+    desc "dir [package1 package2]", "Print project root directory"
+    option :top, :type => :boolean
+    def dir(*args)
+      cdstk.dir(args, options)
+    end
+
+    desc "setdb [dbpath]", "Set default db to dbpath"
+    option :reset, :type => :boolean, :aliases => '--default', :desc => 'Reset to the system default database.'
+    def setdb(dbpath = nil)
+      cdstk.setdb(dbpath, options)
+    end
+
+    desc "mcd", "Generate `mcd' command"
+    option :shell, :desc => 'Type of shell. bash or cygwin'
+    def mcd
+      cdstk.mcd(options)
+    end
+
+    desc "info", "Information of milkode status"
+    def info
+      cdstk.info
+    end
+
+    desc "ignore [path ...]", "Ignore a file or directory"
+    option :package, :aliases => '-p', :desc => "Package to ignore."
+    option :delete, :type => :boolean, :aliases => '-d'
+    option :delete_all, :type => :boolean
+    option :dry_run, :type => :boolean, :aliases => '-n'
+    def ignore(*paths)
+      begin
+        cdstk.ignore(paths, options)
+      rescue IgnoreError => e
+        STDOUT.puts e.message
+      end
+    end
   end
 
   private
