@@ -34,6 +34,12 @@ module Milkode
     def list(*args)
       cdstk.list(args, options)
     end
+
+    desc "pwd", "Display the current database"
+    option :default, :type => :boolean, :desc => 'Show default db, ENV[\'MILKODE_DEFAULT_DIR\'] or ~/.milkode.'
+    def pwd()
+      cdstk.pwd(options)
+    end
   end
 
   private
