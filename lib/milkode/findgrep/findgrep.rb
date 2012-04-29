@@ -479,25 +479,37 @@ EOF
     private :searchData
 
     def file2data(file)
+      FindGrep::file2lines(file, @option.kcode)
+    end
+    private :file2data
+    
+    def self.file2lines(file, kcode)
       data = file.read
       
       unless Milkode::Util::ruby19?
-        if (@option.kcode != Kconv::NOCONV)
+        if (kcode != Kconv::NOCONV)
           file_kcode = Kconv::guess(data)
 
-          if (file_kcode != @option.kcode)
-            #            puts "encode!! #{fpath} : #{@option.kcode} <- #{file_kcode}"
-            data = data.kconv(@option.kcode, file_kcode)
+          if (file_kcode != kcode)
+            # puts "encode!! #{fpath} : #{kcode} <- #{file_kcode}"
+            data = data.kconv(kcode, file_kcode)
           end
         end
       else
-        data = data.kconv(@option.kcode)
+        # @memo ファイルエンコーディングに相違が起きている可能性があるため対策
+        #       本当はファイルを開く時にエンコーディングを指定するのが正しい
+
+        # 方法1 : 強制的にバイナリ化
+        # data.force_encoding("Binary")
+        # data = data.kconv(kcode)
+        
+        # 方法2 : 入力エンコーディングを強制的に指定
+        data = data.kconv(kcode, Kconv::guess(data))
       end
 
-      data = data.split("\n");
+      data = data.split($/)
     end
-    private :file2data
-
+    
     def match?(line)
       match_datas = []
       @patternRegexps.each {|v| match_datas << v.match(line)}

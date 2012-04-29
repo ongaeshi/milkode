@@ -9,7 +9,6 @@ require 'rubygems'
 require 'groonga'
 require 'test_helper'
 require 'file_test_utils'
-require 'milkode/cdstk/cli_cdstk.rb'
 require 'milkode/cdstk/cdstk'
 require 'stringio'
 
@@ -39,6 +38,7 @@ class TestCdstk < Test::Unit::TestCase
       obj.add(['../data/nodir_abc.zip'], {})
       obj.add(['../data/nodir_abc_xpi.xpi'], {})
       obj.add(['http://ongaeshi.me/test_data/http_nodir_abc.zip'], {})
+      obj.add(['git://github.com/ongaeshi/duplicate-thing.git'], {})
       assert_raise(OpenURI::HTTPError) { obj.add(['http://ongaeshi.me/test_data/not_found.zip'], {}) }
       obj.add(['../data/no_auto_ignore'], {:no_auto_ignore => true})
 

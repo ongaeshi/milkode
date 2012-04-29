@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{milkode}
-  s.version = "0.6.0"
+  s.version = "0.6.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ongaeshi"]
-  s.date = %q{2012-03-29}
+  s.date = %q{2012-04-19}
   s.description = %q{Line based local source code search engine & grep-command & web-app.}
   s.email = %q{ongaeshi0621@gmail.com}
   s.executables = ["gmilk", "milk"]
@@ -107,6 +107,7 @@ Gem::Specification.new do |s|
     "test/test_database.rb",
     "test/test_dbdir.rb",
     "test/test_dir.rb",
+    "test/test_findgrep.rb",
     "test/test_gren_util.rb",
     "test/test_helper.rb",
     "test/test_ignore_checker.rb",
@@ -134,7 +135,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<jeweler>, ["~> 1.5.2"])
       s.add_development_dependency(%q<rcov>, [">= 0"])
       s.add_runtime_dependency(%q<termcolor>, [">= 1.2.0"])
-      s.add_runtime_dependency(%q<rroonga>, [">= 1.1.0", "< 2.0"])
+      s.add_runtime_dependency(%q<rroonga>, [">= 1.1.0"])
       s.add_runtime_dependency(%q<rack>, [">= 1.3.4"])
       s.add_runtime_dependency(%q<sinatra>, [">= 1.2.6"])
       s.add_runtime_dependency(%q<launchy>, [">= 0.3.7"])
@@ -148,7 +149,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
       s.add_dependency(%q<rcov>, [">= 0"])
       s.add_dependency(%q<termcolor>, [">= 1.2.0"])
-      s.add_dependency(%q<rroonga>, [">= 1.1.0", "< 2.0"])
+      s.add_dependency(%q<rroonga>, [">= 1.1.0"])
       s.add_dependency(%q<rack>, [">= 1.3.4"])
       s.add_dependency(%q<sinatra>, [">= 1.2.6"])
       s.add_dependency(%q<launchy>, [">= 0.3.7"])
@@ -163,7 +164,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
     s.add_dependency(%q<rcov>, [">= 0"])
     s.add_dependency(%q<termcolor>, [">= 1.2.0"])
-    s.add_dependency(%q<rroonga>, [">= 1.1.0", "< 2.0"])
+    s.add_dependency(%q<rroonga>, [">= 1.1.0"])
     s.add_dependency(%q<rack>, [">= 1.3.4"])
     s.add_dependency(%q<sinatra>, [">= 1.2.6"])
     s.add_dependency(%q<launchy>, [">= 0.3.7"])
