@@ -6,6 +6,14 @@ require 'milkode/cdweb/cli_cdweb'
 
 module Milkode
   class CLI < Thor
+    desc "init [db_dir]", "Initialize database directory. If db_dir is omitted"
+    option :setdb, :type => :boolean, :aliases => '-s', :desc => 'Run setdb after initialization.'
+    def init(db_dir = nil)
+      db_dir = db_dir || Dbdir.default_dir
+      FileUtils.mkdir_p db_dir
+      cdstk(db_dir).init(options)
+    end
+
     desc "add PATH", "Add package(s) to milkode"
     option :ignore, :type => :array, :aliases => '-i', :desc => 'Ignore path.'
     option :no_auto_ignore, :type => :boolean, :desc => 'Disable auto ignore (.gitignore).'
