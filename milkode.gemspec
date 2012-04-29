@@ -133,7 +133,6 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.5.2"])
-      s.add_development_dependency(%q<rcov>, [">= 0"])
       s.add_runtime_dependency(%q<termcolor>, [">= 1.2.0"])
       s.add_runtime_dependency(%q<rroonga>, [">= 1.1.0"])
       s.add_runtime_dependency(%q<rack>, [">= 1.3.4"])
@@ -147,7 +146,6 @@ Gem::Specification.new do |s|
     else
       s.add_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
-      s.add_dependency(%q<rcov>, [">= 0"])
       s.add_dependency(%q<termcolor>, [">= 1.2.0"])
       s.add_dependency(%q<rroonga>, [">= 1.1.0"])
       s.add_dependency(%q<rack>, [">= 1.3.4"])
@@ -162,7 +160,6 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<bundler>, ["~> 1.0.0"])
     s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
-    s.add_dependency(%q<rcov>, [">= 0"])
     s.add_dependency(%q<termcolor>, [">= 1.2.0"])
     s.add_dependency(%q<rroonga>, [">= 1.1.0"])
     s.add_dependency(%q<rack>, [">= 1.3.4"])
