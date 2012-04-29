@@ -9,6 +9,7 @@ require 'pathname'
 require 'milkode/common/grenfiletest'
 require 'milkode/common/util'
 require 'milkode/common/dir'
+require 'milkode/findgrep/findgrep'
 include Milkode
 require 'kconv'
 begin
