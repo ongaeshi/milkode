@@ -28,6 +28,12 @@ module Milkode
     def remove(*args)
       cdstk.remove(args, options)
     end
+
+    desc "list [package1 package2 ...]", "List package"
+    option :verbose, :type => :boolean, :aliases => '-v', :desc => 'Be verbose.'
+    def list(*args)
+      cdstk.list(args, options)
+    end
   end
 
   private
