@@ -268,6 +268,10 @@ module Milkode
 
       filename = File.join(dst_dir, File.basename(url).sub(/\.git\Z/, ""))
 
+      # git output progress to stderr.
+      # `git clone #{url} #{filename} 2>&1`
+
+      # with output
       system("git clone #{url} #{filename}")
 
       filename
