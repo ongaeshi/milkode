@@ -76,7 +76,7 @@ module Milkode
         db_open(db_file)
 
         @yaml.contents.each do |package|
-          update_dir_in(package.directory)
+          update_package_in(package)
         end
       end
     end
@@ -94,7 +94,7 @@ module Milkode
           if (package)
             print_result do
               db_open(db_file)
-              update_dir_in(package.directory)
+              update_package_in(package)
             end
           else
             @out.puts "Not registered. If you want to add, 'milk add #{path}'."
@@ -105,7 +105,7 @@ module Milkode
             args.each do |name|
               package = @yaml.find_name(name)
               if (package)
-                update_dir_in(package.directory)                
+                update_package_in(package)
               else
                 @out.puts "Not found package '#{name}'."
                 return
@@ -116,12 +116,8 @@ module Milkode
       end
     end
 
-    def update_package(dir)
+    def update_for_grep(dir)
       db_open(db_file)
-      update_dir(dir)
-    end
-
-    def update_dir(dir)
       update_dir_in(dir)
     end
 
@@ -144,7 +140,7 @@ module Milkode
             set_yaml_options(package, options)
 
             # アップデート
-            update_dir(dir)
+            update_dir_in(dir)
           end
         rescue ConvetError
           return
@@ -178,7 +174,7 @@ module Milkode
     def add_dir(dir, no_yaml = false)
       add_yaml(Package.create(dir)) unless no_yaml
       db_open(db_file)
-      update_dir(dir)
+      update_dir_in(dir)
     end
 
     # yamlにパッケージを追加
@@ -578,7 +574,7 @@ EOF
         db_open(db_file)
         @is_display_info = true
         @is_silent = true
-        update_dir(package.directory)
+        update_dir_in(package.directory)
       elsif options[:delete_all]
         # Delete all
         package.set_ignore([])
@@ -637,6 +633,14 @@ EOF
 
     def yaml_file
       YamlFileWrapper.yaml_file @db_dir
+    end
+
+    def update_package_in(package)
+      if package.options[:update_with_git_pull]
+        Dir.chdir(package.directory) { system("git pull") }
+      end
+
+      update_dir_in(package.directory)
     end
 
     def update_dir_in(dir)

@@ -115,10 +115,10 @@ EOF
           if (my_option[:all])
             cdstk.update_all
           elsif (my_option[:packages].empty?)
-            cdstk.update_package(package_root_dir(File.expand_path(".")))
+            cdstk.update_for_grep(package_root_dir(File.expand_path(".")))
           else
             my_option[:packages].each do |v|
-              cdstk.update_package(v)
+              cdstk.update_for_grep(v)
             end
           end
           
