@@ -137,7 +137,10 @@ module Milkode
             # YAMLに追加
             package = Package.create(dir, options[:ignore])
             add_yaml(package)
-            set_yaml_options(package, options)
+
+            # オプション設定
+            is_update_with_git_pull = git_url?(v)
+            set_yaml_options(package, options, is_update_with_git_pull)
 
             # アップデート
             update_dir_in(dir)
@@ -148,19 +151,26 @@ module Milkode
       end
     end
 
-    def set_yaml_options(package, src)
+    def set_yaml_options(package, options, is_update_with_git_pull)
       is_dirty = false
       
-      if src[:no_auto_ignore]
+      if options[:no_auto_ignore]
         dst = package.options
         dst[:no_auto_ignore] = true
         package.set_options(dst)
         is_dirty = true
       end
 
-      if src[:name]
+      if options[:name]
         dst = package.options
         dst[:name] = src[:name]
+        package.set_options(dst)
+        is_dirty = true
+      end
+
+      if is_update_with_git_pull
+        dst = package.options
+        dst[:update_with_git_pull] = is_update_with_git_pull
         package.set_options(dst)
         is_dirty = true
       end
@@ -233,12 +243,17 @@ module Milkode
     def download_file(src)
       if (src =~ /^https?:/)
         download_file_in(src)
-      elsif (src =~ /^git:/)
+      elsif (git_url? src)
         git_clone_in(src)
       else
         src
       end
     end
+
+    def git_url?(src)
+      (src =~ /^git:/) != nil
+    end
+    private :git_url?
 
     def download_file_in(url)
       alert("download", "#{url}")
