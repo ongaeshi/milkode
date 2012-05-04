@@ -47,7 +47,6 @@ EOF
 
     desc "update [keyword1 keyword2 ...]", "Update database"
     option :all, :type => :boolean, :desc => "Update all."
-    option :force, :type => :boolean, :aliases => '-f', :desc => 'Force update.'
     option :verbose, :type => :boolean, :aliases => '-v', :desc => 'Be verbose.'
     option :help, :type => :boolean, :aliases => '-h', :desc => 'Help message.'
     def update(*args)
