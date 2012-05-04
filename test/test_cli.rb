@@ -61,6 +61,25 @@ class TestCLI_Cdstk < Test::Unit::TestCase
     assert_equal @first_default_dir, Dbdir.default_dir
   end
 
+  # def test_list_help
+  #   command("init -h")
+  #   command("add -h")
+  #   command("update -h")
+  #   command("remove -h")
+  #   command("list -h")
+  #   command("pwd -h")
+  #   command("cleanup -h")
+  #   command("rebuild -h")
+  #   command("dump -h")
+  #   command("dir -h")
+  #   command("setdb -h")
+  #   command("mcd -h")
+  #   command("info -h")
+  #   command("ignore -h")
+  #   command("web -h")
+  #   command("grep -h")
+  # end
+
   private
 
   def command(arg)
