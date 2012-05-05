@@ -1,3 +1,17 @@
+=== 0.7.0 2012/05/05
+
+* milk
+  * `milk add git://..` to enabled. When you update `git pull` like you.
+  * Use Thor
+* gmilk
+  * gotoline mode(-g) enabled multi args.
+    * Sample: gmilk -g VERSION:1 bin/milk:9 bin/gmilk:9 lib/milkode/cdweb/app.rb:23
+  * Windows(SJIS) + Ruby1.9 support
+* milk web
+  * Bug fix
+* common
+  * Bug fix
+  
 === 0.6.0 2012/03/28
 
 * milk web

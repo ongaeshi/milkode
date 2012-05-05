@@ -1,3 +1,24 @@
+=== 0.7.0 2012/05/05
+
+* milk
+  * 'milk add git://..' に対応、update時に`git pull`するように
+  * Thor を利用するように (thanks tomykaira)
+  
+* gmilk
+  * gotolineモード(-g)で、複数のパスを渡せるように
+    * 例: gmilk -g VERSION:1 bin/milk:9 bin/gmilk:9 lib/milkode/cdweb/app.rb:23
+  * Windows環境(SJIS) + Ruby1.9 でエンコーディングエラーが起きる問題を修正
+
+* milk web
+  * カスタマイズしても<title></title>部分がMilkodeのままになっていた問題を修正
+  * 現在位置検索が正しく動いてない問題を修正
+
+* common
+  * Package#options[:update_with_git_pull] を追加
+  * Gemfile.lock を無視した (thanks tomykaira)
+  * Remove dependency on rcov (thanks tomykaira)
+  * 環境によってYAMLオブジェクトの構文が異なり、テストが落ちる可能性があるのを対策 (thanks tomykaira)
+  
 === 0.6.0 2012/03/28
 
 * milk web
