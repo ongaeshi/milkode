@@ -9,6 +9,7 @@ require 'pathname'
 require 'milkode/common/grenfiletest'
 require 'milkode/common/util'
 require 'milkode/common/dir'
+require 'milkode/findgrep/findgrep'
 include Milkode
 require 'kconv'
 begin
@@ -66,7 +67,7 @@ module Milkode
       end
     end
 
-    def compatible?
+    def assert_compatible
       db_open(db_file)
     end
 
@@ -75,7 +76,7 @@ module Milkode
         db_open(db_file)
 
         @yaml.contents.each do |package|
-          update_dir_in(package.directory)
+          update_package_in(package)
         end
       end
     end
@@ -93,7 +94,7 @@ module Milkode
           if (package)
             print_result do
               db_open(db_file)
-              update_dir_in(package.directory)
+              update_package_in(package)
             end
           else
             @out.puts "Not registered. If you want to add, 'milk add #{path}'."
@@ -104,7 +105,7 @@ module Milkode
             args.each do |name|
               package = @yaml.find_name(name)
               if (package)
-                update_dir_in(package.directory)                
+                update_package_in(package)
               else
                 @out.puts "Not found package '#{name}'."
                 return
@@ -115,12 +116,8 @@ module Milkode
       end
     end
 
-    def update_package(dir)
+    def update_for_grep(dir)
       db_open(db_file)
-      update_dir(dir)
-    end
-
-    def update_dir(dir)
       update_dir_in(dir)
     end
 
@@ -140,10 +137,13 @@ module Milkode
             # YAMLに追加
             package = Package.create(dir, options[:ignore])
             add_yaml(package)
-            set_yaml_options(package, options)
+
+            # オプション設定
+            is_update_with_git_pull = git_url?(v)
+            set_yaml_options(package, options, is_update_with_git_pull)
 
             # アップデート
-            update_dir(dir)
+            update_dir_in(dir)
           end
         rescue ConvetError
           return
@@ -151,19 +151,26 @@ module Milkode
       end
     end
 
-    def set_yaml_options(package, src)
+    def set_yaml_options(package, options, is_update_with_git_pull)
       is_dirty = false
       
-      if src[:no_auto_ignore]
+      if options[:no_auto_ignore]
         dst = package.options
         dst[:no_auto_ignore] = true
         package.set_options(dst)
         is_dirty = true
       end
 
-      if src[:name]
+      if options[:name]
         dst = package.options
         dst[:name] = src[:name]
+        package.set_options(dst)
+        is_dirty = true
+      end
+
+      if is_update_with_git_pull
+        dst = package.options
+        dst[:update_with_git_pull] = is_update_with_git_pull
         package.set_options(dst)
         is_dirty = true
       end
@@ -177,7 +184,7 @@ module Milkode
     def add_dir(dir, no_yaml = false)
       add_yaml(Package.create(dir)) unless no_yaml
       db_open(db_file)
-      update_dir(dir)
+      update_dir_in(dir)
     end
 
     # yamlにパッケージを追加
@@ -236,10 +243,17 @@ module Milkode
     def download_file(src)
       if (src =~ /^https?:/)
         download_file_in(src)
+      elsif (git_url? src)
+        git_clone_in(src)
       else
         src
       end
     end
+
+    def git_url?(src)
+      (src =~ /^git:/) != nil
+    end
+    private :git_url?
 
     def download_file_in(url)
       alert("download", "#{url}")
@@ -254,6 +268,23 @@ module Milkode
           dst.write(src.read)
         end
       end
+
+      filename
+    end
+
+    def git_clone_in(url)
+      alert("git", url)
+
+      dst_dir = File.join(@db_dir, "packages/git")
+      # FileUtils.mkdir_p dst_dir
+
+      filename = File.join(dst_dir, File.basename(url).sub(/\.git\Z/, ""))
+
+      # git output progress to stderr.
+      # `git clone #{url} #{filename} 2>&1`
+
+      # with output
+      system("git clone #{url} #{filename}")
 
       filename
     end
@@ -481,14 +512,14 @@ module Milkode
       end
     end
 
-    def setdb(args, options)
+    def setdb(dbpath, options)
       if (options[:reset])
         CdstkCommand.setdb_reset
         @out.puts "Reset default db\n  remove:      #{Dbdir.milkode_db_dir}\n  default_db:  #{Dbdir.default_dir}"
-      elsif (args.empty?)
+      elsif (dbpath.nil?)
         @out.puts Dbdir.default_dir
       else
-        path = File.expand_path(args[0])
+        path = File.expand_path(dbpath)
         begin
           CdstkCommand.setdb_set path
           @out.puts "Set default db #{path}."
@@ -498,8 +529,9 @@ module Milkode
       end
     end
 
-    def mcd(args, options)
-      @out.print <<EOF
+    def mcd(options)
+      if options[:shell] != 'cygwin'
+        @out.print <<EOF
 # Copy to '.bashrc'.
 mcd() {
     local args="$1 $2 $3 $4 $5 $6 $7 $8 $9"
@@ -514,7 +546,11 @@ mcd() {
         pwd
     fi
 }
+EOF
+      end
 
+      if options[:shell] != 'sh'
+        @out.print <<EOF
 # For Cygwin.
 mcd() {
     local args="$1 $2 $3 $4 $5 $6 $7 $8 $9"
@@ -530,9 +566,10 @@ mcd() {
     fi
 }
 EOF
+      end
     end
 
-    def info(args, options)
+    def info
       milkode_info
     end
 
@@ -547,12 +584,12 @@ EOF
         raise IgnoreError, "Not a package dir: '#{current_dir}'" unless package
       end
 
-      if options[:test]
+      if options[:dry_run]
         # Test mode
         db_open(db_file)
         @is_display_info = true
         @is_silent = true
-        update_dir(package.directory)
+        update_dir_in(package.directory)
       elsif options[:delete_all]
         # Delete all
         package.set_ignore([])
@@ -611,6 +648,14 @@ EOF
 
     def yaml_file
       YamlFileWrapper.yaml_file @db_dir
+    end
+
+    def update_package_in(package)
+      if package.options[:update_with_git_pull]
+        Dir.chdir(package.directory) { system("git pull") }
+      end
+
+      update_dir_in(package.directory)
     end
 
     def update_dir_in(dir)

@@ -3,7 +3,7 @@
 %html(lang='ja')
   %head
     %meta(charset='utf-8')
-    %title= [@title, 'Milkode'].compact.join(' - ')
+    %title= [@title, @setting.home_title].compact.join(' - ')
     %link(rel="stylesheet" href="/css/milkode.css"  type="text/css" media="all")
     %link(rel="stylesheet" href="/css/coderay.css"  type="text/css" media="all")
     %link(rel="stylesheet" href="/css/coderay-patch.css"  type="text/css" media="all")

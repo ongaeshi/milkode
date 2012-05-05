@@ -64,8 +64,7 @@ class TestYamlFileWrapper < Test::Unit::TestCase
 
     # save
     yaml.save
-    r = open('milkode.yaml'){|f|f.read}
-    assert_equal <<EOF, r if Milkode::Util::ruby19?
+    expected_object = YAML.load <<EOF
 ---
 version: '0.2'
 contents:
@@ -74,6 +73,8 @@ contents:
   - ! '*.bak'
 - directory: /path/to/dir3
 EOF
+    actual_object = open('milkode.yaml'){|f| YAML.load f}
+    assert_equal expected_object, actual_object
   end
 
   def test_save_otherpath
@@ -82,12 +83,13 @@ EOF
     yaml.save
     
     # save
-    r = open('otherpath/milkode.yaml'){|f|f.read}
-    assert_equal <<EOF, r if Milkode::Util::ruby19?
+    expected_object = YAML.load <<EOF
 ---
 version: '0.2'
 contents: []
 EOF
+    actual_object = open('otherpath/milkode.yaml'){|f| YAML.load f}
+    assert_equal expected_object, actual_object
   end
   
   def teardown

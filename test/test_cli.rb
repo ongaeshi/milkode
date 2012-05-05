@@ -5,72 +5,85 @@
 # @author ongaeshi
 # @date   2011/12/03
 
-require 'milkode/cdstk/cli_cdstk.rb'
-require 'milkode/common/dbdir'
+require 'milkode/cli.rb'
 require 'test_helper'
-require 'milkode/cdstk/cdstk_command'
 require 'milkode_test_work'
 
 class TestCLI_Cdstk < Test::Unit::TestCase
   def setup
+    $stdout = StringIO.new
     @first_default_dir = Dbdir.default_dir
     @work = MilkodeTestWork.new({:default_db => true})
     @work.add_package "db1", @work.expand_path("../data/a_project")
-  end
-
-  def test_main
-    t_grep
-    t_mcd
-    t_setdb
-    t_info
+    @orig_stdout = $stdout
   end
 
   def teardown
+    $stdout = @orig_stdout
     @work.teardown
   end
 
-  private
-
-  def t_grep
+  def test_grep
     command("grep")
     command("grep not_found")
     command("grep require -a")
   end
 
-  def t_mcd
+  def test_mcd
     assert_match /mcd/, command("mcd")
   end
-  
-  def t_info
+
+  def test_info
     assert_match /.*packages.*records/, command("info")
   end
-  
-  def t_setdb
-    # 引数無しで現在の値を表示
+
+  def test_setdb_no_arg_disp
     assert_equal @work.expand_path("db1") + "\n", command("setdb")
-    
-    # .milkode_db_dir を書き換えてテスト
+  end
+
+  def test_setdb_milkode_db_dir_rewrite
     open(@work.path(".milkode_db_dir"), "w") {|f| f.print "/a/custom/db" }
     assert_equal "/a/custom/db\n", command("setdb")
+  end
 
-    # データベースではないディレクトリに切り替ようとするとエラー
+  def test_setdb_error_not_database_dir
     assert_match(/fatal:/, command("setdb /a/write/test"))
-    
-    # 切り替え
+  end
+
+  def test_setdb_change
     @work.init_db("db2")
     assert_match "Set default db", command("setdb #{@work.path "db2"}")
+  end
 
-    # リセット
+  def test_setdb_reset
     assert_not_equal @first_default_dir, Dbdir.default_dir
     command("setdb --reset")
     assert_equal @first_default_dir, Dbdir.default_dir
   end
 
+  # def test_list_help
+  #   command("init -h")
+  #   command("add -h")
+  #   command("update -h")
+  #   command("remove -h")
+  #   command("list -h")
+  #   command("pwd -h")
+  #   command("cleanup -h")
+  #   command("rebuild -h")
+  #   command("dump -h")
+  #   command("dir -h")
+  #   command("setdb -h")
+  #   command("mcd -h")
+  #   command("info -h")
+  #   command("ignore -h")
+  #   command("web -h")
+  #   command("grep -h")
+  # end
+
   private
 
   def command(arg)
-    io = StringIO.new
-    CLI_Cdstk.execute(io, arg.split)
-    io.string
+    CLI.start(arg.split)
+    $stdout.string
   end
 end

@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{milkode}
-  s.version = "0.6.0"
+  s.version = "0.7.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ongaeshi"]
-  s.date = %q{2012-03-29}
+  s.date = %q{2012-05-06}
   s.description = %q{Line based local source code search engine & grep-command & web-app.}
   s.email = %q{ongaeshi0621@gmail.com}
   s.executables = ["gmilk", "milk"]
@@ -20,7 +20,6 @@ Gem::Specification.new do |s|
   s.files = [
     ".document",
     "Gemfile",
-    "Gemfile.lock",
     "HISTORY.ja.rdoc",
     "HISTORY.rdoc",
     "LICENSE.txt",
@@ -31,8 +30,6 @@ Gem::Specification.new do |s|
     "bin/milk",
     "lib/milkode/cdstk/cdstk.rb",
     "lib/milkode/cdstk/cdstk_command.rb",
-    "lib/milkode/cdstk/cli_cdstk.rb",
-    "lib/milkode/cdstk/cli_cdstksub.rb",
     "lib/milkode/cdstk/milkode_yaml.rb",
     "lib/milkode/cdstk/package.rb",
     "lib/milkode/cdstk/yaml_file_wrapper.rb",
@@ -67,6 +64,7 @@ Gem::Specification.new do |s|
     "lib/milkode/cdweb/views/search.haml",
     "lib/milkode/cdweb/views/search_form.haml",
     "lib/milkode/cdweb/views/view.haml",
+    "lib/milkode/cli.rb",
     "lib/milkode/common/archive-zip.rb",
     "lib/milkode/common/dbdir.rb",
     "lib/milkode/common/dir.rb",
@@ -97,16 +95,16 @@ Gem::Specification.new do |s|
     "test/milkode_test_work.rb",
     "test/rake_test_loader.rb",
     "test/runner.rb",
-    "test/test_bin_exec.rb",
     "test/test_cdstk.rb",
     "test/test_cdstk_command.rb",
-    "test/test_cli_cdstk.rb",
+    "test/test_cli.rb",
     "test/test_cli_grep.rb",
     "test/test_coderay_wrapper.rb",
     "test/test_coderay_wrapper_data.rb",
     "test/test_database.rb",
     "test/test_dbdir.rb",
     "test/test_dir.rb",
+    "test/test_findgrep.rb",
     "test/test_gren_util.rb",
     "test/test_helper.rb",
     "test/test_ignore_checker.rb",
@@ -130,11 +128,11 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
-      s.add_development_dependency(%q<jeweler>, ["~> 1.5.2"])
-      s.add_development_dependency(%q<rcov>, [">= 0"])
+      s.add_runtime_dependency(%q<milkode>, [">= 0"])
+      s.add_development_dependency(%q<bundler>, [">= 0"])
+      s.add_development_dependency(%q<jeweler>, [">= 0"])
       s.add_runtime_dependency(%q<termcolor>, [">= 1.2.0"])
-      s.add_runtime_dependency(%q<rroonga>, [">= 1.1.0", "< 2.0"])
+      s.add_runtime_dependency(%q<rroonga>, [">= 1.1.0"])
       s.add_runtime_dependency(%q<rack>, [">= 1.3.4"])
       s.add_runtime_dependency(%q<sinatra>, [">= 1.2.6"])
       s.add_runtime_dependency(%q<launchy>, [">= 0.3.7"])
@@ -143,12 +141,13 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<archive-zip>, [">= 0.4.0"])
       s.add_runtime_dependency(%q<haml>, [">= 3.1.2"])
       s.add_runtime_dependency(%q<sass>, [">= 3.1.3"])
+      s.add_runtime_dependency(%q<thor>, ["~> 0.15.0"])
     else
-      s.add_dependency(%q<bundler>, ["~> 1.0.0"])
-      s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
-      s.add_dependency(%q<rcov>, [">= 0"])
+      s.add_dependency(%q<milkode>, [">= 0"])
+      s.add_dependency(%q<bundler>, [">= 0"])
+      s.add_dependency(%q<jeweler>, [">= 0"])
       s.add_dependency(%q<termcolor>, [">= 1.2.0"])
-      s.add_dependency(%q<rroonga>, [">= 1.1.0", "< 2.0"])
+      s.add_dependency(%q<rroonga>, [">= 1.1.0"])
       s.add_dependency(%q<rack>, [">= 1.3.4"])
       s.add_dependency(%q<sinatra>, [">= 1.2.6"])
       s.add_dependency(%q<launchy>, [">= 0.3.7"])
@@ -157,13 +156,14 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<archive-zip>, [">= 0.4.0"])
       s.add_dependency(%q<haml>, [">= 3.1.2"])
       s.add_dependency(%q<sass>, [">= 3.1.3"])
+      s.add_dependency(%q<thor>, ["~> 0.15.0"])
     end
   else
-    s.add_dependency(%q<bundler>, ["~> 1.0.0"])
-    s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
-    s.add_dependency(%q<rcov>, [">= 0"])
+    s.add_dependency(%q<milkode>, [">= 0"])
+    s.add_dependency(%q<bundler>, [">= 0"])
+    s.add_dependency(%q<jeweler>, [">= 0"])
     s.add_dependency(%q<termcolor>, [">= 1.2.0"])
-    s.add_dependency(%q<rroonga>, [">= 1.1.0", "< 2.0"])
+    s.add_dependency(%q<rroonga>, [">= 1.1.0"])
     s.add_dependency(%q<rack>, [">= 1.3.4"])
     s.add_dependency(%q<sinatra>, [">= 1.2.6"])
     s.add_dependency(%q<launchy>, [">= 0.3.7"])
@@ -172,6 +172,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<archive-zip>, [">= 0.4.0"])
     s.add_dependency(%q<haml>, [">= 3.1.2"])
     s.add_dependency(%q<sass>, [">= 3.1.3"])
+    s.add_dependency(%q<thor>, ["~> 0.15.0"])
   end
 end
 

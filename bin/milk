@@ -4,7 +4,7 @@
 #  Copyright (c) 2010. All rights reserved.
 
 require 'rubygems'
-require 'milkode/cdstk/cli_cdstk'
+require 'milkode/cli'
 
-Version = "0.6.0"
-Milkode::CLI_Cdstk.execute(STDOUT, ARGV)
+Version = "0.7.0"
+Milkode::CLI.start(ARGV)

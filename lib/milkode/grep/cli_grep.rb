@@ -46,6 +46,10 @@ Gotoline:
       lib/database.rb:7:xxxxxxxxxxxxxxx
       database_lib.rb:7:yyyyyyyyyyyyyyy
 
+      gmilk -g lib/database.rb:7 test/test_database.rb:5
+      lib/database.rb:7:xxxxxxxxxxxxxxx
+      test/test_database.rb:5:yyyyyyyyy
+
 Normal:
 EOF
       opt.on('-a', '--all', 'Search all package.') {|v| my_option[:all] = true }
@@ -77,10 +81,8 @@ EOF
         my_option[:find_mode] = true unless ap.keywords.empty?
 
         unless ap.gotowords.empty?
-          r = Util::parse_gotoline(ap.gotowords)
-          option.filePatterns += r[0]
-          option.gotoline = r[1]
           my_option[:find_mode] = true
+          my_option[:gotoline_data] = Util::parse_gotoline(ap.gotowords)
         end
 
         # p ap.arguments
@@ -113,10 +115,10 @@ EOF
           if (my_option[:all])
             cdstk.update_all
           elsif (my_option[:packages].empty?)
-            cdstk.update_package(package_root_dir(File.expand_path(".")))
+            cdstk.update_for_grep(package_root_dir(File.expand_path(".")))
           else
             my_option[:packages].each do |v|
-              cdstk.update_package(v)
+              cdstk.update_for_grep(v)
             end
           end
           
@@ -130,6 +132,15 @@ EOF
           records = findGrep.pickupRecords
           # stdout.puts "#{records.size} records (#{findGrep.time_s})"
           stdout.puts "#{records.size} records"
+        elsif (my_option[:gotoline_data])
+          # gotoline mode
+          basePatterns = option.filePatterns 
+          my_option[:gotoline_data].each do |v|
+            option.filePatterns = basePatterns + v[0]
+            option.gotoline = v[1]
+            findGrep = FindGrep::FindGrep.new(arguments, option)
+            findGrep.searchAndPrint(stdout)
+          end
         else
           # search mode
           findGrep = FindGrep::FindGrep.new(arguments, option)

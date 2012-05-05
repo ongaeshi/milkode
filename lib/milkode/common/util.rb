@@ -108,12 +108,16 @@ module Milkode
     # parse_gotoline(['a', '123', 'b', 55]) #=> [['a', 'b', '123'], 55]]
     # parse_gotoline(['a:5']) #=> [['a'], 55]]
     def parse_gotoline(words)
+      if gotoline_multi?(words)
+        parse_gotoline_multi(words)
+      else
+        [parse_gotoline_single(words)]
+      end
+    end
+
+    def parse_gotoline_single(words)
       lineno = -1
       index = -1
-
-      words = words.map{|v|
-        v.split(':')
-      }.flatten
 
       words.each_with_index do |v, idx|
         n = v.to_i
@@ -128,6 +132,21 @@ module Milkode
       else
         words.delete_at(index)
         [words, lineno]        
+      end
+    end
+
+    def parse_gotoline_multi(words)
+      words.map do |v|
+        a = v.split(':')
+        [[a[0..-2].join(':')], a[-1].to_i]
+      end
+    end
+
+    def gotoline_multi?(words)
+      if (words.join(" ") =~ /:\d+/)
+        true
+      else
+        false
       end
     end
 
