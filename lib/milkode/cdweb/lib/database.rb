@@ -64,11 +64,18 @@ module Milkode
         return [], 0 if packages.empty?
       else
         # パッケージ名未指定の時は現在位置もfpathsに含める
-        fpaths << current_path + "/" unless current_path == ""
+        if current_path != ""
+          fpaths << path2fpath(current_path)
+        end
       end
       
       # @todo fpathを厳密に検索するには、検索結果からさらに先頭からのパスではないものを除外する
       records, total_records = searchMain(patterns, packages, fpaths, suffixs, offset, limit)
+    end
+
+    def path2fpath(path)
+      pa = path.split("/")
+      File.join(convert_packages([pa[0]])[0], pa[1..-1].join('/'))
     end
 
     def selectAll(offset = 0, limit = -1)
