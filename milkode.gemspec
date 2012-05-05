@@ -131,6 +131,8 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<milkode>, [">= 0"])
       s.add_development_dependency(%q<bundler>, [">= 0"])
       s.add_development_dependency(%q<jeweler>, [">= 0"])
+      s.add_development_dependency(%q<bundler>, [">= 0"])
+      s.add_development_dependency(%q<jeweler>, [">= 0"])
       s.add_runtime_dependency(%q<termcolor>, [">= 1.2.0"])
       s.add_runtime_dependency(%q<rroonga>, [">= 1.1.0"])
       s.add_runtime_dependency(%q<rack>, [">= 1.3.4"])
@@ -144,6 +146,8 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<thor>, ["~> 0.15.0"])
     else
       s.add_dependency(%q<milkode>, [">= 0"])
+      s.add_dependency(%q<bundler>, [">= 0"])
+      s.add_dependency(%q<jeweler>, [">= 0"])
       s.add_dependency(%q<bundler>, [">= 0"])
       s.add_dependency(%q<jeweler>, [">= 0"])
       s.add_dependency(%q<termcolor>, [">= 1.2.0"])
@@ -160,6 +164,8 @@ Gem::Specification.new do |s|
     end
   else
     s.add_dependency(%q<milkode>, [">= 0"])
+    s.add_dependency(%q<bundler>, [">= 0"])
+    s.add_dependency(%q<jeweler>, [">= 0"])
     s.add_dependency(%q<bundler>, [">= 0"])
     s.add_dependency(%q<jeweler>, [">= 0"])
     s.add_dependency(%q<termcolor>, [">= 1.2.0"])
