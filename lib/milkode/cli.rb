@@ -35,7 +35,11 @@ EOF
     option :verbose, :type => :boolean, :aliases => '-v', :desc => 'Be verbose.'
     
     def add(*args)
-      cdstk.add(args, options)
+      if args.empty?
+        CLI.task_help(shell, "add")
+      else
+        cdstk.add(args, options)
+      end
     end
 
     desc "update [keyword1 keyword2 ...]", "Update database"
@@ -160,7 +164,7 @@ EOF
       # デフォルトメソッドを上書きして -h を処理
       # defined in /lib/thor/invocation.rb
       def invoke_task(task, *args)
-        if options[:help]
+        if options[:help] && task.name != 'grep'
           CLI.task_help(shell, task.name)
         else
           super
