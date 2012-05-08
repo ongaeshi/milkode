@@ -61,24 +61,12 @@ class TestCLI_Cdstk < Test::Unit::TestCase
     assert_equal @first_default_dir, Dbdir.default_dir
   end
 
-  # def test_list_help
-  #   command("init -h")
-  #   command("add -h")
-  #   command("update -h")
-  #   command("remove -h")
-  #   command("list -h")
-  #   command("pwd -h")
-  #   command("cleanup -h")
-  #   command("rebuild -h")
-  #   command("dump -h")
-  #   command("dir -h")
-  #   command("setdb -h")
-  #   command("mcd -h")
-  #   command("info -h")
-  #   command("ignore -h")
-  #   command("web -h")
-  #   command("grep -h")
-  # end
+  def test_help_with_h_option
+    commands = ["init", "add", "update", "remove", "list", "pwd", "cleanup", "rebuild", "dump", "dir", "setdb", "mcd", "info", "ignore", "web"]
+    commands.each do |cmd|
+      assert_match "Usage:", command("#{ cmd } -h")
+    end
+  end
 
   private
 
