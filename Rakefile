@@ -20,22 +20,7 @@ Jeweler::Tasks.new do |gem|
   gem.description = %Q{Line based local source code search engine & grep-command & web-app.}
   gem.email = "ongaeshi0621@gmail.com"
   gem.authors = ["ongaeshi"]
-
-  # Include your dependencies below. Runtime dependencies are required when using your gem,
-  gem.add_runtime_dependency 'termcolor','>= 1.2.0'
-  gem.add_runtime_dependency 'rroonga','>= 1.1.0'
-  gem.add_runtime_dependency 'rack','>=1.3.4'
-  gem.add_runtime_dependency 'sinatra', '>=1.2.6'
-  gem.add_runtime_dependency 'launchy', '>=0.3.7'
-  gem.add_runtime_dependency 'coderay', '>=1.0.5'
-  gem.add_runtime_dependency 'thin', '>=1.2.10'
-  gem.add_runtime_dependency 'archive-zip', '>=0.4.0'
-  gem.add_runtime_dependency 'haml', '>=3.1.2'
-  gem.add_runtime_dependency 'sass', '>=3.1.3'
-  gem.add_runtime_dependency 'thor', '~> 0.15.0'
-
-  # and development dependencies are only needed for development (ie running rake tasks, tests, etc)
-  #  gem.add_development_dependency 'rspec', '> 1.2.3'
+  # Dependencies move to 'Gemfile'
 end
 Jeweler::RubygemsDotOrgTasks.new
 
