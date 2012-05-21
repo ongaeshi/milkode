@@ -180,6 +180,25 @@ module Milkode
       records.each do |r|
         unless File.exist? r.path
           yield r if block_given?
+          # p r.shortpath
+          r.record_id.delete
+        end
+      end
+    end
+
+    # 指定されたパッケージのクリーンアップ
+    def cleanup_package_name(package)
+      # データベースを開き直す
+      reopen_patch
+
+      # クリーンアップ対象のファイルを検索
+      records, total_records = search([], [], package, [], [], 0, -1)
+
+      # 存在しないファイルの削除
+      records.each do |r|
+        unless File.exist? r.path
+          yield r if block_given?
+          # p r.shortpath
           r.record_id.delete
         end
       end
