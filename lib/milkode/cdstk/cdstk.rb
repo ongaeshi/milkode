@@ -71,21 +71,21 @@ module Milkode
       db_open(db_file)
     end
 
-    def update_all
+    def update_all(options)
       print_result do 
         db_open(db_file)
 
         @yaml.contents.each do |package|
-          update_package_in(package)
+          update_package_in(package, options)
         end
       end
     end
 
     def update(args, options)
       update_display_info(options)
-      
+
       if (options[:all])
-        update_all
+        update_all(options)
       else
         if (args.empty?)
           path = File.expand_path('.')
@@ -94,7 +94,7 @@ module Milkode
           if (package)
             print_result do
               db_open(db_file)
-              update_package_in(package)
+              update_package_in(package, options)
             end
           else
             @out.puts "Not registered. If you want to add, 'milk add #{path}'."
@@ -105,7 +105,7 @@ module Milkode
             args.each do |name|
               package = @yaml.find_name(name)
               if (package)
-                update_package_in(package)
+                update_package_in(package, options)
               else
                 @out.puts "Not found package '#{name}'."
                 return
@@ -432,7 +432,7 @@ module Milkode
       if (options[:all])
         db_delete(db_file)
         db_create(db_file)
-        update_all
+        update_all({})
       else
         if (args.empty?)
           path = File.expand_path('.')
@@ -650,12 +650,20 @@ EOF
       YamlFileWrapper.yaml_file @db_dir
     end
 
-    def update_package_in(package)
+    def update_package_in(package, options)
       if package.options[:update_with_git_pull]
         Dir.chdir(package.directory) { system("git pull") }
       end
 
+      unless options[:no_clean]
+        cleanup_package_in(package)
+      end
+
       update_dir_in(package.directory)
+    end
+
+    def cleanup_package_in(package)
+      Database.instance.cleanup_package_name(package.name)
     end
 
     def update_dir_in(dir)

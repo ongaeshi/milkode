@@ -54,7 +54,7 @@ class TestCdstk < Test::Unit::TestCase
       io.puts('--- update_all ---')
       FileUtils.touch('packages/zip/abc/c.txt')
       FileUtils.touch('packages/zip/abc/d.txt')
-      obj.update_all
+      obj.update_all({})
 
       io.puts('--- update --all ---')
       FileUtils.touch('packages/zip/abc/e.txt')

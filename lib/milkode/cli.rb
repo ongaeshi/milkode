@@ -44,6 +44,7 @@ EOF
 
     desc "update [keyword1 keyword2 ...]", "Update database"
     option :all, :type => :boolean, :desc => "Update all."
+    option :no_clean, :type => :boolean, :desc => "No cleanup."
     option :verbose, :type => :boolean, :aliases => '-v', :desc => 'Be verbose.'
     def update(*args)
       cdstk.update(args, options)
