@@ -7,15 +7,6 @@ div.header {
 div.footer {
 }
 
-div.header_home {
-    font-size: 170%;
-}
-
-div.footer_home {
-    font-size: 85%;
-    margin-top: 3em;
-}
-
 div.search-summary {
     border-color: #e92926;
     background-color:#FFF0F0;
@@ -88,3 +79,15 @@ input#clear {
     font-size: 18px;
 }
 
+/* toppage */
+
+#toppage h1 {
+    font-size: 72px;        
+}
+
+#toppage .header {
+}
+
+#toppage .footer {
+    font-size: 14px;
+}
