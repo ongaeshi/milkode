@@ -81,13 +81,27 @@ input#clear {
 
 /* toppage */
 
+#toppage {
+    font-size: 14px;
+}
+
+#toppage a {
+    font-size: 17px;
+}
+
 #toppage h1 {
-    font-size: 72px;        
+    font-size: 72px;
+    margin-top: 50px;
 }
 
 #toppage .header {
 }
 
-#toppage .footer {
-    font-size: 14px;
+#toppage .form {
+    margin-top: 60px;
+    margin-bottom: 50px;
 }
+
+#toppage .footer {
+}
+

@@ -7,24 +7,68 @@
     %meta(charset='utf-8')
     %title= [@title, @setting.home_title].compact.join(' - ')
     %link(rel="stylesheet" href="/css/bootstrap.min.css"  type="text/css" media="all")
+    %link(rel="stylesheet" href="/css/bootstrap-responsive.min.css"  type="text/css" media="all")
     %link(rel="stylesheet" href="/css/milkode.css"  type="text/css" media="all")
     %script(type='text/javascript' src='/js/milkode.js')
 
-  %body#toppage
-    .header
-      %h1 <a href="/"><img src=#{@setting.home_icon} alt="milkode-icon" border="0" height="135px"/></a> #{@setting.home_title} <font class="version">#{@version}</font>
-     
-    .content
-      %form(method="post" action="/search")
-        %p
-          %input(name="query" type="text" size="60")
-          %input(type="submit" value="検索")
-          %input(name='pathname' type='hidden' value='/home')
-     
-    .footer
-      <a href="/home">#{@package_num}</a>のパッケージ<br>
-      <a href="/home?query=f:*">#{@file_num}</a>のファイル<br>
-      <a href="/help">ヘルプ</a>
-      = @setting.about_milkode
+  %body
+    .container#toppage
+      .row
+        .span10.offset2
+          %h1 <a href="/"><img src=#{@setting.home_icon} alt="milkode-icon" border="0" height="135px" /></a> #{@setting.home_title} <font class="version">#{@version}</font>
+
+      .row
+        .span10.offset2
+          .form
+            %form(method="post" action="/search")
+              %input(name="query" type="text" style="width: 419px;")
+              %input(type="submit" value="検索")
+              %input(name='pathname' type='hidden' value='/home')
+
+      .row
+        .span3
+          %h2 最新
+          %ul
+            %li milkode
+            %li mruby
+            %li ruby
+            %li twitter-bootstrap
+          もっとみる
+        .span3
+          %h2 更新
+          %ul
+            %li milkode
+            %li mruby
+            %li ruby
+            %li twitter-bootstrap
+          もっとみる
+        .span3
+          %h2 閲覧
+          %ul
+            %li 12345678901234567890
+            %li mruby
+            %li ruby
+            %li twitter-bootstrap
+          もっとみる
+        .span3
+          %h2 お気に入り
+          %ul
+            %li milkode
+            %li mruby
+            %li ruby
+            %li twitter-bootstrap
+          もっとみる
+   
+      %hr
+   
+      .row
+        .span4.offset4
+          .footer
+            <a href="/home">#{@package_num}</a>のパッケージ<br>
+            <a href="/home?query=f:*">#{@file_num}</a>のファイル<br>
+            <a href="/help">ヘルプ</a>
+            = @setting.about_milkode
+
+    
 
 
