@@ -23,7 +23,7 @@ get '/' do
   @version = "0.7.0"
   @package_num = Database.instance.yaml_package_num
   @file_num = Database.instance.totalRecords
-  haml :index
+  haml :index, :layout => false
 end
 
 def package_path(path)
