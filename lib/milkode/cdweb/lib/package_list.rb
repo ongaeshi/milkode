@@ -39,7 +39,7 @@ module Milkode
       <<EOF
 <ul class="unstyled_margin">
 #{list}
-<li>もっとみる</li>
+<li><a href=\"/home">--------> 次へ</a></li>
 </ul>
 EOF
     end
