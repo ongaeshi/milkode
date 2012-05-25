@@ -15,6 +15,7 @@ require 'milkode/cdweb/lib/database'
 require 'milkode/cdweb/lib/command'
 require 'milkode/cdweb/lib/mkurl'
 require 'milkode/cdweb/lib/web_setting'
+require 'milkode/cdweb/lib/package_list'
 
 set :haml, :format => :html5
 
@@ -23,6 +24,7 @@ get '/' do
   @version = "0.7.0"
   @package_num = Database.instance.yaml_package_num
   @file_num = Database.instance.totalRecords
+  @package_list = PackageList.new
   haml :index, :layout => false
 end
 
