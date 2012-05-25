@@ -79,10 +79,23 @@ input#clear {
     font-size: 18px;
 }
 
+ul.unstyled_margin {
+    list-style: none;
+    margin-left: 7px;
+}
+
 /* toppage */
 
 #toppage {
     font-size: 14px;
+}
+
+#toppage ul a {
+    font-size: 17px;
+}
+
+#toppage ul {
+    font-size: 15px;
 }
 
 #toppage a {

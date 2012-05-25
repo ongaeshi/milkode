@@ -37,8 +37,9 @@ module Milkode
         "  <li><a href=\"/home/#{v}\">#{v}</a></li>"
       }.join("\n")
       <<EOF
-<ul>
+<ul class="unstyled_margin">
 #{list}
+<li>もっとみる</li>
 </ul>
 EOF
     end
