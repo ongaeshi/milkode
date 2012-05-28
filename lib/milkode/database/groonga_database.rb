@@ -79,9 +79,9 @@ module Milkode
 
         schema.create_table("packages", :type => :hash) do |table|
           table.string("name")
-          table.time("viewtime")
           table.time("addtime")
           table.time("updatetime")
+          table.time("viewtime")
           table.time("favtime")
         end
       end
