@@ -39,6 +39,10 @@ module Milkode
       end
     end
 
+    def sort(kind)
+      @table.sort([{:key => kind, :order => "descending"}])
+    end
+
     def dump
       self.each do |r|
         p [r.name, r.addtime, r.updatetime, r.viewtime, r.favtime]

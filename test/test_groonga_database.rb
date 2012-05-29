@@ -17,6 +17,7 @@ module Milkode
         t_open
         t_packages
         t_packages_viewtime
+        t_sort
       ensure
         t_cleanup
       end
@@ -91,6 +92,46 @@ module Milkode
 
       packages.remove_all
       assert_equal 0, packages.size
+    end
+
+    def t_sort
+      packages = @obj.packages
+
+      t = Time.now
+
+      r = packages.add("r1")
+      r.updatetime = t + 1
+      r.viewtime = t + 2
+      r.favtime = t + 3
+      
+      r = packages.add("r2")
+      r.updatetime = t + 3
+      r.viewtime = t + 1
+      # r.favtime
+      
+      r = packages.add("r3")
+      r.updatetime = t + 2
+      r.viewtime = t + 3
+      r.favtime = t + 2
+
+      sorted = packages.sort("updatetime")
+      assert_equal "r2", sorted[0].name 
+      assert_equal "r3", sorted[1].name 
+      assert_equal "r1", sorted[2].name 
+
+      sorted = packages.sort("viewtime")
+      assert_equal "r3", sorted[0].name 
+      assert_equal "r1", sorted[1].name 
+      assert_equal "r2", sorted[2].name 
+
+      sorted = packages.sort("favtime")
+      assert_equal "r1", sorted[0].name 
+      assert_equal "r3", sorted[1].name 
+      assert_equal "r2", sorted[2].name 
+
+      # sorted.each do |r|
+      #   p [r.name, r.addtime, r.updatetime, r.viewtime, r.favtime]
+      # end
     end
   end
 end
