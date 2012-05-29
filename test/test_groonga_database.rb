@@ -68,18 +68,29 @@ module Milkode
       packages.add("update")
       packages.add("view")
       packages.add("favorite")
+      assert_equal 4, packages.size
 
       packages.each do |r|
-        p r
+        # p r
       end
 
       r = packages["update"]
-      # r.touch_update
+      r.updatetime = Time.now
+      
+      r = packages["view"]
+      r.viewtime = Time.now
 
+      r = packages["favorite"]
+      r.favtime = Time.now
       
-      # r.touch_view
-      # r.favorite(true)
-      
+      # packages.dump
+
+      assert_not_equal 0, packages["update"].updatetime
+      assert_not_equal 0, packages["view"].viewtime
+      assert_not_equal 0, packages["favorite"].favtime
+
+      packages.remove_all
+      assert_equal 0, packages.size
     end
   end
 end

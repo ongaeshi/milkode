@@ -23,6 +23,12 @@ module Milkode
       @table[name].delete
     end
 
+    def remove_all
+      self.each do |r|
+        r.record_id.delete
+      end
+    end
+
     def [](name)
       @table[name]
     end
