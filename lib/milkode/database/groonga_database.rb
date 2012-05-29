@@ -29,6 +29,9 @@ module Milkode
         define_schema
       end
 
+      @packages = nil
+      @documents = nil
+
       if block_given?
         begin
           yield self
