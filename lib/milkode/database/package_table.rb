@@ -23,14 +23,18 @@ module Milkode
       @table[name].delete
     end
 
-    def get(name)
+    def [](name)
       @table[name]
     end
 
-    def dump
-      records = @table.select
+    def each
+      @table.select.each do |r|
+        yield r
+      end
+    end
 
-      records.each do |r|
+    def dump
+      self.each do |r|
         p [r.name, r.addtime, r.updatetime, r.viewtime, r.favtime]
       end
     end

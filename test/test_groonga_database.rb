@@ -51,14 +51,12 @@ module Milkode
       packages.add("milkode")
       assert_equal 1, packages.size
 
-      r = packages.get("milkode")
+      r = packages["milkode"]
       assert_equal "milkode", r.name
       assert r.addtime.to_i  > 0
       assert_equal 0, r.updatetime.to_i
       assert_equal 0, r.viewtime.to_i
       assert_equal 0, r.favtime.to_i
-
-      # packages.dump
 
       packages.remove("milkode")
       assert_equal 0, packages.size
@@ -71,7 +69,11 @@ module Milkode
       packages.add("view")
       packages.add("favorite")
 
-      r = packages.get("update")
+      packages.each do |r|
+        p r
+      end
+
+      r = packages["update"]
       # r.touch_update
 
       
