@@ -9,7 +9,7 @@ require 'rubygems'
 require 'groonga'
 require 'milkode/common/dbdir'
 require 'fileutils'
-require 'milkode/database/packages_table.rb'
+require 'milkode/database/package_table.rb'
 
 module Milkode
   class GroongaDatabase
@@ -52,7 +52,7 @@ module Milkode
     # end
 
     def packages
-      @packages ||= PackagesTable.new(Groonga["packages"])
+      @packages ||= PackageTable.new(Groonga["packages"])
     end
 
     private

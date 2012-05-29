@@ -6,7 +6,7 @@
 # @date   2012/05/29
 
 module Milkode
-  class PackagesTable
+  class PackageTable
     def initialize(table)
       @table = table
     end

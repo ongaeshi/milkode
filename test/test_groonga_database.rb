@@ -15,7 +15,7 @@ module Milkode
       begin
         t_setup
         t_open
-        t_packages_table
+        t_packages
         t_packages_viewtime
       ensure
         t_cleanup
@@ -42,7 +42,7 @@ module Milkode
       # @obj.close
     end
 
-    def t_packages_table
+    def t_packages
       # @obj.open(@tmp_dir)
 
       packages = @obj.packages
