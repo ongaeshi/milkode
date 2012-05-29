@@ -5,9 +5,12 @@
 # @author ongaeshi
 # @date   2012/05/25
 
+require 'milkode/cdweb/lib/database'
+
 module Milkode
   class PackageList
-    def initialize
+    def initialize(grndb)
+      @grndb = grndb
     end
 
     # topページへの表示数の調整は結構大切
@@ -17,19 +20,26 @@ module Milkode
     #   fav    .. 5
     #
     def top_view
-      top_list(%w(export-memo milkode melpa kodeworld junk mruby .emacs.d))
+      grndb_list("viewtime", 7)
+      # top_list(%w(kodeworld melpa emacs-deferred mruby rubygems_inner))
     end
 
     def top_add
-      top_list(%w(kodeworld melpa emacs-deferred mruby rubygems_inner))
+      grndb_list("addtime", 5)
     end
 
     def top_update
-      top_list(%w(milkode mruby junk export-memo .emacs.d))
+      grndb_list("updatetime", 5)
     end
 
     def top_fav
       top_list(%w(export-memo junk))
+    end
+
+    def grndb_list(column_name, num)
+      @grndb.open(Database.dbdir) # 再オープン時にパスを指定しなくて済むように
+      a = @grndb.packages.sort(column_name).map {|r| r.name}
+      top_list(a[0...num])
     end
 
     def top_list(list)

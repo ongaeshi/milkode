@@ -30,6 +30,7 @@ module Milkode
     end
 
     attr_reader :yaml
+    attr_reader :grndb
 
     def initialize
       open(Database.dbdir)

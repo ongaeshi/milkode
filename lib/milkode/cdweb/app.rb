@@ -24,7 +24,7 @@ get '/' do
   @version = "0.7.0"
   @package_num = Database.instance.yaml_package_num
   @file_num = Database.instance.totalRecords
-  @package_list = PackageList.new
+  @package_list = PackageList.new(Database.instance.grndb)
   haml :index, :layout => false
 end
 
