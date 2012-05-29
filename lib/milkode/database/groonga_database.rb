@@ -38,6 +38,13 @@ module Milkode
       end
     end
 
+    # あらかじめ GroongaDatabase#open しておく必要がある
+    def yaml_sync(yaml_contents)
+      yaml_contents.each do |yp|
+        packages.add(yp.name) if packages[yp.name].nil?
+      end
+    end
+
     def close
       @database.close
       @database = nil

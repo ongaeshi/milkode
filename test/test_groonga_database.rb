@@ -8,6 +8,7 @@
 require 'test_helper'
 require 'milkode/database/groonga_database'
 require 'milkode/common/dbdir'
+require 'milkode/cdstk/package.rb'
 
 module Milkode
   class TestGroongaDatabase < Test::Unit::TestCase
@@ -18,6 +19,7 @@ module Milkode
         t_packages
         t_packages_viewtime
         t_sort
+        t_yaml_sync
       ensure
         t_cleanup
       end
@@ -132,6 +134,27 @@ module Milkode
       # sorted.each do |r|
       #   p [r.name, r.addtime, r.updatetime, r.viewtime, r.favtime]
       # end
+
+      packages.remove_all
+    end
+
+    def t_yaml_sync
+      assert_equal 0, @obj.packages.size
+
+      yaml_contents =
+        [
+         Package.create('/path/to/dir'), 
+         Package.create('/path/to/d2'),
+         Package.create('/path/to/d3', ["*.bak"])
+        ]
+      @obj.yaml_sync(yaml_contents)
+      assert_equal 3, @obj.packages.size
+
+      yaml_contents << Package.create('/path/to/d4')
+      @obj.yaml_sync(yaml_contents)
+      assert_equal 4, @obj.packages.size
+
+      # @obj.packages.dump
     end
   end
 end

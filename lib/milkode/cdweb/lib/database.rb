@@ -11,9 +11,11 @@ require 'singleton'
 require 'groonga'
 require 'milkode/common/dbdir'
 require 'milkode/cdstk/yaml_file_wrapper'
+require 'milkode/database/groonga_database'
 include Milkode
 
 module Milkode
+  # @todo データベースアクセスは将来的にはGroongaDatabaseに収束させる
   class Database
     include Singleton
 
@@ -31,6 +33,11 @@ module Milkode
 
     def initialize
       open(Database.dbdir)
+
+      @grndb = GroongaDatabase.new
+      @grndb.open(Database.dbdir)
+      @grndb.yaml_sync(yaml_load.contents)
+      # @grndb.packages.dump
     end
 
     def yaml_reload
