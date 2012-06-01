@@ -33,12 +33,14 @@ module Milkode
     attr_reader :grndb
 
     def initialize
-      open(Database.dbdir)
+      # open(Database.dbdir)
 
       @grndb = GroongaDatabase.new
       @grndb.open(Database.dbdir)
       @grndb.yaml_sync(yaml_load.contents)
       # @grndb.packages.dump
+
+      @documents = Groonga["documents"]
     end
 
     def yaml_reload
@@ -217,7 +219,7 @@ module Milkode
     def reopen_patch
       # 削除系のコマンドが上手く動作しないためのパッチ
       # 本質的な解決にはなっていないと思う
-      open(Database.dbdir)
+      # open(Database.dbdir)
     end
 
     def searchMain(patterns, packages, fpaths, suffixs, offset, limit)

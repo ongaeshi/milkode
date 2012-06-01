@@ -37,7 +37,6 @@ module Milkode
     end
 
     def grndb_list(column_name, num)
-      @grndb.open(Database.dbdir) # 再オープン時にパスを指定しなくて済むように
       a = @grndb.packages.sort(column_name).map {|r| r.name}
       top_list(a[0...num])
     end
