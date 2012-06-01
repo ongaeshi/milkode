@@ -775,17 +775,19 @@ EOF
     end
 
     def db_open(filename)
-      dbfile = Pathname(File.expand_path(filename))
-      
-      if dbfile.exist?
-        # データベースを開く
-        Groonga::Database.open(dbfile.to_s)
+      Database.instance.open(Database.dbdir)
 
-        # 互換性テスト
-        db_compatible?
-      else
-        raise "error      : #{dbfile.to_s} not found!!"
-      end
+      # dbfile = Pathname(File.expand_path(filename))
+      
+      # if dbfile.exist?
+      #   # データベースを開く
+      #   Groonga::Database.open(dbfile.to_s)
+
+      #   # 互換性テスト
+      #   db_compatible?
+      # else
+      #   raise "error      : #{dbfile.to_s} not found!!"
+      # end
     end
 
     def db_delete(filename)

@@ -33,14 +33,7 @@ module Milkode
     attr_reader :grndb
 
     def initialize
-      # open(Database.dbdir)
-
-      @grndb = GroongaDatabase.new
-      @grndb.open(Database.dbdir)
-      @grndb.yaml_sync(yaml_load.contents)
-      # @grndb.packages.dump
-
-      @documents = Groonga["documents"]
+      open(Database.dbdir)
     end
 
     def yaml_reload
@@ -48,15 +41,12 @@ module Milkode
     end
 
     def open(db_dir)
-      dbfile = Dbdir.expand_groonga_path(db_dir)
-      
-      if File.exist? dbfile
-        Groonga::Database.open(dbfile)
-      else
-        raise "error    : #{dbfile} not found!!"
+      if !@grndb || @grndb.closed?
+        @grndb = GroongaDatabase.new
+        @grndb.open(Database.dbdir)
+        @grndb.yaml_sync(yaml_load.contents)
+        @documents = Groonga["documents"]
       end
-      
-      @documents = Groonga::Context.default["documents"]
     end
 
     def record(shortpath)
