@@ -27,12 +27,15 @@ module Milkode
     # @retval nil      更新無し
     #
     def add(filename, shortpath)
+      filename = File.expand_path(filename) # 絶対パスに変換
       path = Util::filename_to_utf8(filename) # データベースに格納する時のファイル名はutf8
       shortpath = Util::filename_to_utf8(shortpath)
       suffix = File.extname(path)
       timestamp = File.mtime(filename) # OSへの問い合わせは変換前のファイル名で
 
-      unless @table[path]
+      record = @table[path]
+
+      unless record
         # 新規追加
         @table.add(path, 
                    :path => path,
@@ -42,7 +45,17 @@ module Milkode
                    :suffix => suffix)
         return :newfile
       else
-        # 更新
+        if (record.timestamp < timestamp)
+          # 更新
+          record.shortpath = shortpath
+          record.content   = load_content(filename)
+          record.timestamp = timestamp
+          record.suffix    = suffix
+          return :update
+        else
+          # タイムスタンプ比較により更新無し
+          return nil
+        end
       end
     end
 
@@ -51,30 +64,32 @@ module Milkode
     end
     private :load_content
 
-    # # shortpathの一致するレコードを取得
-    # def shortpath(shortpath)
-    #   result = @table.select { |record| record.shortpath == shortpath }
-    #   return result.records[0]
-    # end
+    def remove(name)
+      @table[name].delete
+    end
+
+    def remove_all
+      self.each do |r|
+        r.record_id.delete
+      end
+    end
+
+    # shortpathの一致するレコードを取得
+    def shortpath(shortpath)
+      result = @table.select { |record| record.shortpath == shortpath }
+      return result.records[0]
+    end
     
-    # # 指定したpathにマッチするレコードを削除する(完全一致)
-    # def remove_path(path)
-    #   @table[path].delete
-    # end
-
-    # # 実体の存在しないデータを削除
-    # def cleanup
-    #   # クリーンアップ
-    #   records = selectAll2
-
-    #   records.each do |r|
-    #     unless File.exist? r.path
-    #       yield r if block_given?
-    #       # p r.shortpath
-    #       r.record_id.delete
-    #     end
-    #   end
-    # end
+    # 実体の存在しないデータを削除
+    def cleanup
+      self.each do |r|
+        unless File.exist? r.path
+          yield r if block_given?
+          # p r.shortpath
+          r.record_id.delete
+        end
+      end
+    end
 
     # # 指定されたパッケージのクリーンアップ
     # def cleanup_package_name(package)
