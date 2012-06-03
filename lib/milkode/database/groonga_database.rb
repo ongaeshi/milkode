@@ -10,6 +10,7 @@ require 'groonga'
 require 'milkode/common/dbdir'
 require 'fileutils'
 require 'milkode/database/package_table.rb'
+require 'milkode/database/document_table.rb'
 
 module Milkode
   class GroongaDatabase
@@ -57,9 +58,9 @@ module Milkode
       @database.nil? or @database.closed?
     end
 
-    # def documents
-    #   @documents ||= DocumentsTable.new(Groonga["documents"])
-    # end
+    def documents
+      @documents ||= DocumentTable.new(Groonga["documents"])
+    end
 
     def packages
       @packages ||= PackageTable.new(Groonga["packages"])
