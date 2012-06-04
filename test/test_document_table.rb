@@ -68,18 +68,16 @@ module Milkode
       assert_equal nil, documents.add(@file_b, 'c_project/b.txt')
       assert_equal 2, documents.size
 
-      # c_project/time.txt を現在時刻で書き換えて更新テスト
+      # ファイルの作成
+      current = Time.now
+      touch(@file_t, current - 1)
       documents.add(@file_t, 'c_project/time.txt')
       assert_equal 3, documents.size
 
-      open(@file_t, "w") do |dst|
-        dst.write(Time.now)
-      end
-
-      # documents.dump
-
+      # c_project/time.txt を現在時刻で書き換えて更新テスト
+      touch(@file_t, current)
       assert_equal :update, documents.add(@file_t, 'c_project/time.txt')
-      
+
       # documents.dump
 
       documents.remove_all
@@ -128,6 +126,11 @@ module Milkode
       assert_equal 0, documents.size
 
       documents.remove_all
+    end
+
+    def touch(filename, timestamp)
+      FileUtils.touch(filename, :mtime => timestamp)
+      # open(filename, "w") {|dst| dst.write(Time.now) }
     end
   end
 end
