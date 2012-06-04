@@ -59,11 +59,6 @@ module Milkode
       end
     end
 
-    def load_content(filename)
-      Kconv.kconv(File.read(filename), Kconv::UTF8)
-    end
-    private :load_content
-
     def remove(name)
       @table[name].delete
     end
@@ -91,6 +86,78 @@ module Milkode
       end
     end
 
+    # 詳細検索
+    # 
+    # @param patterns .. マッチする行
+    # @param packages .. パッケージ名(OR)
+    # @param paths    .. ファイルパス(AND)
+    # @param suffixs  .. 拡張子
+    # @param offset   .. オフセット
+    # @param limit    .. 表示リミット
+    def search(patterns, packages, paths, suffixs, offset = 0, limit = -1)
+      # @todo パッケージ名 -> ディレクトリ に展開
+      
+      result = @table.select do |record|
+        expression = nil
+
+        # マッチする行
+        patterns.each do |word|
+          sub_expression = record.content =~ word
+          if expression.nil?
+            expression = sub_expression
+          else
+            expression &= sub_expression
+          end
+        end
+        
+        # パッケージ(OR)
+        pe = package_expression(record, packages) 
+        if (pe)
+          if expression.nil?
+            expression = pe
+          else
+            expression &= pe
+          end
+        end
+        
+        # ファイルパス
+        paths.each do |word|
+          sub_expression = record.shortpath =~ word
+          if expression.nil?
+            expression = sub_expression
+          else
+            expression &= sub_expression
+          end
+        end
+
+        # 拡張子(OR)
+        se = suffix_expression(record, suffixs) 
+        if (se)
+          if expression.nil?
+            expression = se
+          else
+            expression &= se
+          end
+        end
+        
+        # 検索式
+        expression
+      end
+
+      # スコアとタイムスタンプでソート
+      # records = result.sort([{:key => "_score", :order => "descending"},
+      #                       {:key => "timestamp", :order => "descending"}],
+      #                      :offset => offset,
+      #                      :limit => limit)
+      
+      # ファイル名でソート
+      records = result.sort([{:key => "shortpath", :order => "ascending"}],
+                           :offset => offset,
+                           :limit => limit)
+
+      records
+    end
+
     # # 指定されたパッケージのクリーンアップ
     # def cleanup_package_name(package)
     #   # クリーンアップ対象のファイルを検索
@@ -106,17 +173,6 @@ module Milkode
     #   end
     # end
 
-    # # 複雑な検索
-    # # 
-    # # @param patterns .. マッチする行
-    # # @param packages .. パッケージ名(OR)
-    # # @param paths    .. ファイルパス(AND)
-    # # @param suffixs  .. 拡張子
-    # # @param offset   .. オフセット
-    # # @param limit    .. 表示リミット
-    # def search(patterns, packages, paths, suffixs, offset = 0, limit = -1)
-    # end
-
     def each
       @table.select.each do |r|
         yield r
@@ -127,6 +183,42 @@ module Milkode
       self.each do |r|
         p [r.path, r.shortpath, r.content, r.timestamp, r.suffix]
       end
+    end
+
+    private
+
+    def load_content(filename)
+      Kconv.kconv(File.read(filename), Kconv::UTF8)
+    end
+
+    def package_expression(record, packages)
+      sub = nil
+      
+      packages.each do |word|
+        e = record.path =~ word
+        if sub.nil?
+          sub = e
+        else
+          sub |= e
+        end
+      end
+
+      sub
+    end
+    
+    def suffix_expression(record, suffixs)
+      sub = nil
+      
+      suffixs.each do |word|
+        e = record.suffix =~ word
+        if sub.nil?
+          sub = e
+        else
+          sub |= e
+        end
+      end
+
+      sub
     end
   end
 end
