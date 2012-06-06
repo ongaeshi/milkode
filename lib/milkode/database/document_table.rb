@@ -19,16 +19,18 @@ module Milkode
 
     # 指定ファイルをテーブルに追加
     #
-    # @param filename ファイル名
-    # @param shortpath データベースに表示する名前
+    # @param package_dir パッケージディレクトリ -> '/path/to/Package'
+    # @param shortpath パッケージディレクトリ以下のパス名 -> 'src/Foo.hpp'
     # 
     # @retval :newfile 新規追加
     # @retval :update  更新
-    # @retval nil      更新無し
+    # @retval nil      タイムスタンプ比較により更新無し
     #
-    def add(filename, shortpath)
+    def add(package_dir, shortpath)
+      filename = File.join(package_dir, shortpath) # フルパスの作成
       filename = File.expand_path(filename) # 絶対パスに変換
       path = Util::filename_to_utf8(filename) # データベースに格納する時のファイル名はutf8
+      package = Util::filename_to_utf8(File.basename(package_dir))
       shortpath = Util::filename_to_utf8(shortpath)
       suffix = File.extname(path)
       timestamp = File.mtime(filename) # OSへの問い合わせは変換前のファイル名で
@@ -39,6 +41,7 @@ module Milkode
         # 新規追加
         @table.add(path, 
                    :path => path,
+                   :package => package,
                    :shortpath => shortpath,
                    :content => load_content(filename),
                    :timestamp => timestamp,
@@ -47,6 +50,7 @@ module Milkode
       else
         if (record.timestamp < timestamp)
           # 更新
+          record.package   = package
           record.shortpath = shortpath
           record.content   = load_content(filename)
           record.timestamp = timestamp
@@ -181,7 +185,7 @@ module Milkode
 
     def dump
       self.each do |r|
-        p [r.path, r.shortpath, r.content, r.timestamp, r.suffix]
+        p [r.path, r.package, r.shortpath, r.content, r.timestamp, r.suffix]
       end
     end
 
@@ -195,7 +199,7 @@ module Milkode
       sub = nil
       
       packages.each do |word|
-        e = record.path =~ word
+        e = record.package =~ word
         if sub.nil?
           sub = e
         else

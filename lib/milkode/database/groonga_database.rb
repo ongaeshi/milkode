@@ -72,6 +72,7 @@ module Milkode
       Groonga::Schema.define do |schema|
         schema.create_table("documents", :type => :hash) do |table|          
           table.string("path")
+          table.string("package")
           table.string("shortpath")
           table.text("content")
           table.time("timestamp")
@@ -83,6 +84,7 @@ module Milkode
                             :key_normalize => true,
                             :default_tokenizer => "TokenBigramSplitSymbolAlphaDigit") do |table|
           table.index("documents.path", :with_position => true)
+          table.index("documents.package", :with_position => true)
           table.index("documents.shortpath", :with_position => true)
           table.index("documents.content", :with_position => true)
           table.index("documents.suffix", :with_position => true)

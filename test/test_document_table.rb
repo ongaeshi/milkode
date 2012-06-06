@@ -34,17 +34,12 @@ module Milkode
     def t_setup
       @obj = GroongaDatabase.new
       @tmp_dir = expand("groonga_database_work")
-      @file_a = expand('data/c_project/a.txt')
-      @file_b = expand('data/c_project/b.txt')
-      @file_c = expand('data/c_project/c.txt')
-      @file_cc = expand('data/c_project/cc.txt')
-      @file_abc_c = expand('data/c_project/abc.c')
-      @file_abc_h = expand('data/c_project/abc.h')
-      @file_t = expand('data/c_project/time.txt')
+      @b_project = expand('data/b_project')
+      @c_project = expand('data/c_project')
     end
 
     def expand(path)
-      File.join(File.dirname(__FILE__), path)
+      File.expand_path(File.join(File.dirname(__FILE__), path))
     end
     
     def t_cleanup
@@ -69,24 +64,26 @@ module Milkode
       documents = @obj.documents
       assert_equal 0, documents.size
 
-      assert_equal :newfile, documents.add(@file_a, 'c_project/a.txt')
+      assert_equal :newfile, documents.add(@c_project, 'a.txt')
       assert_equal 1, documents.size
 
-      assert_equal :newfile, documents.add(@file_b, 'c_project/b.txt')
+      assert_equal :newfile, documents.add(@c_project, 'b.txt')
       assert_equal 2, documents.size
 
-      assert_equal nil, documents.add(@file_b, 'c_project/b.txt')
+      assert_equal nil, documents.add(@c_project, 'b.txt')
       assert_equal 2, documents.size
+
+      # documents.dump
 
       # ファイルの作成
       current = Time.now
-      touch(@file_t, current - 1)
-      documents.add(@file_t, 'c_project/time.txt')
+      touch(File.join(@c_project, 'time.txt'), current - 1)
+      documents.add(@c_project, 'time.txt')
       assert_equal 3, documents.size
 
       # c_project/time.txt を現在時刻で書き換えて更新テスト
-      touch(@file_t, current)
-      assert_equal :update, documents.add(@file_t, 'c_project/time.txt')
+      touch(File.join(@c_project, 'time.txt'), current)
+      assert_equal :update, documents.add(@c_project, 'time.txt')
 
       # documents.dump
 
@@ -96,13 +93,12 @@ module Milkode
 
     def t_remove
       documents = @obj.documents
-      assert_equal :newfile, documents.add(@file_a, 'c_project/a.txt')
-      assert_equal :newfile, documents.add(@file_b, 'c_project/b.txt')
+      assert_equal :newfile, documents.add(@c_project, 'a.txt')
+      assert_equal :newfile, documents.add(@c_project, 'b.txt')
       assert_equal 2, documents.size
 
-      documents.remove(File.expand_path(@file_a))
+      documents.remove(File.join(@c_project, 'a.txt'))
       assert_equal 1, documents.size
-
       # documents.dump
 
       documents.remove_all
@@ -110,13 +106,13 @@ module Milkode
 
     def t_shortpath
       documents = @obj.documents
-      documents.add(@file_a, 'c_project/a.txt')
-      documents.add(@file_b, 'c_project/b.txt')
-      documents.add(@file_t, 'c_project/time.txt')
+      documents.add(@c_project, 'a.txt')
+      documents.add(@c_project, 'b.txt')
+      documents.add(@c_project, 'time.txt')
 
-      assert_equal 'c_project/b.txt', documents.shortpath('c_project/b.txt').shortpath
-      assert_equal 'c_project/time.txt', documents.shortpath('c_project/time.txt').shortpath
-      assert_nil documents.shortpath('d_project/b.txt')
+      assert_equal 'b.txt', documents.shortpath('b.txt').shortpath
+      assert_equal 'time.txt', documents.shortpath('time.txt').shortpath
+      assert_nil documents.shortpath('c.txt')
 
       documents.remove_all
     end
@@ -124,11 +120,12 @@ module Milkode
     def t_grndb_cleanup
       documents = @obj.documents
 
-      tmp_filename = expand("groonga_database_work/test.c")
+      tmp_dir = expand("groonga_database_work")
+      tmp_filename = File.join(tmp_dir, 'test.c')
       open(tmp_filename, "w") do |file|
         file.write(Time.now)
       end
-      documents.add(tmp_filename, 'test.c')
+      documents.add(tmp_dir, 'test.c')
       assert_equal 1, documents.size
 
       FileUtils.rm_f tmp_filename
@@ -139,23 +136,23 @@ module Milkode
     end
 
     def t_search
-      @documents.add(@file_a, 'c_project/a.txt')
-      @documents.add(@file_b, 'c_project/b.txt')
-      @documents.add(@file_c, 'c_project/c.txt')
-      @documents.add(@file_cc, 'c_project/cc.txt')
+      @documents.add(@c_project, 'a.txt')
+      @documents.add(@c_project, 'b.txt')
+      @documents.add(@c_project, 'c.txt')
+      @documents.add(@c_project, 'cc.txt')
 
       records = @documents.search(['a'], [], [], [])
       assert_equal 1, records.size
-      assert_equal 'c_project/a.txt', records[0].shortpath
+      assert_equal 'a.txt', records[0].shortpath
 
       records = @documents.search(['b'], [], [], [])
       assert_equal 1, records.size
-      assert_equal 'c_project/b.txt', records[0].shortpath
+      assert_equal 'b.txt', records[0].shortpath
 
       records = @documents.search(['c'], [], [], [])
       assert_equal 2, records.size
-      assert_equal 'c_project/c.txt', records[0].shortpath
-      assert_equal 'c_project/cc.txt', records[1].shortpath
+      assert_equal 'c.txt', records[0].shortpath
+      assert_equal 'cc.txt', records[1].shortpath
 
       # @documents.dump
 
@@ -163,8 +160,8 @@ module Milkode
     end
 
     def t_search2
-      @documents.add(@file_abc_c, 'c_project/abc.c')
-      @documents.add(@file_abc_h, 'c_project/abc.h')
+      @documents.add(@c_project, 'abc.c')
+      @documents.add(@c_project, 'abc.h')
 
       records = @documents.search(['def', '456'], [], [], [])
       assert_equal 2, records.size
@@ -178,12 +175,20 @@ module Milkode
     end
 
     def t_search_packages
-      # @memo 後でテスト追加
+      @documents.add(@c_project, 'abc.c')
+      @documents.add(@b_project, 'runner.rb')
+
+      records = @documents.search([], ['b_project'], [], [])
+
+      assert_equal 1, records.size
+      assert_equal 'runner.rb', records[0].shortpath
+
+      @documents.remove_all
     end
 
     def t_search_paths
-      @documents.add(@file_abc_c, 'c_project/abc.c')
-      @documents.add(@file_abc_h, 'c_project/abc.h')
+      @documents.add(@c_project, 'abc.c')
+      @documents.add(@c_project, 'abc.h')
 
       records = @documents.search([], [], ['abc'], [])
       assert_equal 2, records.size
@@ -197,10 +202,10 @@ module Milkode
     end
 
     def t_search_suffixs
-      @documents.add(@file_a, 'c_project/a.txt')
-      @documents.add(@file_b, 'c_project/b.txt')
-      @documents.add(@file_abc_c, 'c_project/abc.c')
-      @documents.add(@file_abc_h, 'c_project/abc.h')
+      @documents.add(@c_project, 'a.txt')
+      @documents.add(@c_project, 'b.txt')
+      @documents.add(@c_project, 'abc.c')
+      @documents.add(@c_project, 'abc.h')
 
       records = @documents.search([], [], [], ['c'])
       assert_equal 1, records.size
