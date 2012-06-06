@@ -50,6 +50,9 @@ module Milkode
       # データベース削除
       @obj = nil
       FileUtils.rm_rf(@tmp_dir)
+
+      # time.txt削除
+      FileUtils.rm_f(File.join(@c_project, 'time.txt'))
     end
 
     def t_open
