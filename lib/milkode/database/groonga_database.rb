@@ -69,35 +69,8 @@ module Milkode
     private
 
     def define_schema
-      Groonga::Schema.define do |schema|
-        schema.create_table("documents", :type => :hash) do |table|          
-          table.string("path")
-          table.string("package")
-          table.string("shortpath")
-          table.text("content")
-          table.time("timestamp")
-          table.text("suffix")
-        end
-
-        schema.create_table("terms",
-                            :type => :patricia_trie,
-                            :key_normalize => true,
-                            :default_tokenizer => "TokenBigramSplitSymbolAlphaDigit") do |table|
-          table.index("documents.path", :with_position => true)
-          table.index("documents.package", :with_position => true)
-          table.index("documents.shortpath", :with_position => true)
-          table.index("documents.content", :with_position => true)
-          table.index("documents.suffix", :with_position => true)
-        end
-
-        schema.create_table("packages", :type => :hash) do |table|
-          table.string("name")
-          table.time("addtime")
-          table.time("updatetime")
-          table.time("viewtime")
-          table.time("favtime")
-        end
-      end
+      DocumentTable.define_schema
+      PackageTable.define_schema
     end
   end
 end

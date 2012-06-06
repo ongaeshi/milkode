@@ -9,6 +9,30 @@ require 'kconv'
 
 module Milkode
   class DocumentTable
+    def self.define_schema
+      Groonga::Schema.define do |schema|
+        schema.create_table("documents", :type => :hash) do |table|          
+          table.string("path")
+          table.string("package")
+          table.string("shortpath")
+          table.text("content")
+          table.time("timestamp")
+          table.text("suffix")
+        end
+
+        schema.create_table("terms",
+                            :type => :patricia_trie,
+                            :key_normalize => true,
+                            :default_tokenizer => "TokenBigramSplitSymbolAlphaDigit") do |table|
+          table.index("documents.path", :with_position => true)
+          table.index("documents.package", :with_position => true)
+          table.index("documents.shortpath", :with_position => true)
+          table.index("documents.content", :with_position => true)
+          table.index("documents.suffix", :with_position => true)
+        end
+      end
+    end
+    
     def initialize(table)
       @table = table
     end
@@ -99,8 +123,6 @@ module Milkode
     # @param offset   .. オフセット
     # @param limit    .. 表示リミット
     def search(patterns, packages, paths, suffixs, offset = 0, limit = -1)
-      # @todo パッケージ名 -> ディレクトリ に展開
-      
       result = @table.select do |record|
         expression = nil
 

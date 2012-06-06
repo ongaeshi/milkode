@@ -7,6 +7,18 @@
 
 module Milkode
   class PackageTable
+    def self.define_schema
+      Groonga::Schema.define do |schema|
+        schema.create_table("packages", :type => :hash) do |table|
+          table.string("name")
+          table.time("addtime")
+          table.time("updatetime")
+          table.time("viewtime")
+          table.time("favtime")
+        end
+      end
+    end
+
     def initialize(table)
       @table = table
     end
