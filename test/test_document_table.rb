@@ -26,6 +26,7 @@ module Milkode
         t_search_packages
         t_search_paths
         t_search_suffixs
+        t_search_keywords
       ensure
         t_cleanup
       end
@@ -223,6 +224,24 @@ module Milkode
       assert_equal 2, records.size
 
       # @documents.dump
+
+      @documents.remove_all
+    end
+
+    def t_search_keywords
+      @documents.add(@c_project, 'a.txt')
+      @documents.add(@c_project, 'b.txt')
+      @documents.add(@c_project, 'abc.c')
+      @documents.add(@c_project, 'abc.h')
+
+      records = @documents.search(:keywords => ['txt'])
+      assert_equal 2, records.size
+
+      records = @documents.search(:keywords => ['a'])
+      assert_equal 3, records.size
+
+      records = @documents.search(:keywords => ['project'])
+      assert_equal 4, records.size
 
       @documents.remove_all
     end

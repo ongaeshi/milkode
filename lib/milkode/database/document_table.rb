@@ -125,6 +125,7 @@ module Milkode
     #  :limit    => 表示リミット(default = -1)
     def search(options)
       patterns = options[:patterns] || []
+      keywords = options[:keywords] || []
       packages = options[:packages] || []
       paths    = options[:paths]    || []
       suffixs  = options[:suffixs]  || []
@@ -137,6 +138,18 @@ module Milkode
         # マッチする行
         patterns.each do |word|
           sub_expression = record.content =~ word
+          if expression.nil?
+            expression = sub_expression
+          else
+            expression &= sub_expression
+          end
+        end
+        
+        # キーワード(絞り込むための手がかり)
+        keywords.each do |word|
+          sub_expression = record.content =~ word
+          sub_expression |= record.shortpath =~ word
+          sub_expression |= record.package =~ word
           if expression.nil?
             expression = sub_expression
           else
