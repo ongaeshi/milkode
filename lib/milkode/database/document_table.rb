@@ -116,13 +116,21 @@ module Milkode
 
     # 詳細検索
     # 
-    # @param patterns .. マッチする行
-    # @param packages .. パッケージ名(OR)
-    # @param paths    .. ファイルパス(AND)
-    # @param suffixs  .. 拡張子
-    # @param offset   .. オフセット
-    # @param limit    .. 表示リミット
-    def search(patterns, packages, paths, suffixs, offset = 0, limit = -1)
+    # @param options 検索オプション、ハッシュで指定
+    #  :patterns => マッチする行
+    #  :packages => パッケージ名(OR)
+    #  :paths    => ファイルパス(AND)
+    #  :suffixs  => 拡張子
+    #  :offset   => オフセット(default = 0)
+    #  :limit    => 表示リミット(default = -1)
+    def search(options)
+      patterns = options[:patterns] || []
+      packages = options[:packages] || []
+      paths    = options[:paths]    || []
+      suffixs  = options[:suffixs]  || []
+      offset   = options[:offset]   || 0
+      limit    = options[:limit]    || -1
+      
       result = @table.select do |record|
         expression = nil
 

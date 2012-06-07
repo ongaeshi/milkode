@@ -144,15 +144,15 @@ module Milkode
       @documents.add(@c_project, 'c.txt')
       @documents.add(@c_project, 'cc.txt')
 
-      records = @documents.search(['a'], [], [], [])
+      records = @documents.search(:patterns => ['a'])
       assert_equal 1, records.size
       assert_equal 'a.txt', records[0].shortpath
 
-      records = @documents.search(['b'], [], [], [])
+      records = @documents.search(:patterns => ['b'])
       assert_equal 1, records.size
       assert_equal 'b.txt', records[0].shortpath
 
-      records = @documents.search(['c'], [], [], [])
+      records = @documents.search(:patterns => ['c'])
       assert_equal 2, records.size
       assert_equal 'c.txt', records[0].shortpath
       assert_equal 'cc.txt', records[1].shortpath
@@ -166,10 +166,10 @@ module Milkode
       @documents.add(@c_project, 'abc.c')
       @documents.add(@c_project, 'abc.h')
 
-      records = @documents.search(['def', '456'], [], [], [])
+      records = @documents.search(:patterns => ['def', '456'])
       assert_equal 2, records.size
 
-      records = @documents.search(['def', '123'], [], [], [])
+      records = @documents.search(:patterns => ['def', '123'])
       assert_equal 1, records.size
 
       # @documents.dump
@@ -181,7 +181,7 @@ module Milkode
       @documents.add(@c_project, 'abc.c')
       @documents.add(@b_project, 'runner.rb')
 
-      records = @documents.search([], ['b_project'], [], [])
+      records = @documents.search(:packages => ['b_project'])
 
       assert_equal 1, records.size
       assert_equal 'runner.rb', records[0].shortpath
@@ -193,10 +193,10 @@ module Milkode
       @documents.add(@c_project, 'abc.c')
       @documents.add(@c_project, 'abc.h')
 
-      records = @documents.search([], [], ['abc'], [])
+      records = @documents.search(:paths => ['abc'])
       assert_equal 2, records.size
 
-      records = @documents.search([], [], ['h'], [])
+      records = @documents.search(:paths => ['h'])
       assert_equal 1, records.size
 
       # @documents.dump
@@ -210,16 +210,16 @@ module Milkode
       @documents.add(@c_project, 'abc.c')
       @documents.add(@c_project, 'abc.h')
 
-      records = @documents.search([], [], [], ['c'])
+      records = @documents.search(:suffixs => ['c'])
       assert_equal 1, records.size
 
-      records = @documents.search([], [], [], ['h'])
+      records = @documents.search(:suffixs => ['h'])
       assert_equal 1, records.size
 
-      records = @documents.search([], [], [], ['h', 'c'])
+      records = @documents.search(:suffixs => ['h', 'c'])
       assert_equal 2, records.size
 
-      records = @documents.search([], [], [], ['txt'])
+      records = @documents.search(:suffixs => ['txt'])
       assert_equal 2, records.size
 
       # @documents.dump
