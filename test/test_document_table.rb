@@ -27,6 +27,7 @@ module Milkode
         t_search_paths
         t_search_suffixs
         t_search_keywords
+        t_cleanup_package_name
       ensure
         t_cleanup
       end
@@ -246,11 +247,32 @@ module Milkode
       @documents.remove_all
     end
 
+    def t_cleanup_package_name
+      @documents.add(@c_project, 'a.txt')
+      add_and_remove(@c_project, 'time.txt')
+      add_and_remove(@b_project, 'time.txt')
+
+      @documents.cleanup_package_name('c_project')
+      assert_equal 2, @documents.size
+
+      @documents.cleanup_package_name('b_project')
+      assert_equal 1, @documents.size
+
+      @documents.remove_all
+    end
+
     private
 
     def touch(filename, timestamp)
       FileUtils.touch(filename, :mtime => timestamp)
       # open(filename, "w") {|dst| dst.write(Time.now) }
+    end
+
+    def add_and_remove(project_dir, shortpath)
+      tmp_filename = File.join(project_dir, shortpath)
+      touch(tmp_filename, Time.now)
+      @documents.add(project_dir, shortpath)
+      FileUtils.rm_f tmp_filename
     end
   end
 end

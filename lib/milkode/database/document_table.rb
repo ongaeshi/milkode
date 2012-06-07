@@ -205,20 +205,20 @@ module Milkode
       records
     end
 
-    # # 指定されたパッケージのクリーンアップ
-    # def cleanup_package_name(package)
-    #   # クリーンアップ対象のファイルを検索
-    #   records, total_records = search([], [], package, [], [], 0, -1)
+    # 指定されたパッケージのクリーンアップ
+    def cleanup_package_name(package)
+      # クリーンアップ対象のファイルを検索
+      records = search(:packages => [package])
 
-    #   # 存在しないファイルの削除
-    #   records.each do |r|
-    #     unless File.exist? r.path
-    #       yield r if block_given?
-    #       # p r.shortpath
-    #       r.record_id.delete
-    #     end
-    #   end
-    # end
+      # 存在しないファイルの削除
+      records.each do |r|
+        unless File.exist? r.path
+          yield r if block_given?
+          # p r.shortpath
+          r.record_id.delete
+        end
+      end
+    end
 
     def each
       @table.select.each do |r|
