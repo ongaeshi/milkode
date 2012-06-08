@@ -91,6 +91,15 @@ module Milkode
       @table[name].delete
     end
 
+    def remove_match_path(path)
+      result = search(:paths => [path])
+
+      result.each do |r|
+          yield r if block_given?
+          r.record_id.delete
+      end
+    end
+
     def remove_all
       self.each do |r|
         r.record_id.delete
@@ -120,6 +129,7 @@ module Milkode
     #  :patterns => マッチする行
     #  :packages => パッケージ名(OR)
     #  :paths    => ファイルパス(AND)
+    #  :shortpaths => 短縮パス(AND)
     #  :suffixs  => 拡張子
     #  :offset   => オフセット(default = 0)
     #  :limit    => 表示リミット(default = -1)
@@ -128,6 +138,7 @@ module Milkode
       keywords = options[:keywords] || []
       packages = options[:packages] || []
       paths    = options[:paths]    || []
+      shortpaths = options[:shortpaths]    || []
       suffixs  = options[:suffixs]  || []
       offset   = options[:offset]   || 0
       limit    = options[:limit]    || -1
@@ -169,6 +180,16 @@ module Milkode
         
         # ファイルパス
         paths.each do |word|
+          sub_expression = record.path =~ word
+          if expression.nil?
+            expression = sub_expression
+          else
+            expression &= sub_expression
+          end
+        end
+
+        # 短縮パス
+        shortpaths.each do |word|
           sub_expression = record.shortpath =~ word
           if expression.nil?
             expression = sub_expression

@@ -28,6 +28,7 @@ module Milkode
         t_search_suffixs
         t_search_keywords
         t_cleanup_package_name
+        t_remove_match_path
       ensure
         t_cleanup
       end
@@ -198,7 +199,7 @@ module Milkode
       records = @documents.search(:paths => ['abc'])
       assert_equal 2, records.size
 
-      records = @documents.search(:paths => ['h'])
+      records = @documents.search(:shortpaths => ['h'])
       assert_equal 1, records.size
 
       # @documents.dump
@@ -256,6 +257,17 @@ module Milkode
       assert_equal 2, @documents.size
 
       @documents.cleanup_package_name('b_project')
+      assert_equal 1, @documents.size
+
+      @documents.remove_all
+    end
+
+    def t_remove_match_path
+      @documents.add(@c_project, 'a.txt')
+      @documents.add(@c_project, 'b.txt')
+      @documents.add(@b_project, 'runner.rb')
+
+      @documents.remove_match_path(@c_project)
       assert_equal 1, @documents.size
 
       @documents.remove_all
