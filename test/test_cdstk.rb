@@ -78,8 +78,7 @@ class TestCdstk < Test::Unit::TestCase
       obj.list(['com'], {:verbose => false})
 
       io.puts('--- cleanup ---')
-      # 何故か 'rake test' で実行すると上手く動かないので、一旦テストから外す
-      # obj.cleanup({:force=>true})
+      obj.cleanup({:force=>true})
 
       io.puts('--- rebuild ---')
       obj.rebuild([], {:all => true})

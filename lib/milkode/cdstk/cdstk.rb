@@ -17,14 +17,12 @@ begin
 rescue LoadError
   $no_readline = true
 end
-require 'milkode/cdweb/lib/database'
 require 'open-uri'
-
 require 'milkode/cdstk/cdstk_command'
-
 require 'milkode/cdstk/yaml_file_wrapper'
 require 'milkode/cdstk/package'
 require 'milkode/common/ignore_checker'
+require 'milkode/database/groonga_database'
 
 module Milkode
   class IgnoreError < RuntimeError ; end
@@ -40,7 +38,6 @@ module Milkode
     
     def initialize(io = $stdout, db_dir = ".")
       @db_dir = db_dir
-      Database.setup(@db_dir)
       @out = io
       # @out = $stdout # 強制出力
       @is_display_info = false     # alert_info の表示
@@ -403,9 +400,6 @@ module Milkode
     end
 
     def cleanup(options)
-      # 互換性テスト
-      db_open(db_file)
-
       # cleanup開始
       if (options[:force] or yes_or_no("cleanup contents? (yes/no)"))
         print_result do 
@@ -416,9 +410,14 @@ module Milkode
             @package_count += 1
           end
           @yaml.save
+
+          # データベースを開く
+          grndb_open
+      
+          # @todo yaml_sync
           
           # データベースのクリーンアップ
-          Database.instance.cleanup do |record|
+          @grndb.documents.cleanup do |record|
             alert("rm_record", record.path)
             @file_count += 1
           end
@@ -663,7 +662,8 @@ EOF
     end
 
     def cleanup_package_in(package)
-      Database.instance.cleanup_package_name(package.name)
+      grndb_open
+      @grndb.documents.cleanup_package_name(package.name)
     end
 
     def update_dir_in(dir)
@@ -687,6 +687,11 @@ EOF
         @yaml.remove(@yaml.find_dir(dir))
         @yaml.save
       end
+
+      # データベース開く
+      grndb_open
+
+      # @todo yaml_sync
         
       # データベースからも削除
       # dir = File.expand_path(dir)
@@ -694,7 +699,7 @@ EOF
       alert("rm_package", dir)
       @package_count += 1
 
-      Database.instance.remove_fpath(dir) do |record|
+      @grndb.documents.remove_match_path(dir) do |record|
         alert_info("rm_record", record.path)
         @file_count += 1
       end
@@ -724,7 +729,8 @@ EOF
     end
 
     def milkode_info
-      alert('*milkode*', "#{@yaml.contents.size} packages, #{Database.instance.totalRecords} records in #{db_file}.")
+      grndb_open
+      alert('*milkode*', "#{@yaml.contents.size} packages, #{@grndb.documents.size} records in #{db_file}.")
     end
 
     def db_create(filename)
@@ -775,19 +781,14 @@ EOF
     end
 
     def db_open(filename)
-      Database.instance.open(Database.dbdir)
+      grndb_open
+    end
 
-      # dbfile = Pathname(File.expand_path(filename))
-      
-      # if dbfile.exist?
-      #   # データベースを開く
-      #   Groonga::Database.open(dbfile.to_s)
-
-      #   # 互換性テスト
-      #   db_compatible?
-      # else
-      #   raise "error      : #{dbfile.to_s} not found!!"
-      # end
+    def grndb_open
+      if !@grndb || @grndb.closed?
+        @grndb = GroongaDatabase.new
+        @grndb.open(@db_dir)
+      end
     end
 
     def db_delete(filename)
