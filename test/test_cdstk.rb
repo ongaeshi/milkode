@@ -66,7 +66,7 @@ class TestCdstk < Test::Unit::TestCase
         # obj.update([], {})
       end
 
-      Database.instance.yaml_reload
+      # Database.instance.yaml_reload
 
       io.puts('--- remove ---')
       obj.remove(['findgrep'], {:force => true})
