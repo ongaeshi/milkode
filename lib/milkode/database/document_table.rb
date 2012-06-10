@@ -14,7 +14,7 @@ module Milkode
         schema.create_table("documents", :type => :hash) do |table|          
           table.string("path")
           table.string("package")
-          table.string("shortpath")
+          table.string("restpath")
           table.text("content")
           table.time("timestamp")
           table.text("suffix")
@@ -26,7 +26,7 @@ module Milkode
                             :default_tokenizer => "TokenBigramSplitSymbolAlphaDigit") do |table|
           table.index("documents.path", :with_position => true)
           table.index("documents.package", :with_position => true)
-          table.index("documents.shortpath", :with_position => true)
+          table.index("documents.restpath", :with_position => true)
           table.index("documents.content", :with_position => true)
           table.index("documents.suffix", :with_position => true)
         end
@@ -44,18 +44,19 @@ module Milkode
     # 指定ファイルをテーブルに追加
     #
     # @param package_dir パッケージディレクトリ -> '/path/to/Package'
-    # @param shortpath パッケージディレクトリ以下のパス名 -> 'src/Foo.hpp'
+    # @param restpath パッケージディレクトリ以下のパス名 -> 'src/Foo.hpp'
+    # @param package_name パッケージ名(未指定の場合は Fie.basename(package_dir) )
     # 
     # @retval :newfile 新規追加
     # @retval :update  更新
     # @retval nil      タイムスタンプ比較により更新無し
     #
-    def add(package_dir, shortpath)
-      filename = File.join(package_dir, shortpath) # フルパスの作成
+    def add(package_dir, restpath, package_name = nil)
+      filename = File.join(package_dir, restpath) # フルパスの作成
       filename = File.expand_path(filename) # 絶対パスに変換
       path = Util::filename_to_utf8(filename) # データベースに格納する時のファイル名はutf8
       package = Util::filename_to_utf8(File.basename(package_dir))
-      shortpath = Util::filename_to_utf8(shortpath)
+      restpath = Util::filename_to_utf8(restpath)
       suffix = File.extname(path)
       timestamp = File.mtime(filename) # OSへの問い合わせは変換前のファイル名で
 
@@ -66,7 +67,7 @@ module Milkode
         @table.add(path, 
                    :path => path,
                    :package => package,
-                   :shortpath => shortpath,
+                   :restpath => restpath,
                    :content => load_content(filename),
                    :timestamp => timestamp,
                    :suffix => suffix)
@@ -75,7 +76,7 @@ module Milkode
         if (record.timestamp < timestamp)
           # 更新
           record.package   = package
-          record.shortpath = shortpath
+          record.restpath = restpath
           record.content   = load_content(filename)
           record.timestamp = timestamp
           record.suffix    = suffix
@@ -107,8 +108,9 @@ module Milkode
     end
 
     # shortpathの一致するレコードを取得
-    def shortpath(shortpath)
-      result = @table.select { |record| record.shortpath == shortpath }
+    def get_shortpath(shortpath)
+      package, restpath = divide_shortpath(shortpath)
+      result = @table.select { |record| record.restpath == restpath }
       return result.records[0]
     end
     
@@ -117,7 +119,7 @@ module Milkode
       self.each do |r|
         unless File.exist? r.path
           yield r if block_given?
-          # p r.shortpath
+          # p r.restpath
           r.record_id.delete
         end
       end
@@ -129,7 +131,7 @@ module Milkode
     #  :patterns => マッチする行
     #  :packages => パッケージ名(OR)
     #  :paths    => ファイルパス(AND)
-    #  :shortpaths => 短縮パス(AND)
+    #  :restpaths => 短縮パス(AND)
     #  :suffixs  => 拡張子
     #  :offset   => オフセット(default = 0)
     #  :limit    => 表示リミット(default = -1)
@@ -138,7 +140,7 @@ module Milkode
       keywords = options[:keywords] || []
       packages = options[:packages] || []
       paths    = options[:paths]    || []
-      shortpaths = options[:shortpaths]    || []
+      restpaths = options[:restpaths]    || []
       suffixs  = options[:suffixs]  || []
       offset   = options[:offset]   || 0
       limit    = options[:limit]    || -1
@@ -159,7 +161,7 @@ module Milkode
         # キーワード(絞り込むための手がかり)
         keywords.each do |word|
           sub_expression = record.content =~ word
-          sub_expression |= record.shortpath =~ word
+          sub_expression |= record.restpath =~ word
           sub_expression |= record.package =~ word
           if expression.nil?
             expression = sub_expression
@@ -189,8 +191,8 @@ module Milkode
         end
 
         # 短縮パス
-        shortpaths.each do |word|
-          sub_expression = record.shortpath =~ word
+        restpaths.each do |word|
+          sub_expression = record.restpath =~ word
           if expression.nil?
             expression = sub_expression
           else
@@ -219,7 +221,8 @@ module Milkode
       #                      :limit => limit)
       
       # ファイル名でソート
-      records = result.sort([{:key => "shortpath", :order => "ascending"}],
+      records = result.sort([{:key => "package", :order => "ascending"},
+                            {:key => "restpath", :order => "ascending"}],
                            :offset => offset,
                            :limit => limit)
 
@@ -235,7 +238,7 @@ module Milkode
       records.each do |r|
         unless File.exist? r.path
           yield r if block_given?
-          # p r.shortpath
+          # p r.restpath
           r.record_id.delete
         end
       end
@@ -249,11 +252,16 @@ module Milkode
 
     def dump
       self.each do |r|
-        p [r.path, r.package, r.shortpath, r.content, r.timestamp, r.suffix]
+        p [r.path, r.package, r.restpath, r.content, r.timestamp, r.suffix]
       end
     end
 
     private
+
+    def divide_shortpath(shortpath)
+      a = shortpath.split('/')
+      return a[0], a[1..-1].join('/')
+    end
 
     def load_content(filename)
       Kconv.kconv(File.read(filename), Kconv::UTF8)

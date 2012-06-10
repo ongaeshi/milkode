@@ -29,6 +29,7 @@ module Milkode
         t_search_keywords
         t_cleanup_package_name
         t_remove_match_path
+        t_add_package_name
       ensure
         t_cleanup
       end
@@ -116,9 +117,9 @@ module Milkode
       documents.add(@c_project, 'b.txt')
       documents.add(@c_project, 'time.txt')
 
-      assert_equal 'b.txt', documents.shortpath('b.txt').shortpath
-      assert_equal 'time.txt', documents.shortpath('time.txt').shortpath
-      assert_nil documents.shortpath('c.txt')
+      assert_equal 'b.txt', documents.get_shortpath('c_project/b.txt').restpath
+      assert_equal 'time.txt', documents.get_shortpath('c_project/time.txt').restpath
+      assert_nil documents.get_shortpath('c_project/c.txt')
 
       documents.remove_all
     end
@@ -149,16 +150,16 @@ module Milkode
 
       records = @documents.search(:patterns => ['a'])
       assert_equal 1, records.size
-      assert_equal 'a.txt', records[0].shortpath
+      assert_equal 'a.txt', records[0].restpath
 
       records = @documents.search(:patterns => ['b'])
       assert_equal 1, records.size
-      assert_equal 'b.txt', records[0].shortpath
+      assert_equal 'b.txt', records[0].restpath
 
       records = @documents.search(:patterns => ['c'])
       assert_equal 2, records.size
-      assert_equal 'c.txt', records[0].shortpath
-      assert_equal 'cc.txt', records[1].shortpath
+      assert_equal 'c.txt', records[0].restpath
+      assert_equal 'cc.txt', records[1].restpath
 
       # @documents.dump
 
@@ -187,7 +188,7 @@ module Milkode
       records = @documents.search(:packages => ['b_project'])
 
       assert_equal 1, records.size
-      assert_equal 'runner.rb', records[0].shortpath
+      assert_equal 'runner.rb', records[0].restpath
 
       @documents.remove_all
     end
@@ -199,7 +200,7 @@ module Milkode
       records = @documents.search(:paths => ['abc'])
       assert_equal 2, records.size
 
-      records = @documents.search(:shortpaths => ['h'])
+      records = @documents.search(:restpaths => ['h'])
       assert_equal 1, records.size
 
       # @documents.dump
@@ -273,6 +274,19 @@ module Milkode
       @documents.remove_all
     end
 
+    def t_add_package_name
+      @documents.add(@c_project, 'a.txt', 'other_package')
+      @documents.add(@c_project, 'b.txt')
+
+      records = @documents.search(:keywords => ['project'])
+
+      # p @documents
+      # p records
+      # p records[0]
+
+      @documents.remove_all
+    end
+
     private
 
     def touch(filename, timestamp)
@@ -280,10 +294,10 @@ module Milkode
       # open(filename, "w") {|dst| dst.write(Time.now) }
     end
 
-    def add_and_remove(project_dir, shortpath)
-      tmp_filename = File.join(project_dir, shortpath)
+    def add_and_remove(project_dir, restpath)
+      tmp_filename = File.join(project_dir, restpath)
       touch(tmp_filename, Time.now)
-      @documents.add(project_dir, shortpath)
+      @documents.add(project_dir, restpath)
       FileUtils.rm_f tmp_filename
     end
   end
