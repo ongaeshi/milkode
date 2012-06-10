@@ -233,10 +233,10 @@ module Milkode
     # 指定されたパッケージのクリーンアップ
     def cleanup_package_name(package)
       # クリーンアップ対象のファイルを検索
-      records = search(:packages => [package])
+      result = @table.select { |record| record.package == package }
 
       # 存在しないファイルの削除
-      records.each do |r|
+      result.each do |r|
         unless File.exist? r.path
           yield r if block_given?
           # p r.restpath
