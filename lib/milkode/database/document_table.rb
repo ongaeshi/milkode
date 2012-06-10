@@ -118,12 +118,12 @@ module Milkode
     
     # 指定パス以下のファイルを全て取得
     def get_shortpath_below(shortpath)
-      if (shortpath.empty?)
+      if (shortpath.nil? || shortpath.empty?)
         @table.select.records
       else
         package, restpath = divide_shortpath(shortpath)
 
-        if (restpath.empty?)
+        if (restpath.nil? || restpath.empty?)
           @table.select { |record| record.package == package }.to_a
         else
           @table.select { |record| (record.package == package) & (record.restpath =~ restpath)}.to_a
@@ -280,9 +280,16 @@ module Milkode
 
     private
 
+    # 'package/to/a.txt' #=> 'package', 'to/a.txt'
+    # 'package'          #=> 'package', nil
     def divide_shortpath(shortpath)
       a = shortpath.split('/')
-      return a[0], a[1..-1].join('/')
+
+      if (a.size >= 2)
+        return a[0], a[1..-1].join('/')
+      else
+        return a[0], nil
+      end
     end
 
     def load_content(filename)
