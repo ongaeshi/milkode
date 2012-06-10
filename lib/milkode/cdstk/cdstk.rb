@@ -201,6 +201,12 @@ module Milkode
       # YAML更新
       @yaml.add(package)
       @yaml.save
+
+      # データベースを開く
+      db_open
+
+      # yamlファイルと同期する
+      @grndb.yaml_sync(@yaml.contents)
     end
 
     def convert_content(src)
@@ -441,8 +447,9 @@ module Milkode
 
           # データベースを開く
           db_open
-      
-          # @todo yaml_sync
+
+          # yamlファイルと同期する
+          @grndb.yaml_sync(@yaml.contents)
           
           # データベースのクリーンアップ
           @documents.cleanup do |record|
@@ -703,17 +710,21 @@ EOF
     end
 
     def remove_dir(dir, no_yaml = false)
-      # yamlから削除
       unless (no_yaml)
-        @yaml.remove(@yaml.find_dir(dir))
+        package = @yaml.find_dir(dir)
+
+        # yamlから削除
+        @yaml.remove(package)
         @yaml.save
+
+        # PackageTableから削除
+        db_open
+        @grndb.packages.remove package.name
       end
 
       # データベース開く
       db_open
 
-      # @todo yaml_sync
-        
       # データベースからも削除
       # dir = File.expand_path(dir)
 
