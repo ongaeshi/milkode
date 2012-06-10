@@ -3,7 +3,6 @@
 require 'yaml'
 require 'pathname'
 require 'rubygems'
-require 'groonga'
 require 'fileutils'
 require 'pathname'
 require 'milkode/common/grenfiletest'
@@ -23,6 +22,7 @@ require 'milkode/cdstk/yaml_file_wrapper'
 require 'milkode/cdstk/package'
 require 'milkode/common/ignore_checker'
 require 'milkode/database/groonga_database'
+require 'milkode/database/document_record'
 
 module Milkode
   class IgnoreError < RuntimeError ; end
@@ -467,7 +467,9 @@ module Milkode
     def dump
       db_open
 
-      @grndb.documents.each  do |record|
+      @grndb.documents.each  do |grnrcd|
+        record = DocumentRecord.new grnrcd
+        
         @out.puts record.inspect
         @out.puts "path : #{record.path}"
         @out.puts "shortpath : #{record.shortpath}"
@@ -668,7 +670,7 @@ EOF
       elsif (FileTest.directory? dir)
         db_add_dir(dir)
       else
-        db_add_file(STDOUT, dir, File.basename(dir)) # .bashrc/.bashrc のようになる
+        db_add_file(STDOUT, File.dirname(dir), File.basename(dir), File.basename(dir)) # .bashrc/.bashrc のようになる
       end
     end
 
@@ -772,57 +774,22 @@ EOF
     end
     private :db_add_dir
 
-    def db_add_file(stdout, filename, shortpath)
+    def db_add_file(stdout, package_dir, restpath, package_name = nil)
       # サイレントモード
       return if @is_silent
 
-      # ファイル名を全てUTF-8に変換
-      filename_utf8 = Util::filename_to_utf8(filename)
-      shortpath_utf8 = Util::filename_to_utf8(shortpath)
-      suffix_utf8 = File::extname(filename_utf8)
-      
-      # 格納するデータ
-      values = {
-        :path => filename_utf8,
-        :shortpath => shortpath_utf8,
-        :content => nil,
-        :timestamp => File.mtime(filename),
-        :suffix => suffix_utf8,
-      }
-      
-      # 検索するデータベース
-      documents = Groonga::Context.default["documents"]
-      
-      record = documents[ values[:path] ]
-      isNewFile = false
+       # p [package_dir, restpath, package_name]
 
-      unless record
-        document = documents.add(values[:path])
-        isNewFile = true
-      else
-        document = record
-      end
-      
-      # タイムスタンプが新しければデータベースに格納
-      if (document[:timestamp] < values[:timestamp])
-        # 実際に使うタイミングでファイルの内容を読み込み
-        # values[:content] = open(filename).read
-        # データベース内の文字コードは'utf-8'で統一
-        values[:content] = Kconv.kconv(File.read(filename), Kconv::UTF8)
-        
-        # データベースに格納
-        values.each do |key, value|
-          if (key == :path)
-            if (isNewFile)
-              @add_count += 1
-              alert_info("add_record", value)
-            else
-              @update_count += 1
-              alert_info("update", value)
-            end
-          end
-          document[key] = value
-        end
+      # レコードの追加
+      result = @grndb.documents.add(package_dir, restpath, package_name)
+
+      case result
+      when :newfile
+        @add_count += 1
+        alert_info("add_record", File.join(package_dir, restpath))
+      when :update
+        @update_count += 1
+        alert_info("update", File.join(package_dir, restpath))
       end
     end
 
@@ -850,7 +817,7 @@ EOF
           searchDirectory(stdout, dirname, packname, next_path, depth + 1)
         when "file"
           unless ignoreFile?(fpath, next_path)
-            db_add_file(stdout, fpath, shortpath)
+            db_add_file(stdout, dirname, next_path) # shortpathの先頭に'/'が付いているのが気になる
             @file_count += 1
             # @out.puts "file_count : #{@file_count}" if (@file_count % 100 == 0)
           end
