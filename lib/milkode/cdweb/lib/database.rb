@@ -54,21 +54,27 @@ module Milkode
     end
 
     def search(patterns, packages, current_path, fpaths, suffixs, offset = 0, limit = -1)
-      # パッケージ名から絶対パスに変換
-      unless packages.empty?
-        packages = convert_packages(packages)
-
-        # キーワードがパッケージ名にマッチしなければ検索しない
-        return [], 0 if packages.empty?
-      else
-        # パッケージ名未指定の時は現在位置もfpathsに含める
-        if current_path != ""
-          fpaths << path2fpath(current_path)
-        end
+      # パッケージ名未指定の時は現在位置を検索条件に追加
+      if packages.empty? && current_path != ''
+        package, restpath = Util::divide_shortpath(current_path)
+        packages << package
+        fpaths << restpath if restpath
       end
-      
-      # @todo fpathを厳密に検索するには、検索結果からさらに先頭からのパスではないものを除外する
-      records, total_records = searchMain(patterns, packages, fpaths, suffixs, offset, limit)
+
+      # 検索
+      result = @documents.search(
+        :patterns  => patterns,
+        # :keywords  => ,
+        # :paths     => ,
+        :packages  => packages,
+        :restpaths => fpaths,
+        :suffixs   => suffixs,
+        :offset    => offset,
+        :limit     => limit,
+      )
+
+      # 結果
+      return result.map{|r| DocumentRecord.new(r)}, result.size
     end
 
     def selectAll(offset, limit)
