@@ -110,14 +110,14 @@ module Milkode
     end
 
     # shortpathの一致するレコードを取得
-    def get_shortpath(shortpath)
+    def find_shortpath(shortpath)
       package, restpath = Util::divide_shortpath(shortpath)
       result = @table.select { |record| (record.package == package) & (record.restpath == restpath) }
       return result.records[0]
     end
     
     # 指定パス以下のファイルを全て取得
-    def get_shortpath_below(shortpath)
+    def find_shortpath_below(shortpath)
       if (shortpath.nil? || shortpath.empty?)
         @table.select.records
       else

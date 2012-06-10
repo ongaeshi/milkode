@@ -50,7 +50,7 @@ module Milkode
     end
 
     def record(shortpath)
-      DocumentRecord.create @documents.get_shortpath(shortpath)
+      DocumentRecord.create @documents.find_shortpath(shortpath)
     end
 
     def search(patterns, packages, current_path, fpaths, suffixs, offset = 0, limit = -1)
@@ -103,7 +103,7 @@ module Milkode
       end
 
       # base/以下のファイルを全て取得
-      records = @documents.get_shortpath_below(base)
+      records = @documents.find_shortpath_below(base)
 
       # ファイルリストの生成
       paths = records.map {|record|

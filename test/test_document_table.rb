@@ -118,9 +118,9 @@ module Milkode
       documents.add(@c_project, 'b.txt')
       documents.add(@c_project, 'time.txt')
 
-      assert_equal 'b.txt', documents.get_shortpath('c_project/b.txt').restpath
-      assert_equal 'time.txt', documents.get_shortpath('c_project/time.txt').restpath
-      assert_nil documents.get_shortpath('c_project/c.txt')
+      assert_equal 'b.txt', documents.find_shortpath('c_project/b.txt').restpath
+      assert_equal 'time.txt', documents.find_shortpath('c_project/time.txt').restpath
+      assert_nil documents.find_shortpath('c_project/c.txt')
 
       documents.remove_all
     end
@@ -279,9 +279,9 @@ module Milkode
       @documents.add(@c_project, 'a.txt', 'other_package')
       @documents.add(@c_project, 'b.txt')
 
-      assert_equal nil, @documents.get_shortpath('c_project/a.txt')
-      assert_equal 'other_package', @documents.get_shortpath('other_package/a.txt').package
-      assert_equal 'c_project', @documents.get_shortpath('c_project/b.txt').package
+      assert_equal nil, @documents.find_shortpath('c_project/a.txt')
+      assert_equal 'other_package', @documents.find_shortpath('other_package/a.txt').package
+      assert_equal 'c_project', @documents.find_shortpath('c_project/b.txt').package
 
       @documents.remove_all
     end
@@ -292,10 +292,10 @@ module Milkode
       @documents.add(@c_project, 'to/file.rb')
       @documents.add(@b_project, 'runner.rb')
 
-      assert_equal 4, @documents.get_shortpath_below('').size
-      assert_equal 3, @documents.get_shortpath_below('c_project').size
-      assert_equal 1, @documents.get_shortpath_below('c_project/to').size
-      assert_equal 1, @documents.get_shortpath_below('c_project/to/').size
+      assert_equal 4, @documents.find_shortpath_below('').size
+      assert_equal 3, @documents.find_shortpath_below('c_project').size
+      assert_equal 1, @documents.find_shortpath_below('c_project/to').size
+      assert_equal 1, @documents.find_shortpath_below('c_project/to/').size
 
       @documents.remove_all
     end
