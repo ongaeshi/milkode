@@ -44,7 +44,7 @@ module Milkode
     end
 
     def html_contents
-      @records.map {|record| result_record(record)}.join
+      @records.map {|record| result_record(DocumentRecord.new(record))}.join
     end
     
     def html_pagination
@@ -76,7 +76,6 @@ EOF
     end
 
     def result_record(record)
-      record = DocumentRecord.new(record)
       <<EOS
     <dt class='result-file'>#{file_or_dirimg(true)}<a href='#{"/home/" + record_link(record)}'>#{Util::relative_path record.shortpath, @path}</a></dt>
 EOS
