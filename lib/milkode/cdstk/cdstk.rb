@@ -778,11 +778,15 @@ EOF
       # サイレントモード
       return if @is_silent
 
-       # p [package_dir, restpath, package_name]
+      # データベースには先頭の'/'を抜いて登録する
+      #   最初から'/'を抜いておけば高速化の余地あり?
+      #   ignore設定との互換性保持が必要
+      restpath = restpath.sub(/^\//, "")
 
       # レコードの追加
       result = @grndb.documents.add(package_dir, restpath, package_name)
 
+      # メッセージの表示
       case result
       when :newfile
         @add_count += 1
