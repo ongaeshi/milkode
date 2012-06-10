@@ -111,7 +111,7 @@ module Milkode
 
     # shortpathの一致するレコードを取得
     def get_shortpath(shortpath)
-      package, restpath = divide_shortpath(shortpath)
+      package, restpath = Util::divide_shortpath(shortpath)
       result = @table.select { |record| (record.package == package) & (record.restpath == restpath) }
       return result.records[0]
     end
@@ -121,7 +121,7 @@ module Milkode
       if (shortpath.nil? || shortpath.empty?)
         @table.select.records
       else
-        package, restpath = divide_shortpath(shortpath)
+        package, restpath = Util::divide_shortpath(shortpath)
 
         if (restpath.nil? || restpath.empty?)
           @table.select { |record| record.package == package }.to_a
@@ -301,18 +301,6 @@ module Milkode
     end
 
     private
-
-    # 'package/to/a.txt' #=> 'package', 'to/a.txt'
-    # 'package'          #=> 'package', nil
-    def divide_shortpath(shortpath)
-      a = shortpath.split('/')
-
-      if (a.size >= 2)
-        return a[0], a[1..-1].join('/')
-      else
-        return a[0], nil
-      end
-    end
 
     def load_content(filename)
       Kconv.kconv(File.read(filename), Kconv::UTF8)
