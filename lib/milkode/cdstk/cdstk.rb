@@ -8,7 +8,6 @@ require 'pathname'
 require 'milkode/common/grenfiletest'
 require 'milkode/common/util'
 require 'milkode/common/dir'
-require 'milkode/findgrep/findgrep'
 include Milkode
 require 'kconv'
 begin
@@ -417,7 +416,7 @@ module Milkode
           # @todo yaml_sync
           
           # データベースのクリーンアップ
-          @grndb.documents.cleanup do |record|
+          @documents.cleanup do |record|
             alert("rm_record", record.path)
             @file_count += 1
           end
@@ -467,7 +466,7 @@ module Milkode
     def dump
       db_open
 
-      @grndb.documents.each  do |grnrcd|
+      @documents.each do |grnrcd|
         record = DocumentRecord.new grnrcd
         
         @out.puts record.inspect
@@ -479,7 +478,7 @@ module Milkode
         @out.puts
       end
 
-      @out.puts "total #{@grndb.documents.size} record."
+      @out.puts "total #{@documents.size} record."
     end
 
     def dir(args, options)
@@ -656,7 +655,7 @@ EOF
 
     def cleanup_package_in(package)
       db_open
-      @grndb.documents.cleanup_package_name(package.name)
+      @documents.cleanup_package_name(package.name)
     end
 
     def update_dir_in(dir)
@@ -692,7 +691,7 @@ EOF
       alert("rm_package", dir)
       @package_count += 1
 
-      @grndb.documents.remove_match_path(dir) do |record|
+      @documents.remove_match_path(dir) do |record|
         alert_info("rm_record", record.path)
         @file_count += 1
       end
@@ -723,7 +722,7 @@ EOF
 
     def milkode_info
       db_open
-      alert('*milkode*', "#{@yaml.contents.size} packages, #{@grndb.documents.size} records in #{db_file}.")
+      alert('*milkode*', "#{@yaml.contents.size} packages, #{@documents.size} records in #{db_file}.")
     end
 
     def db_create
@@ -738,13 +737,8 @@ EOF
     end
 
     def list_info(packages)
-      option = FindGrep::FindGrep::DEFAULT_OPTION.dup
-      option.dbFile = Dbdir.groonga_path(Dbdir.default_dir)
-      option.isSilent = true
-      option.packages = packages.map{|p| p.directory}
-      findGrep = FindGrep::FindGrep.new([], option)
-      records = findGrep.pickupRecords
-      
+      db_open
+      records = @documents.search(:packages => packages.map{|p| p.name})
       alert('*milk_list*', "#{packages.size} packages, #{records.size} records in #{db_file}.")
     end
 
@@ -752,6 +746,7 @@ EOF
       if !@grndb || @grndb.closed?
         @grndb = GroongaDatabase.new
         @grndb.open(@db_dir)
+        @documents = @grndb.documents
       end
     end
 
@@ -784,7 +779,7 @@ EOF
       restpath = restpath.sub(/^\//, "")
 
       # レコードの追加
-      result = @grndb.documents.add(package_dir, restpath, package_name)
+      result = @documents.add(package_dir, restpath, package_name)
 
       # メッセージの表示
       case result
