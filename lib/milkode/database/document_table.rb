@@ -58,7 +58,7 @@ module Milkode
       path = Util::filename_to_utf8(filename) # データベースに格納する時のファイル名はutf8
       package = Util::filename_to_utf8(File.basename(package_dir))
       restpath = Util::filename_to_utf8(restpath)
-      suffix = File.extname(path)
+      suffix = File.extname(path).sub('.', "")
       timestamp = File.mtime(filename) # OSへの問い合わせは変換前のファイル名で
 
       record = @table[path]

@@ -62,7 +62,7 @@ module Milkode
       assert_equal 'c_project', r.package
       assert_equal 'a.txt', r.restpath
       assert_equal 'c_project/a.txt', r.shortpath
-      assert_equal '.txt', r.suffix
+      assert_equal 'txt', r.suffix
       # p r
 
       @documents.remove_all
