@@ -33,26 +33,24 @@ module Milkode
     attr_reader :grndb
 
     def initialize
-      open(Database.dbdir)
+      open
     end
 
     def yaml_reload
       # @yaml = YamlFileWrapper.load_if(@@db_dir || Dbdir.default_dir)
     end
 
-    def open(db_dir)
+    def open
       if !@grndb || @grndb.closed?
         @grndb = GroongaDatabase.new
         @grndb.open(Database.dbdir)
         @grndb.yaml_sync(yaml_load.contents)
-        @documents = Groonga["documents"]
+        @documents = @grndb.documents
       end
     end
 
     def record(shortpath)
-      reopen_patch
-      table = @documents.select { |record| record.shortpath == shortpath }
-      return table.records[0]
+      @documents.get_shortpath(shortpath)
     end
 
     def search(patterns, packages, current_path, fpaths, suffixs, offset = 0, limit = -1)
@@ -71,11 +69,6 @@ module Milkode
       
       # @todo fpathを厳密に検索するには、検索結果からさらに先頭からのパスではないものを除外する
       records, total_records = searchMain(patterns, packages, fpaths, suffixs, offset, limit)
-    end
-
-    def path2fpath(path)
-      pa = path.split("/")
-      File.join(convert_packages([pa[0]])[0], pa[1..-1].join('/'))
     end
 
     def selectAll(offset = 0, limit = -1)
@@ -110,11 +103,11 @@ module Milkode
     
     # レコード数を得る
     def totalRecords
-      reopen_patch
-      @documents.select.size      
+      @documents.size
     end
 
     # yamlからパッケージの総数を得る
+    # @todo PackageTableから取得するように変更する
     def yaml_package_num
       yaml_load.contents.size
     end
@@ -128,17 +121,13 @@ module Milkode
       if (base_depth == 0)
         return yaml_load.contents.sort_by{|v| v.name}.map{|v| [v.name, false] }
       end
-      
-      # shortpathにマッチするものだけに絞り込む
-      if (base == "")
-        records = @documents.select.records
-      else
-        records = @documents.select {|record| record.shortpath =~ base }.to_a
-      end
+
+      # base/以下のファイルを全て取得
+      records = @documents.get_shortpath_below(base)
 
       # ファイルリストの生成
       paths = records.map {|record|
-        record.shortpath.split("/")
+        DocumentRecord.new(record).shortpath.split("/")
       }.find_all {|parts|
         parts.length > base_depth and parts[0, base_depth] == base_parts
       }.map {|parts|
@@ -152,166 +141,13 @@ module Milkode
       paths
     end
     
-    # 指定したfpathにマッチするレコードを削除する
-    def remove_fpath(fpath)
-      # データベースを開き直す
-      reopen_patch
-      
-      # 削除したいコンテンツを検索
-      records, total_records = searchMain([], [], [fpath], [], 0, -1)
-
-      # 検索結果はHashのレコードなので、これを直接deleteしても駄目
-      # 1. Record#record_idを使って主キー(Groonga#Arrayのレコード)を取り出し
-      # 2. Record#delete で削除
-      records.each do |r|
-        yield r if block_given?
-        r.record_id.delete
-      end
-    end
-
-    # 実体の存在しないデータを削除
-    def cleanup
-      # データベースを開き直す
-      reopen_patch
-
-      # クリーンアップ
-      records = selectAll2
-
-      records.each do |r|
-        unless File.exist? r.path
-          yield r if block_given?
-          # p r.shortpath
-          r.record_id.delete
-        end
-      end
-    end
-
-    # 指定されたパッケージのクリーンアップ
-    def cleanup_package_name(package)
-      # データベースを開き直す
-      reopen_patch
-
-      # クリーンアップ対象のファイルを検索
-      records, total_records = search([], [], package, [], [], 0, -1)
-
-      # 存在しないファイルの削除
-      records.each do |r|
-        unless File.exist? r.path
-          yield r if block_given?
-          # p r.shortpath
-          r.record_id.delete
-        end
-      end
-    end
-
     private 
 
-    def reopen_patch
-      # 削除系のコマンドが上手く動作しないためのパッチ
-      # 本質的な解決にはなっていないと思う
-      # open(Database.dbdir)
+    def path2fpath(path)
+      pa = path.split("/")
+      File.join(convert_packages([pa[0]])[0], pa[1..-1].join('/'))
     end
 
-    def searchMain(patterns, packages, fpaths, suffixs, offset, limit)
-      table = @documents.select do |record|
-        expression = nil
-
-        # キーワード
-        patterns.each do |word|
-          sub_expression = record.content =~ word
-          if expression.nil?
-            expression = sub_expression
-          else
-            expression &= sub_expression
-          end
-        end
-        
-        # パッケージ(OR)
-        pe = package_expression(record, packages) 
-        if (pe)
-          if expression.nil?
-            expression = pe
-          else
-            expression &= pe
-          end
-        end
-        
-        # ファイルパス
-        fpaths.each do |word|
-          sub_expression = record.path =~ word
-          if expression.nil?
-            expression = sub_expression
-          else
-            expression &= sub_expression
-          end
-        end
-
-        # 拡張子(OR)
-        se = suffix_expression(record, suffixs) 
-        if (se)
-          if expression.nil?
-            expression = se
-          else
-            expression &= se
-          end
-        end
-        
-        # 検索式
-        expression
-      end
-
-      # スコアとタイムスタンプでソート
-      # records = table.sort([{:key => "_score", :order => "descending"},
-      #                       {:key => "timestamp", :order => "descending"}],
-      #                      :offset => offset,
-      #                      :limit => limit)
-      
-      # ファイル名でソート
-      records = table.sort([{:key => "shortpath", :order => "ascending"}],
-                           :offset => offset,
-                           :limit => limit)
-
-      # マッチ数
-      total_records = table.size
-      
-      return records, total_records
-    end
-    private :searchMain
-
-    def package_expression(record, packages)
-      sub = nil
-      
-      # @todo 専用カラム package が欲しいところ
-      #       でも今でもpackageはORとして機能してるからいいっちゃいい
-      packages.each do |word|
-        e = record.path =~ word
-        if sub.nil?
-          sub = e
-        else
-          sub |= e
-        end
-      end
-
-      sub
-    end
-    private :package_expression
-
-    def suffix_expression(record, suffixs)
-      sub = nil
-      
-      suffixs.each do |word|
-        e = record.suffix =~ word
-        if sub.nil?
-          sub = e
-        else
-          sub |= e
-        end
-      end
-
-      sub
-    end
-    private :suffix_expression
-    
     def convert_packages(packages)
       packages.inject([]) {|r, p| r += expand_packages(p)}
     end

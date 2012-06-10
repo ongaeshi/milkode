@@ -47,9 +47,6 @@ module Milkode
       setup_db
       t_open
       t_fileList
-      t_cleanup_package_name
-      t_cleanup
-      t_remove
     end
 
     def t_open
@@ -63,27 +60,6 @@ module Milkode
       assert_equal ['lib/milkode', false],              db.fileList('lib')[0]
       assert_equal ['lib/milkode/cdstk/cdstk.rb', true],      db.fileList('lib/milkode/cdstk')[0]
       assert_equal nil,                               db.fileList('lib/milkode/cdstk/cdstk.rb')[0]
-    end
-
-    def t_cleanup_package_name
-      db = Database.instance
-      prev = db.totalRecords
-      db.cleanup_package_name("lib")
-      assert_equal 1, prev - db.totalRecords
-    end
-
-    def t_cleanup
-      db = Database.instance
-      prev = db.totalRecords
-      db.cleanup
-      assert_equal 1, prev - db.totalRecords
-    end
-
-    def t_remove
-      db = Database.instance
-      db.remove_fpath(File.expand_path '../../test')
-      db.remove_fpath(File.expand_path '../../lib')
-      assert_equal 0, db.totalRecords
     end
 
     def teardown
