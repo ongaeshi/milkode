@@ -8,6 +8,14 @@
 module Milkode
   class DocumentRecord
     attr_accessor :grnrcd
+
+    def self.create(grnrcd)
+      if grnrcd
+        DocumentRecord.new grnrcd
+      else
+        nil
+      end
+    end
     
     def initialize(grnrcd)
       @grnrcd = grnrcd

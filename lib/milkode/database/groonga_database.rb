@@ -11,6 +11,7 @@ require 'milkode/common/dbdir'
 require 'fileutils'
 require 'milkode/database/package_table.rb'
 require 'milkode/database/document_table.rb'
+require 'milkode/database/document_record.rb'
 
 module Milkode
   class GroongaDatabase

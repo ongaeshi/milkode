@@ -50,7 +50,7 @@ module Milkode
     end
 
     def record(shortpath)
-      @documents.get_shortpath(shortpath)
+      DocumentRecord.create @documents.get_shortpath(shortpath)
     end
 
     def search(patterns, packages, current_path, fpaths, suffixs, offset = 0, limit = -1)
