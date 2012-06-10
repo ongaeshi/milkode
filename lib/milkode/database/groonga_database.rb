@@ -18,15 +18,19 @@ module Milkode
       @database = nil
     end
 
+    # ディレクトリを指定して開く
     def open(base_dir)
-      path = Dbdir.groonga_path(base_dir)
+      open_file Dbdir.groonga_path(base_dir)
+    end
 
-      if File.exist?(path)
-        @database = Groonga::Database.open(path)
+    # データベースファイルを指定して開く
+    def open_file(filename)
+      if File.exist?(filename)
+        @database = Groonga::Database.open(filename)
         define_schema
       else
-        FileUtils.mkdir_p(File.dirname path)
-        @database = Groonga::Database.create(:path => path)
+        FileUtils.mkdir_p(File.dirname filename)
+        @database = Groonga::Database.create(:path => filename)
         define_schema
       end
 

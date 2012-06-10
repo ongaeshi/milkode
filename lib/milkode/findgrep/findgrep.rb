@@ -7,11 +7,11 @@ require 'kconv'
 require 'milkode/common/platform'
 require 'milkode/common/grenfiletest'
 require 'milkode/common/grensnip'
-require 'groonga'
 require 'milkode/common/util'
 include Gren
 require 'cgi'
 require 'pathname'
+require 'milkode/database/groonga_database'
 
 module FindGrep
   class FindGrep
@@ -79,18 +79,20 @@ module FindGrep
     end
 
     def open_database()
-      # データベース開く
+      # データベースファイル
       dbfile = Pathname(File.expand_path(@option.dbFile))
-      
+
+      # データベース開く
       if dbfile.exist?
-        Groonga::Database.open(dbfile.to_s)
-        puts "open    : #{dbfile} open." unless @option.isSilent
+        if !@grndb || @grndb.closed?
+          @grndb = GroongaDatabase.new
+          @grndb.open_file(dbfile.to_s)
+          @documents = @grndb.documents
+          puts "open    : #{dbfile.to_s} open." unless @option.isSilent
+        end
       else
         raise "error    : #{dbfile.to_s} not found!!"
       end
-      
-      # ドキュメントを取
-      @documents = Groonga::Context.default["documents"]
     end
 
     def strs2regs(strs, ignore = false)
@@ -205,123 +207,17 @@ module FindGrep
     end
 
     def searchDatabase
-      # 全てのパターンを検索
-      table = @documents.select do |record|
-        expression = nil
-
-        # パターン(マッチ行)
-        @patterns.each do |word|
-          sub_expression = record.content =~ word
-          if expression.nil?
-            expression = sub_expression
-          else
-            expression &= sub_expression
-          end
-        end
-
-        # キーワード(絞り込むための手がかり)
-        @option.keywords.each do |word|
-          sub_expression = record.content =~ word
-          sub_expression |= record.path =~ word
-          if expression.nil?
-            expression = sub_expression
-          else
-            expression &= sub_expression
-          end
-        end
-        
-        # パッケージ(OR)
-        pe = package_expression(record, @option.packages)
-        if (pe)
-          if expression.nil?
-            expression = pe
-          else
-            expression &= pe
-          end
-        end
-        
-        # パス
-        @option.filePatterns.each do |word|
-          sub_expression = record.path =~ word
-          if expression.nil?
-            expression = sub_expression
-          else
-            expression &= sub_expression
-          end
-        end
-
-        # 拡張子(OR)
-        se = suffix_expression(record) 
-        if (se)
-          if expression.nil?
-            expression = se
-          else
-            expression &= se
-          end
-        end
-        
-        # 検索式
-        expression
-      end
-      
-      # @todo オプションで出来るようにする？
-      # タイムスタンプでソート
-      # records = table.sort([{:key => "_score", :order => "descending"},
-      #                       {:key => "timestamp", :order => "descending"}])
-
-      # ファイル名でソート
-      table.sort([{:key => "shortpath", :order => "ascending"}])
+      @documents.search(
+        :patterns  => @patterns,
+        :keywords  => @option.keywords,
+        :paths     => @option.filePatterns,
+        :packages  => @option.packages,
+        # :restpaths => ,
+        :suffixs   => @option.suffixs,
+        # :offset    => ,
+        # :limit     => ,
+      )
     end
-
-    def and_expression(key, list)
-      sub = nil
-      
-      list.each do |word|
-        e = key =~ word
-        if sub.nil?
-          sub = e
-        else
-          sub &= e
-        end
-      end
-
-      sub
-    end
-
-    def package_expression(record, packages)
-      sub = nil
-
-      # @todo 専用カラム package が欲しいところ
-      #       でも今でもpackageはORとして機能してるからいいっちゃいい
-      packages.each do |word|
-        e = record.path =~ word
-        if sub.nil?
-          sub = e
-        else
-          sub |= e
-        end
-      end
-
-      sub
-    end
-    private :package_expression
-
-    def suffix_expression(record)
-      sub = nil
-      
-      @option.suffixs.each do |word|
-        e = record.suffix =~ word
-        if sub.nil?
-          sub = e
-        else
-          sub |= e
-        end
-      end
-
-      sub
-    end
-    private :suffix_expression
-      
 
     def searchFromDir(stdout, dir, depth)
       if (@option.depth != -1 && depth > @option.depth)

@@ -131,8 +131,9 @@ module Milkode
     # 
     # @param options 検索オプション、ハッシュで指定
     #  :patterns => マッチする行
-    #  :packages => パッケージ名(OR)
+    #  :keywords => 検索キーワード
     #  :paths    => ファイルパス(AND)
+    #  :packages => パッケージ名(OR)
     #  :restpaths => 短縮パス(AND)
     #  :suffixs  => 拡張子
     #  :offset   => オフセット(default = 0)
