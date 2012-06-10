@@ -278,11 +278,9 @@ module Milkode
       @documents.add(@c_project, 'a.txt', 'other_package')
       @documents.add(@c_project, 'b.txt')
 
-      records = @documents.search(:keywords => ['project'])
-
-      # p @documents
-      # p records
-      # p records[0]
+      a = @documents.to_a
+      assert_equal 'other_package', a[0].package
+      assert_equal 'c_project', a[1].package
 
       @documents.remove_all
     end

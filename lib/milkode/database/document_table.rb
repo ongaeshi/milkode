@@ -56,7 +56,8 @@ module Milkode
       filename = File.join(package_dir, restpath) # フルパスの作成
       filename = File.expand_path(filename) # 絶対パスに変換
       path = Util::filename_to_utf8(filename) # データベースに格納する時のファイル名はutf8
-      package = Util::filename_to_utf8(File.basename(package_dir))
+      package = package_name || File.basename(package_dir)
+      package = Util::filename_to_utf8(package)
       restpath = Util::filename_to_utf8(restpath)
       suffix = File.extname(path).sub('.', "")
       timestamp = File.mtime(filename) # OSへの問い合わせは変換前のファイル名で
@@ -255,6 +256,10 @@ module Milkode
       self.each do |r|
         p [r.path, r.package, r.restpath, r.content, r.timestamp, r.suffix]
       end
+    end
+
+    def to_a
+      @table.to_a
     end
 
     private
