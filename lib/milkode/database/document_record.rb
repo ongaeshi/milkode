@@ -52,7 +52,11 @@ module Milkode
     # ---
 
     def shortpath
-      File.join @grnrcd.package, @grnrcd.restpath
+      DocumentRecord.shortpath(@grnrcd)
+    end
+
+    def self.shortpath(grnrcd)
+      File.join grnrcd.package, grnrcd.restpath
     end
   end
 end

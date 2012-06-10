@@ -247,6 +247,28 @@ module Milkode
       records
     end
 
+    def select_all_sort_by_shortpath(offset = 0, limit = -1)
+      result = @table.select
+
+      # @todo ここが速度低下の原因？と思ったけど、ここは全て選択の部分だけか・・・
+
+      # 2010/10/29 ongaeshi
+      # 本当はこのようにgroongaAPIでソートしたいのだが上手くいかなかった
+      #       # ファイル名順にソート
+      #       records = table.sort([{:key => "shortpath", :order => "descending"}],
+      #                            :offset => offset,
+      #                            :limit => limit)
+
+      # ソート
+      if (limit != -1)
+        records = result.records.sort_by{|record| DocumentRecord::shortpath(record).downcase }[offset, limit]
+      else
+        records = result.records.sort_by{|record| DocumentRecord::shortpath(record).downcase }[offset..limit]
+      end
+
+      return records, result.size
+    end
+
     # 指定されたパッケージのクリーンアップ
     def cleanup_package_name(package)
       # クリーンアップ対象のファイルを検索

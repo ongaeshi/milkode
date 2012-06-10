@@ -9,6 +9,7 @@ require 'milkode/cdweb/lib/query'
 require 'milkode/cdweb/lib/mkurl'
 require 'milkode/cdweb/lib/command'
 require 'milkode/common/util'
+require 'milkode/database/document_record'
 
 module Milkode
   class SearchFiles
@@ -75,6 +76,7 @@ EOF
     end
 
     def result_record(record)
+      record = DocumentRecord.new(record)
       <<EOS
     <dt class='result-file'>#{file_or_dirimg(true)}<a href='#{"/home/" + record_link(record)}'>#{Util::relative_path record.shortpath, @path}</a></dt>
 EOS

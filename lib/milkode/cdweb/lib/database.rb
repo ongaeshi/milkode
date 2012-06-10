@@ -71,36 +71,10 @@ module Milkode
       records, total_records = searchMain(patterns, packages, fpaths, suffixs, offset, limit)
     end
 
-    def selectAll(offset = 0, limit = -1)
-      table = @documents.select
-
-      # マッチ数
-      total_records = table.size
-      
-      # @todo ここが速度低下の原因？と思ったけど、ここは全て選択の部分だけか・・・
-
-      # 2010/10/29 ongaeshi
-      # 本当はこのようにgroongaAPIでソートしたいのだが上手くいかなかった
-      #       # ファイル名順にソート
-      #       records = table.sort([{:key => "shortpath", :order => "descending"}],
-      #                            :offset => offset,
-      #                            :limit => limit)
-
-      # ソート
-      if (limit != -1)
-        records = table.records.sort_by{|record| record.shortpath.downcase }[offset, limit]
-      else
-        records = table.records.sort_by{|record| record.shortpath.downcase }[offset..limit]
-      end
-
-      return records, total_records
+    def selectAll(offset, limit)
+      @documents.select_all_sort_by_shortpath(offset, limit)
     end
 
-    def selectAll2(offset = 0, limit = -1)
-      records, total_records = selectAll(offset, limit)
-      records
-    end
-    
     # レコード数を得る
     def totalRecords
       @documents.size
