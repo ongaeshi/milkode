@@ -7,6 +7,8 @@
 
 module Milkode
   class PackageTable
+    include Enumerable
+
     def self.define_schema
       Groonga::Schema.define do |schema|
         schema.create_table("packages", :type => :hash) do |table|

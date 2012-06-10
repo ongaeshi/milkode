@@ -22,6 +22,7 @@ require 'milkode/cdstk/package'
 require 'milkode/common/ignore_checker'
 require 'milkode/database/groonga_database'
 require 'milkode/database/document_record'
+require 'milkode/common/array_diff'
 
 module Milkode
   class IgnoreError < RuntimeError ; end
@@ -355,6 +356,11 @@ module Milkode
     end
 
     def list(args, options)
+      if options[:check]
+        check_integrity
+        return
+      end
+      
       match_p = @yaml.contents.find_all do |p|
         args.all? {|k| p.name.include? k }
       end
@@ -379,6 +385,29 @@ module Milkode
         milkode_info
       else
         list_info(match_p) unless match_p.empty?
+      end
+    end
+
+    def check_integrity
+      db_open
+
+      @out.puts "Check integrity ..."
+
+      yaml = @yaml.contents.map {|p| p.name}.sort
+      grndb = @grndb.packages.map {|p| p.name}.sort
+
+      d = yaml.diff grndb
+
+      unless d[0].empty?
+        @out.puts "'milkode.yaml' has #{d[0]}, but 'PackageTable' don't have."
+      end
+
+      unless d[1].empty?
+        @out.puts "'PackageTable' has #{d[1]}, but 'milkode.yaml' don't have."
+      end
+
+      if d[0].empty? && d[1].empty?
+        @out.puts 'ok'
       end
     end
 
