@@ -6,6 +6,7 @@
 # @date   2012/05/29
 
 require 'kconv'
+require 'milkode/common/util.rb'
 
 module Milkode
   class DocumentTable
