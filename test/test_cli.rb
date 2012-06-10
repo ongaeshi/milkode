@@ -9,7 +9,7 @@ require 'milkode/cli.rb'
 require 'test_helper'
 require 'milkode_test_work'
 
-class TestCLI_Cdstk < Test::Unit::TestCase
+class TestCLI < Test::Unit::TestCase
   def setup
     $stdout = StringIO.new
     @first_default_dir = Dbdir.default_dir
