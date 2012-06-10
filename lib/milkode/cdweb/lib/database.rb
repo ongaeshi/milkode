@@ -123,24 +123,9 @@ module Milkode
     
     private 
 
-    def path2fpath(path)
-      pa = path.split("/")
-      File.join(convert_packages([pa[0]])[0], pa[1..-1].join('/'))
-    end
-
-    def convert_packages(packages)
-      packages.inject([]) {|r, p| r += expand_packages(p)}
-    end
-
-    def expand_packages(keyword)
-      yaml_load.match_all(keyword).map{|p| p.directory}
-    end
-
     def yaml_load
       YamlFileWrapper.load_if(Database.dbdir)
     end
 
-    # --- error ---
-    class NotFoundPackage < RuntimeError ; end
   end
 end
