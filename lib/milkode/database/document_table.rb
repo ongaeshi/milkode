@@ -325,7 +325,7 @@ module Milkode
       sub = nil
       
       suffixs.each do |word|
-        e = record.suffix =~ word
+        e = record.suffix == word
         if sub.nil?
           sub = e
         else
