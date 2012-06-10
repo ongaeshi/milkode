@@ -112,8 +112,23 @@ module Milkode
     # shortpathの一致するレコードを取得
     def get_shortpath(shortpath)
       package, restpath = divide_shortpath(shortpath)
-      result = @table.select { |record| record.restpath == restpath }
+      result = @table.select { |record| (record.package == package) & (record.restpath == restpath) }
       return result.records[0]
+    end
+    
+    # 指定パス以下のファイルを全て取得
+    def get_shortpath_below(shortpath)
+      if (shortpath.empty?)
+        @table.select.records
+      else
+        package, restpath = divide_shortpath(shortpath)
+
+        if (restpath.empty?)
+          @table.select { |record| record.package == package }.to_a
+        else
+          @table.select { |record| (record.package == package) & (record.restpath =~ restpath)}.to_a
+        end
+      end
     end
     
     # 実体の存在しないデータを削除

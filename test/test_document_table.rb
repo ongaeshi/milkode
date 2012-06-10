@@ -30,6 +30,7 @@ module Milkode
         t_cleanup_package_name
         t_remove_match_path
         t_add_package_name
+        t_shortpath_below
       ensure
         t_cleanup
       end
@@ -278,9 +279,23 @@ module Milkode
       @documents.add(@c_project, 'a.txt', 'other_package')
       @documents.add(@c_project, 'b.txt')
 
-      a = @documents.to_a
-      assert_equal 'other_package', a[0].package
-      assert_equal 'c_project', a[1].package
+      assert_equal nil, @documents.get_shortpath('c_project/a.txt')
+      assert_equal 'other_package', @documents.get_shortpath('other_package/a.txt').package
+      assert_equal 'c_project', @documents.get_shortpath('c_project/b.txt').package
+
+      @documents.remove_all
+    end
+
+    def t_shortpath_below
+      @documents.add(@c_project, 'a.txt')
+      @documents.add(@c_project, 'b.txt')
+      @documents.add(@c_project, 'to/file.rb')
+      @documents.add(@b_project, 'runner.rb')
+
+      assert_equal 4, @documents.get_shortpath_below('').size
+      assert_equal 3, @documents.get_shortpath_below('c_project').size
+      assert_equal 1, @documents.get_shortpath_below('c_project/to').size
+      assert_equal 1, @documents.get_shortpath_below('c_project/to/').size
 
       @documents.remove_all
     end
