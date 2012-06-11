@@ -125,6 +125,12 @@ EOF
       end
     end
 
+    desc "fav [package1 package2 ...]", "Add favorite"
+    option :delete, :type => :boolean, :aliases => '-d', :desc => "Delete favorite."
+    def fav(*paths)
+      cdstk.fav(paths, options)
+    end
+
     desc "web", "Startup web interface"
     option :db, :default => Milkode::CLI_Cdweb::select_dbdir
     option :host, :default => '127.0.0.1', :aliases => '-o'

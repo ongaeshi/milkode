@@ -394,6 +394,20 @@ module Milkode
       end
     end
 
+    def fav(args, options)
+      db_open
+
+      if (args.empty?)
+        @out.puts @grndb.packages.favs.map{|r| r.name}
+      else
+        unless options[:delete]
+          args.each {|v| @grndb.packages.touch(v, :favtime)}
+        else
+          args.each {|v| @grndb.packages.touch(v, :favtime, Time.at(0))}
+        end
+      end
+    end
+
     def check_integrity
       db_open
 
