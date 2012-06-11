@@ -9,6 +9,11 @@ require 'milkode/cdweb/lib/database'
 
 module Milkode
   class PackageList
+    VIEW_NUM   = 7
+    ADD_NUM    = 5
+    UPDATE_NUM = 5
+    FAV_NUM    = 7
+    
     def initialize(grndb)
       @grndb = grndb
     end
@@ -20,20 +25,20 @@ module Milkode
     #   fav    .. 5
     #
     def top_view
-      grndb_list("viewtime", 7)
-      # top_list(%w(kodeworld melpa emacs-deferred mruby rubygems_inner))
+      grndb_list("viewtime", VIEW_NUM)
     end
 
     def top_add
-      grndb_list("addtime", 5)
+      grndb_list("addtime", ADD_NUM)
     end
 
     def top_update
-      grndb_list("updatetime", 5)
+      grndb_list("updatetime", UPDATE_NUM)
     end
 
     def top_fav
-      top_list(%w(export-memo junk))
+      a = @grndb.packages.favs.map{|r| r.name}
+      top_list(a[0...FAV_NUM])
     end
 
     def grndb_list(column_name, num)
