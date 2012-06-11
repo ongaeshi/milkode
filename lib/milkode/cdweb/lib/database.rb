@@ -123,7 +123,7 @@ module Milkode
 
     def touch_viewtime(path)
       package, restpath = Util::divide_shortpath(path)
-      @grndb.packages.touch(package, :viewtime)
+      @grndb.packages.touch(package, :viewtime) if package
     end
     
     private 
