@@ -66,6 +66,17 @@ module Milkode
     def touch(name, kind, time = Time.now)
       @table[name][kind] = time
     end
+
+    def favs
+      sorted = sort('favtime')
+      zero_time = Time.at(0)
+      index = sorted.find_index {|v| v.favtime == zero_time}
+      unless index.nil?
+        sorted[0...index]
+      else
+        sorted
+      end
+    end
   end
 end
 

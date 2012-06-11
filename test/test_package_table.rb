@@ -20,6 +20,7 @@ module Milkode
         t_sort
         t_yaml_sync
         t_touch
+        t_favs
       ensure
         t_cleanup
       end
@@ -176,6 +177,24 @@ module Milkode
 
       @packages.touch("r1", :favtime, t)
       assert_equal t, r.favtime
+
+      @packages.remove_all
+    end
+
+    def t_favs
+      @packages.add("r1")
+      @packages.add("r2")
+      @packages.add("r3")
+
+      assert_equal [], @packages.favs.map{|r| r.name}
+
+      current = Time.now
+      @packages.touch('r1', :favtime, current)
+      @packages.touch('r3', :favtime, current + 1)
+      assert_equal ['r3', 'r1'],  @packages.favs.map{|r| r.name}
+
+      @packages.touch('r2', :favtime, current + 2)
+      assert_equal ['r2', 'r3', 'r1'],  @packages.favs.map{|r| r.name}
 
       @packages.remove_all
     end
