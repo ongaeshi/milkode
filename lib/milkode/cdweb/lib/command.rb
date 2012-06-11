@@ -28,6 +28,7 @@ module Milkode
       @record_content = CodeRayWrapper.new(record.content, record.shortpath).to_html
     end
     
+    Database.instance.touch_viewtime(@path)
     @elapsed = Time.now - before
     haml :view
   end
@@ -61,6 +62,7 @@ module Milkode
     @record_content = fileList.map do |v|
       "<dt class='result-file'>#{file_or_dirimg(v[1])}<a href='#{Mkurl.new('/home/' + v[0], params).inherit_query_shead}'>#{File.basename v[0]}</a></dt>"
     end.join
+    Database.instance.touch_viewtime(path)
     @elapsed = Time.now - before
     haml :filelist
   end

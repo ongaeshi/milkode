@@ -120,6 +120,11 @@ module Milkode
       
       paths
     end
+
+    def touch_viewtime(path)
+      package, restpath = Util::divide_shortpath(path)
+      @grndb.packages.touch(package, :viewtime)
+    end
     
     private 
 
