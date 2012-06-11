@@ -818,6 +818,9 @@ EOF
       #   ignore設定との互換性保持が必要
       restpath = restpath.sub(/^\//, "")
 
+      # パッケージ名を設定
+      package_name = package_name || File.basename(package_dir)
+
       # レコードの追加
       result = @documents.add(package_dir, restpath, package_name)
 
@@ -827,6 +830,7 @@ EOF
         @add_count += 1
         alert_info("add_record", File.join(package_dir, restpath))
       when :update
+        @grndb.packages.touch(package_name, :updatetime)
         @update_count += 1
         alert_info("update", File.join(package_dir, restpath))
       end

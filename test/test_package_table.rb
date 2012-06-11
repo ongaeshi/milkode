@@ -19,6 +19,7 @@ module Milkode
         t_packages_viewtime
         t_sort
         t_yaml_sync
+        t_touch
       ensure
         t_cleanup
       end
@@ -41,6 +42,7 @@ module Milkode
 
     def t_open
       @obj.open(@tmp_dir)
+      @packages = @obj.packages
       # @obj.close
     end
 
@@ -154,6 +156,28 @@ module Milkode
       assert_equal 4, @obj.packages.size
 
       # @obj.packages.dump
+
+      @obj.packages.remove_all
+    end
+
+    def t_touch
+      r = @packages.add("r1")
+      t = Time.now
+
+      assert_not_equal t, r.updatetime
+      assert_not_equal t, r.viewtime
+      assert_not_equal t, r.favtime
+
+      @packages.touch("r1", :updatetime, t)
+      assert_equal t, r.updatetime
+
+      @packages.touch("r1", :viewtime, t)
+      assert_equal t, r.viewtime
+
+      @packages.touch("r1", :favtime, t)
+      assert_equal t, r.favtime
+
+      @packages.remove_all
     end
   end
 end

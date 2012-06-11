@@ -62,6 +62,10 @@ module Milkode
         p [r.name, r.addtime, r.updatetime, r.viewtime, r.favtime]
       end
     end
+
+    def touch(name, kind, time = Time.now)
+      @table[name][kind] = time
+    end
   end
 end
 
