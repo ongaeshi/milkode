@@ -38,22 +38,22 @@ module Milkode
 
     def top_fav
       a = @grndb.packages.favs.map{|r| r.name}
-      top_list(a[0...FAV_NUM])
+      top_list(a[0...FAV_NUM], 'favtime')
     end
 
     def grndb_list(column_name, num)
       a = @grndb.packages.sort(column_name).map {|r| r.name}
-      top_list(a[0...num])
+      top_list(a[0...num], column_name)
     end
 
-    def top_list(list)
+    def top_list(list, column_name)
       list = list.map {|v|
         "  <li><a href=\"/home/#{v}\">#{v}</a></li>"
       }.join("\n")
       <<EOF
 <ul class="unstyled_margin">
 #{list}
-<li><a href=\"/home">next >></a></li>
+<li><a href=\"/home?sort=#{column_name}">next >></a></li>
 </ul>
 EOF
     end
