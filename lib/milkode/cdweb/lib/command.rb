@@ -67,6 +67,19 @@ module Milkode
     haml :filelist
   end
 
+  def packages(params, before)
+    @setting = WebSetting.new
+    @title = "Package List"
+    @path = ""
+    packages = Database.instance.packages(params["sort"])
+    @total_records = packages.size
+    @record_content = packages.map do |v|
+      "<dt class='result-file'>#{file_or_dirimg(false)}<a href='#{Mkurl.new('/home/' + v, params).inherit_query_shead}'>#{File.basename v}</a></dt>"
+    end.join
+    @elapsed = Time.now - before
+    haml :filelist
+  end
+  
   def file_or_dirimg(is_file)
     src = (is_file) ? '/images/file.png' : '/images/directory.png'
     "<img alt='' style='vertical-align:bottom; border: 0; margin: 1px;' src='#{src}'>"

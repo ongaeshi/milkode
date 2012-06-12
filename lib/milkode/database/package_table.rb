@@ -53,8 +53,8 @@ module Milkode
       end
     end
 
-    def sort(kind)
-      @table.sort([{:key => kind, :order => "descending"}])
+    def sort(kind, order = "descending")
+      @table.sort([{:key => kind, :order => order}])
     end
 
     def dump

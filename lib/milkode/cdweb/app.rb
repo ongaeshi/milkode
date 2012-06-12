@@ -58,7 +58,9 @@ get '/home*' do |path|
   path = path.sub(/^\//, "")
   record = Database.instance.record(path)
 
-  if (record)
+  if path.empty?
+    packages(params, before)
+  elsif (record)
     view(record, params, before)
   else
     if (params[:query] and !params[:query].empty?)

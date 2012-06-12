@@ -121,6 +121,18 @@ module Milkode
       paths
     end
 
+    def packages(sort_kind)
+      sorted = nil
+
+      if (sort_kind)
+        sorted = @grndb.packages.sort(sort_kind)
+      else
+        sorted = @grndb.packages.sort("name", "ascending")
+      end
+
+      sorted.map {|r| r.name}
+    end
+
     def touch_viewtime(path)
       package, restpath = Util::divide_shortpath(path)
       @grndb.packages.touch(package, :viewtime) if package
