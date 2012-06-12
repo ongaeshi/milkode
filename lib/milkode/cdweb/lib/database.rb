@@ -124,7 +124,9 @@ module Milkode
     def packages(sort_kind)
       sorted = nil
 
-      if (sort_kind)
+      if sort_kind == "favtime"
+        sorted = @grndb.packages.favs
+      elsif (sort_kind)
         sorted = @grndb.packages.sort(sort_kind)
       else
         sorted = @grndb.packages.sort("name", "ascending")
