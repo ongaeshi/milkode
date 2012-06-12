@@ -24,6 +24,8 @@ module Milkode
       assert_equal '.?shead=package', Mkurl.new('.', p1).inherit_shead
       assert_equal '/home/foo/bar.hpp', Mkurl.new('/home/foo/bar.hpp', p2).inherit_shead
       assert_equal '/home/foo/bar.hpp', Mkurl.new('/home/foo/bar.hpp', p3).inherit_shead
+
+      assert_equal '/home?sort=addtime', Mkurl.new('/home', p3).inherit_query_shead_set_sort('addtime')
       
     end
   end
