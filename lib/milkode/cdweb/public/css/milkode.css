@@ -53,6 +53,11 @@ span.keyword {
     font-weight: bold;    
 }
 
+span.sort-change {
+    font-weight: bold;    
+    margin-right: 10px;
+}
+
 font.version {
     font-size: 35%;
 }

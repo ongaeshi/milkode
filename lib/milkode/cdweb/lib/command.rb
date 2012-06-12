@@ -76,11 +76,15 @@ module Milkode
 
     @sort_change_content =
       [
-       sort_change_content(params["sort"], '[名前]'),
-       sort_change_content(params["sort"], '[最近使った]', 'viewtime'),
-       sort_change_content(params["sort"], '[追加順]'    , 'addtime'),
-       sort_change_content(params["sort"], '[更新順]'    , 'updatetime'),
-       sort_change_content(params["sort"], '[お気に入り]', 'favtime')
+       sort_change_content(params["sort"], '名前'),
+       '|',
+       sort_change_content(params["sort"], '最近使った', 'viewtime'),
+       '|',
+       sort_change_content(params["sort"], '追加順'    , 'addtime'),
+       '|',
+       sort_change_content(params["sort"], '更新順'    , 'updatetime'),
+       '|',
+       sort_change_content(params["sort"], 'お気に入り', 'favtime'),
       ].join("\n")
 
     @record_content = packages.map do |v|
