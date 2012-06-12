@@ -59,7 +59,11 @@ get '/home*' do |path|
   record = Database.instance.record(path)
 
   if path.empty?
-    packages(params, before)
+    if (params[:query] and !params[:query].empty?)
+      search(path, params, before)
+    else
+      packages(params, before)
+    end
   elsif (record)
     view(record, params, before)
   else
