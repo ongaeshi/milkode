@@ -67,6 +67,16 @@ module Milkode
       @table[name][kind] = time
     end
 
+    def touch_if(name, kind, time = Time.now)
+      record = @table[name]
+
+      if record
+        record[kind] = time
+      else
+        nil
+      end
+    end
+
     def favs
       sorted = sort('favtime')
       zero_time = Time.at(0)

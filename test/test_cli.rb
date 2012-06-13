@@ -63,6 +63,7 @@ class TestCLI < Test::Unit::TestCase
 
   def test_fav
     command("fav")
+    command("fav a_not_found_package_xxxxxxx")
     # command("fav package")
     # command("fav -d package")
   end

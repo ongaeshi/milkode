@@ -400,10 +400,12 @@ module Milkode
       if (args.empty?)
         @out.puts @grndb.packages.favs.map{|r| r.name}
       else
-        unless options[:delete]
-          args.each {|v| @grndb.packages.touch(v, :favtime)}
-        else
-          args.each {|v| @grndb.packages.touch(v, :favtime, Time.at(0))}
+        args.each do |v|
+          time = options[:delete] ? Time.at(0) : Time.now
+
+          if @grndb.packages.touch_if(v, :favtime, time).nil?
+            @out.puts "Not found package '#{v}'"
+          end
         end
       end
     end

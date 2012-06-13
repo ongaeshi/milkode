@@ -21,6 +21,7 @@ module Milkode
         t_yaml_sync
         t_touch
         t_favs
+        t_touch_if
       ensure
         t_cleanup
       end
@@ -197,6 +198,11 @@ module Milkode
       assert_equal ['r2', 'r3', 'r1'],  @packages.favs.map{|r| r.name}
 
       @packages.remove_all
+    end
+
+    def t_touch_if
+      assert_raise(NoMethodError) { @packages.touch("not_found", :favtime) }
+      assert_equal nil, @packages.touch_if("not_found", :favtime)
     end
   end
 end
