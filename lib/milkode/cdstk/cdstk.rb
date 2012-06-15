@@ -482,6 +482,7 @@ module Milkode
       if (options[:all])
         db_delete
         db_create
+        @grndb.yaml_sync(@yaml.contents)
         update_all({})
       else
         if (args.empty?)
