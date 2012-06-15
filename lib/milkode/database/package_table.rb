@@ -13,6 +13,7 @@ module Milkode
       Groonga::Schema.define do |schema|
         schema.create_table("packages", :type => :hash) do |table|
           table.string("name")
+          table.string("directory")
           table.time("addtime")
           table.time("updatetime")
           table.time("viewtime")
@@ -29,8 +30,11 @@ module Milkode
       @table.size
     end
 
-    def add(name)
-      @table.add(name, :name => name, :addtime => Time.now)
+    def add(name, directory)
+      @table.add(name,
+                 :name => name,
+                 :directory => directory,
+                 :addtime => Time.now)
     end
 
     def remove(name)
