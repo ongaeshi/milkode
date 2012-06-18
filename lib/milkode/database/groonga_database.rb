@@ -28,6 +28,7 @@ module Milkode
     def open_file(filename)
       if File.exist?(filename)
         @database = Groonga::Database.open(filename)
+        compatible?(filename)
         define_schema
       else
         FileUtils.mkdir_p(File.dirname filename)
@@ -71,12 +72,33 @@ module Milkode
       @packages ||= PackageTable.new(Groonga["packages"])
     end
 
+    def compatible?(filename, no_exit = nil)
+      unless Groonga["documents"] && Groonga["packages"]
+        unless no_exit
+          puts <<EOF
+Milkode repository is old -> #{filename}.
+Please rebuild repository, 
+
+  milk rebuild --all
+
+See 'milk --help' or http://milkode.ongaeshi.me .
+EOF
+          exit -1
+        else
+          nil
+        end
+      else
+        true
+      end
+    end
+    
     private
 
     def define_schema
       DocumentTable.define_schema
       PackageTable.define_schema
     end
+
   end
 end
 
