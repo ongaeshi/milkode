@@ -51,7 +51,7 @@ module Milkode
     # あらかじめ GroongaDatabase#open しておく必要がある
     def yaml_sync(yaml_contents)
       yaml_contents.each do |yp|
-        packages.add(yp.name, yp.directory) if packages[yp.name].nil?
+        packages.add(yp.name, yp.directory, yp.options) if packages[yp.name].nil?
       end
     end
 

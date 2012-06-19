@@ -22,6 +22,7 @@ module Milkode
         t_touch
         t_favs
         t_touch_if
+        t_add_fav
       ensure
         t_cleanup
       end
@@ -54,7 +55,7 @@ module Milkode
       packages = @obj.packages
       assert_equal 0, packages.size
 
-      packages.add("milkode", "")
+      packages.add("milkode", "", {})
       assert_equal 1, packages.size
 
       r = packages["milkode"]
@@ -70,10 +71,10 @@ module Milkode
     
     def t_packages_viewtime
       packages = @obj.packages
-      packages.add("add", "")
-      packages.add("update", "")
-      packages.add("view", "")
-      packages.add("favorite", "")
+      packages.add("add", "", {})
+      packages.add("update", "", {})
+      packages.add("view", "", {})
+      packages.add("favorite", "", {})
       assert_equal 4, packages.size
 
       packages.each do |r|
@@ -104,17 +105,17 @@ module Milkode
 
       t = Time.now
 
-      r = packages.add("r1", "")
+      r = packages.add("r1", "", {})
       r.updatetime = t + 1
       r.viewtime = t + 2
       r.favtime = t + 3
       
-      r = packages.add("r2", "")
+      r = packages.add("r2", "", {})
       r.updatetime = t + 3
       r.viewtime = t + 1
       # r.favtime
       
-      r = packages.add("r3", "")
+      r = packages.add("r3", "", {})
       r.updatetime = t + 2
       r.viewtime = t + 3
       r.favtime = t + 2
@@ -163,7 +164,7 @@ module Milkode
     end
 
     def t_touch
-      r = @packages.add("r1", "")
+      r = @packages.add("r1", "", {})
       t = Time.now
 
       assert_not_equal t, r.updatetime
@@ -183,9 +184,9 @@ module Milkode
     end
 
     def t_favs
-      @packages.add("r1", "")
-      @packages.add("r2", "")
-      @packages.add("r3", "")
+      @packages.add("r1", "", {})
+      @packages.add("r2", "", {})
+      @packages.add("r3", "", {})
 
       assert_equal [], @packages.favs.map{|r| r.name}
 
@@ -203,6 +204,12 @@ module Milkode
     def t_touch_if
       assert_raise(NoMethodError) { @packages.touch("not_found", :favtime) }
       assert_equal nil, @packages.touch_if("not_found", :favtime)
+    end
+
+    def t_add_fav
+      r = @packages.add("r1", "", {:fav => true})
+      assert r.favtime.to_i  > 0
+      @packages.remove_all
     end
   end
 end

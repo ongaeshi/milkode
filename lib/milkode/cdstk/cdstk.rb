@@ -400,13 +400,30 @@ module Milkode
       if (args.empty?)
         @out.puts @grndb.packages.favs.map{|r| r.name}
       else
+        is_dirty = false
+
         args.each do |v|
+          # database
           time = options[:delete] ? Time.at(0) : Time.now
 
-          if @grndb.packages.touch_if(v, :favtime, time).nil?
+          if @grndb.packages.touch_if(v, :favtime, time)
+            # milkode_yaml
+            package = @yaml.find_name(v)
+            dst = package.options
+            unless options[:delete]
+              dst[:fav] = true
+            else
+              dst.delete(:fav)
+            end
+            package.set_options(dst)
+            @yaml.update(package)
+            is_dirty = true
+          else
             @out.puts "Not found package '#{v}'"
           end
         end
+
+        @yaml.save if is_dirty
       end
     end
 

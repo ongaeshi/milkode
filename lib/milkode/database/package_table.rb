@@ -30,11 +30,12 @@ module Milkode
       @table.size
     end
 
-    def add(name, directory)
+    def add(name, directory, options)
       @table.add(name,
                  :name => name,
                  :directory => directory,
-                 :addtime => Time.now)
+                 :addtime => Time.now,
+                 :favtime => options[:fav] ? Time.now : Time.at(0))
     end
 
     def remove(name)
