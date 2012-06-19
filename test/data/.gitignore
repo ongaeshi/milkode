@@ -1,3 +1,7 @@
+# -----------------------------
+# For test/test_ignore_setting.rb
+# -----------------------------
+
 # rcov generated
 coverage
 

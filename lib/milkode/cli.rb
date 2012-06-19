@@ -60,6 +60,7 @@ EOF
 
     desc "list [package1 package2 ...]", "List package"
     option :verbose, :type => :boolean, :aliases => '-v', :desc => 'Be verbose.'
+    option :check, :type => :boolean, :aliases => '-c', :desc => "Check integrity 'yaml and database'"
     def list(*args)
       cdstk.list(args, options)
     end
@@ -122,6 +123,12 @@ EOF
       rescue IgnoreError => e
         $stdout.puts e.message
       end
+    end
+
+    desc "fav [package1 package2 ...]", "Add favorite"
+    option :delete, :type => :boolean, :aliases => '-d', :desc => "Delete favorite."
+    def fav(*paths)
+      cdstk.fav(paths, options)
     end
 
     desc "web", "Startup web interface"

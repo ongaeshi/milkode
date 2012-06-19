@@ -67,7 +67,7 @@ class TestCdstk < Test::Unit::TestCase
         # obj.update([], {})
       end
 
-      Database.instance.yaml_reload
+      # Database.instance.yaml_reload
 
       io.puts('--- remove ---')
       obj.remove(['findgrep'], {:force => true})
@@ -79,8 +79,7 @@ class TestCdstk < Test::Unit::TestCase
       obj.list(['com'], {:verbose => false})
 
       io.puts('--- cleanup ---')
-      # 何故か 'rake test' で実行すると上手く動かないので、一旦テストから外す
-      # obj.cleanup({:force=>true})
+      obj.cleanup({:force=>true})
 
       io.puts('--- rebuild ---')
       obj.rebuild([], {:all => true})

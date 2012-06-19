@@ -9,7 +9,7 @@ require 'milkode/cli.rb'
 require 'test_helper'
 require 'milkode_test_work'
 
-class TestCLI_Cdstk < Test::Unit::TestCase
+class TestCLI < Test::Unit::TestCase
   def setup
     $stdout = StringIO.new
     @first_default_dir = Dbdir.default_dir
@@ -61,8 +61,15 @@ class TestCLI_Cdstk < Test::Unit::TestCase
     assert_equal @first_default_dir, Dbdir.default_dir
   end
 
+  def test_fav
+    command("fav")
+    command("fav a_not_found_package_xxxxxxx")
+    # command("fav package")
+    # command("fav -d package")
+  end
+
   def test_help_with_h_option
-    commands = ["init", "add", "update", "remove", "list", "pwd", "cleanup", "rebuild", "dump", "dir", "setdb", "mcd", "info", "ignore", "web"]
+    commands = ["init", "add", "update", "remove", "list", "pwd", "cleanup", "rebuild", "dump", "dir", "setdb", "mcd", "info", "ignore", "web", "fav"]
     commands.each do |cmd|
       assert_match "Usage:", command("#{ cmd } -h")
     end

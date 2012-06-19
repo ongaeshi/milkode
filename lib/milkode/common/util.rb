@@ -150,6 +150,18 @@ module Milkode
       end
     end
 
+    # 'package/to/a.txt' #=> 'package', 'to/a.txt'
+    # 'package'          #=> 'package', nil
+    def divide_shortpath(shortpath)
+      a = shortpath.split('/')
+
+      if (a.size >= 2)
+        return a[0], a[1..-1].join('/')
+      else
+        return a[0], nil
+      end
+    end
+
   end
 end
 

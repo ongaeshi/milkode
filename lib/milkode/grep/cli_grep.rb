@@ -154,7 +154,9 @@ EOF
     private
 
     def self.setup_package(option, my_option, keyword)
-      dirs = yaml_load.contents.find_all {|p| p.name.include? keyword }.map{|p| p.directory}
+      # @memo package指定が簡単になった
+      # dirs = yaml_load.contents.find_all {|p| p.name.include? keyword }.map{|p| p.directory}
+      dirs = yaml_load.contents.find_all {|p| p.name.include? keyword }.map{|p| p.name}
       raise NotFoundPackage.new keyword if (dirs.empty?)
       option.packages += dirs
       my_option[:packages] += dirs

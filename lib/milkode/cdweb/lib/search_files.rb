@@ -9,6 +9,7 @@ require 'milkode/cdweb/lib/query'
 require 'milkode/cdweb/lib/mkurl'
 require 'milkode/cdweb/lib/command'
 require 'milkode/common/util'
+require 'milkode/database/document_record'
 
 module Milkode
   class SearchFiles
@@ -43,7 +44,7 @@ module Milkode
     end
 
     def html_contents
-      @records.map {|record| result_record(record)}.join
+      @records.map {|record| result_record(DocumentRecord.new(record))}.join
     end
     
     def html_pagination
