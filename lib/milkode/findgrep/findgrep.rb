@@ -213,7 +213,7 @@ module FindGrep
         :paths     => @option.filePatterns,
         :packages  => @option.packages,
         # :restpaths => ,
-        :suffixs   => @option.suffixs,
+        :suffixs   => @option.suffixs
         # :offset    => ,
         # :limit     => ,
       )

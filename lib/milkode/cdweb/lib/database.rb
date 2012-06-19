@@ -79,7 +79,7 @@ module Milkode
         :restpaths => fpaths,
         :suffixs   => suffixs,
         :offset    => offset,
-        :limit     => limit,
+        :limit     => limit
       )
 
       # 結果
