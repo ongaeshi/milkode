@@ -254,7 +254,7 @@ module Milkode
     end
 
     def git_url?(src)
-      (src =~ /^git[:@]/) != nil
+      Util::git_url?(src)
     end
     private :git_url?
 

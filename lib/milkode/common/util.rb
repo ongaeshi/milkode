@@ -162,6 +162,10 @@ module Milkode
       end
     end
 
+    def git_url?(src)
+      (src =~ /^(:?git[:@])|(:?ssh:)/) != nil
+    end
+
   end
 end
 
