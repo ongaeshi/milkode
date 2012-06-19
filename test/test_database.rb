@@ -11,6 +11,7 @@ require 'test_helper'
 require 'file_test_utils'
 require 'stringio'
 require 'milkode/cdstk/cdstk'
+require 'milkode/cdstk/package'
 require 'milkode/cdweb/lib/database'
 
 module Milkode
@@ -22,8 +23,12 @@ module Milkode
       io = StringIO.new
       @obj = Cdstk.new(io)
       @obj.init({})
+
       @obj.add(['../../test'], {})
+
+      FileUtils.touch('../../lib/delete_on.cleanup_package_name')
       @obj.add(['../../lib'], {})
+      FileUtils.rm('../../lib/delete_on.cleanup_package_name')
 
       FileUtils.touch('notfound.file')
       @obj.add(['notfound.file'], {})
@@ -42,8 +47,6 @@ module Milkode
       setup_db
       t_open
       t_fileList
-      t_cleanup # 何故か 'rake test' で実行すると上手く動かないので、一旦テストから外す
-      t_remove
     end
 
     def t_open
@@ -57,18 +60,6 @@ module Milkode
       assert_equal ['lib/milkode', false],              db.fileList('lib')[0]
       assert_equal ['lib/milkode/cdstk/cdstk.rb', true],      db.fileList('lib/milkode/cdstk')[0]
       assert_equal nil,                               db.fileList('lib/milkode/cdstk/cdstk.rb')[0]
-    end
-
-    def t_cleanup
-      db = Database.instance
-      db.cleanup
-    end
-
-    def t_remove
-      db = Database.instance
-      db.remove_fpath(File.expand_path '../../test')
-      db.remove_fpath(File.expand_path '../../lib')
-      assert_equal 0, db.totalRecords
     end
 
     def teardown

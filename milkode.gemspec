@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{milkode}
-  s.version = "0.7.0"
+  s.version = "0.8.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ongaeshi"]
-  s.date = %q{2012-05-06}
+  s.date = %q{2012-06-20}
   s.description = %q{Line based local source code search engine & grep-command & web-app.}
   s.email = %q{ongaeshi0621@gmail.com}
   s.executables = ["gmilk", "milk"]
@@ -42,10 +42,13 @@ Gem::Specification.new do |s|
     "lib/milkode/cdweb/lib/database.rb",
     "lib/milkode/cdweb/lib/grep.rb",
     "lib/milkode/cdweb/lib/mkurl.rb",
+    "lib/milkode/cdweb/lib/package_list.rb",
     "lib/milkode/cdweb/lib/query.rb",
     "lib/milkode/cdweb/lib/search_contents.rb",
     "lib/milkode/cdweb/lib/search_files.rb",
     "lib/milkode/cdweb/lib/web_setting.rb",
+    "lib/milkode/cdweb/public/css/bootstrap-responsive.min.css",
+    "lib/milkode/cdweb/public/css/bootstrap.min.css",
     "lib/milkode/cdweb/public/css/coderay-patch.css",
     "lib/milkode/cdweb/public/css/coderay.css",
     "lib/milkode/cdweb/public/css/milkode.css",
@@ -55,17 +58,22 @@ Gem::Specification.new do |s|
     "lib/milkode/cdweb/public/images/file.png",
     "lib/milkode/cdweb/public/images/go-home-5.png",
     "lib/milkode/cdweb/public/images/help.png",
+    "lib/milkode/cdweb/public/img/glyphicons-halflings-white.png",
+    "lib/milkode/cdweb/public/img/glyphicons-halflings.png",
+    "lib/milkode/cdweb/public/js/bootstrap.min.js",
     "lib/milkode/cdweb/public/js/milkode.js",
     "lib/milkode/cdweb/views/filelist.haml",
     "lib/milkode/cdweb/views/header_menu.haml",
     "lib/milkode/cdweb/views/help.haml",
     "lib/milkode/cdweb/views/index.haml",
     "lib/milkode/cdweb/views/layout.haml",
+    "lib/milkode/cdweb/views/packages.haml",
     "lib/milkode/cdweb/views/search.haml",
     "lib/milkode/cdweb/views/search_form.haml",
     "lib/milkode/cdweb/views/view.haml",
     "lib/milkode/cli.rb",
     "lib/milkode/common/archive-zip.rb",
+    "lib/milkode/common/array_diff.rb",
     "lib/milkode/common/dbdir.rb",
     "lib/milkode/common/dir.rb",
     "lib/milkode/common/display_util.rb",
@@ -76,6 +84,10 @@ Gem::Specification.new do |s|
     "lib/milkode/common/platform.rb",
     "lib/milkode/common/string_snip.rb",
     "lib/milkode/common/util.rb",
+    "lib/milkode/database/document_record.rb",
+    "lib/milkode/database/document_table.rb",
+    "lib/milkode/database/groonga_database.rb",
+    "lib/milkode/database/package_table.rb",
     "lib/milkode/findgrep/findgrep.rb",
     "lib/milkode/findgrep/result.rb",
     "lib/milkode/grep/cli_grep.rb",
@@ -86,6 +98,13 @@ Gem::Specification.new do |s|
     "test/data/abc.zip",
     "test/data/b_project/runner.rb",
     "test/data/b_project/test_dir.rb",
+    "test/data/c_project/a.txt",
+    "test/data/c_project/abc.c",
+    "test/data/c_project/abc.h",
+    "test/data/c_project/b.txt",
+    "test/data/c_project/c.txt",
+    "test/data/c_project/cc.txt",
+    "test/data/c_project/to/file.rb",
     "test/data/no_auto_ignore/.gitignore",
     "test/data/no_auto_ignore/a.txt",
     "test/data/nodir_abc.zip",
@@ -104,14 +123,19 @@ Gem::Specification.new do |s|
     "test/test_database.rb",
     "test/test_dbdir.rb",
     "test/test_dir.rb",
+    "test/test_document_record.rb",
+    "test/test_document_table.rb",
     "test/test_findgrep.rb",
     "test/test_gren_util.rb",
+    "test/test_groonga_database.rb",
     "test/test_helper.rb",
     "test/test_ignore_checker.rb",
     "test/test_ignore_setting.rb",
     "test/test_milkode_yaml.rb",
     "test/test_mkurl.rb",
     "test/test_package.rb",
+    "test/test_package_list.rb",
+    "test/test_package_table.rb",
     "test/test_query.rb",
     "test/test_string_snip.rb",
     "test/test_util.rb",
@@ -128,11 +152,6 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<milkode>, [">= 0"])
-      s.add_development_dependency(%q<bundler>, [">= 0"])
-      s.add_development_dependency(%q<jeweler>, [">= 0"])
-      s.add_development_dependency(%q<bundler>, [">= 0"])
-      s.add_development_dependency(%q<jeweler>, [">= 0"])
       s.add_runtime_dependency(%q<termcolor>, [">= 1.2.0"])
       s.add_runtime_dependency(%q<rroonga>, [">= 1.1.0"])
       s.add_runtime_dependency(%q<rack>, [">= 1.3.4"])
@@ -144,12 +163,9 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<haml>, [">= 3.1.2"])
       s.add_runtime_dependency(%q<sass>, [">= 3.1.3"])
       s.add_runtime_dependency(%q<thor>, ["~> 0.15.0"])
+      s.add_development_dependency(%q<bundler>, [">= 0"])
+      s.add_development_dependency(%q<jeweler>, [">= 0"])
     else
-      s.add_dependency(%q<milkode>, [">= 0"])
-      s.add_dependency(%q<bundler>, [">= 0"])
-      s.add_dependency(%q<jeweler>, [">= 0"])
-      s.add_dependency(%q<bundler>, [">= 0"])
-      s.add_dependency(%q<jeweler>, [">= 0"])
       s.add_dependency(%q<termcolor>, [">= 1.2.0"])
       s.add_dependency(%q<rroonga>, [">= 1.1.0"])
       s.add_dependency(%q<rack>, [">= 1.3.4"])
@@ -161,13 +177,10 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<haml>, [">= 3.1.2"])
       s.add_dependency(%q<sass>, [">= 3.1.3"])
       s.add_dependency(%q<thor>, ["~> 0.15.0"])
+      s.add_dependency(%q<bundler>, [">= 0"])
+      s.add_dependency(%q<jeweler>, [">= 0"])
     end
   else
-    s.add_dependency(%q<milkode>, [">= 0"])
-    s.add_dependency(%q<bundler>, [">= 0"])
-    s.add_dependency(%q<jeweler>, [">= 0"])
-    s.add_dependency(%q<bundler>, [">= 0"])
-    s.add_dependency(%q<jeweler>, [">= 0"])
     s.add_dependency(%q<termcolor>, [">= 1.2.0"])
     s.add_dependency(%q<rroonga>, [">= 1.1.0"])
     s.add_dependency(%q<rack>, [">= 1.3.4"])
@@ -179,6 +192,8 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<haml>, [">= 3.1.2"])
     s.add_dependency(%q<sass>, [">= 3.1.3"])
     s.add_dependency(%q<thor>, ["~> 0.15.0"])
+    s.add_dependency(%q<bundler>, [">= 0"])
+    s.add_dependency(%q<jeweler>, [">= 0"])
   end
 end
 

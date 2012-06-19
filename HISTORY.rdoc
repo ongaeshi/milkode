@@ -1,3 +1,30 @@
+=== 0.8.0 2012/06/20
+
+* milk web
+  * Can jump to package from home. [Recent, add, update, favorite]
+  * Can specify the package list sorting type
+  * Support Twitter bootstrap
+
+* database
+  * Centralized groonga database access
+  * DocumentTable
+    * shorpath -> restpath
+    * Add package column
+    * Extension searches exact matches
+  * PackageTable
+    * New
+
+* milk 
+  * Add 'milk fav' command
+  * Also cleanup do the milk update
+  * Redefining invoke_task and handle the help option (thanks tomykaira)
+  * Add milk add 'schema'
+    * ssh:foo@bar/baz.git (Support gitolite, thanks hazy_moon)
+    * git@example.com:foo/bar.git
+
+* build
+  * Move description of the dependencies to the Gemfile
+
 === 0.7.0 2012/05/05
 
 * milk

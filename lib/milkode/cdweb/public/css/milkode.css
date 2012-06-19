@@ -7,15 +7,6 @@ div.header {
 div.footer {
 }
 
-div.header_home {
-    font-size: 170%;
-}
-
-div.footer_home {
-    font-size: 85%;
-    margin-top: 3em;
-}
-
 div.search-summary {
     border-color: #e92926;
     background-color:#FFF0F0;
@@ -62,6 +53,11 @@ span.keyword {
     font-weight: bold;    
 }
 
+span.sort-change {
+    font-weight: bold;    
+    margin-right: 10px;
+}
+
 font.version {
     font-size: 35%;
 }
@@ -86,5 +82,44 @@ input#clear {
     margin-left: 0px;
     width: 80px;
     font-size: 18px;
+}
+
+ul.unstyled_margin {
+    list-style: none;
+    margin-left: 7px;
+}
+
+/* toppage */
+
+#toppage {
+    font-size: 14px;
+}
+
+#toppage ul a {
+    font-size: 17px;
+}
+
+#toppage ul {
+    font-size: 15px;
+}
+
+#toppage a {
+    font-size: 17px;
+}
+
+#toppage h1 {
+    font-size: 72px;
+    margin-top: 50px;
+}
+
+#toppage .header {
+}
+
+#toppage .form {
+    margin-top: 60px;
+    margin-bottom: 50px;
+}
+
+#toppage .footer {
 }
 

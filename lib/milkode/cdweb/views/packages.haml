@@ -1,0 +1,11 @@
+= haml :header_menu
+
+.content
+  = haml :search_form
+
+  .search-summary
+    <span class="sort-change">#{@sort_change_content}</span> <span class="total-entries">#{@total_records}</span>件（#{@elapsed}秒）
+  .sort_change
+  ~ @record_content
+
+

@@ -39,6 +39,7 @@ class TestCdstk < Test::Unit::TestCase
       obj.add(['../data/nodir_abc_xpi.xpi'], {})
       obj.add(['http://ongaeshi.me/test_data/http_nodir_abc.zip'], {})
       obj.add(['git://github.com/ongaeshi/duplicate-thing.git'], {})
+      # obj.add(['git@github.com:ongaeshi/kodeworld.git'], {})
       assert_raise(OpenURI::HTTPError) { obj.add(['http://ongaeshi.me/test_data/not_found.zip'], {}) }
       obj.add(['../data/no_auto_ignore'], {:no_auto_ignore => true})
 
@@ -54,7 +55,7 @@ class TestCdstk < Test::Unit::TestCase
       io.puts('--- update_all ---')
       FileUtils.touch('packages/zip/abc/c.txt')
       FileUtils.touch('packages/zip/abc/d.txt')
-      obj.update_all
+      obj.update_all({})
 
       io.puts('--- update --all ---')
       FileUtils.touch('packages/zip/abc/e.txt')
@@ -66,7 +67,7 @@ class TestCdstk < Test::Unit::TestCase
         # obj.update([], {})
       end
 
-      Database.instance.yaml_reload
+      # Database.instance.yaml_reload
 
       io.puts('--- remove ---')
       obj.remove(['findgrep'], {:force => true})
@@ -78,8 +79,7 @@ class TestCdstk < Test::Unit::TestCase
       obj.list(['com'], {:verbose => false})
 
       io.puts('--- cleanup ---')
-      # 何故か 'rake test' で実行すると上手く動かないので、一旦テストから外す
-      # obj.cleanup({:force=>true})
+      obj.cleanup({:force=>true})
 
       io.puts('--- rebuild ---')
       obj.rebuild([], {:all => true})

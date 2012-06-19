@@ -74,7 +74,7 @@ EOF
     def package_root(dir)
       nd = Util::normalize_filename dir
       @contents.find do |v|
-        v if nd =~ /^#{v.directory}/
+        v if nd =~ /^#{Regexp.escape(v.directory)}/
       end
     end
 

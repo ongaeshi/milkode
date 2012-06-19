@@ -86,6 +86,14 @@ class TestUtil < Test::Unit::TestCase
     assert_equal false,  Milkode::Util::gotoline_multi?("a 123 b".split)
     assert_equal false,  Milkode::Util::gotoline_multi?("c:/user 5".split)
   end
+
+  def test_git_url?
+    assert_equal false, Milkode::Util::git_url?('http:://ongaeshi.me')
+    assert_equal  true, Milkode::Util::git_url?('git://github.com/ongaeshi/milkode.git')
+    assert_equal  true, Milkode::Util::git_url?('git@github.com:ongaeshi/milkode.git')
+    assert_equal  true, Milkode::Util::git_url?('ssh:foo@bar/baz.git')
+  end
+      
   
   def teardown
     teardown_custom(true)

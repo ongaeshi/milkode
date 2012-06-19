@@ -28,6 +28,7 @@ module Milkode
       @record_content = CodeRayWrapper.new(record.content, record.shortpath).to_html
     end
     
+    Database.instance.touch_viewtime(@path)
     @elapsed = Time.now - before
     haml :view
   end
@@ -61,12 +62,54 @@ module Milkode
     @record_content = fileList.map do |v|
       "<dt class='result-file'>#{file_or_dirimg(v[1])}<a href='#{Mkurl.new('/home/' + v[0], params).inherit_query_shead}'>#{File.basename v[0]}</a></dt>"
     end.join
+    Database.instance.touch_viewtime(path)
     @elapsed = Time.now - before
     haml :filelist
   end
 
+  def packages(params, before)
+    @setting = WebSetting.new
+    @title = "Package List"
+    @path = ""
+    packages = Database.instance.packages(params["sort"])
+    @total_records = packages.size
+
+    @sort_change_content =
+      [
+       sort_change_content(params["sort"], '名前'),
+       '|',
+       sort_change_content(params["sort"], '最近使った', 'viewtime'),
+       '|',
+       sort_change_content(params["sort"], '追加順'    , 'addtime'),
+       '|',
+       sort_change_content(params["sort"], '更新順'    , 'updatetime'),
+       '|',
+       sort_change_content(params["sort"], 'お気に入り', 'favtime'),
+      ].join("\n")
+
+    @record_content = packages.map do |v|
+      "<dt class='result-file'>#{file_or_dirimg(false)}<a href='#{Mkurl.new('/home/' + v, params).inherit_query_shead}'>#{File.basename v}</a></dt>"
+    end.join
+    @elapsed = Time.now - before
+    haml :packages
+  end
+
+  private
+  
   def file_or_dirimg(is_file)
     src = (is_file) ? '/images/file.png' : '/images/directory.png'
     "<img alt='' style='vertical-align:bottom; border: 0; margin: 1px;' src='#{src}'>"
+  end
+
+  def sort_change_content(current_value, text, sort_kind = nil)
+    if (current_value != sort_kind)
+      if (sort_kind)
+        "<a href='#{Mkurl.new('/home', params).inherit_query_shead_set_sort(sort_kind)}'>#{text}</a>"
+      else
+        "<a href='#{Mkurl.new('/home', params).inherit_query_shead}'>#{text}</a>"
+      end
+    else
+      text
+    end
   end
 end

@@ -3,13 +3,11 @@
 require 'yaml'
 require 'pathname'
 require 'rubygems'
-require 'groonga'
 require 'fileutils'
 require 'pathname'
 require 'milkode/common/grenfiletest'
 require 'milkode/common/util'
 require 'milkode/common/dir'
-require 'milkode/findgrep/findgrep'
 include Milkode
 require 'kconv'
 begin
@@ -17,14 +15,14 @@ begin
 rescue LoadError
   $no_readline = true
 end
-require 'milkode/cdweb/lib/database'
 require 'open-uri'
-
 require 'milkode/cdstk/cdstk_command'
-
 require 'milkode/cdstk/yaml_file_wrapper'
 require 'milkode/cdstk/package'
 require 'milkode/common/ignore_checker'
+require 'milkode/database/groonga_database'
+require 'milkode/database/document_record'
+require 'milkode/common/array_diff'
 
 module Milkode
   class IgnoreError < RuntimeError ; end
@@ -40,7 +38,6 @@ module Milkode
     
     def initialize(io = $stdout, db_dir = ".")
       @db_dir = db_dir
-      Database.setup(@db_dir)
       @out = io
       # @out = $stdout # 強制出力
       @is_display_info = false     # alert_info の表示
@@ -60,7 +57,7 @@ module Milkode
       if Dir.emptydir?(@db_dir)
         @yaml = YamlFileWrapper.create(@db_dir)
         @out.puts "create     : #{yaml_file}"
-        db_create(db_file)
+        db_create
         setdb([@db_dir], {}) if (options[:setdb])
       else
         @out.puts "Can't create milkode db (Because not empty in #{db_dir_expand})"
@@ -68,24 +65,24 @@ module Milkode
     end
 
     def assert_compatible
-      db_open(db_file)
+      db_open
     end
 
-    def update_all
+    def update_all(options)
       print_result do 
-        db_open(db_file)
+        db_open
 
         @yaml.contents.each do |package|
-          update_package_in(package)
+          update_package_in(package, options)
         end
       end
     end
 
     def update(args, options)
       update_display_info(options)
-      
+
       if (options[:all])
-        update_all
+        update_all(options)
       else
         if (args.empty?)
           path = File.expand_path('.')
@@ -93,19 +90,19 @@ module Milkode
 
           if (package)
             print_result do
-              db_open(db_file)
-              update_package_in(package)
+              db_open
+              update_package_in(package, options)
             end
           else
             @out.puts "Not registered. If you want to add, 'milk add #{path}'."
           end
         else
           print_result do
-            db_open(db_file)
+            db_open
             args.each do |name|
               package = @yaml.find_name(name)
               if (package)
-                update_package_in(package)
+                update_package_in(package, options)
               else
                 @out.puts "Not found package '#{name}'."
                 return
@@ -117,7 +114,7 @@ module Milkode
     end
 
     def update_for_grep(dir)
-      db_open(db_file)
+      db_open
       update_dir_in(dir)
     end
 
@@ -126,7 +123,7 @@ module Milkode
 
       print_result do
         # データベースを開く
-        db_open(db_file)
+        db_open
 
         # メイン処理
         begin
@@ -183,7 +180,7 @@ module Milkode
 
     def add_dir(dir, no_yaml = false)
       add_yaml(Package.create(dir)) unless no_yaml
-      db_open(db_file)
+      db_open
       update_dir_in(dir)
     end
 
@@ -204,6 +201,12 @@ module Milkode
       # YAML更新
       @yaml.add(package)
       @yaml.save
+
+      # データベースを開く
+      db_open
+
+      # yamlファイルと同期する
+      @grndb.yaml_sync(@yaml.contents)
     end
 
     def convert_content(src)
@@ -251,7 +254,7 @@ module Milkode
     end
 
     def git_url?(src)
-      (src =~ /^git:/) != nil
+      Util::git_url?(src)
     end
     private :git_url?
 
@@ -294,7 +297,7 @@ module Milkode
         list([], {:verbose => true})
         
         if yes_or_no("Remove #{@yaml.contents.size} contents? (yes/no)")
-          db_open(db_file)
+          db_open
 
           @yaml.contents.each do |package|
             remove_dir(package.directory)
@@ -317,7 +320,7 @@ module Milkode
 
           if (package)
             print_result do
-              db_open(db_file)
+              db_open
               remove_dir(package.directory)
             end
           else
@@ -325,7 +328,7 @@ module Milkode
           end
         else
           print_result do
-            db_open(db_file)
+            db_open
             args.each do |name|
               package = @yaml.find_name(name)
               if (package)
@@ -359,6 +362,11 @@ module Milkode
     end
 
     def list(args, options)
+      if options[:check]
+        check_integrity
+        return
+      end
+      
       match_p = @yaml.contents.find_all do |p|
         args.all? {|k| p.name.include? k }
       end
@@ -386,6 +394,62 @@ module Milkode
       end
     end
 
+    def fav(args, options)
+      db_open
+
+      if (args.empty?)
+        @out.puts @grndb.packages.favs.map{|r| r.name}
+      else
+        is_dirty = false
+
+        args.each do |v|
+          # database
+          time = options[:delete] ? Time.at(0) : Time.now
+
+          if @grndb.packages.touch_if(v, :favtime, time)
+            # milkode_yaml
+            package = @yaml.find_name(v)
+            dst = package.options
+            unless options[:delete]
+              dst[:fav] = true
+            else
+              dst.delete(:fav)
+            end
+            package.set_options(dst)
+            @yaml.update(package)
+            is_dirty = true
+          else
+            @out.puts "Not found package '#{v}'"
+          end
+        end
+
+        @yaml.save if is_dirty
+      end
+    end
+
+    def check_integrity
+      db_open
+
+      @out.puts "Check integrity ..."
+
+      yaml = @yaml.contents.map {|p| p.name}.sort
+      grndb = @grndb.packages.map {|p| p.name}.sort
+
+      d = yaml.diff grndb
+
+      unless d[0].empty?
+        @out.puts "'milkode.yaml' has #{d[0]}, but 'PackageTable' don't have."
+      end
+
+      unless d[1].empty?
+        @out.puts "'PackageTable' has #{d[1]}, but 'milkode.yaml' don't have."
+      end
+
+      if d[0].empty? && d[1].empty?
+        @out.puts 'ok'
+      end
+    end
+
     def pwd(options)
       dir = options[:default] ? Dbdir.default_dir : db_dir_expand
       
@@ -403,9 +467,6 @@ module Milkode
     end
 
     def cleanup(options)
-      # 互換性テスト
-      db_open(db_file)
-
       # cleanup開始
       if (options[:force] or yes_or_no("cleanup contents? (yes/no)"))
         print_result do 
@@ -416,9 +477,15 @@ module Milkode
             @package_count += 1
           end
           @yaml.save
+
+          # データベースを開く
+          db_open
+
+          # yamlファイルと同期する
+          @grndb.yaml_sync(@yaml.contents)
           
           # データベースのクリーンアップ
-          Database.instance.cleanup do |record|
+          @documents.cleanup do |record|
             alert("rm_record", record.path)
             @file_count += 1
           end
@@ -430,9 +497,10 @@ module Milkode
       update_display_info(options)
       
       if (options[:all])
-        db_delete(db_file)
-        db_create(db_file)
-        update_all
+        db_delete
+        db_create
+        @grndb.yaml_sync(@yaml.contents)
+        update_all({})
       else
         if (args.empty?)
           path = File.expand_path('.')
@@ -440,7 +508,7 @@ module Milkode
 
           if (package)
             print_result do
-              db_open(db_file)
+              db_open
               remove_dir(package.directory, true)
               add_dir(package.directory, true)
             end
@@ -452,7 +520,7 @@ module Milkode
             args.each do |name|
               package = @yaml.find_name(name)
               if (package)
-                db_open(db_file)
+                db_open
                 remove_dir(package.directory, true)
                 add_dir(package.directory, true)
               else
@@ -466,11 +534,11 @@ module Milkode
     end
 
     def dump
-      db_open(db_file)
-      
-      documents = Groonga::Context.default["documents"]
-      records = documents.select
-      records.each do |record|
+      db_open
+
+      @documents.each do |grnrcd|
+        record = DocumentRecord.new grnrcd
+        
         @out.puts record.inspect
         @out.puts "path : #{record.path}"
         @out.puts "shortpath : #{record.shortpath}"
@@ -479,7 +547,8 @@ module Milkode
         @out.puts "content :", record.content ? record.content[0..64] : nil
         @out.puts
       end
-      @out.puts "total #{records.size} record."
+
+      @out.puts "total #{@documents.size} record."
     end
 
     def dir(args, options)
@@ -586,7 +655,7 @@ EOF
 
       if options[:dry_run]
         # Test mode
-        db_open(db_file)
+        db_open
         @is_display_info = true
         @is_silent = true
         update_dir_in(package.directory)
@@ -634,28 +703,29 @@ EOF
       Dbdir.expand_groonga_path(@db_dir)
     end
 
-    def db_file_expand
-      File.expand_path(db_file)
-    end
-
     def db_dir_expand
       File.expand_path(@db_dir)
-    end
-
-    def custom_db?
-      db_dir_expand != Dbdir.default_dir
     end
 
     def yaml_file
       YamlFileWrapper.yaml_file @db_dir
     end
 
-    def update_package_in(package)
+    def update_package_in(package, options)
       if package.options[:update_with_git_pull]
         Dir.chdir(package.directory) { system("git pull") }
       end
 
+      unless options[:no_clean]
+        cleanup_package_in(package)
+      end
+
       update_dir_in(package.directory)
+    end
+
+    def cleanup_package_in(package)
+      db_open
+      @documents.cleanup_package_name(package.name)
     end
 
     def update_dir_in(dir)
@@ -669,24 +739,33 @@ EOF
       elsif (FileTest.directory? dir)
         db_add_dir(dir)
       else
-        db_add_file(STDOUT, dir, File.basename(dir))
+        db_add_file(STDOUT, File.dirname(dir), File.basename(dir), File.basename(dir)) # .bashrc/.bashrc のようになる
       end
     end
 
     def remove_dir(dir, no_yaml = false)
-      # yamlから削除
       unless (no_yaml)
-        @yaml.remove(@yaml.find_dir(dir))
+        package = @yaml.find_dir(dir)
+
+        # yamlから削除
+        @yaml.remove(package)
         @yaml.save
+
+        # PackageTableから削除
+        db_open
+        @grndb.packages.remove package.name
       end
-        
+
+      # データベース開く
+      db_open
+
       # データベースからも削除
       # dir = File.expand_path(dir)
 
       alert("rm_package", dir)
       @package_count += 1
 
-      Database.instance.remove_fpath(dir) do |record|
+      @documents.remove_match_path(dir) do |record|
         alert_info("rm_record", record.path)
         @file_count += 1
       end
@@ -716,17 +795,15 @@ EOF
     end
 
     def milkode_info
-      alert('*milkode*', "#{@yaml.contents.size} packages, #{Database.instance.totalRecords} records in #{db_file}.")
+      db_open
+      alert('*milkode*', "#{@yaml.contents.size} packages, #{@documents.size} records in #{db_file}.")
     end
 
-    def db_create(filename)
-      dbfile = Pathname(File.expand_path(filename))
-      dbdir = dbfile.dirname
-      dbdir.mkpath unless dbdir.exist?
+    def db_create
+      filename = db_file
       
-      unless dbfile.exist?
-        Groonga::Database.create(:path => dbfile.to_s)
-        db_define
+      unless File.exist? filename
+        db_open
         @out.puts "create     : #{filename} created."
       else
         @out.puts "message    : #{filename} already exist."
@@ -734,60 +811,29 @@ EOF
     end
 
     def list_info(packages)
-      option = FindGrep::FindGrep::DEFAULT_OPTION.dup
-      option.dbFile = Dbdir.groonga_path(Dbdir.default_dir)
-      option.isSilent = true
-      option.packages = packages.map{|p| p.directory}
-      findGrep = FindGrep::FindGrep.new([], option)
-      records = findGrep.pickupRecords
-      
+      db_open
+      records = @documents.search(:packages => packages.map{|p| p.name})
       alert('*milk_list*', "#{packages.size} packages, #{records.size} records in #{db_file}.")
     end
 
-    def db_define
-      Groonga::Schema.define do |schema|
-        schema.create_table("documents", :type => :hash) do |table|          
-          table.string("path")
-          table.string("shortpath")
-          table.text("content")
-          table.time("timestamp")
-          table.text("suffix")
-        end
-
-        schema.create_table("terms",
-                            :type => :patricia_trie,
-                            :key_normalize => true,
-                            :default_tokenizer => DEFAULT_TOKENIZER) do |table|
-          table.index("documents.path", :with_position => true)
-          table.index("documents.shortpath", :with_position => true)
-          table.index("documents.content", :with_position => true)
-          table.index("documents.suffix", :with_position => true)
-        end
+    def db_open
+      if !@grndb || @grndb.closed?
+        @grndb = GroongaDatabase.new
+        @grndb.open(@db_dir)
+        @documents = @grndb.documents
       end
     end
 
-    def db_open(filename)
-      dbfile = Pathname(File.expand_path(filename))
-      
-      if dbfile.exist?
-        # データベースを開く
-        Groonga::Database.open(dbfile.to_s)
+    def db_delete
+      filename = db_file
 
-        # 互換性テスト
-        db_compatible?
-      else
-        raise "error      : #{dbfile.to_s} not found!!"
-      end
-    end
-
-    def db_delete(filename)
       raise "Illegal file name : #{filename}." unless filename =~ /\.db$/
+
       Dir.glob("#{filename}*").each do |f|
         @out.puts "delete     : #{f}"
         FileUtils.rm_r(f)
       end
     end
-    private :db_delete
       
     def db_add_dir(dir)
       @current_package = @yaml.package_root(dir)
@@ -797,57 +843,30 @@ EOF
     end
     private :db_add_dir
 
-    def db_add_file(stdout, filename, shortpath)
+    def db_add_file(stdout, package_dir, restpath, package_name = nil)
       # サイレントモード
       return if @is_silent
-      
-      # ファイル名を全てUTF-8に変換
-      filename_utf8 = Util::filename_to_utf8(filename)
-      shortpath_utf8 = Util::filename_to_utf8(shortpath)
-      suffix_utf8 = File::extname(filename_utf8)
-      
-      # 格納するデータ
-      values = {
-        :path => filename_utf8,
-        :shortpath => shortpath_utf8,
-        :content => nil,
-        :timestamp => File.mtime(filename),
-        :suffix => suffix_utf8,
-      }
-      
-      # 検索するデータベース
-      documents = Groonga::Context.default["documents"]
-      
-      record = documents[ values[:path] ]
-      isNewFile = false
 
-      unless record
-        document = documents.add(values[:path])
-        isNewFile = true
-      else
-        document = record
-      end
-      
-      # タイムスタンプが新しければデータベースに格納
-      if (document[:timestamp] < values[:timestamp])
-        # 実際に使うタイミングでファイルの内容を読み込み
-        # values[:content] = open(filename).read
-        # データベース内の文字コードは'utf-8'で統一
-        values[:content] = Kconv.kconv(File.read(filename), Kconv::UTF8)
-        
-        # データベースに格納
-        values.each do |key, value|
-          if (key == :path)
-            if (isNewFile)
-              @add_count += 1
-              alert_info("add_record", value)
-            else
-              @update_count += 1
-              alert_info("update", value)
-            end
-          end
-          document[key] = value
-        end
+      # データベースには先頭の'/'を抜いて登録する
+      #   最初から'/'を抜いておけば高速化の余地あり?
+      #   ignore設定との互換性保持が必要
+      restpath = restpath.sub(/^\//, "")
+
+      # パッケージ名を設定
+      package_name = package_name || File.basename(package_dir)
+
+      # レコードの追加
+      result = @documents.add(package_dir, restpath, package_name)
+
+      # メッセージの表示
+      case result
+      when :newfile
+        @add_count += 1
+        alert_info("add_record", File.join(package_dir, restpath))
+      when :update
+        @grndb.packages.touch(package_name, :updatetime)
+        @update_count += 1
+        alert_info("update", File.join(package_dir, restpath))
       end
     end
 
@@ -875,7 +894,7 @@ EOF
           searchDirectory(stdout, dirname, packname, next_path, depth + 1)
         when "file"
           unless ignoreFile?(fpath, next_path)
-            db_add_file(stdout, fpath, shortpath)
+            db_add_file(stdout, dirname, next_path) # shortpathの先頭に'/'が付いているのが気になる
             @file_count += 1
             # @out.puts "file_count : #{@file_count}" if (@file_count % 100 == 0)
           end
@@ -932,22 +951,6 @@ EOF
 
     def error_alert(msg)
       @out.puts "[fatal] #{msg}"
-    end
-
-    def db_compatible?
-      begin
-        db_define
-      rescue Groonga::Schema::Error => e
-        puts <<EOF
-Milkode repository is old -> #{db_dir_expand}.
-Please rebuild repository, 
-
-  milk rebuild
-
-See 'milk --help' or http://milkode.ongaeshi.me .
-EOF
-        exit -1
-      end
     end
 
     def update_display_info(options)

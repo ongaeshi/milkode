@@ -24,6 +24,14 @@ module Milkode
       create_url(query_param(true, true, false))
     end
 
+    def inherit_query_shead_set_sort(sort_kind)
+      create_url(query_param(true, true, false, sort_kind))
+    end
+
+    def inherit_query_shead
+      create_url(query_param(true, true, false))
+    end
+
     def inherit_shead
       create_url(query_param(false, true, false))
     end
@@ -42,13 +50,14 @@ module Milkode
       end
     end
 
-    def query_param(query_inherit, shead_inherit, offset_inherit)
+    def query_param(query_inherit, shead_inherit, offset_inherit, sort_kind = nil)
       qparam = []
       qparam << "query=#{escape(@params[:query])}" if (query_inherit and @params[:query])
       qparam << "shead=#{escape(@params[:shead])}" if (shead_inherit and @params[:shead])
       qparam << "onematch=#{escape(@params[:onematch])}" if (shead_inherit and @params[:onematch])
       qparam << "offset=#{escape(@params[:offset])}" if (offset_inherit and @params[:offset])
       qparam << "line=#{escape(@params[:line])}" if (offset_inherit and @params[:line])
+      qparam << "sort=#{sort_kind}" if sort_kind
       qparam.join('&')
     end
   end

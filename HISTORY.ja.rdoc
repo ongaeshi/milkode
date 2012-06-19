@@ -1,3 +1,30 @@
+=== 0.8.0 2012/06/20
+
+* milk web
+  * ホームから 最近使った、追加、更新、お気に入り のパッケージに直接ジャンプ出来るように
+  * パッケージ一覧のソート種類を指定可能に
+  * Twitter bootstrap に対応
+
+* database
+  * groongaデータベースのアクセスを一元化
+  * DocumentTable
+    * shorpath -> restpath
+    * Add package column
+    * 拡張子の検索は完全一致に
+  * PackageTable
+    * 新規追加
+
+* milk 
+  * 'milk fav' コマンドを追加。お気に入りを設定可能に
+  * milk update 時に cleanup も行うように
+  * invoke_task を再定義して help option を処理 (thanks tomykaira)
+  * milk add 出来るスキーマを追加
+    * ssh:foo@bar/baz.git (Support gitolite, thanks hazy_moon)
+    * git@example.com:foo/bar.git
+
+* build
+  * 依存関係の記述をGemfileに移動
+
 === 0.7.0 2012/05/05
 
 * milk
