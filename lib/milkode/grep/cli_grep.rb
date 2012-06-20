@@ -113,7 +113,7 @@ EOF
           cdstk = Cdstk.new(stdout, Dbdir.select_dbdir)
 
           if (my_option[:all])
-            cdstk.update_all
+            cdstk.update_all({})
           elsif (my_option[:packages].empty?)
             cdstk.update_for_grep(package_root_dir(File.expand_path(".")))
           else
