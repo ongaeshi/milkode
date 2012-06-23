@@ -42,11 +42,15 @@ module Milkode
 
     def open
       if !@grndb || @grndb.closed?
-        @grndb = GroongaDatabase.new
-        @grndb.open(Database.dbdir)
-        @grndb.yaml_sync(yaml_load.contents)
-        @documents = @grndb.documents
+        open_force
       end
+    end
+
+    def open_force
+      @grndb = GroongaDatabase.new
+      @grndb.open(Database.dbdir)
+      @grndb.yaml_sync(yaml_load.contents)
+      @documents = @grndb.documents
     end
 
     def record(shortpath)
