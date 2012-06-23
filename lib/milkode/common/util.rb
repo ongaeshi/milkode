@@ -89,7 +89,7 @@ module Milkode
     end
 
     def larger_than_oneline(content)
-      content.count($/) > 1      
+      content && content.count($/) > 1      
     end
 
     def normalize_filename(str)

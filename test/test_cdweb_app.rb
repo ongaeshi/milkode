@@ -66,8 +66,7 @@ class TestCdwebApp < Test::Unit::TestCase
 
   def t_view_empty_file
     get '/home/a_project/empty.txt'
-    # assert_equal 200, last_response.status
-    assert_equal 500, last_response.status # 空ファイルも表示出来るようにする
+    assert_equal 200, last_response.status # 空ファイルも表示出来るようにする
   end
 end
 
