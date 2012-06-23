@@ -65,7 +65,7 @@ class TestCdwebApp < Test::Unit::TestCase
   end
 
   def t_view_empty_file
-    get '/home/jruby-1.6.5.1/test/externals/ruby1.9/rdoc/empty.dat'
+    get '/home/a_project/empty.txt'
     # assert_equal 200, last_response.status
     assert_equal 500, last_response.status # 空ファイルも表示出来るようにする
   end
