@@ -11,7 +11,7 @@ div.search-summary {
     /* border-color: #e92926; */
     /* background-color:#FFF0F0; */
     border-color: #C0C0C0;
-    background-color: #F1F1F1;
+    background-color: #FAFAFA;
     border-top-style:solid;
     border-top-width:1px;
     border-bottom-style:solid;
@@ -141,5 +141,11 @@ ul.unstyled_margin {
 
 #mainpage .search_form {
     margin-top: 15px;
+}
+
+/* mainpage - help */
+
+#mainpage .sample-code {
+    margin-top: 20px;
 }
 
