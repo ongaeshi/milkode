@@ -130,6 +130,8 @@ ul.unstyled_margin {
 /* mainpage */
 
 #mainpage {
+    margin-left: 20px;
+    margin-right: 20px;
     font-size: 14px;
 }
 
