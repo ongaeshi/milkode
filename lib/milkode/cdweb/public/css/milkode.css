@@ -129,3 +129,11 @@ ul.unstyled_margin {
     font-size: 14px;
 }
 
+#mainpage .header {
+    margin-top: 20px;
+}
+
+#mainpage .search_form {
+    margin-top: 15px;
+}
+
