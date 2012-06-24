@@ -13,4 +13,11 @@
 .CodeRay .line-numbers { background-color: #F5F5F5; }
 .CodeRay .line-numbers a { background-color: #F5F5F5 !important; }
 .CodeRay .line-numbers pre { border-style: none; }
-td.code pre { background-color: #ffffff; }
+td.code pre {
+    background-color: #ffffff;
+    white-space: pre;
+    word-wrap: normal;
+    overflow: auto;
+}
+
+
