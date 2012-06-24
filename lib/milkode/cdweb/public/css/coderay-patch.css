@@ -8,3 +8,27 @@
 .anchor-table td { border: 1px solid silver; font-size:13px; }
 .anchor-table a { color: #000000; text-decoration:none; }
 .anchor-table a:hover { text-decoration:underline; background-color: #F0F0F0; }
+
+/* code */
+.CodeRay .line-numbers { background-color: #F5F5F5; }
+.CodeRay .line-numbers a { background-color: #F5F5F5 !important; }
+
+table.CodeRay td {
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+.CodeRay .line-numbers pre {
+    border-style: none;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+td.code pre {
+    background-color: #ffffff;
+    white-space: pre;
+    word-wrap: normal;
+    overflow: auto;
+}
+
+

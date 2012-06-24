@@ -4,15 +4,15 @@
   %head
     %meta(charset='utf-8')
     %title= [@title, @setting.home_title].compact.join(' - ')
+    %link(rel="stylesheet" href="/css/bootstrap.min.css"  type="text/css" media="all")
+    %link(rel="stylesheet" href="/css/bootstrap-responsive.min.css"  type="text/css" media="all")
     %link(rel="stylesheet" href="/css/milkode.css"  type="text/css" media="all")
     %link(rel="stylesheet" href="/css/coderay.css"  type="text/css" media="all")
     %link(rel="stylesheet" href="/css/coderay-patch.css"  type="text/css" media="all")
     %script(type='text/javascript' src='/js/milkode.js')
 
   %body
-    -# %header
-    -# %h1 <a href=".">Milkode</a>
-
-    != yield
+    .container-fluid#mainpage
+      != yield
 
 -#  GoogleAnalyticsを使いたい場合はここにコードを挿入して下さい。

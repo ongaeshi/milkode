@@ -1,23 +1,20 @@
-:javascript
-  function set_pathname() {
-    document.searchform.pathname.value = location.pathname;
-  }
-%form(name="searchform" action="/search" method="post")
-  %p
-    %input#query(name="query" size="70" type="text"){:value => params[:query]}
-    %input#search(type="submit" name="search" value="検索" onclick="set_pathname()")
-    %input#clear(type="submit" name="clear" value="クリア" onclick="set_pathname()")
-    %br
-    %label
+.search_form
+  :javascript
+    function set_pathname() {
+      document.searchform.pathname.value = location.pathname;
+    }
+  %form(name="searchform" action="/search" method="post")
+    %p
+      %input#query(name="query" size="70" type="text" style="width: 419px;"){:value => params[:query]}
+      %input#search(type="submit" name="search" value="検索" onclick="set_pathname()")
+      %input#clear(type="submit" name="clear" value="クリア" onclick="set_pathname()")
+      %br
       = create_radio('all', params[:shead])
       全て
-    %label
       = create_radio('package', params[:shead])
       パッケージ(デフォルト)
-    %label
       = create_radio('directory', params[:shead])
       ディレクトリ
-    %label
       = create_checkbox('onematch', params[:onematch])
       = '1ファイル1マッチ'
-    %input(name="pathname" type="hidden" value="")
+      %input(name="pathname" type="hidden" value="")
