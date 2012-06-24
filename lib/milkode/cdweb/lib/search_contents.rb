@@ -78,7 +78,7 @@ module Milkode
       return "" if next_offset >= @total_records
 
       return <<EOF
-<div class='pagination'>
+<div class='pagination pagination-centered'>
 #{pagination_link(next_offset, @next_line, "next >>")}
 </div>
 EOF
@@ -178,7 +178,7 @@ EOS
     end
 
     def pagination_span(content)
-      "<span class='pagination-link'>#{content}</span>\n"
+      "<ul><li>#{content}</li></ul>\n"
     end
 
     def record_link(record)     # 

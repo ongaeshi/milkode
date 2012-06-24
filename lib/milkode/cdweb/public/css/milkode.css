@@ -34,7 +34,7 @@ div.pagination {
     background-color:#FFF0F0;
     border-top-style:solid;
     border-top-width:1px;
-    text-align: center;
+    /* text-align: center; */
     margin-bottom: 20px;
 }
 
