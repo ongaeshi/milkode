@@ -8,8 +8,10 @@ div.footer {
 }
 
 div.search-summary {
-    border-color: #e92926;
-    background-color:#FFF0F0;
+    /* border-color: #e92926; */
+    /* background-color:#FFF0F0; */
+    border-color: #C0C0C0;
+    background-color: #F1F1F1;
     border-top-style:solid;
     border-top-width:1px;
     border-bottom-style:solid;
@@ -30,8 +32,10 @@ dt.result-file {
 }
 
 div.pagination {
-    border-color: #e92926;
-    background-color:#FFF0F0;
+    /* border-color: #e92926; */
+    /* background-color:#FFF0F0; */
+    border-color: #C0C0C0;
+    background-color: #FBFBFB;
     border-top-style:solid;
     border-top-width:1px;
     /* text-align: center; */
