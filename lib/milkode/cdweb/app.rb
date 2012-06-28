@@ -131,6 +131,35 @@ EOF
     }.join('/')
   end
 
+  HASH = {
+    '.h'   => ['.c', '.cpp', '.m', '.mm'],
+    '.c'   => ['.h'],
+    '.hpp' => ['.cpp'],
+    '.cpp' => ['.hpp', '.h'],
+    '.m'   => ['.h'],
+    '.mm'  => ['.h'],
+  }
+
+  def additional_info(path, parms)
+    suffix = File.extname path
+    cadet = HASH[suffix]
+
+    if (cadet)
+      result = cadet.find do |v|
+        Database.instance.record(path.gsub(/#{suffix}\Z/, v))
+      end
+
+      if (result)
+        path2 = path.gsub(/#{suffix}\Z/, result)
+        " (<a href='#{Mkurl.new(File.join('/home', path2), params).inherit_query_shead}'>#{result}</a>) "
+      else
+        ''
+      end
+    else
+      ''
+    end
+  end
+
   def package_name(path)
     (path == "") ? 'root' : path.split('/')[0]
   end
