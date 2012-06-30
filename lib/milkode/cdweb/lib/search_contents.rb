@@ -20,11 +20,7 @@ module Milkode
     LIMIT_NUM = 50             # 最大検索ファイル数
     NTH = 3                    # 表示範囲
     COL_LIMIT = 200            # 1行の桁制限
-    
-#     DISP_NUM = 1000              # 1ページの表示数
-#     LIMIT_NUM = 1000             # 最大検索ファイル数
-#     NTH = 3                      # 表示範囲
-#     COL_LIMIT = 200              # 1行の桁制限
+    MATH_FILE_LIMIT = 3        # マッチファイルの最大表示数
     
     def initialize(path, params, query)
       @path = path
@@ -34,7 +30,17 @@ module Milkode
       @offset = params[:offset].to_i
       @line = params[:line].to_i
       @is_onematch = params[:onematch]
+
+      # メインの検索
       @records, @total_records, @elapsed = Database.instance.search(@q.keywords, @q.packages, path, @q.fpaths, @q.suffixs, @offset, LIMIT_NUM)
+
+      # マッチするファイル
+      @match_files = []
+      if @q.fpaths.empty? && @offset == 0
+        t = 0
+        @match_files, t, @elapsed = Database.instance.search([], @q.packages, path, @q.keywords, @q.suffixs, @offset, MATH_FILE_LIMIT)
+      end
+
       grep_contents
     end
 
@@ -70,7 +76,19 @@ module Milkode
         # g << [m]
       end
       
-      match_groups.map{|g|result_match_record(g)}.join
+      <<EOF
+#{match_files_contents}
+#{match_groups.map{|g|result_match_record(g)}.join}
+EOF
+    end
+
+    def match_files_contents
+      unless @match_files.empty?
+        @match_files.map {|record| result_record(DocumentRecord.new(record))}.join + '<hr>'
+        # 'もっと見る'の機能
+      else
+        ""
+      end
     end
     
     def html_pagination
@@ -179,6 +197,12 @@ EOS
 
     def pagination_span(content)
       "<ul><li>#{content}</li></ul>\n"
+    end
+
+    def result_record(record)
+      <<EOS
+    <dt class='result-file'>#{file_or_dirimg(true)}<a href='#{"/home/" + record_link(record)}'>#{Util::relative_path record.shortpath, @path}</a></dt>
+EOS
     end
 
     def record_link(record)     # 
