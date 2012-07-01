@@ -49,7 +49,15 @@ module Milkode
     end
 
     def conv_keywords_to_fpath
-      Query.new("f:array f:test s:rb")
+      s = query_string.split.map {|v|
+        if keywords.include? v
+          "f:#{v}"
+        else
+          v
+        end
+      }.join(' ')
+
+      Query.new(s)
     end
 
     private

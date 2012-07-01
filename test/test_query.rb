@@ -47,6 +47,17 @@ module Milkode
       assert_equal q.keywords, ['def update']
     end
 
+    def test_conv_keywords_to_fpath
+      q = create_query("array test s:rb")
+      assert_equal q.conv_keywords_to_fpath.query_string, 'f:array f:test s:rb'
+
+      q = create_query("hoge")
+      assert_equal q.conv_keywords_to_fpath.query_string, 'f:hoge'
+
+      q = create_query("hoge f:hoge")
+      assert_equal q.conv_keywords_to_fpath.query_string, 'f:hoge f:hoge'
+    end
+
     def create_query(query)
       Query.new(query)
     end
