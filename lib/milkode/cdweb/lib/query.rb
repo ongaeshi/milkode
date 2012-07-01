@@ -16,6 +16,7 @@ module Milkode
                ['package',  'p'],
                ['filepath', 'fpath', 'f'],
                ['suffix',   's'],
+               ['fp'],          # fpath or package
               ]
 
     def initialize(str)
@@ -46,6 +47,10 @@ module Milkode
 
     def suffixs
       calc_param(2)
+    end
+
+    def fpath_or_packages
+      calc_param(3)
     end
 
     def conv_keywords_to_fpath

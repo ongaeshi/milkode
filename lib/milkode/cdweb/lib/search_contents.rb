@@ -34,13 +34,13 @@ module Milkode
       @is_onematch = params[:onematch]
 
       # メインの検索
-      @records, @total_records, @elapsed = Database.instance.search(@q.keywords, @q.packages, path, @q.fpaths, @q.suffixs, @offset, LIMIT_NUM)
+      @records, @total_records, @elapsed = Database.instance.search(@q.keywords, @q.packages, path, @q.fpaths, @q.suffixs, @q.fpath_or_packages, @offset, LIMIT_NUM)
 
       # マッチするファイル
       @match_files = []
       if @offset == 0 && @line == 0
         t = 0
-        @match_files, t, @elapsed = Database.instance.search([], @q.packages, path, @q.keywords, @q.suffixs, @offset, MATH_FILE_LIMIT)
+        @match_files, t, @elapsed = Database.instance.search([], @q.packages, path, @q.keywords, @q.suffixs, @q.fpath_or_packages, @offset, MATH_FILE_LIMIT)
         p t
       end
 
