@@ -40,8 +40,12 @@ module Milkode
       @match_files = []
       if @offset == 0 && @line == 0
         t = 0
-        @match_files, t, @elapsed = Database.instance.search([], @q.packages, path, @q.keywords, @q.suffixs, @q.fpath_or_packages, @offset, MATH_FILE_LIMIT)
-        p t
+
+        if (@path != "")
+          @match_files, t, @elapsed = Database.instance.search([], @q.packages, path, @q.fpaths + @q.keywords, @q.suffixs, @q.fpath_or_packages, @offset, MATH_FILE_LIMIT)
+        else
+          @match_files, t, @elapsed = Database.instance.search([], @q.packages, path, @q.fpaths, @q.suffixs, @q.fpath_or_packages + @q.keywords, @offset, MATH_FILE_LIMIT)
+        end
       end
 
       grep_contents
@@ -89,7 +93,7 @@ EOF
       unless @match_files.empty?
         is_and_more = @match_files.size >= MATH_FILE_LIMIT
         @match_files = @match_files[0..MATH_FILE_DISP-1]
-        conv_query = @q.conv_keywords_to_fpath
+        conv_query = (@path != "") ? @q.conv_keywords_to_fpath : @q.conv_keywords_to_fpath_or_packages
         tmpp = @params.clone
         tmpp[:query] = conv_query.query_string
         url = Mkurl.new(@path, tmpp).inherit_query_shead

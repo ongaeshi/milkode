@@ -65,6 +65,18 @@ module Milkode
       Query.new(s)
     end
 
+    def conv_keywords_to_fpath_or_packages
+      s = query_string.split.map {|v|
+        if keywords.include? v
+          "fp:#{v}"
+        else
+          v
+        end
+      }.join(' ')
+
+      Query.new(s)
+    end
+
     private
 
     def calc_param(index)

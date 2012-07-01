@@ -67,6 +67,11 @@ module Milkode
       assert_equal q.fpath_or_packages, ['pack', 'age']
     end
 
+    def test_conv_keywords_to_fpath_or_packages
+      q = create_query("array test s:rb")
+      assert_equal q.conv_keywords_to_fpath_or_packages.query_string, 'fp:array fp:test s:rb'
+    end
+
     def create_query(query)
       Query.new(query)
     end
