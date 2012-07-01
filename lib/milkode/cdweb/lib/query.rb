@@ -48,6 +48,10 @@ module Milkode
       calc_param(2)
     end
 
+    def conv_keywords_to_fpath
+      Query.new("f:array f:test s:rb")
+    end
+
     private
 
     def calc_param(index)

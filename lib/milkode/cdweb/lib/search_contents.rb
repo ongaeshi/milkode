@@ -20,7 +20,9 @@ module Milkode
     LIMIT_NUM = 50             # 最大検索ファイル数
     NTH = 3                    # 表示範囲
     COL_LIMIT = 200            # 1行の桁制限
-    MATH_FILE_LIMIT = 3        # マッチファイルの最大表示数
+
+    MATH_FILE_DISP  = 3        # マッチファイルの最大表示数
+    MATH_FILE_LIMIT = MATH_FILE_DISP + 1 # マッチファイルの検索リミット数
     
     def initialize(path, params, query)
       @path = path
@@ -36,9 +38,10 @@ module Milkode
 
       # マッチするファイル
       @match_files = []
-      if @q.fpaths.empty? && @offset == 0
+      if @offset == 0 && @line == 0
         t = 0
         @match_files, t, @elapsed = Database.instance.search([], @q.packages, path, @q.keywords, @q.suffixs, @offset, MATH_FILE_LIMIT)
+        p t
       end
 
       grep_contents
@@ -84,8 +87,17 @@ EOF
 
     def match_files_contents
       unless @match_files.empty?
-        @match_files.map {|record| result_record(DocumentRecord.new(record))}.join + '<hr>'
-        # 'もっと見る'の機能
+        is_and_more = @match_files.size >= MATH_FILE_LIMIT
+        @match_files = @match_files[0..MATH_FILE_DISP-1]
+        conv_query = @q.conv_keywords_to_fpath
+        tmpp = @params.clone
+        tmpp[:query] = conv_query.query_string
+        url = Mkurl.new(@path, tmpp).inherit_query_shead
+        <<EOF
+#{@match_files.map {|record| result_record(DocumentRecord.new(record))}.join}
+#{"<a href='#{url}'>...and more</a></a>" if is_and_more}
+<hr>
+EOF
       else
         ""
       end
@@ -188,7 +200,7 @@ EOS
     end
 
     def pagination_link(offset, line, label)
-      tmpp = @params
+      tmpp = @params.clone
       tmpp[:offset] = offset.to_s
       tmpp[:line] = line.to_s
       href = Mkurl.new("", tmpp).inherit_query_shead_offset
