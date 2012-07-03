@@ -27,7 +27,7 @@ module Milkode
       if (@q.fpaths.include?("*"))
         @records, @total_records = Database.instance.selectAll(@offset, DISP_NUM)
       else
-        @records, @total_records = Database.instance.search(@q.keywords, @q.packages, path, @q.fpaths, @q.suffixs, @q.fpath_or_packages, @offset, DISP_NUM)
+        @records, @total_records = Database.instance.search(@q.keywords, @q.multi_match_keywords, @q.packages, path, @q.fpaths, @q.suffixs, @q.fpath_or_packages, @offset, DISP_NUM)
       end
     end
 

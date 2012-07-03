@@ -57,7 +57,7 @@ module Milkode
       DocumentRecord.create @documents.find_shortpath(shortpath)
     end
 
-    def search(patterns, packages, current_path, fpaths, suffixs, fpath_or_packages, offset = 0, limit = -1)
+    def search(patterns, keywords, packages, current_path, fpaths, suffixs, fpath_or_packages, offset = 0, limit = -1)
       paths = []
 
       # パッケージ名未指定の時は現在位置を検索条件に追加
@@ -77,7 +77,7 @@ module Milkode
       # 検索
       result = @documents.search(
         :patterns  => patterns,
-        # :keywords  => ,
+        :keywords  => keywords,
         :paths     => paths,
         :packages  => packages,
         :restpaths => fpaths,

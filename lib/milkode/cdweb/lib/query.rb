@@ -17,6 +17,7 @@ module Milkode
                ['filepath', 'fpath', 'f'],
                ['suffix',   's'],
                ['fp'],          # fpath or package
+               ['keyword',  'k'],
               ]
 
     def initialize(str)
@@ -51,6 +52,11 @@ module Milkode
 
     def fpath_or_packages
       calc_param(3)
+    end
+
+    def multi_match_keywords
+      # 本当はkeywordsにしたかった・・
+      calc_param(4)
     end
 
     def conv_keywords_to_fpath
