@@ -112,19 +112,13 @@ helpers do
 EOF
   end
 
-  def create_select_package
-    value = 'milkode'           # 仮
-    
-    data = [
-            '---',
-            'junk',
-            'milkode',
-            'export-memo',
-            'ruby-refm-1.9.1-dynamic-20100729',
-           ]
+  def create_select_package(path)
+    value = package_name(path)
+    value = '---' if value == "root"
+    data = ['---'] + Database.instance.packages(nil)
 
     <<EOF
-<select name="shead" id="package">
+<select name="package" id="package">
 #{data.map{|v| "<option value='#{v}' #{v == value ? 'selected' : ''}>#{v}</option>"}}
 </select>
 EOF
