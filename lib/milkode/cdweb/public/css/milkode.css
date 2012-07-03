@@ -93,6 +93,10 @@ ul.unstyled_margin {
     margin-left: 7px;
 }
 
+select#shead {
+    width: 120px;
+}
+
 /* toppage */
 
 #toppage {

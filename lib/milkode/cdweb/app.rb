@@ -96,9 +96,20 @@ helpers do
     "<a href='#{'/home?query=' + escape_url(query)}'>#{query}</a>"
   end
 
-  def create_radio(value, shead)
-    str = (value == shead) ? 'checked' : ''
-    "<input name='shead' type='radio' value='#{value}' #{str}/>"
+  def create_select_shead(value)
+    value ||= "package"
+
+    data = [
+            ['all'      , '全て'        ],
+            ['package'  , 'パッケージ'  ],
+            ['directory', 'ディレクトリ'],
+           ]
+
+    <<EOF
+<select name="shead" id="shead">
+#{data.map{|v| "<option value='#{v[0]}' #{v[0] == value ? 'selected' : ''}>#{v[1]}</option>"}}
+</select>
+EOF
   end
 
   def create_checkbox(name, value)

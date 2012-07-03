@@ -9,12 +9,7 @@
       %input#search(type="submit" name="search" value="検索" onclick="set_pathname()")
       %input#clear(type="submit" name="clear" value="クリア" onclick="set_pathname()")
       %br
-      = create_radio('all', params[:shead])
-      全て
-      = create_radio('package', params[:shead])
-      パッケージ(デフォルト)
-      = create_radio('directory', params[:shead])
-      ディレクトリ
+      = create_select_shead(params[:shead])
       = create_checkbox('onematch', params[:onematch])
       = '1ファイル1マッチ'
       %input(name="pathname" type="hidden" value="")
