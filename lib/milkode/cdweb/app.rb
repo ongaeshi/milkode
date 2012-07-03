@@ -112,6 +112,24 @@ helpers do
 EOF
   end
 
+  def create_select_package
+    value = 'milkode'           # 仮
+    
+    data = [
+            '---',
+            'junk',
+            'milkode',
+            'export-memo',
+            'ruby-refm-1.9.1-dynamic-20100729',
+           ]
+
+    <<EOF
+<select name="shead" id="package">
+#{data.map{|v| "<option value='#{v}' #{v == value ? 'selected' : ''}>#{v}</option>"}}
+</select>
+EOF
+  end
+
   def create_checkbox(name, value)
     str = (value) ? 'checked' : ''
     "<input type='checkbox' name='#{name}' value='on' #{str}/>"

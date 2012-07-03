@@ -97,6 +97,10 @@ select#shead {
     width: 120px;
 }
 
+select#package {
+    width: 160px;
+}
+
 /* toppage */
 
 #toppage {
