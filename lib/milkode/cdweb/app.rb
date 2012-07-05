@@ -118,7 +118,7 @@ EOF
     data = ['---'] + Database.instance.packages(nil)
 
     <<EOF
-<select name="package" id="package">
+<select name="package" id="package" onchange="select_package()">
 #{data.map{|v| "<option value='#{v}' #{v == value ? 'selected' : ''}>#{v}</option>"}}
 </select>
 EOF
