@@ -134,8 +134,20 @@ EOF
         elsif (my_option[:gotoline_data])
           # gotoline mode
           basePatterns = option.filePatterns 
+
+          # 最初の要素の先頭が'/'なら絶対パスモード
+          is_abs_path = my_option[:gotoline_data].first && (my_option[:gotoline_data][0][0][0][0] == '/')
+          
           my_option[:gotoline_data].each do |v|
-            option.filePatterns = basePatterns + v[0]
+            if is_abs_path
+              package, restpath = Util::divide_shortpath(v[0][0])
+              # p [package, restpath]
+              option.packages = [package]
+              option.filePatterns = [restpath]
+            else
+              option.filePatterns = basePatterns + v[0]
+            end
+            
             option.gotoline = v[1]
             findGrep = FindGrep::FindGrep.new(arguments, option)
             findGrep.searchAndPrint(stdout)
@@ -197,11 +209,12 @@ EOF
             gsub("-k", ":k").
             gsub("-g", ":g")            
         end
+
       end
 
       def after
         result = []
-        
+
         @arguments.each do |v|
           case v
           when ":l"
