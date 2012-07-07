@@ -55,7 +55,8 @@ module Milkode
               :css => :class,
               :highlight_lines => @highlight_lines,
               :line_number_start => @line_number_start,
-              :line_number_anchors => false
+              :line_number_anchors => false,
+              :onclick_copy_line_number => true
               )
     end
 
