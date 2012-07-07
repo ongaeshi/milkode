@@ -31,7 +31,8 @@ module Milkode
       @page = params[:page].to_i || 0
       @offset = params[:offset].to_i
       @line = params[:line].to_i
-      @is_onematch = params[:onematch]
+      @is_onematch = params[:onematch] == 'on'
+      @is_sensitive = params[:sensitive] == 'on'
 
       # メインの検索
       @records, @total_records, @elapsed = Database.instance.search(@q.keywords, @q.multi_match_keywords, @q.packages, path, @q.fpaths, @q.suffixs, @q.fpath_or_packages, @offset, LIMIT_NUM)
@@ -136,7 +137,7 @@ EOF
 
           if @is_onematch
             grep = Grep.new(record.content)
-            match_line = grep.one_match_and(@q.keywords)
+            match_line = grep.one_match_and(@q.keywords, @is_sensitive)
             @match_records << MatchRecord.new(record, match_line) if match_line
 
             if @match_records.size >= DISP_NUM
@@ -161,7 +162,7 @@ EOF
 
     def grep_match_lines_stopover(record, index)
       grep = Grep.new(record.content)      
-      r = grep.match_lines_stopover(@q.keywords, DISP_NUM - @match_records.size, (index == 0) ? @line : 0)
+      r = grep.match_lines_stopover(@q.keywords, DISP_NUM - @match_records.size, (index == 0) ? @line : 0, @is_sensitive)
 
       r[:result].each do |match_line|
         @match_records << MatchRecord.new(record, match_line) if match_line

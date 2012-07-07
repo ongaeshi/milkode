@@ -17,12 +17,13 @@ module Milkode
     @setting = WebSetting.new
     @title = record.shortpath
     @path = record.shortpath
+    is_sensitive = params[:sensitive] == 'on'
 
     q = params[:query] && Query.new(params[:query]) 
 
     if (Util::larger_than_oneline(record.content) and q and !q.keywords.empty?)
       grep = Grep.new(record.content)
-      match_lines = grep.match_lines_and(q.keywords)
+      match_lines = grep.match_lines_and(q.keywords, is_sensitive)
       @record_content = CodeRayWrapper.new(record.content, record.shortpath, match_lines).to_html
     else
       @record_content = CodeRayWrapper.new(record.content, record.shortpath).to_html
