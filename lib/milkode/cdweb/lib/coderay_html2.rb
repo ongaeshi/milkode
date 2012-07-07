@@ -166,8 +166,9 @@ module Encoders
           "<a href=\"#{anchor_url}##{anchor}\" name=\"#{anchor}\">#{line}</a>"
         end
       elsif options[:onclick_copy_line_number]
+        prefix = options[:onclick_copy_prefix] || ""
         proc do |line|
-          line.to_s
+          "<a href=\"#!\" onclick=\"alert('#{prefix + line.to_s}');\" title=\"Copy to clipboard\">#{line.to_s}</a>"
         end
       else
         proc { |line| line.to_s }  # :to_s.to_proc in Ruby 1.8.7+
