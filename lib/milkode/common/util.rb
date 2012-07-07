@@ -104,6 +104,10 @@ module Milkode
       str == str.downcase
     end
 
+    def ignore_case?(pattens, is_sensitive)
+      !is_sensitive && (pattens.all? {|v| Util::downcase? v})
+    end
+
     # parse_gotoline(['a', '123', 'b']) #=> [['a', 'b'], 123]]
     # parse_gotoline(['a', '123', 'b', 55]) #=> [['a', 'b', '123'], 55]]
     # parse_gotoline(['a:5']) #=> [['a'], 55]]

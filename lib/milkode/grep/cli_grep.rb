@@ -105,8 +105,7 @@ EOF
 
       if (arguments.size > 0 || my_option[:find_mode])
         # ignore?
-        downcase_all = arguments.all? {|v| Util::downcase? v}
-        option.ignoreCase = true if downcase_all && !my_option[:case_sensitive]
+        option.ignoreCase = true if Util::ignore_case?(arguments, my_option[:case_sensitive])
 
         # update
         if my_option[:update]

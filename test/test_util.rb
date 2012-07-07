@@ -71,6 +71,13 @@ class TestUtil < Test::Unit::TestCase
     assert !Milkode::Util::downcase?("dummyNode")    
   end
 
+  def test_ignore_case?
+    assert_equal true,  Milkode::Util::ignore_case?(['a', 'b'], false)
+    assert_equal false, Milkode::Util::ignore_case?(['a', 'b'], true)
+    assert_equal false, Milkode::Util::ignore_case?(['a', 'B'], false)
+    assert_equal false, Milkode::Util::ignore_case?(['A', 'b'], true)
+  end
+
   def test_parse_gotoline
     assert_equal [[['a', 'b'], 123]],       Milkode::Util::parse_gotoline(['a', '123', 'b']) 
     assert_equal [[['a', '123', 'b'], 55]], Milkode::Util::parse_gotoline(['a', '123', 'b', '55'])
