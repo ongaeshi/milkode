@@ -124,9 +124,9 @@ EOF
 EOF
   end
 
-  def create_checkbox(name, value)
+  def create_checkbox(name, value, label)
     str = (value) ? 'checked' : ''
-    "<input type='checkbox' name='#{name}' value='on' #{str}/>"
+    "<label class='checkbox inline'><input type='checkbox' name='#{name}' value='on' #{str}/>#{label}</label>"
   end
 
   def create_headmenu(path, query, flistpath = '')
