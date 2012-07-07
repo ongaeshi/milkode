@@ -213,6 +213,12 @@ EOF
       end
 
       def after
+        if @arguments.first
+          if @arguments[0] =~  /\A\/.*:\d+\Z/
+            @state = :gotoline
+          end
+        end
+
         result = []
 
         @arguments.each do |v|
