@@ -9,6 +9,7 @@ require 'milkode/cdweb/lib/database'
 require 'milkode/cdweb/lib/coderay_wrapper'
 require 'milkode/cdweb/lib/search_contents'
 require 'milkode/cdweb/lib/search_files'
+require 'milkode/cdweb/lib/search_gotoline'
 require 'milkode/cdweb/lib/mkurl'
 require 'milkode/common/util'
 
@@ -41,7 +42,11 @@ module Milkode
     @title = "'#{query.query_string}' in #{path_title(path)}"
 
     if (query.keywords.size > 0)
-      searcher = SearchContents.new(path, params, query)
+      if (query.keywords[0] =~ /\A\/.*:\d+\Z/)
+        searcher = SearchGotoLine.new(path, params, query)
+      else
+        searcher = SearchContents.new(path, params, query)
+      end
     else
       searcher = SearchFiles.new(path, params, query)
     end

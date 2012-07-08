@@ -12,6 +12,7 @@ require 'groonga'
 require 'milkode/common/dbdir'
 require 'milkode/cdstk/yaml_file_wrapper'
 require 'milkode/database/groonga_database'
+require 'milkode/common/util'
 include Milkode
 
 module Milkode
@@ -86,6 +87,31 @@ module Milkode
         :offset    => offset,
         :limit     => limit
       )
+
+      # 結果
+      return result.map{|r| DocumentRecord.new(r)}, result.size
+    end
+
+    def gotoline(querys)
+      result = []
+      querys = Util::parse_gotoline(querys)
+
+      querys.each do |v|
+        package, restpath = Util::divide_shortpath(v[0][0])
+        # p package, restpath
+
+        result += @documents.search(
+          # :patterns  => patterns,
+          # :keywords  => keywords,
+          # :paths     => paths,
+          :packages  => [package],
+          :restpaths => [restpath],
+          # :suffixs   => suffixs,
+          # :fpath_or_packages => fpath_or_packages,
+          # :offset    => offset,
+          # :limit     => limit
+        )
+      end
 
       # 結果
       return result.map{|r| DocumentRecord.new(r)}, result.size
