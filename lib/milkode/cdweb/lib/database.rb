@@ -12,6 +12,7 @@ require 'groonga'
 require 'milkode/common/dbdir'
 require 'milkode/cdstk/yaml_file_wrapper'
 require 'milkode/database/groonga_database'
+require 'milkode/common/util'
 include Milkode
 
 module Milkode

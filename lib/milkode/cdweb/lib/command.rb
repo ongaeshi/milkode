@@ -9,6 +9,7 @@ require 'milkode/cdweb/lib/database'
 require 'milkode/cdweb/lib/coderay_wrapper'
 require 'milkode/cdweb/lib/search_contents'
 require 'milkode/cdweb/lib/search_files'
+require 'milkode/cdweb/lib/search_gotoline'
 require 'milkode/cdweb/lib/mkurl'
 require 'milkode/common/util'
 
@@ -22,9 +23,20 @@ module Milkode
     q = params[:query] && Query.new(params[:query]) 
 
     if (Util::larger_than_oneline(record.content) and q and !q.keywords.empty?)
-      grep = Grep.new(record.content)
-      match_lines = grep.match_lines_and(q.keywords, is_sensitive)
-      @record_content = CodeRayWrapper.new(record.content, record.shortpath, match_lines).to_html
+      if Util::gotoline_keyword? q.keywords[0]
+        gotolines = Util::parse_gotoline(q.keywords)
+        match_lines = []
+        gotolines.each do |v|
+          if v[0][0][1..-1] == record.shortpath
+              match_lines << Grep::MatchLineResult.new(v[1] - 1, nil)
+          end
+        end
+        @record_content = CodeRayWrapper.new(record.content, record.shortpath, match_lines).to_html
+      else
+        grep = Grep.new(record.content)
+        match_lines = grep.match_lines_and(q.keywords, is_sensitive)
+        @record_content = CodeRayWrapper.new(record.content, record.shortpath, match_lines).to_html
+      end
     else
       @record_content = CodeRayWrapper.new(record.content, record.shortpath).to_html
     end
@@ -41,7 +53,11 @@ module Milkode
     @title = "'#{query.query_string}' in #{path_title(path)}"
 
     if (query.keywords.size > 0)
-      searcher = SearchContents.new(path, params, query)
+      if Util::gotoline_keyword? query.keywords[0]
+        searcher = SearchGotoLine.new(path, params, query)
+      else
+        searcher = SearchContents.new(path, params, query)
+      end
     else
       searcher = SearchFiles.new(path, params, query)
     end

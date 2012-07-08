@@ -85,6 +85,7 @@ class TestUtil < Test::Unit::TestCase
     assert_equal [[['a'], 55]],    Milkode::Util::parse_gotoline(['a:55'])
     assert_equal [[['lib/aaa.c'], 8], [['test/bbb.rb'], 9]],    Milkode::Util::parse_gotoline(['lib/aaa.c:8', 'test/bbb.rb:9'])
     assert_equal [[['c:/tmp/ccc.txt'], 99]],    Milkode::Util::parse_gotoline(['c:/tmp/ccc.txt:99'])
+    assert_equal [[['/milkode/hoge.rb'], 99]],    Milkode::Util::parse_gotoline(['/milkode/hoge.rb:99'])
   end
   
   def test_gotoline_multi?
@@ -99,6 +100,16 @@ class TestUtil < Test::Unit::TestCase
     assert_equal  true, Milkode::Util::git_url?('git://github.com/ongaeshi/milkode.git')
     assert_equal  true, Milkode::Util::git_url?('git@github.com:ongaeshi/milkode.git')
     assert_equal  true, Milkode::Util::git_url?('ssh:foo@bar/baz.git')
+  end
+
+  def test_divide_shortpath
+    package, restpath = Milkode::Util::divide_shortpath('package/to/a.txt')
+    assert_equal 'package', package
+    assert_equal 'to/a.txt', restpath
+
+    package, restpath = Milkode::Util::divide_shortpath('/package/to/a.txt')
+    assert_equal 'package', package
+    assert_equal 'to/a.txt', restpath
   end
       
   
