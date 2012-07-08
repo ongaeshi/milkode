@@ -49,10 +49,10 @@ module Milkode
     
     def html_pagination
       return "" if @q.empty?
-      return "" if next_offset >= @total_records
+      return "" if @total_records < DISP_NUM
       
       return <<EOF
-<div class='pagination'>
+<div class='pagination pagination-centered'>
 #{pagination_link(next_offset, "next >>")}
 </div>
 EOF
@@ -72,7 +72,7 @@ EOF
     end
 
     def pagination_span(content)
-      "<span class='pagination-link'>#{content}</span>\n"
+      "<ul><li>#{content}</li></ul>\n"
     end
 
     def result_record(record)
