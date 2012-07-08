@@ -7,7 +7,6 @@
 
 require 'rubygems'
 require 'rack'
-include Rack::Utils
 
 module Milkode
   class Mkurl
@@ -39,7 +38,12 @@ module Milkode
     private
 
     def escape_path(src)
-      escape(src).gsub("%2F", '/')
+      # /rack-1.3.0/lib/rack/utils.rb:29
+      Rack::Utils::escape_path(src).gsub("%2F", '/')
+    end
+
+    def escape(src)
+      Rack::Utils::escape(src)
     end
 
     def create_url(qp)
