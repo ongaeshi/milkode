@@ -92,31 +92,6 @@ module Milkode
       return result.map{|r| DocumentRecord.new(r)}, result.size
     end
 
-    def gotoline(querys)
-      result = []
-      querys = Util::parse_gotoline(querys)
-
-      querys.each do |v|
-        package, restpath = Util::divide_shortpath(v[0][0])
-        # p package, restpath
-
-        result += @documents.search(
-          # :patterns  => patterns,
-          # :keywords  => keywords,
-          # :paths     => paths,
-          :packages  => [package],
-          :restpaths => [restpath],
-          # :suffixs   => suffixs,
-          # :fpath_or_packages => fpath_or_packages,
-          # :offset    => offset,
-          # :limit     => limit
-        )
-      end
-
-      # 結果
-      return result.map{|r| DocumentRecord.new(r)}, result.size
-    end
-
     def selectAll(offset, limit)
       @documents.select_all_sort_by_shortpath(offset, limit)
     end

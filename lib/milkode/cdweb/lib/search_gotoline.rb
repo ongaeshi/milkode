@@ -13,7 +13,6 @@ require 'milkode/common/util'
 module Milkode
   class SearchGotoLine
     attr_reader :total_records
-    attr_reader :elapsed
     attr_reader :page
     
     DISP_NUM = 20              # 1ページの表示数
@@ -30,16 +29,18 @@ module Milkode
       @q = query
       @page = params[:page].to_i || 0
       @offset = params[:offset].to_i
-      @line = params[:line].to_i
-      @is_onematch = params[:onematch] == 'on'
-      @is_sensitive = params[:sensitive] == 'on'
 
-      # メインの検索
-      @records, @total_records, @elapsed = Database.instance.gotoline(@q.keywords)
+      # 検索クエリを解析
+      @gotolines = Util::parse_gotoline(@q.keywords)
 
-      # マッチするファイル
-      @match_files = []
+      # レコードをピックアップ
+      @records = []
+      @gotolines.each do |v|
+        @records << Database.instance.record(v[0][0][1..-1])
+      end
+      @total_records = @records.size
 
+      # 検索結果を表示
       grep_contents
     end
 
@@ -76,29 +77,10 @@ module Milkode
       end
       
       <<EOF
-#{match_files_contents}
 #{match_groups.map{|g|result_match_record(g)}.join}
 EOF
     end
 
-    def match_files_contents
-      unless @match_files.empty?
-        is_and_more = @match_files.size >= MATH_FILE_LIMIT
-        @match_files = @match_files[0..MATH_FILE_DISP-1]
-        conv_query = (@path != "") ? @q.conv_keywords_to_fpath : @q.conv_keywords_to_fpath_or_packages
-        tmpp = @params.clone
-        tmpp[:query] = conv_query.query_string
-        url = Mkurl.new(@path, tmpp).inherit_query_shead
-        <<EOF
-#{@match_files.map {|record| result_record(DocumentRecord.new(record))}.join}
-#{"<a href='#{url}'>...and more</a></a>" if is_and_more}
-<hr>
-EOF
-      else
-        ""
-      end
-    end
-    
     def html_pagination
       return "" if @q.empty?
       return "" if next_offset >= @total_records
@@ -124,54 +106,14 @@ EOF
       @next_line = nil
 
       @records.each_with_index do |record, index|
-        if (false && Util::larger_than_oneline(record.content))
+        @match_records << MatchRecord.new(record, Grep::MatchLineResult.new(@gotolines[index][1] - 1, nil))
 
-          if @is_onematch
-            grep = Grep.new(record.content)
-            match_line = grep.one_match_and(@q.keywords, @is_sensitive)
-            @match_records << MatchRecord.new(record, match_line) if match_line
-
-            if @match_records.size >= DISP_NUM
-              @end_index = index
-              @next_index = index + 1
-              break
-            end
-          else
-            break if grep_match_lines_stopover(record, index)
-          end
-        else
-          @match_records << MatchRecord.new(record, Grep::MatchLineResult.new(0, nil))
-
-          if @match_records.size >= DISP_NUM
-            @end_index = index
-            @next_index = index + 1
-            break
-          end
-        end
-      end
-    end
-
-    def grep_match_lines_stopover(record, index)
-      grep = Grep.new(record.content)      
-      r = grep.match_lines_stopover(@q.keywords, DISP_NUM - @match_records.size, (index == 0) ? @line : 0, @is_sensitive)
-
-      r[:result].each do |match_line|
-        @match_records << MatchRecord.new(record, match_line) if match_line
-      end
-
-      if @match_records.size >= DISP_NUM
-        if (r[:next_line] == 0)
+        if @match_records.size >= DISP_NUM
           @end_index = index
           @next_index = index + 1
-        else
-          @end_index = index
-          @next_index = index
-          @next_line = r[:next_line]
+          break
         end
-        return true
       end
-
-      return false
     end
 
     def result_match_record(match_group)
