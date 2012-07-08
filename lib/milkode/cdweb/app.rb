@@ -16,6 +16,7 @@ require 'milkode/cdweb/lib/command'
 require 'milkode/cdweb/lib/mkurl'
 require 'milkode/cdweb/lib/web_setting'
 require 'milkode/cdweb/lib/package_list'
+require 'milkode/common/util'
 
 set :haml, :format => :html5
 
@@ -49,7 +50,15 @@ post '/search*' do
       path = package_path(path)
     end
 
-    redirect Mkurl.new("#{path}", params).inherit_query_shead
+    query = Query.new(params[:query])
+    # gotolineモードで1つだけ渡された時は直接ジャンプ
+    if query.keywords.size == 1 && Util::gotoline_keyword?(query.keywords[0])
+      gotoline = Util::parse_gotoline(query.keywords)[0]
+      path2 = File.join('/home', gotoline[0][0])
+      redirect Mkurl.new(path2, params).inherit_query_shead + "#n#{gotoline[1]}"
+    else
+      redirect Mkurl.new("#{path}", params).inherit_query_shead
+    end
   end
 end
 
