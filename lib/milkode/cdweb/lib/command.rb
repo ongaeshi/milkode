@@ -23,9 +23,20 @@ module Milkode
     q = params[:query] && Query.new(params[:query]) 
 
     if (Util::larger_than_oneline(record.content) and q and !q.keywords.empty?)
-      grep = Grep.new(record.content)
-      match_lines = grep.match_lines_and(q.keywords, is_sensitive)
-      @record_content = CodeRayWrapper.new(record.content, record.shortpath, match_lines).to_html
+      if (q.keywords[0] =~ /\A\/.*:\d+\Z/)
+        gotolines = Util::parse_gotoline(q.keywords)
+        match_lines = []
+        gotolines.each do |v|
+          if v[0][0][1..-1] == record.shortpath
+              match_lines << Grep::MatchLineResult.new(v[1] - 1, nil)
+          end
+        end
+        @record_content = CodeRayWrapper.new(record.content, record.shortpath, match_lines).to_html
+      else
+        grep = Grep.new(record.content)
+        match_lines = grep.match_lines_and(q.keywords, is_sensitive)
+        @record_content = CodeRayWrapper.new(record.content, record.shortpath, match_lines).to_html
+      end
     else
       @record_content = CodeRayWrapper.new(record.content, record.shortpath).to_html
     end
