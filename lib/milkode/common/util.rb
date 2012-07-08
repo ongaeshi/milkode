@@ -108,6 +108,10 @@ module Milkode
       !is_sensitive && (pattens.all? {|v| Util::downcase? v})
     end
 
+    def gotoline_keyword?(keyword)
+      keyword =~ /\A\/.*:\d+\Z/
+    end
+
     # parse_gotoline(['a', '123', 'b']) #=> [['a', 'b'], 123]]
     # parse_gotoline(['a', '123', 'b', 55]) #=> [['a', 'b', '123'], 55]]
     # parse_gotoline(['a:5']) #=> [['a'], 55]]
@@ -170,7 +174,6 @@ module Milkode
     def git_url?(src)
       (src =~ /^(:?git[:@])|(:?ssh:)/) != nil
     end
-
   end
 end
 

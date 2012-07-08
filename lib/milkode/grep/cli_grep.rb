@@ -214,7 +214,7 @@ EOF
 
       def after
         if @arguments.first
-          if @arguments[0] =~  /\A\/.*:\d+\Z/
+          if Util::gotoline_keyword? @arguments[0]
             @state = :gotoline
           end
         end
