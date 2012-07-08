@@ -58,22 +58,8 @@ module Milkode
 
     def html_contents
       match_groups = @match_records.reduce([]) do |g, m|
-        if (g.empty?)
-          g << [m]
-        else
-          prev = g[-1][-1]
-
-          if (m.match_line.index - prev.match_line.index <= NTH * 2 &&
-              m.record.shortpath == prev.record.shortpath)
-            g[-1] << m          # グループの末尾に追加
-            g
-          else
-            g << [m]            # 新規グループ
-          end
-        end
-
         # 近接マッチ無効
-        # g << [m]
+        g << [m]
       end
       
       <<EOF
