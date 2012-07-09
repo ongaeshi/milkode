@@ -161,7 +161,7 @@ module Milkode
     # 'package/to/a.txt' #=> 'package', 'to/a.txt'
     # 'package'          #=> 'package', nil
     def divide_shortpath(shortpath)
-      shortpath = shortpath[1..-1] if shortpath[0] == '/' # 先頭の'/'はカット
+      shortpath = shortpath[1..-1] if shortpath[0..0] == '/' # 先頭の'/'はカット
       a = shortpath.split('/')
 
       if (a.size >= 2)
