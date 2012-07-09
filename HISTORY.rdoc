@@ -5,6 +5,7 @@
   * Display match files when searching
   * Add package selector
   * Direct jump
+  * Suggest
   * Add search options
   * Bug fix
 
