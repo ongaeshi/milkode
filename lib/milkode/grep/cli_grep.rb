@@ -94,7 +94,11 @@ EOF
         return
       end
 
-      if option.packages.empty? && !my_option[:all]
+      # 最初の要素の先頭が'/'なら絶対パスモード
+      is_abs_path = my_option[:gotoline_data] && my_option[:gotoline_data].first && (my_option[:gotoline_data][0][0][0][0..0] == '/')
+
+      # 現在位置のパッケージを記録
+      if option.packages.empty? && !my_option[:all] && !is_abs_path
         if (package_dir_in? current_dir)
           option.filePatterns << current_dir
         else
@@ -131,13 +135,10 @@ EOF
           records = findGrep.pickupRecords
           # stdout.puts "#{records.size} records (#{findGrep.time_s})"
           stdout.puts "#{records.size} records"
-        elsif (my_option[:gotoline_data])
+        elsif my_option[:gotoline_data]
           # gotoline mode
           basePatterns = option.filePatterns 
 
-          # 最初の要素の先頭が'/'なら絶対パスモード
-          is_abs_path = my_option[:gotoline_data].first && (my_option[:gotoline_data][0][0][0][0] == '/')
-          
           my_option[:gotoline_data].each do |v|
             if is_abs_path
               package, restpath = Util::divide_shortpath(v[0][0])
