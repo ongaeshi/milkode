@@ -1,3 +1,23 @@
+=== 0.9.0 2012/07/09
+
+* milk web
+  * Renew page design
+  * Display match files when searching
+  * Add package selector
+  * Direct jump
+  * Add search options
+  * Bug fix
+
+* gmilk
+  * Direct jump
+
+* database
+  * fpath_or_packages
+
+=== 0.8.1 2012/06/20
+
+* Fix, gmilk -a -u error (thanks hazy_moon)
+
 === 0.8.0 2012/06/20
 
 * milk web

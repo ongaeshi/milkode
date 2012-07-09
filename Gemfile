@@ -21,4 +21,5 @@ gem 'thor', '~> 0.15.0'
 group :development do
   gem "bundler"
   gem "jeweler"
+  gem "rack-test"
 end
