@@ -94,7 +94,11 @@ EOF
         return
       end
 
-      if option.packages.empty? && !my_option[:all]
+      # 最初の要素の先頭が'/'なら絶対パスモード
+      is_abs_path = my_option[:gotoline_data] && my_option[:gotoline_data].first && (my_option[:gotoline_data][0][0][0][0..0] == '/')
+
+      # 現在位置のパッケージを記録
+      if option.packages.empty? && !my_option[:all] && !is_abs_path
         if (package_dir_in? current_dir)
           option.filePatterns << current_dir
         else
@@ -105,15 +109,14 @@ EOF
 
       if (arguments.size > 0 || my_option[:find_mode])
         # ignore?
-        downcase_all = arguments.all? {|v| Util::downcase? v}
-        option.ignoreCase = true if downcase_all && !my_option[:case_sensitive]
+        option.ignoreCase = true if Util::ignore_case?(arguments, my_option[:case_sensitive])
 
         # update
         if my_option[:update]
           cdstk = Cdstk.new(stdout, Dbdir.select_dbdir)
 
           if (my_option[:all])
-            cdstk.update_all
+            cdstk.update_all({})
           elsif (my_option[:packages].empty?)
             cdstk.update_for_grep(package_root_dir(File.expand_path(".")))
           else
@@ -132,11 +135,20 @@ EOF
           records = findGrep.pickupRecords
           # stdout.puts "#{records.size} records (#{findGrep.time_s})"
           stdout.puts "#{records.size} records"
-        elsif (my_option[:gotoline_data])
+        elsif my_option[:gotoline_data]
           # gotoline mode
           basePatterns = option.filePatterns 
+
           my_option[:gotoline_data].each do |v|
-            option.filePatterns = basePatterns + v[0]
+            if is_abs_path
+              package, restpath = Util::divide_shortpath(v[0][0])
+              # p [package, restpath]
+              option.packages = [package]
+              option.filePatterns = [restpath]
+            else
+              option.filePatterns = basePatterns + v[0]
+            end
+            
             option.gotoline = v[1]
             findGrep = FindGrep::FindGrep.new(arguments, option)
             findGrep.searchAndPrint(stdout)
@@ -198,11 +210,18 @@ EOF
             gsub("-k", ":k").
             gsub("-g", ":g")            
         end
+
       end
 
       def after
+        if @arguments.first
+          if Util::gotoline_keyword? @arguments[0]
+            @state = :gotoline
+          end
+        end
+
         result = []
-        
+
         @arguments.each do |v|
           case v
           when ":l"

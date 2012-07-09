@@ -16,6 +16,8 @@ module Milkode
                ['package',  'p'],
                ['filepath', 'fpath', 'f'],
                ['suffix',   's'],
+               ['fp'],          # fpath or package
+               ['keyword',  'k'],
               ]
 
     def initialize(str)
@@ -29,7 +31,7 @@ module Milkode
     end
 
     def empty?
-      keywords.size == 0 && packages.size == 0 && fpaths.size == 0 && suffixs.size == 0
+      keywords.size == 0 && packages.size == 0 && fpaths.size == 0 && suffixs.size == 0 && fpath_or_packages.size == 0
     end
 
     def keywords
@@ -46,6 +48,39 @@ module Milkode
 
     def suffixs
       calc_param(2)
+    end
+
+    def fpath_or_packages
+      calc_param(3)
+    end
+
+    def multi_match_keywords
+      # 本当はkeywordsにしたかった・・
+      calc_param(4)
+    end
+
+    def conv_keywords_to_fpath
+      s = query_string.split.map {|v|
+        if keywords.include? v
+          "f:#{v}"
+        else
+          v
+        end
+      }.join(' ')
+
+      Query.new(s)
+    end
+
+    def conv_keywords_to_fpath_or_packages
+      s = query_string.split.map {|v|
+        if keywords.include? v
+          "fp:#{v}"
+        else
+          v
+        end
+      }.join(' ')
+
+      Query.new(s)
     end
 
     private

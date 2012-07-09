@@ -12,6 +12,7 @@ require 'groonga'
 require 'milkode/common/dbdir'
 require 'milkode/cdstk/yaml_file_wrapper'
 require 'milkode/database/groonga_database'
+require 'milkode/common/util'
 include Milkode
 
 module Milkode
@@ -42,18 +43,22 @@ module Milkode
 
     def open
       if !@grndb || @grndb.closed?
-        @grndb = GroongaDatabase.new
-        @grndb.open(Database.dbdir)
-        @grndb.yaml_sync(yaml_load.contents)
-        @documents = @grndb.documents
+        open_force
       end
+    end
+
+    def open_force
+      @grndb = GroongaDatabase.new
+      @grndb.open(Database.dbdir)
+      @grndb.yaml_sync(yaml_load.contents)
+      @documents = @grndb.documents
     end
 
     def record(shortpath)
       DocumentRecord.create @documents.find_shortpath(shortpath)
     end
 
-    def search(patterns, packages, current_path, fpaths, suffixs, offset = 0, limit = -1)
+    def search(patterns, keywords, packages, current_path, fpaths, suffixs, fpath_or_packages, offset = 0, limit = -1)
       paths = []
 
       # パッケージ名未指定の時は現在位置を検索条件に追加
@@ -73,11 +78,12 @@ module Milkode
       # 検索
       result = @documents.search(
         :patterns  => patterns,
-        # :keywords  => ,
+        :keywords  => keywords,
         :paths     => paths,
         :packages  => packages,
         :restpaths => fpaths,
         :suffixs   => suffixs,
+        :fpath_or_packages => fpath_or_packages,
         :offset    => offset,
         :limit     => limit
       )

@@ -27,7 +27,7 @@ module Milkode
       if (@q.fpaths.include?("*"))
         @records, @total_records = Database.instance.selectAll(@offset, DISP_NUM)
       else
-        @records, @total_records = Database.instance.search(@q.keywords, @q.packages, path, @q.fpaths, @q.suffixs, @offset, DISP_NUM)
+        @records, @total_records = Database.instance.search(@q.keywords, @q.multi_match_keywords, @q.packages, path, @q.fpaths, @q.suffixs, @q.fpath_or_packages, @offset, DISP_NUM)
       end
     end
 
@@ -49,10 +49,10 @@ module Milkode
     
     def html_pagination
       return "" if @q.empty?
-      return "" if next_offset >= @total_records
+      return "" if @total_records < DISP_NUM
       
       return <<EOF
-<div class='pagination'>
+<div class='pagination pagination-centered'>
 #{pagination_link(next_offset, "next >>")}
 </div>
 EOF
@@ -72,7 +72,7 @@ EOF
     end
 
     def pagination_span(content)
-      "<span class='pagination-link'>#{content}</span>\n"
+      "<ul><li>#{content}</li></ul>\n"
     end
 
     def result_record(record)

@@ -20,11 +20,9 @@ module Milkode
     LIMIT_NUM = 50             # 最大検索ファイル数
     NTH = 3                    # 表示範囲
     COL_LIMIT = 200            # 1行の桁制限
-    
-#     DISP_NUM = 1000              # 1ページの表示数
-#     LIMIT_NUM = 1000             # 最大検索ファイル数
-#     NTH = 3                      # 表示範囲
-#     COL_LIMIT = 200              # 1行の桁制限
+
+    MATH_FILE_DISP  = 3        # マッチファイルの最大表示数
+    MATH_FILE_LIMIT = MATH_FILE_DISP + 1 # マッチファイルの検索リミット数
     
     def initialize(path, params, query)
       @path = path
@@ -33,8 +31,24 @@ module Milkode
       @page = params[:page].to_i || 0
       @offset = params[:offset].to_i
       @line = params[:line].to_i
-      @is_onematch = params[:onematch]
-      @records, @total_records, @elapsed = Database.instance.search(@q.keywords, @q.packages, path, @q.fpaths, @q.suffixs, @offset, LIMIT_NUM)
+      @is_onematch = params[:onematch] == 'on'
+      @is_sensitive = params[:sensitive] == 'on'
+
+      # メインの検索
+      @records, @total_records, @elapsed = Database.instance.search(@q.keywords, @q.multi_match_keywords, @q.packages, path, @q.fpaths, @q.suffixs, @q.fpath_or_packages, @offset, LIMIT_NUM)
+
+      # マッチするファイル
+      @match_files = []
+      if @offset == 0 && @line == 0
+        t = 0
+
+        if (@path != "")
+          @match_files, t, @elapsed = Database.instance.search([], @q.multi_match_keywords, @q.packages, path, @q.fpaths + @q.keywords, @q.suffixs, @q.fpath_or_packages, @offset, MATH_FILE_LIMIT)
+        else
+          @match_files, t, @elapsed = Database.instance.search([], @q.multi_match_keywords, @q.packages, path, @q.fpaths, @q.suffixs, @q.fpath_or_packages + @q.keywords, @offset, MATH_FILE_LIMIT)
+        end
+      end
+
       grep_contents
     end
 
@@ -70,7 +84,28 @@ module Milkode
         # g << [m]
       end
       
-      match_groups.map{|g|result_match_record(g)}.join
+      <<EOF
+#{match_files_contents}
+#{match_groups.map{|g|result_match_record(g)}.join}
+EOF
+    end
+
+    def match_files_contents
+      unless @match_files.empty?
+        is_and_more = @match_files.size >= MATH_FILE_LIMIT
+        @match_files = @match_files[0..MATH_FILE_DISP-1]
+        conv_query = (@path != "") ? @q.conv_keywords_to_fpath : @q.conv_keywords_to_fpath_or_packages
+        tmpp = @params.clone
+        tmpp[:query] = conv_query.query_string
+        url = Mkurl.new(@path, tmpp).inherit_query_shead
+        <<EOF
+#{@match_files.map {|record| result_record(DocumentRecord.new(record))}.join}
+#{"<a href='#{url}'>...and more</a></a>" if is_and_more}
+<hr>
+EOF
+      else
+        ""
+      end
     end
     
     def html_pagination
@@ -78,7 +113,7 @@ module Milkode
       return "" if next_offset >= @total_records
 
       return <<EOF
-<div class='pagination'>
+<div class='pagination pagination-centered'>
 #{pagination_link(next_offset, @next_line, "next >>")}
 </div>
 EOF
@@ -102,7 +137,7 @@ EOF
 
           if @is_onematch
             grep = Grep.new(record.content)
-            match_line = grep.one_match_and(@q.keywords)
+            match_line = grep.one_match_and(@q.keywords, @is_sensitive)
             @match_records << MatchRecord.new(record, match_line) if match_line
 
             if @match_records.size >= DISP_NUM
@@ -127,7 +162,7 @@ EOF
 
     def grep_match_lines_stopover(record, index)
       grep = Grep.new(record.content)      
-      r = grep.match_lines_stopover(@q.keywords, DISP_NUM - @match_records.size, (index == 0) ? @line : 0)
+      r = grep.match_lines_stopover(@q.keywords, DISP_NUM - @match_records.size, (index == 0) ? @line : 0, @is_sensitive)
 
       r[:result].each do |match_line|
         @match_records << MatchRecord.new(record, match_line) if match_line
@@ -170,7 +205,7 @@ EOS
     end
 
     def pagination_link(offset, line, label)
-      tmpp = @params
+      tmpp = @params.clone
       tmpp[:offset] = offset.to_s
       tmpp[:line] = line.to_s
       href = Mkurl.new("", tmpp).inherit_query_shead_offset
@@ -178,7 +213,13 @@ EOS
     end
 
     def pagination_span(content)
-      "<span class='pagination-link'>#{content}</span>\n"
+      "<ul><li>#{content}</li></ul>\n"
+    end
+
+    def result_record(record)
+      <<EOS
+    <dt class='result-file'>#{file_or_dirimg(true)}<a href='#{"/home/" + record_link(record)}'>#{Util::relative_path record.shortpath, @path}</a></dt>
+EOS
     end
 
     def record_link(record)     # 

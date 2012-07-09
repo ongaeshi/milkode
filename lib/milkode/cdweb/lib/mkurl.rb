@@ -7,7 +7,6 @@
 
 require 'rubygems'
 require 'rack'
-include Rack::Utils
 
 module Milkode
   class Mkurl
@@ -39,7 +38,12 @@ module Milkode
     private
 
     def escape_path(src)
-      escape(src).gsub("%2F", '/')
+      # /rack-1.3.0/lib/rack/utils.rb:29
+      Rack::Utils::escape_path(src).gsub("%2F", '/')
+    end
+
+    def escape(src)
+      Rack::Utils::escape(src)
     end
 
     def create_url(qp)
@@ -55,6 +59,7 @@ module Milkode
       qparam << "query=#{escape(@params[:query])}" if (query_inherit and @params[:query])
       qparam << "shead=#{escape(@params[:shead])}" if (shead_inherit and @params[:shead])
       qparam << "onematch=#{escape(@params[:onematch])}" if (shead_inherit and @params[:onematch])
+      qparam << "sensitive=#{escape(@params[:sensitive])}" if (shead_inherit and @params[:sensitive])
       qparam << "offset=#{escape(@params[:offset])}" if (offset_inherit and @params[:offset])
       qparam << "line=#{escape(@params[:line])}" if (offset_inherit and @params[:line])
       qparam << "sort=#{sort_kind}" if sort_kind

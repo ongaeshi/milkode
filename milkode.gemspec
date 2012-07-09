@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{milkode}
-  s.version = "0.8.0"
+  s.version = "0.9.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ongaeshi"]
-  s.date = %q{2012-06-20}
+  s.date = %q{2012-07-09}
   s.description = %q{Line based local source code search engine & grep-command & web-app.}
   s.email = %q{ongaeshi0621@gmail.com}
   s.executables = ["gmilk", "milk"]
@@ -46,6 +46,7 @@ Gem::Specification.new do |s|
     "lib/milkode/cdweb/lib/query.rb",
     "lib/milkode/cdweb/lib/search_contents.rb",
     "lib/milkode/cdweb/lib/search_files.rb",
+    "lib/milkode/cdweb/lib/search_gotoline.rb",
     "lib/milkode/cdweb/lib/web_setting.rb",
     "lib/milkode/cdweb/public/css/bootstrap-responsive.min.css",
     "lib/milkode/cdweb/public/css/bootstrap.min.css",
@@ -95,6 +96,7 @@ Gem::Specification.new do |s|
     "test/data/.gitignore",
     "test/data/a_project/cdstk.rb",
     "test/data/a_project/cdstk_yaml.rb",
+    "test/data/a_project/empty.txt",
     "test/data/abc.zip",
     "test/data/b_project/runner.rb",
     "test/data/b_project/test_dir.rb",
@@ -116,6 +118,7 @@ Gem::Specification.new do |s|
     "test/runner.rb",
     "test/test_cdstk.rb",
     "test/test_cdstk_command.rb",
+    "test/test_cdweb_app.rb",
     "test/test_cli.rb",
     "test/test_cli_grep.rb",
     "test/test_coderay_wrapper.rb",
@@ -165,6 +168,7 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<thor>, ["~> 0.15.0"])
       s.add_development_dependency(%q<bundler>, [">= 0"])
       s.add_development_dependency(%q<jeweler>, [">= 0"])
+      s.add_development_dependency(%q<rack-test>, [">= 0"])
     else
       s.add_dependency(%q<termcolor>, [">= 1.2.0"])
       s.add_dependency(%q<rroonga>, [">= 1.1.0"])
@@ -179,6 +183,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<thor>, ["~> 0.15.0"])
       s.add_dependency(%q<bundler>, [">= 0"])
       s.add_dependency(%q<jeweler>, [">= 0"])
+      s.add_dependency(%q<rack-test>, [">= 0"])
     end
   else
     s.add_dependency(%q<termcolor>, [">= 1.2.0"])
@@ -194,6 +199,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<thor>, ["~> 0.15.0"])
     s.add_dependency(%q<bundler>, [">= 0"])
     s.add_dependency(%q<jeweler>, [">= 0"])
+    s.add_dependency(%q<rack-test>, [">= 0"])
   end
 end
 

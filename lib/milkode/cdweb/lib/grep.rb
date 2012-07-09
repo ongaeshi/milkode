@@ -5,6 +5,8 @@
 # @author ongaeshi
 # @date   2010/10/18
 
+require 'milkode/common/util'
+
 module Milkode
   class Grep
     def initialize(content)
@@ -13,9 +15,9 @@ module Milkode
 
     MatchLineResult = Struct.new(:index, :match_datas)
 
-    def match_lines_stopover(patterns, max_match, start_index)
+    def match_lines_stopover(patterns, max_match, start_index, is_sensitive)
       result = []
-      patternRegexps = strs2regs(patterns, true)
+      patternRegexps = strs2regs(patterns, Util::ignore_case?(patterns, is_sensitive))
       index = start_index
 
       lines = @content.split($/)
@@ -41,9 +43,9 @@ module Milkode
       {:result => result, :next_line => index}
     end
     
-    def match_lines_and(patterns)
+    def match_lines_and(patterns, is_sensitive)
       result = []
-      patternRegexps = strs2regs(patterns, true)
+      patternRegexps = strs2regs(patterns, Util::ignore_case?(patterns, is_sensitive))
       index = 0
       
       @content.each_line do |line|
@@ -60,8 +62,8 @@ module Milkode
       result
     end
 
-    def one_match_and(patterns)
-      patternRegexps = strs2regs(patterns, true)
+    def one_match_and(patterns, is_sensitive)
+      patternRegexps = strs2regs(patterns, Util::ignore_case?(patterns, is_sensitive))
       index = 0
       
       @content.each_line do |line|

@@ -1,10 +1,10 @@
-= haml :header_menu, locals => {:flistpath => '..'}
+= haml :header_menu, :locals => {:flistpath => '..'}
 
 .content
   = haml :search_form
 
   .search-summary
-    <span class="keyword">#{topic_path(@path, params)}</span>（#{@elapsed}秒）
+    <span class="keyword">#{topic_path(@path, params)}</span>#{additional_info(@path, params)}（#{@elapsed}秒）
   ~ @record_content
 
 

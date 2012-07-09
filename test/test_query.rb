@@ -47,6 +47,31 @@ module Milkode
       assert_equal q.keywords, ['def update']
     end
 
+    def test_conv_keywords_to_fpath
+      q = create_query("array test s:rb")
+      assert_equal q.conv_keywords_to_fpath.query_string, 'f:array f:test s:rb'
+
+      q = create_query("hoge")
+      assert_equal q.conv_keywords_to_fpath.query_string, 'f:hoge'
+
+      q = create_query("hoge f:hoge")
+      assert_equal q.conv_keywords_to_fpath.query_string, 'f:hoge f:hoge'
+    end
+
+    def test_fp
+      q = create_query("key1 fp:pack fp:age")
+      assert_equal q.keywords, ['key1']
+      assert_equal q.packages, []
+      assert_equal q.fpaths, []
+      assert_equal q.suffixs, []
+      assert_equal q.fpath_or_packages, ['pack', 'age']
+    end
+
+    def test_conv_keywords_to_fpath_or_packages
+      q = create_query("array test s:rb")
+      assert_equal q.conv_keywords_to_fpath_or_packages.query_string, 'fp:array fp:test s:rb'
+    end
+
     def create_query(query)
       Query.new(query)
     end

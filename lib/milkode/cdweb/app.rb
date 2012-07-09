@@ -16,12 +16,13 @@ require 'milkode/cdweb/lib/command'
 require 'milkode/cdweb/lib/mkurl'
 require 'milkode/cdweb/lib/web_setting'
 require 'milkode/cdweb/lib/package_list'
+require 'milkode/common/util'
 
 set :haml, :format => :html5
 
 get '/' do
   @setting = WebSetting.new
-  @version = "0.8.0"
+  @version = "0.9.0"
   @package_num = Database.instance.yaml_package_num
   @file_num = Database.instance.totalRecords
   @package_list = PackageList.new(Database.instance.grndb)
@@ -49,7 +50,15 @@ post '/search*' do
       path = package_path(path)
     end
 
-    redirect Mkurl.new("#{path}", params).inherit_query_shead
+    query = Query.new(params[:query])
+    # gotolineモードで1つだけ渡された時は直接ジャンプ
+    if query.keywords.size == 1 && Milkode::Util::gotoline_keyword?(query.keywords[0])
+      gotoline = Milkode::Util::parse_gotoline(query.keywords)[0]
+      path2 = File.join('/home', gotoline[0][0])
+      redirect Mkurl.new(path2, params).inherit_query_shead + "#n#{gotoline[1]}"
+    else
+      redirect Mkurl.new("#{path}", params).inherit_query_shead
+    end
   end
 end
 
@@ -96,14 +105,37 @@ helpers do
     "<a href='#{'/home?query=' + escape_url(query)}'>#{query}</a>"
   end
 
-  def create_radio(value, shead)
-    str = (value == shead) ? 'checked' : ''
-    "<input name='shead' type='radio' value='#{value}' #{str}/>"
+  def create_select_shead(value)
+    value ||= "package"
+
+    data = [
+            ['all'      , '全て'        ],
+            ['package'  , 'パッケージ'  ],
+            ['directory', 'ディレクトリ'],
+           ]
+
+    <<EOF
+<select name="shead" id="shead">
+#{data.map{|v| "<option value='#{v[0]}' #{v[0] == value ? 'selected' : ''}>#{v[1]}</option>"}}
+</select>
+EOF
   end
 
-  def create_checkbox(name, value)
+  def create_select_package(path)
+    value = package_name(path)
+    value = '---' if value == "root"
+    data = ['---'] + Database.instance.packages(nil)
+
+    <<EOF
+<select name="package" id="package" onchange="select_package()">
+#{data.map{|v| "<option value='#{v}' #{v == value ? 'selected' : ''}>#{v}</option>"}}
+</select>
+EOF
+  end
+
+  def create_checkbox(name, value, label)
     str = (value) ? 'checked' : ''
-    "<input type='checkbox' name='#{name}' value='on' #{str}/>"
+    "<label class='checkbox inline'><input type='checkbox' name='#{name}' value='on' #{str}/>#{label}</label>"
   end
 
   def create_headmenu(path, query, flistpath = '')
@@ -112,7 +144,7 @@ helpers do
     <<EOF
     #{headicon('go-home-5.png')} <a href="/home" class="headmenu">全てのパッケージ</a>
     #{headicon('document-new-4.png')} <a href="#{href}" class="headmenu" onclick="window.open('#{href}'); return false;">新しい検索</a>
-    #{headicon('directory.png')} <a href="#{flist}" class="headmenu">ファイル一覧</a> 
+    #{headicon('directory.png')} <a href="#{flist}" class="headmenu">ディレクトリ</a> 
     #{headicon('help.png')} <a href="/help" class="headmenu">ヘルプ</a>
 EOF
   end
@@ -129,6 +161,35 @@ EOF
       href += '/' + v
       "<a id='topic_#{index}' href='#{Mkurl.new(href, params).inherit_query_shead}' onclick='topic_path(\"topic_#{index}\");'>#{v}</a>"
     }.join('/')
+  end
+
+  HASH = {
+    '.h'   => ['.c', '.cpp', '.m', '.mm'],
+    '.c'   => ['.h'],
+    '.hpp' => ['.cpp'],
+    '.cpp' => ['.hpp', '.h'],
+    '.m'   => ['.h'],
+    '.mm'  => ['.h'],
+  }
+
+  def additional_info(path, parms)
+    suffix = File.extname path
+    cadet = HASH[suffix]
+
+    if (cadet)
+      result = cadet.find do |v|
+        Database.instance.record(path.gsub(/#{suffix}\Z/, v))
+      end
+
+      if (result)
+        path2 = path.gsub(/#{suffix}\Z/, result)
+        " (<a href='#{Mkurl.new(File.join('/home', path2), params).inherit_query_shead}'>#{result}</a>) "
+      else
+        ''
+      end
+    else
+      ''
+    end
   end
 
   def package_name(path)

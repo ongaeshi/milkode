@@ -160,6 +160,7 @@ module Milkode
       paths    = options[:paths]    || []
       restpaths = options[:restpaths]    || []
       suffixs  = options[:suffixs]  || []
+      fpath_or_packages = options[:fpath_or_packages] || []
       offset   = options[:offset]   || 0
       limit    = options[:limit]    || -1
       
@@ -225,6 +226,17 @@ module Milkode
             expression = se
           else
             expression &= se
+          end
+        end
+        
+        # ファイル名かパッケージ名
+        fpath_or_packages.each do |word|
+          sub_expression = record.restpath =~ word
+          sub_expression |= record.package =~ word
+          if expression.nil?
+            expression = sub_expression
+          else
+            expression &= sub_expression
           end
         end
         

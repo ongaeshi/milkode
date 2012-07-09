@@ -89,7 +89,7 @@ module Milkode
     end
 
     def larger_than_oneline(content)
-      content.count($/) > 1      
+      content && content.count($/) > 1      
     end
 
     def normalize_filename(str)
@@ -102,6 +102,14 @@ module Milkode
 
     def downcase?(str)
       str == str.downcase
+    end
+
+    def ignore_case?(pattens, is_sensitive)
+      !is_sensitive && (pattens.all? {|v| Util::downcase? v})
+    end
+
+    def gotoline_keyword?(keyword)
+      keyword =~ /\A\/.*:\d+\Z/
     end
 
     # parse_gotoline(['a', '123', 'b']) #=> [['a', 'b'], 123]]
@@ -153,6 +161,7 @@ module Milkode
     # 'package/to/a.txt' #=> 'package', 'to/a.txt'
     # 'package'          #=> 'package', nil
     def divide_shortpath(shortpath)
+      shortpath = shortpath[1..-1] if shortpath[0..0] == '/' # 先頭の'/'はカット
       a = shortpath.split('/')
 
       if (a.size >= 2)
@@ -165,7 +174,6 @@ module Milkode
     def git_url?(src)
       (src =~ /^(:?git[:@])|(:?ssh:)/) != nil
     end
-
   end
 end
 

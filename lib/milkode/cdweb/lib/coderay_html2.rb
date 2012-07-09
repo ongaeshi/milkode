@@ -72,22 +72,7 @@ module Encoders
         raise ArgumentError, "Invalid value %p for :line_number_start; Integer expected." % start
       end
       
-      anchor_prefix = options[:line_number_anchors]
-      anchor_prefix = 'line' if anchor_prefix == true
-      anchor_prefix = anchor_prefix.to_s[/\w+/] if anchor_prefix
-
-      anchor_url = options[:line_number_anchor_url] || ""
-      
-      anchoring =
-        if anchor_prefix
-          proc do |line|
-          line = line.to_s
-          anchor = anchor_prefix + line
-          "<a href=\"#{anchor_url}##{anchor}\" name=\"#{anchor}\">#{line}</a>"
-        end
-        else
-          proc { |line| line.to_s }  # :to_s.to_proc in Ruby 1.8.7+
-        end
+      anchoring = create_anchor(options)
       
       bold_every = options[:bold_every]
       highlight_lines = options[:highlight_lines]
@@ -165,6 +150,29 @@ module Encoders
       end
 
       output
+    end
+
+    def self.create_anchor(options)
+      anchor_prefix = options[:line_number_anchors]
+      anchor_prefix = 'line' if anchor_prefix == true
+      anchor_prefix = anchor_prefix.to_s[/\w+/] if anchor_prefix
+
+      if anchor_prefix
+        anchor_url = options[:line_number_anchor_url] || ""
+
+        proc do |line|
+          line = line.to_s
+          anchor = anchor_prefix + line
+          "<a href=\"#{anchor_url}##{anchor}\" name=\"#{anchor}\">#{line}</a>"
+        end
+      elsif options[:onclick_copy_line_number]
+        prefix = options[:onclick_copy_prefix] || ""
+        proc do |line|
+          "<a href=\"#!\" onclick=\"alert('#{prefix + line.to_s}');\" title=\"Display line number\">#{line.to_s}</a>"
+        end
+      else
+        proc { |line| line.to_s }  # :to_s.to_proc in Ruby 1.8.7+
+      end
     end
   end
 end
