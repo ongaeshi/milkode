@@ -1,0 +1,9 @@
+= haml :header_menu
+
+.content
+  = haml :search_form
+
+  .search-summary
+    <span class="keyword">#{topic_path(@path, params)}</span>
+
+

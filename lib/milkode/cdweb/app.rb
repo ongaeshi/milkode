@@ -89,6 +89,12 @@ get %r{/help} do
   haml :help
 end
 
+get '*' do
+  @setting = WebSetting.new
+  @path    = ''
+  haml :error
+end
+
 # -- helper function --
 
 helpers do
