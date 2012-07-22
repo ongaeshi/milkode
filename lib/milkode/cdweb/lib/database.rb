@@ -60,33 +60,42 @@ module Milkode
 
     def search(patterns, keywords, packages, current_path, fpaths, suffixs, fpath_or_packages, offset = 0, limit = -1)
       paths = []
+      is_not_search = false
 
       # パッケージ名未指定の時は現在位置を検索条件に追加
       if packages.empty? && current_path != ''
         package, restpath = Util::divide_shortpath(current_path)
 
         # PackageRecord#directory をキーに検索する
-        directory = @grndb.packages[package].directory
+        grn_package = @grndb.packages[package]
+        if grn_package
+          directory = grn_package.directory
 
-        if restpath
-          paths << File.join(directory, restpath)
+          if restpath
+            paths << File.join(directory, restpath)
+          else
+            paths << directory
+          end
         else
-          paths << directory
+          is_not_search = true
         end
       end
 
       # 検索
-      result = @documents.search(
-        :patterns  => patterns,
-        :keywords  => keywords,
-        :paths     => paths,
-        :packages  => packages,
-        :restpaths => fpaths,
-        :suffixs   => suffixs,
-        :fpath_or_packages => fpath_or_packages,
-        :offset    => offset,
-        :limit     => limit
-      )
+      result = []
+      unless is_not_search
+        result = @documents.search(
+          :patterns  => patterns,
+          :keywords  => keywords,
+          :paths     => paths,
+          :packages  => packages,
+          :restpaths => fpaths,
+          :suffixs   => suffixs,
+          :fpath_or_packages => fpath_or_packages,
+          :offset    => offset,
+          :limit     => limit
+        )
+      end
 
       # 結果
       return result.map{|r| DocumentRecord.new(r)}, result.size
@@ -152,7 +161,7 @@ module Milkode
 
     def touch_viewtime(path)
       package, restpath = Util::divide_shortpath(path)
-      @grndb.packages.touch(package, :viewtime) if package
+      @grndb.packages.touch_if(package, :viewtime) if package
     end
     
     private 
