@@ -31,6 +31,7 @@ module Milkode
         t_remove_match_path
         t_add_package_name
         t_shortpath_below
+        t_search_strict_packages
       ensure
         t_cleanup
       end
@@ -40,6 +41,7 @@ module Milkode
       @obj = GroongaDatabase.new
       @tmp_dir = expand("groonga_database_work")
       @b_project = expand('data/b_project')
+      @b_project2 = expand('data/b_project2')
       @c_project = expand('data/c_project')
     end
 
@@ -296,6 +298,19 @@ module Milkode
       assert_equal 3, @documents.find_shortpath_below('c_project').size
       assert_equal 1, @documents.find_shortpath_below('c_project/to').size
       assert_equal 1, @documents.find_shortpath_below('c_project/to/').size
+
+      @documents.remove_all
+    end
+
+    def t_search_strict_packages
+      @documents.add(@b_project, 'runner.rb')
+      @documents.add(@b_project2, 'runner.rb')
+
+      records = @documents.search(:packages => ['b_project'])
+      assert_equal 2, records.size
+
+      records = @documents.search(:strict_packages => ['b_project'])
+      assert_equal 1, records.size
 
       @documents.remove_all
     end
