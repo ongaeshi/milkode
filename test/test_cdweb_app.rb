@@ -61,7 +61,7 @@ class TestCdwebApp < Test::Unit::TestCase
 
   def t_not_found
     get '/not_found'
-    assert_equal 404, last_response.status
+    assert_equal 200, last_response.status
   end
 
   def t_view_empty_file

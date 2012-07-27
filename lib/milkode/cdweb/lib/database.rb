@@ -60,22 +60,26 @@ module Milkode
 
     def search(patterns, keywords, packages, current_path, fpaths, suffixs, fpath_or_packages, offset = 0, limit = -1)
       paths = []
+      strict_packages = []
       is_not_search = false
 
       # パッケージ名未指定の時は現在位置を検索条件に追加
       if packages.empty? && current_path != ''
         package, restpath = Util::divide_shortpath(current_path)
 
-        # PackageRecord#directory をキーに検索する
         grn_package = @grndb.packages[package]
         if grn_package
-          directory = grn_package.directory
+          # パッケージ名
+          strict_packages << package
 
+          # ファイルパス
+          directory = grn_package.directory
           if restpath
             paths << File.join(directory, restpath)
           else
             paths << directory
           end
+
         else
           is_not_search = true
         end
@@ -89,6 +93,7 @@ module Milkode
           :keywords  => keywords,
           :paths     => paths,
           :packages  => packages,
+          :strict_packages  => strict_packages,
           :restpaths => fpaths,
           :suffixs   => suffixs,
           :fpath_or_packages => fpath_or_packages,
