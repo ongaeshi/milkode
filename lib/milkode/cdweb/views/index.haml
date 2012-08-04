@@ -9,7 +9,9 @@
     %link(rel="stylesheet" href="/css/bootstrap.min.css"  type="text/css" media="all")
     %link(rel="stylesheet" href="/css/bootstrap-responsive.min.css"  type="text/css" media="all")
     %link(rel="stylesheet" href="/css/milkode.css"  type="text/css" media="all")
-    %script(type='text/javascript' src='/js/milkode.js')
+    %link(rel="stylesheet" href="/css/smoothness/jquery-ui-1.8.22.custom.css" type="text/css" media="all")
+    %link(rel="stylesheet" href="/css/jquery.multiselect.css"  type="text/css" media="all")
+    %link(rel="stylesheet" href="/css/jquery.multiselect.filter.css"  type="text/css" media="all")
 
   %body
     .container#toppage
@@ -24,6 +26,11 @@
               %input(name="query" type="text" style="width: 419px;")
               %input(type="submit" value="検索")
               %input(name='pathname' type='hidden' value='/home')
+
+      .row
+        .span4.offset4
+          #select_package
+            = create_select_package_home
 
       .row
         .span3
@@ -48,6 +55,13 @@
             <a href="/home?query=f:*">#{@file_num}</a>のファイル<br>
             <a href="/help">ヘルプ</a>
             = @setting.about_milkode
+
+    %script(type='text/javascript' src='/js/jquery-1.7.2.min.js')
+    %script(type='text/javascript' src='/js/jquery-ui-1.8.22.custom.min.js')
+    %script(type='text/javascript' src='/js/jquery.multiselect.min.js')
+    %script(type='text/javascript' src='/js/jquery.multiselect.filter.min.js')
+    %script(type='text/javascript' src='/js/milkode.js')
+            
 
     
 

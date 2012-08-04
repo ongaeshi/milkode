@@ -139,6 +139,17 @@ EOF
 EOF
   end
 
+  def create_select_package_home
+    value = '---'
+    data = ['---'] + Database.instance.packages(nil)
+
+    <<EOF
+<select name="package" id="package_home" onchange="select_package_home()">
+#{data.map{|v| "<option value='#{v}' #{v == value ? 'selected' : ''}>#{v}</option>"}}
+</select>
+EOF
+  end
+
   def create_checkbox(name, value, label)
     str = (value) ? 'checked' : ''
     "<label class='checkbox inline'><input type='checkbox' name='#{name}' value='on' #{str}/>#{label}</label>"

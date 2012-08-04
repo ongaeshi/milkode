@@ -130,6 +130,13 @@ label.ui-corner-all {
 
 #toppage .form {
     margin-top: 60px;
+}
+
+#toppage form {
+    margin-bottom: 0px;
+}
+
+#toppage #select_package {
     margin-bottom: 50px;
 }
 
