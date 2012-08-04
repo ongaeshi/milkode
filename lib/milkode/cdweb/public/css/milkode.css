@@ -94,11 +94,12 @@ ul.unstyled_margin {
 }
 
 select#shead {
+    margin-top: 7px;
     width: 120px;
 }
 
-select#package {
-    width: 160px;
+label.ui-corner-all {
+    line-height: 12px;
 }
 
 /* toppage */
