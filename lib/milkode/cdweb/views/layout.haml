@@ -9,10 +9,17 @@
     %link(rel="stylesheet" href="/css/milkode.css"  type="text/css" media="all")
     %link(rel="stylesheet" href="/css/coderay.css"  type="text/css" media="all")
     %link(rel="stylesheet" href="/css/coderay-patch.css"  type="text/css" media="all")
-    %script(type='text/javascript' src='/js/milkode.js')
+    %link(rel="stylesheet" href="/css/smoothness/jquery-ui-1.8.22.custom.css" type="text/css" media="all")
+    %link(rel="stylesheet" href="/css/jquery.multiselect.css"  type="text/css" media="all")
+    %link(rel="stylesheet" href="/css/jquery.multiselect.filter.css"  type="text/css" media="all")
 
   %body
     .container-fluid#mainpage
       != yield
+    %script(type='text/javascript' src='/js/jquery-1.7.2.min.js')
+    %script(type='text/javascript' src='/js/jquery-ui-1.8.22.custom.min.js')
+    %script(type='text/javascript' src='/js/jquery.multiselect.min.js')
+    %script(type='text/javascript' src='/js/jquery.multiselect.filter.min.js')
+    %script(type='text/javascript' src='/js/milkode.js')
 
 -#  GoogleAnalyticsを使いたい場合はここにコードを挿入して下さい。
