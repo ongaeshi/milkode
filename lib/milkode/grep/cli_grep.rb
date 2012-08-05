@@ -68,6 +68,7 @@ EOF
       opt.on('-s SUFFIX', '--suffix SUFFIX', 'Suffix.') {|v| option.suffixs << v; my_option[:find_mode] = true } 
       opt.on('-u', '--update', 'With update db.') {|v| my_option[:update] = true }
       opt.on('--verbose', 'Set the verbose level of output.') {|v| option.isSilent = false }
+      opt.on('-v', '--version', 'Show this version.') {|v| puts opt.ver ; exit }
 
       begin
         ap = ArgumentParser.new arguments
