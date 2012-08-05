@@ -149,6 +149,7 @@ module Milkode
     #  :keywords => 検索キーワード
     #  :paths    => ファイルパス(AND)
     #  :packages => パッケージ名(OR)
+    #  :strict_packages => 厳密なパッケージ名(OR)
     #  :restpaths => 短縮パス(AND)
     #  :suffixs  => 拡張子
     #  :offset   => オフセット(default = 0)
@@ -157,6 +158,7 @@ module Milkode
       patterns = options[:patterns] || []
       keywords = options[:keywords] || []
       packages = options[:packages] || []
+      strict_packages = options[:strict_packages] || []
       paths    = options[:paths]    || []
       restpaths = options[:restpaths]    || []
       suffixs  = options[:suffixs]  || []
@@ -191,6 +193,16 @@ module Milkode
         
         # パッケージ(OR)
         pe = package_expression(record, packages) 
+        if (pe)
+          if expression.nil?
+            expression = pe
+          else
+            expression &= pe
+          end
+        end
+        
+        # 厳密なパッケージ(OR)
+        pe = strict_packages_expression(record, strict_packages) 
         if (pe)
           if expression.nil?
             expression = pe
@@ -323,6 +335,21 @@ module Milkode
       
       packages.each do |word|
         e = record.package =~ word
+        if sub.nil?
+          sub = e
+        else
+          sub |= e
+        end
+      end
+
+      sub
+    end
+    
+    def strict_packages_expression(record, packages)
+      sub = nil
+      
+      packages.each do |word|
+        e = record.package == word
         if sub.nil?
           sub = e
         else

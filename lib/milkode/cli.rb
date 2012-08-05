@@ -7,7 +7,8 @@ require 'milkode/grep/cli_grep'
 
 module Milkode
   class CLI < Thor
-    class_option :help, :type => :boolean, :aliases => '-h', :desc => 'Help message.'
+    class_option :help,    :type => :boolean, :aliases => '-h', :desc => 'Help message.'
+    class_option :version, :type => :boolean, :aliases => '-v', :desc => 'Show version.'
 
     desc "init [db_dir]", "Initialize database directory. If db_dir is omitted"
     option :default, :type => :boolean, :desc => "Init default db, ENV['MILKODE_DEFAULT_DIR'] or ~/.milkode."
@@ -174,6 +175,8 @@ EOF
       def invoke_task(task, *args)
         if options[:help] && task.name != 'grep'
           CLI.task_help(shell, task.name)
+        elsif options[:version] && task.name == 'help'
+          puts "milk #{Version}"
         else
           super
         end

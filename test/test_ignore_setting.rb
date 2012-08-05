@@ -110,4 +110,29 @@ EOF
     assert_equal true,  is.ignore?("/doc/lib")
     assert_equal true,  is.ignore?("/doc/lib/test")
   end
+
+  def test_not_ignore
+    is = IgnoreSetting.new "/", ["/*", "!/bin"]
+    assert_equal true,   is.ignore?("/tmp")
+    assert_equal false,  is.ignore?("/bin")
+
+    is = IgnoreSetting.new "/", ["/*", "!/path/to/dir"]
+    assert_equal false,  is.ignore?("/path") # 途中も除外してはいけない
+    assert_equal false,  is.ignore?("/path/to")
+    assert_equal true ,  is.ignore?("/path/to/a") # 除外対象
+    assert_equal false,  is.ignore?("/path/to/dir")
+
+    is = IgnoreSetting.new "/", ["/*", "!/path/to/*/dir"]
+    assert_equal false,  is.ignore?("/path")
+    assert_equal false,  is.ignore?("/path/to")
+    assert_equal false,  is.ignore?("/path/to/lib")
+    assert_equal true,  is.ignore?("/path/to/lib/a")
+    assert_equal false,  is.ignore?("/path/to/bin")
+    assert_equal true,  is.ignore?("/path/to/bin/a")
+    assert_equal false,  is.ignore?("/path/to/lib/dir")
+    
+    is = IgnoreSetting.new "/", ["/*", "!path/to/dir"]
+    assert_equal false,  is.ignore?("/path/to/dir")
+    assert_equal false,  is.ignore?("hoge/path/to/dir")
+  end
 end

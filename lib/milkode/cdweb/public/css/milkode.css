@@ -94,11 +94,12 @@ ul.unstyled_margin {
 }
 
 select#shead {
+    margin-top: 7px;
     width: 120px;
 }
 
-select#package {
-    width: 160px;
+label.ui-corner-all {
+    line-height: 12px;
 }
 
 /* toppage */
@@ -129,6 +130,13 @@ select#package {
 
 #toppage .form {
     margin-top: 60px;
+}
+
+#toppage form {
+    margin-bottom: 0px;
+}
+
+#toppage #select_package {
     margin-bottom: 50px;
 }
 

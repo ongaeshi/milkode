@@ -58,6 +58,7 @@ EOF
       opt.on('--color', 'Color highlight.') {|v| option.colorHighlight = true}
       opt.on('--cs', '--case-sensitive', 'Case sensitivity.') {|v| my_option[:case_sensitive] = true }
       opt.on('-d DIR', '--directory DIR', 'Start directory. (deafult:".")') {|v| current_dir = File.expand_path(v); my_option[:find_mode] = true} 
+      opt.on('--db DB_DIR', "Specify dbdir. (Use often with '-a')") {|v| option.dbFile = Dbdir.groonga_path(v) }
       opt.on('-f FILE_PATH', '--file-path FILE_PATH', 'File path. (Enable multiple call)') {|v| option.filePatterns << v; my_option[:find_mode] = true }
       opt.on('-i', '--ignore', 'Ignore case.') {|v| option.ignoreCase = true}
       opt.on('-n NUM', 'Limits the number of match to show.') {|v| option.matchCountLimit = v.to_i }
@@ -67,6 +68,7 @@ EOF
       opt.on('-s SUFFIX', '--suffix SUFFIX', 'Suffix.') {|v| option.suffixs << v; my_option[:find_mode] = true } 
       opt.on('-u', '--update', 'With update db.') {|v| my_option[:update] = true }
       opt.on('--verbose', 'Set the verbose level of output.') {|v| option.isSilent = false }
+      opt.on('-v', '--version', 'Show this version.') {|v| puts opt.ver ; exit }
 
       begin
         ap = ArgumentParser.new arguments

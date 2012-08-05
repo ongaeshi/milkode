@@ -22,7 +22,7 @@ set :haml, :format => :html5
 
 get '/' do
   @setting = WebSetting.new
-  @version = "0.9.0"
+  @version = "0.9.1"
   @package_num = Database.instance.yaml_package_num
   @file_num = Database.instance.totalRecords
   @package_list = PackageList.new(Database.instance.grndb)
@@ -89,6 +89,12 @@ get %r{/help} do
   haml :help
 end
 
+get '*' do
+  @setting = WebSetting.new
+  @path    = ''
+  haml :error
+end
+
 # -- helper function --
 
 helpers do
@@ -128,6 +134,17 @@ EOF
 
     <<EOF
 <select name="package" id="package" onchange="select_package()">
+#{data.map{|v| "<option value='#{v}' #{v == value ? 'selected' : ''}>#{v}</option>"}}
+</select>
+EOF
+  end
+
+  def create_select_package_home
+    value = '---'
+    data = ['---'] + Database.instance.packages(nil)
+
+    <<EOF
+<select name="package" id="package_home" onchange="select_package_home()">
 #{data.map{|v| "<option value='#{v}' #{v == value ? 'selected' : ''}>#{v}</option>"}}
 </select>
 EOF

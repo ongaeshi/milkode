@@ -5,6 +5,8 @@
 # @author ongaeshi
 # @date   2012/03/02
 
+require 'pathname'
+
 module Milkode
   class IgnoreSetting
     attr_reader :path
@@ -22,12 +24,38 @@ module Milkode
     
     def initialize(path, ignores)
       @path = path
-      @ignores = ignores.map{|v| v.sub(/\/\Z/, "")}
+      @ignores =  []
+      @not_ignores = []
+      
+      ignores.each do |v|
+        v = v.sub(/\/\Z/, "")
 
-      @regexp = @ignores.map do |v|
-        v = "(\/|\\A)" + Regexp.escape(v).gsub('\\*', "[^/]*") + "(\/|\\Z)"
-        Regexp.new(v)
+        unless v.start_with?('!')
+          @ignores << v
+        else
+          @not_ignores << v.sub(/\A!/, "")
+        end
       end
+
+      # 除外設定 -> 正規表現
+      @regexps = @ignores.map {|v| convert_regexp(v)}
+
+      # 非除外設定 -> 展開 -> 正規表現
+      new_not_ignores = []
+      @not_regexps = []
+      
+      @not_ignores.each do |v|
+        last_regexp = "(\/|\\Z)" # 自分自身は後方マッチ可
+
+        Pathname.new(v).ascend do |pathname|
+          txt = pathname.to_s
+          new_not_ignores << txt
+          @not_regexps << convert_regexp(txt, last_regexp)
+          last_regexp = "\\Z"   # 親ディクレクリは後方マッチ不可
+        end
+      end
+
+      @not_ignores = new_not_ignores
     end
 
     def ignore?(path)
@@ -47,9 +75,14 @@ module Milkode
     private
 
     def ignore_in?(path)
-      @regexp.each_with_index do |value, index|
+      match_in?(path, @regexps, @ignores) &&
+        !match_in?(path, @not_regexps, @not_ignores)
+    end
+
+    def match_in?(path, regexps, ignores)
+      regexps.each_with_index do |value, index|
         match = path.match(value)
-        is_match_start_pos = @ignores[index].start_with?('/')
+        is_match_start_pos = ignores[index].start_with?('/')
 
         if match && (!is_match_start_pos || match.begin(0) == 0)
           return true
@@ -57,6 +90,11 @@ module Milkode
       end
       
       return false
+    end
+
+    def convert_regexp(txt, last_regexp = "(\/|\\Z)")
+      v = "(\/|\\A)" + Regexp.escape(txt).gsub('\\*', "[^/]*") + last_regexp
+      Regexp.new(v)
     end
   end
 end

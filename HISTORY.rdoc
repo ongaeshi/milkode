@@ -1,3 +1,24 @@
+=== 0.9.1 2012/08/05
+
+* milk web
+  * Possible filtering at package selector
+  * Package selector add to home screen
+  * Fix cannot find package names that match correctly.
+  * A package selector '---' choose to search home
+  * help.haml
+  * Malformed URL even not errors
+
+* gmilk
+  * --db DB_DIR option
+  * -v option
+
+* milk   
+  * Bugfix .gitignore reading '![filename]'
+  * -v option
+
+* database
+  * DocumentTable#search :strict_package
+
 === 0.9.0 2012/07/09
 
 * milk web
@@ -5,6 +26,7 @@
   * Display match files when searching
   * Add package selector
   * Direct jump
+  * Suggest
   * Add search options
   * Bug fix
 
