@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{milkode}
-  s.version = "0.9.0"
+  s.version = "0.9.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ongaeshi"]
-  s.date = %q{2012-07-09}
+  s.date = %q{2012-08-05}
   s.description = %q{Line based local source code search engine & grep-command & web-app.}
   s.email = %q{ongaeshi0621@gmail.com}
   s.executables = ["gmilk", "milk"]
@@ -52,7 +52,23 @@ Gem::Specification.new do |s|
     "lib/milkode/cdweb/public/css/bootstrap.min.css",
     "lib/milkode/cdweb/public/css/coderay-patch.css",
     "lib/milkode/cdweb/public/css/coderay.css",
+    "lib/milkode/cdweb/public/css/jquery.multiselect.css",
+    "lib/milkode/cdweb/public/css/jquery.multiselect.filter.css",
     "lib/milkode/cdweb/public/css/milkode.css",
+    "lib/milkode/cdweb/public/css/smoothness/images/ui-bg_flat_0_aaaaaa_40x100.png",
+    "lib/milkode/cdweb/public/css/smoothness/images/ui-bg_flat_75_ffffff_40x100.png",
+    "lib/milkode/cdweb/public/css/smoothness/images/ui-bg_glass_55_fbf9ee_1x400.png",
+    "lib/milkode/cdweb/public/css/smoothness/images/ui-bg_glass_65_ffffff_1x400.png",
+    "lib/milkode/cdweb/public/css/smoothness/images/ui-bg_glass_75_dadada_1x400.png",
+    "lib/milkode/cdweb/public/css/smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png",
+    "lib/milkode/cdweb/public/css/smoothness/images/ui-bg_glass_95_fef1ec_1x400.png",
+    "lib/milkode/cdweb/public/css/smoothness/images/ui-bg_highlight-soft_75_cccccc_1x100.png",
+    "lib/milkode/cdweb/public/css/smoothness/images/ui-icons_222222_256x240.png",
+    "lib/milkode/cdweb/public/css/smoothness/images/ui-icons_2e83ff_256x240.png",
+    "lib/milkode/cdweb/public/css/smoothness/images/ui-icons_454545_256x240.png",
+    "lib/milkode/cdweb/public/css/smoothness/images/ui-icons_888888_256x240.png",
+    "lib/milkode/cdweb/public/css/smoothness/images/ui-icons_cd0a0a_256x240.png",
+    "lib/milkode/cdweb/public/css/smoothness/jquery-ui-1.8.22.custom.css",
     "lib/milkode/cdweb/public/images/MilkodeIcon135.png",
     "lib/milkode/cdweb/public/images/directory.png",
     "lib/milkode/cdweb/public/images/document-new-4.png",
@@ -62,7 +78,12 @@ Gem::Specification.new do |s|
     "lib/milkode/cdweb/public/img/glyphicons-halflings-white.png",
     "lib/milkode/cdweb/public/img/glyphicons-halflings.png",
     "lib/milkode/cdweb/public/js/bootstrap.min.js",
+    "lib/milkode/cdweb/public/js/jquery-1.7.2.min.js",
+    "lib/milkode/cdweb/public/js/jquery-ui-1.8.22.custom.min.js",
+    "lib/milkode/cdweb/public/js/jquery.multiselect.filter.min.js",
+    "lib/milkode/cdweb/public/js/jquery.multiselect.min.js",
     "lib/milkode/cdweb/public/js/milkode.js",
+    "lib/milkode/cdweb/views/error.haml",
     "lib/milkode/cdweb/views/filelist.haml",
     "lib/milkode/cdweb/views/header_menu.haml",
     "lib/milkode/cdweb/views/help.haml",
@@ -100,6 +121,8 @@ Gem::Specification.new do |s|
     "test/data/abc.zip",
     "test/data/b_project/runner.rb",
     "test/data/b_project/test_dir.rb",
+    "test/data/b_project2/runner.rb",
+    "test/data/b_project2/test_dir.rb",
     "test/data/c_project/a.txt",
     "test/data/c_project/abc.c",
     "test/data/c_project/abc.h",
