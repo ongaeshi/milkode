@@ -25,6 +25,7 @@ class TestCLI_Grep < Test::Unit::TestCase
     t_cache
     t_case_sensitive
     t_keyword
+    t_db
   end
 
   def teardown
@@ -91,6 +92,11 @@ class TestCLI_Grep < Test::Unit::TestCase
     CLI_Grep.execute(io, "a -n 5 b -k c d".split)
     CLI_Grep.execute(io, "a b -k -p a_project c d".split)
     CLI_Grep.execute(io, "a b -k c d -l e -k f".split)
+  end
+
+  def t_db
+    io = StringIO.new
+    CLI_Grep.execute(io, "--db #{@work.path("db1")} -a db_dir_expand".split)
   end
 end
 
