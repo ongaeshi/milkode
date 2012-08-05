@@ -175,7 +175,7 @@ EOF
       def invoke_task(task, *args)
         if options[:help] && task.name != 'grep'
           CLI.task_help(shell, task.name)
-        elsif options[:version]
+        elsif options[:version] && task.name == 'help'
           puts "milk #{Version}"
         else
           super
