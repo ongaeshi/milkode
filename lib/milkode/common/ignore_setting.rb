@@ -22,9 +22,25 @@ module Milkode
     
     def initialize(path, ignores)
       @path = path
-      @ignores = ignores.map{|v| v.sub(/\/\Z/, "")}
+      @ignores =  []
+      @not_ignores = []
+      
+      ignores.each do |v|
+        v = v.sub(/\/\Z/, "")
 
-      @regexp = @ignores.map do |v|
+        unless v.start_with?('!')
+          @ignores << v
+        else
+          @not_ignores << v.sub(/\A!/, "")
+        end
+      end
+
+      @regexps = @ignores.map do |v|
+        v = "(\/|\\A)" + Regexp.escape(v).gsub('\\*', "[^/]*") + "(\/|\\Z)"
+        Regexp.new(v)
+      end
+
+      @not_regexps = @not_ignores.map do |v|
         v = "(\/|\\A)" + Regexp.escape(v).gsub('\\*', "[^/]*") + "(\/|\\Z)"
         Regexp.new(v)
       end
@@ -47,9 +63,14 @@ module Milkode
     private
 
     def ignore_in?(path)
-      @regexp.each_with_index do |value, index|
+      match_in?(path, @regexps, @ignores) &&
+        !match_in?(path, @not_regexps, @not_ignores)
+    end
+
+    def match_in?(path, regexps, ignores)
+      regexps.each_with_index do |value, index|
         match = path.match(value)
-        is_match_start_pos = @ignores[index].start_with?('/')
+        is_match_start_pos = ignores[index].start_with?('/')
 
         if match && (!is_match_start_pos || match.begin(0) == 0)
           return true

@@ -110,4 +110,11 @@ EOF
     assert_equal true,  is.ignore?("/doc/lib")
     assert_equal true,  is.ignore?("/doc/lib/test")
   end
+
+  def test_not_ignore
+    is = IgnoreSetting.new "/", ["/*", "!/bin"]
+
+    assert_equal true,   is.ignore?("/tmp")
+    assert_equal false,  is.ignore?("/bin")
+  end
 end
