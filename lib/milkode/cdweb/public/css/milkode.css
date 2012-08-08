@@ -42,6 +42,10 @@ div.pagination {
     margin-bottom: 20px;
 }
 
+pre {
+    white-space: pre;
+}
+
 pre.lines {
     border: 1px solid #dedede;
     margin-bottom: 5px;
