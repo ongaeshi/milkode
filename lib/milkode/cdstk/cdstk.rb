@@ -188,7 +188,7 @@ module Milkode
     def add_yaml(package)
       # すでに同名パッケージがある
       if @yaml.find_name(package.name)
-        error_alert("already exist '#{package.name}'.")
+        warning_alert("already exist '#{package.name}'.")
         return
       end
 
@@ -949,8 +949,12 @@ EOF
       alert(title, msg) if @is_display_info
     end
 
+    def warning_alert(msg)
+      @out.puts "[warning] #{msg}"
+    end
+
     def error_alert(msg)
-      @out.puts "[fatal] #{msg}"
+      @out.puts "[error] #{msg}"
     end
 
     def update_display_info(options)
