@@ -1,3 +1,18 @@
+=== 0.9.2 2012/09/07
+
+* etc
+  * Add emacs plugin : [ongaeshi/emacs-milkode](https://github.com/ongaeshi/emacs-milkode)
+* milk
+  * Add 'milkode plugins' command
+  * [fatal] already exist 'Documents', [fatal] -> [warning]
+* gmilk
+  * strict_packages に対応
+
+=== 0.9.1.1 2012/08/07
+
+* milk web
+  * WebKitで行番号の表示が崩れてしまう問題を修正
+
 === 0.9.1 2012/08/05
 
 * milk web
