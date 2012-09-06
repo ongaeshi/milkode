@@ -20,8 +20,12 @@ module Milkode
       my_option = {}
       my_option[:packages] = []
 
+      # current dir's package
+      current_package = nil
+      current_dir     = nil
+
       begin
-        current_dir = package_root_dir(File.expand_path("."))
+        current_package = package_root(File.expand_path("."))
       rescue NotFoundPackage => e
         current_dir = File.expand_path(".")
       end
@@ -101,7 +105,9 @@ EOF
 
       # 現在位置のパッケージを記録
       if option.packages.empty? && !my_option[:all] && !is_abs_path
-        if (package_dir_in? current_dir)
+        if (current_package)
+          option.strict_packages << current_package.name
+        elsif (package_dir_in? current_dir)
           option.filePatterns << current_dir
         else
           stdout.puts "fatal: Not package dir '#{current_dir}'."
@@ -185,6 +191,16 @@ EOF
 
       if (package_root)
         package_root.directory
+      else
+        raise NotFoundPackage.new dir
+      end
+    end
+
+    def self.package_root(dir)
+      package_root = yaml_load.package_root(dir)
+
+      if (package_root)
+        package_root
       else
         raise NotFoundPackage.new dir
       end

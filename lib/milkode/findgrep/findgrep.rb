@@ -24,6 +24,7 @@ module FindGrep
                         :isSilent,
                         :debugMode,
                         :packages,
+                        :strict_packages,
                         :filePatterns,
                         :suffixs,
                         :ignoreFiles,
@@ -46,6 +47,7 @@ module FindGrep
                                 false,
                                 false,
                                 false,
+                                [],
                                 [],
                                 [],
                                 [],
@@ -212,6 +214,7 @@ module FindGrep
         :keywords  => @option.keywords,
         :paths     => @option.filePatterns,
         :packages  => @option.packages,
+        :strict_packages  => @option.strict_packages,
         # :restpaths => ,
         :suffixs   => @option.suffixs
         # :offset    => ,

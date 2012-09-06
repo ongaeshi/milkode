@@ -163,6 +163,16 @@ EOF
       Milkode::CLI_Grep.execute($stdout, args)
     end
 
+    desc "plugins", "Display plugins"
+    long_desc "Display plugin list."
+    def plugins(*args)
+      $stdout.puts <<EOF
+Gitomb              https://github.com/tomykaira/gitomb
+redmine_milkode     https://github.com/suer/redmine_milkode
+emacs-milkode       https://github.com/ongaeshi/emacs-milkode
+EOF
+    end
+
     # --------------------------------------------------------------------------
     
     no_tasks do
