@@ -159,9 +159,10 @@ EOF
     href = Mkurl.new('/home/' + path, params).inherit_query_shead
     flist = File.join("/home/#{path}", flistpath)
     <<EOF
-    #{headicon('go-home-5.png')} <a href="/home" class="headmenu">全てのパッケージ</a>
+    #{headicon('go-home-5.png')} <a href="/home" class="headmenu">ホーム</a>
     #{headicon('document-new-4.png')} <a href="#{href}" class="headmenu" onclick="window.open('#{href}'); return false;">新しい検索</a>
     #{headicon('directory.png')} <a href="#{flist}" class="headmenu">ディレクトリ</a> 
+    #{headicon('view-refresh-4.png')} <a href="#" class="headmenu">パッケージを更新</a>
     #{headicon('help.png')} <a href="/help" class="headmenu">ヘルプ</a>
 EOF
   end
