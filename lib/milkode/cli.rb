@@ -169,6 +169,7 @@ EOF
       $stdout.puts <<EOF
 Gitomb              https://github.com/tomykaira/gitomb
 redmine_milkode     https://github.com/suer/redmine_milkode
+Milkode_Sublime     https://github.com/tsurushuu/Milkode_Sublime
 emacs-milkode       https://github.com/ongaeshi/emacs-milkode
 EOF
     end
