@@ -62,6 +62,11 @@ post '/search*' do
   end
 end
 
+post '/command' do
+  sleep 2
+  'post command'
+end
+
 get '/home*' do |path|
   before = Time.now
   path = path.sub(/^\//, "")
