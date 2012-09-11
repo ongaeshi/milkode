@@ -91,6 +91,19 @@ EOF
         true
       end
     end
+
+    def update(package_name)
+      package = packages[package_name]
+
+      # cleanup
+      documents.cleanup_package_name(package.name)
+
+      # update
+      # Cdstk#update_dir_in
+
+      # 更新時刻の更新
+      # package.touch :update
+    end
     
     private
 
