@@ -9,9 +9,9 @@ require 'rubygems'
 require 'groonga'
 require 'milkode/common/dbdir'
 require 'fileutils'
-require 'milkode/database/package_table.rb'
-require 'milkode/database/document_table.rb'
-require 'milkode/database/document_record.rb'
+require 'milkode/database/package_table'
+require 'milkode/database/document_table'
+require 'milkode/database/document_record'
 
 module Milkode
   class GroongaDatabase
@@ -92,19 +92,6 @@ EOF
       end
     end
 
-    def update(package_name)
-      package = packages[package_name]
-
-      # cleanup
-      documents.cleanup_package_name(package.name)
-
-      # update
-      # Cdstk#update_dir_in
-
-      # 更新時刻の更新
-      # package.touch :update
-    end
-    
     private
 
     def define_schema
