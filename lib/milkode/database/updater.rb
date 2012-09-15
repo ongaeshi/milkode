@@ -10,14 +10,13 @@ require 'milkode/common/grenfiletest'
 
 module Milkode
   class Updater
+    attr_reader :result
+    
     def initialize(grndb, package_name)
       @grndb = grndb
       @package_name = package_name
       @package = @grndb.packages[@package_name]
-
-      @file_count = 0
-      @add_count = 0
-      @update_count = 0
+      @result = Result.new
     end
 
     def exec
@@ -29,6 +28,30 @@ module Milkode
 
       # 更新時刻の更新
       @grndb.packages.touch(@package_name, :updatetime)
+    end
+
+    class Result
+      attr_reader :file_count
+      attr_reader :add_count
+      attr_reader :update_count
+
+      def initialize
+        @file_count = 0
+        @add_count = 0
+        @update_count = 0
+      end
+
+      def inc_file_count
+        @file_count += 1
+      end
+
+      def inc_add_count
+        @add_count += 1
+      end
+
+      def inc_update_count
+        @update_count += 1
+      end
     end
 
     private
@@ -66,11 +89,11 @@ module Milkode
       # メッセージの表示
       case result
       when :newfile
-        @add_count += 1
+        @result.inc_add_count
         # alert_info("add_record", File.join(package_dir, restpath))
       when :update
         # @grndb.packages.touch(package_name, :updatetime)
-        @update_count += 1
+        @result.inc_update_count
         # alert_info("update", File.join(package_dir, restpath))
       end
     end
@@ -100,7 +123,7 @@ module Milkode
         when "file"
           unless ignoreFile?(fpath, next_path)
             db_add_file(stdout, dirname, next_path) # shortpathの先頭に'/'が付いているのが気になる
-            @file_count += 1
+            @result.inc_file_count
             # @out.puts "file_count : #{@file_count}" if (@file_count % 100 == 0)
           end
         end
