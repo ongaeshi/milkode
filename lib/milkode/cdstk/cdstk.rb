@@ -792,7 +792,6 @@ EOF
       r << "#{@file_count} records" if @file_count > 0
       r << "#{@add_count} add" if @add_count > 0
       r << "#{@update_count} update" if @update_count > 0
-      r.join(', ')
       alert('result', "#{r.join(', ')}. (#{Gren::Util::time_s(time)})")
     end
 
