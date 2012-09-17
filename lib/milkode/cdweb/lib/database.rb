@@ -13,6 +13,7 @@ require 'milkode/common/dbdir'
 require 'milkode/cdstk/yaml_file_wrapper'
 require 'milkode/database/groonga_database'
 require 'milkode/common/util'
+require 'milkode/database/updater'
 include Milkode
 
 module Milkode
@@ -167,6 +168,17 @@ module Milkode
     def touch_viewtime(path)
       package, restpath = Util::divide_shortpath(path)
       @grndb.packages.touch_if(package, :viewtime) if package
+    end
+
+    def update(name)
+      package = yaml_load.find_name(name)
+
+      updater = Updater.new(@grndb, package.name)
+      updater.set_package_ignore IgnoreSetting.new("/", package.ignore)
+      updater.enable_update_with_git_pull if package.options[:update_with_git_pull]
+      updater.exec
+
+      updater.result
     end
     
     private 
