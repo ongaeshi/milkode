@@ -63,8 +63,12 @@ post '/search*' do
 end
 
 post '/command' do
-  sleep 2
-  'post command'
+  case params[:kind]
+  when 'update'
+    package_name = params[:path].split('/').first
+    result = Database.instance.update(package_name)
+    update_result_str(result)
+  end
 end
 
 get '/home*' do |path|
@@ -229,6 +233,15 @@ EOF
 
   def filelist_title(path)
     (path == "") ? "Package List" : path
+  end
+
+  def update_result_str(result)
+    r = []
+    # r << "#{@package_count} packages"  if @package_count > 0
+    r << "#{result.file_count} records"
+    r << "#{result.add_count} add"
+    r << "#{result.update_count} update"
+    "result : #{r.join(', ')}"
   end
 end
 
