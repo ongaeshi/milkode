@@ -24,8 +24,15 @@ module Milkode
     end
 
     def exec
+      # git pull
+      if @options[:update_with_git_pull]
+        Dir.chdir(@package.directory) { system("git pull") }        
+      end
+      
       # cleanup
-      @grndb.documents.cleanup_package_name(@package_name)
+      unless @options[:no_clean]
+        @grndb.documents.cleanup_package_name(@package_name)
+      end
       
       # update
       update_dir(@package.directory)
@@ -48,6 +55,14 @@ module Milkode
 
     def enable_display_info
       @options[:display_info] = true
+    end
+
+    def enable_update_with_git_pull
+      @options[:update_with_git_pull] = true      
+    end
+
+    def enable_no_clean
+      @options[:no_clean] = true      
     end
 
     class Result
@@ -74,6 +89,7 @@ module Milkode
       end
     end
 
+    # ---------------------------------------------------------
     private
 
     def update_dir(dir)
