@@ -35,7 +35,7 @@ module Milkode
       t_global_ignore
       t_no_auto_ignore
       t_silent_mode
-      t_display_info
+      # t_display_info # ONにすると標準出力されてしまうため
     end
 
     def teardown
