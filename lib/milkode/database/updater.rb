@@ -17,6 +17,7 @@ module Milkode
       @package_name = package_name
       @package = @grndb.packages[@package_name]
       @result = Result.new
+      @current_ignore = IgnoreChecker.new
     end
 
     def exec
@@ -28,6 +29,10 @@ module Milkode
 
       # 更新時刻の更新
       @grndb.packages.touch(@package_name, :updatetime)
+    end
+
+    def set_global_ignore(ignore_setting)
+      @current_ignore.add ignore_setting
     end
 
     class Result
@@ -65,9 +70,6 @@ module Milkode
     end
 
     def db_add_dir(dir)
-      # @current_package = @yaml.package_root(dir)
-      @current_ignore = IgnoreChecker.new
-      # @current_ignore.add IgnoreSetting.new("/", @current_package.ignore) # 手動設定
       searchDirectory(STDOUT, dir, @package_name, "/", 0)
     end
 

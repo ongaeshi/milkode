@@ -9,6 +9,7 @@ require 'test_helper'
 require 'milkode/database/updater'
 require 'milkode_test_work'
 require 'fileutils'
+require 'milkode/common/ignore_checker'
 
 module Milkode
   class TestUpdater < Test::Unit::TestCase
@@ -31,6 +32,7 @@ module Milkode
       t_add_file
       t_update_file
       t_local_gitignore
+      t_global_ignore
     end
 
     def teardown
@@ -71,6 +73,19 @@ module Milkode
       updater = Updater.new(@grndb, 'ignore_test')
       updater.exec
       result_test updater.result, 3, 1, 0
+    end
+
+    def t_global_ignore
+      FileUtils.touch(@work.expand_path("ignore_test/c.txt"))
+
+      updater = Updater.new(@grndb, 'ignore_test')
+      updater.exec
+      result_test updater.result, 4, 1, 0
+
+      updater = Updater.new(@grndb, 'ignore_test')
+      updater.set_global_ignore(IgnoreSetting.new("/", ["*.txt"])) # *.txt を除外設定
+      updater.exec
+      result_test updater.result, 1, 0, 0
     end
 
     def result_test(result, file_count, add_count, update_count)
