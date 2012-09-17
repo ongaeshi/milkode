@@ -74,15 +74,15 @@ module Milkode
       if (FileTest.directory? dir)
         db_add_dir(dir)
       else
-        db_add_file(STDOUT, File.dirname(dir), File.basename(dir), File.basename(dir)) # .bashrc/.bashrc のようになる
+        db_add_file(File.dirname(dir), File.basename(dir), File.basename(dir)) # .bashrc/.bashrc のようになる
       end
     end
 
     def db_add_dir(dir)
-      searchDirectory(STDOUT, dir, @package_name, "/", 0)
+      searchDirectory(dir, @package_name, "/", 0)
     end
 
-    def db_add_file(stdout, package_dir, restpath, package_name = nil)
+    def db_add_file(package_dir, restpath, package_name = nil)
       # サイレントモード
       return if @options[:silent_mode]
 
@@ -109,7 +109,7 @@ module Milkode
       end
     end
 
-    def searchDirectory(stdout, dirname, packname, path, depth)
+    def searchDirectory(dirname, packname, path, depth)
       # 現在位置に.gitignoreがあれば無視設定に加える
       add_current_gitignore(dirname, path) unless @options[:no_auto_ignore]
 
@@ -130,10 +130,10 @@ module Milkode
         # ファイルならば中身を探索、ディレクトリならば再帰
         case File.ftype(fpath)
         when "directory"
-          searchDirectory(stdout, dirname, packname, next_path, depth + 1)
+          searchDirectory(dirname, packname, next_path, depth + 1)
         when "file"
           unless ignoreFile?(fpath, next_path)
-            db_add_file(stdout, dirname, next_path) # shortpathの先頭に'/'が付いているのが気になる
+            db_add_file(dirname, next_path) # shortpathの先頭に'/'が付いているのが気になる
             @result.inc_file_count
             # @out.puts "file_count : #{@file_count}" if (@file_count % 100 == 0)
           end
