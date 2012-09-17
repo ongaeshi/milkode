@@ -41,7 +41,7 @@ module Milkode
       @grndb.packages.touch(@package_name, :updatetime)
     end
 
-    def set_global_ignore(ignore_setting)
+    def set_package_ignore(ignore_setting)
       @current_ignore.add ignore_setting
     end
 

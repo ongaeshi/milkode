@@ -731,7 +731,7 @@ EOF
       alert("package", package.name )
 
       updater = Updater.new(@grndb, package.name)
-      updater.set_global_ignore IgnoreSetting.new("/", package.ignore)
+      updater.set_package_ignore IgnoreSetting.new("/", package.ignore)
       updater.enable_no_auto_ignore       if package.options[:no_auto_ignore]
       updater.enable_silent_mode          if @is_silent
       updater.enable_display_info         if @is_display_info

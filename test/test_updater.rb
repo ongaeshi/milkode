@@ -86,7 +86,7 @@ module Milkode
       result_test updater.result, 4, 1, 0
 
       updater = Updater.new(@grndb, 'ignore_test')
-      updater.set_global_ignore(IgnoreSetting.new("/", ["*.txt"])) # *.txt を除外設定
+      updater.set_package_ignore(IgnoreSetting.new("/", ["*.txt"])) # *.txt を除外設定
       updater.exec
       result_test updater.result, 1, 0, 0
     end
