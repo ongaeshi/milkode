@@ -18,6 +18,7 @@ module Milkode
       @package = @grndb.packages[@package_name]
       @result = Result.new
       @current_ignore = IgnoreChecker.new
+      @options = {}
     end
 
     def exec
@@ -33,6 +34,10 @@ module Milkode
 
     def set_global_ignore(ignore_setting)
       @current_ignore.add ignore_setting
+    end
+
+    def enable_no_auto_ignore
+      @options[:no_auto_ignore] = true
     end
 
     class Result
@@ -102,8 +107,7 @@ module Milkode
 
     def searchDirectory(stdout, dirname, packname, path, depth)
       # 現在位置に.gitignoreがあれば無視設定に加える
-      add_current_gitignore(dirname, path)
-      # add_current_gitignore(dirname, path) unless @current_package.options[:no_auto_ignore]
+      add_current_gitignore(dirname, path) unless @options[:no_auto_ignore]
 
       # 子の要素を追加
       Dir.foreach(File.join(dirname, path)) do |name|

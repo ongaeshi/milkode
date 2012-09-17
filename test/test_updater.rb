@@ -33,6 +33,7 @@ module Milkode
       t_update_file
       t_local_gitignore
       t_global_ignore
+      t_no_auto_ignore
     end
 
     def teardown
@@ -86,6 +87,13 @@ module Milkode
       updater.set_global_ignore(IgnoreSetting.new("/", ["*.txt"])) # *.txt を除外設定
       updater.exec
       result_test updater.result, 1, 0, 0
+    end
+
+    def t_no_auto_ignore
+      updater = Updater.new(@grndb, 'ignore_test')
+      updater.enable_no_auto_ignore
+      updater.exec
+      result_test updater.result, 6, 2, 0
     end
 
     def result_test(result, file_count, add_count, update_count)
