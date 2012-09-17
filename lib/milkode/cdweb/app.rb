@@ -65,9 +65,13 @@ end
 post '/command' do
   case params[:kind]
   when 'update'
-    package_name = params[:path].split('/').first
-    result = Database.instance.update(package_name)
-    update_result_str(result)
+    if (params[:name] == '')
+      result = Database.instance.update_all
+      update_result_str(result)
+    else
+      result = Database.instance.update(params[:name])
+      update_result_str(result)
+    end
   end
 end
 
@@ -171,7 +175,7 @@ EOF
     #{headicon('go-home-5.png')} <a href="/home" class="headmenu">ホーム</a>
     #{headicon('document-new-4.png')} <a href="#{href}" class="headmenu" onclick="window.open('#{href}'); return false;">新しい検索</a>
     #{headicon('directory.png')} <a href="#{flist}" class="headmenu">ディレクトリ</a> 
-    #{headicon('view-refresh-4.png')} <a href="#" class="headmenu" onclick="update_package('#{path}')">パッケージを更新</a>
+    #{headicon('view-refresh-4.png')} <a class="headmenu" onclick="update_package('#{path}')">パッケージを更新</a>
     #{headicon('help.png')} <a href="/help" class="headmenu">ヘルプ</a>
 EOF
   end
@@ -237,7 +241,7 @@ EOF
 
   def update_result_str(result)
     r = []
-    # r << "#{@package_count} packages"  if @package_count > 0
+    r << "#{result.package_count} packages" if result.package_count > 1
     r << "#{result.file_count} records"
     r << "#{result.add_count} add"
     r << "#{result.update_count} update"

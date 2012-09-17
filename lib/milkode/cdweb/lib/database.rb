@@ -171,20 +171,31 @@ module Milkode
     end
 
     def update(name)
-      package = yaml_load.find_name(name)
+      result = Updater::ResultAccumulator.new
+      result << update_in(yaml_load.find_name(name))
+      result
+    end
 
-      updater = Updater.new(@grndb, package.name)
-      updater.set_package_ignore IgnoreSetting.new("/", package.ignore)
-      updater.enable_update_with_git_pull if package.options[:update_with_git_pull]
-      updater.exec
-
-      updater.result
+    def update_all
+      result = Updater::ResultAccumulator.new
+      yaml_load.contents.each do |package|
+        result << update_in(package)
+      end
+      result
     end
     
     private 
 
     def yaml_load
       YamlFileWrapper.load_if(Database.dbdir)
+    end
+
+    def update_in(package)
+      updater = Updater.new(@grndb, package.name)
+      updater.set_package_ignore IgnoreSetting.new("/", package.ignore)
+      updater.enable_update_with_git_pull if package.options[:update_with_git_pull]
+      updater.exec
+      updater.result
     end
 
   end
