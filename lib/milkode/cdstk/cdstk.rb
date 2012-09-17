@@ -23,6 +23,7 @@ require 'milkode/common/ignore_checker'
 require 'milkode/database/groonga_database'
 require 'milkode/database/document_record'
 require 'milkode/common/array_diff'
+require 'milkode/database/updater'
 
 module Milkode
   class IgnoreError < RuntimeError ; end
@@ -736,10 +737,19 @@ EOF
 
       if (!FileTest.exist?(dir))
         @out.puts "[WARNING]  : #{dir} (Not found, skip)"
-      elsif (FileTest.directory? dir)
-        db_add_dir(dir)
       else
-        db_add_file(STDOUT, File.dirname(dir), File.basename(dir), File.basename(dir)) # .bashrc/.bashrc のようになる
+        package = @yaml.package_root(dir)
+        
+        updater = Updater.new(@grndb, package.name)
+        updater.set_global_ignore IgnoreSetting.new("/", package.ignore)
+        updater.enable_no_auto_ignore if package.options[:no_auto_ignore]
+        updater.enable_silent_mode    if @is_silent
+        updater.enable_display_info   if @is_display_info
+        updater.exec
+
+        @file_count   += updater.result.file_count
+        @add_count    += updater.result.add_count
+        @update_count += updater.result.update_count
       end
     end
 
