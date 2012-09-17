@@ -713,44 +713,36 @@ EOF
     end
 
     def update_package_in(package, options)
-      if package.options[:update_with_git_pull]
-        Dir.chdir(package.directory) { system("git pull") }
-      end
-
-      unless options[:no_clean]
-        cleanup_package_in(package)
-      end
-
-      update_dir_in(package.directory)
-    end
-
-    def cleanup_package_in(package)
-      db_open
-      @documents.cleanup_package_name(package.name)
+      updater_exec(package, package.options[:update_with_git_pull], options[:no_clean])
     end
 
     def update_dir_in(dir)
-      alert("package", File.basename(dir) )
-      @package_count += 1
-      
       dir = File.expand_path(dir)
 
       if (!FileTest.exist?(dir))
-        @out.puts "[WARNING]  : #{dir} (Not found, skip)"
+        warning_alert("#{dir} (Not found, skip)")
       else
         package = @yaml.package_root(dir)
-        
-        updater = Updater.new(@grndb, package.name)
-        updater.set_global_ignore IgnoreSetting.new("/", package.ignore)
-        updater.enable_no_auto_ignore if package.options[:no_auto_ignore]
-        updater.enable_silent_mode    if @is_silent
-        updater.enable_display_info   if @is_display_info
-        updater.exec
-
-        @file_count   += updater.result.file_count
-        @add_count    += updater.result.add_count
-        @update_count += updater.result.update_count
+        updater_exec(package, false, false)
       end
+    end
+
+    def updater_exec(package, is_update_with_git_pull, is_no_clean)
+      alert("package", package.name )
+
+      updater = Updater.new(@grndb, package.name)
+      updater.set_global_ignore IgnoreSetting.new("/", package.ignore)
+      updater.enable_no_auto_ignore       if package.options[:no_auto_ignore]
+      updater.enable_silent_mode          if @is_silent
+      updater.enable_display_info         if @is_display_info
+      updater.enable_update_with_git_pull if is_update_with_git_pull
+      updater.enable_no_clean             if is_no_clean
+      updater.exec
+
+      @package_count += 1
+      @file_count   += updater.result.file_count
+      @add_count    += updater.result.add_count
+      @update_count += updater.result.update_count
     end
 
     def remove_dir(dir, no_yaml = false)
