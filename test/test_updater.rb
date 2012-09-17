@@ -34,6 +34,7 @@ module Milkode
       t_local_gitignore
       t_global_ignore
       t_no_auto_ignore
+      t_silent_mode
     end
 
     def teardown
@@ -94,6 +95,13 @@ module Milkode
       updater.enable_no_auto_ignore
       updater.exec
       result_test updater.result, 6, 2, 0
+    end
+
+    def t_silent_mode
+      updater = Updater.new(@grndb, 'ignore_test')
+      updater.enable_silent_mode
+      updater.exec
+      result_test updater.result, 4, 0, 0
     end
 
     def result_test(result, file_count, add_count, update_count)

@@ -40,6 +40,10 @@ module Milkode
       @options[:no_auto_ignore] = true
     end
 
+    def enable_silent_mode
+      @options[:silent_mode] = true
+    end
+
     class Result
       attr_reader :file_count
       attr_reader :add_count
@@ -80,7 +84,7 @@ module Milkode
 
     def db_add_file(stdout, package_dir, restpath, package_name = nil)
       # サイレントモード
-      return if @is_silent
+      return if @options[:silent_mode]
 
       # データベースには先頭の'/'を抜いて登録する
       #   最初から'/'を抜いておけば高速化の余地あり?
