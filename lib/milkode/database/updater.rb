@@ -93,7 +93,9 @@ module Milkode
     private
 
     def update_dir(dir)
-      if (FileTest.directory? dir)
+      if (!FileTest.exist?(dir))
+        warning_alert("#{dir} (Not found, skip)")
+      elsif (FileTest.directory? dir)
         db_add_dir(dir)
       else
         db_add_file(File.dirname(dir), File.basename(dir), File.basename(dir)) # .bashrc/.bashrc のようになる
@@ -206,6 +208,10 @@ module Milkode
       else
         @out.puts "#{title.ljust(10)} : #{msg}"
       end
+    end
+
+    def warning_alert(msg)
+      @out.puts "[warning] #{msg}"
     end
 
   end
