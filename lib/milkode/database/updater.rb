@@ -7,18 +7,20 @@
 
 require 'milkode/database/groonga_database'
 require 'milkode/common/grenfiletest'
+require 'kconv'
 
 module Milkode
   class Updater
     attr_reader :result
     
     def initialize(grndb, package_name)
-      @grndb = grndb
-      @package_name = package_name
-      @package = @grndb.packages[@package_name]
-      @result = Result.new
+      @grndb          = grndb
+      @package_name   = package_name
+      @package        = @grndb.packages[@package_name]
+      @result         = Result.new
       @current_ignore = IgnoreChecker.new
-      @options = {}
+      @options        = {}
+      @out            = $stdout
     end
 
     def exec
@@ -42,6 +44,10 @@ module Milkode
 
     def enable_silent_mode
       @options[:silent_mode] = true
+    end
+
+    def enable_display_info
+      @options[:display_info] = true
     end
 
     class Result
@@ -101,11 +107,11 @@ module Milkode
       case result
       when :newfile
         @result.inc_add_count
-        # alert_info("add_record", File.join(package_dir, restpath))
+        alert_info("add_record", File.join(package_dir, restpath))
       when :update
         # @grndb.packages.touch(package_name, :updatetime)
         @result.inc_update_count
-        # alert_info("update", File.join(package_dir, restpath))
+        alert_info("update", File.join(package_dir, restpath))
       end
     end
 
@@ -155,7 +161,7 @@ module Milkode
 
     def package_ignore?(fpath, mini_path)
       if @current_ignore.ignore?(mini_path)
-        # alert_info("ignore", fpath)
+        alert_info("ignore", fpath)
         true
       else
         false
@@ -166,11 +172,23 @@ module Milkode
       git_ignore = File.join(dirname, path, ".gitignore")
       
       if File.exist? git_ignore
-        # alert_info("add_ignore", git_ignore)
+        alert_info("add_ignore", git_ignore)
         
         open(git_ignore) do |f|
           @current_ignore.add IgnoreSetting.create_from_gitignore(path, f.read)
         end
+      end
+    end
+
+    def alert_info(title, msg)
+      alert(title, msg) if @options[:display_info]
+    end
+
+    def alert(title, msg)
+      if (Util::platform_win?)
+        @out.puts "#{title.ljust(10)} : #{Kconv.kconv(msg, Kconv::SJIS)}"
+      else
+        @out.puts "#{title.ljust(10)} : #{msg}"
       end
     end
 
