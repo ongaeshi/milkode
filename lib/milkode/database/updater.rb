@@ -90,6 +90,27 @@ module Milkode
       end
     end
 
+    class ResultAccumulator
+      attr_reader :package_count
+      attr_reader :file_count
+      attr_reader :add_count
+      attr_reader :update_count
+
+      def initialize
+        @package_count = 0
+        @file_count    = 0
+        @add_count     = 0
+        @update_count  = 0
+      end
+      
+      def <<(result)
+        @package_count += 1
+        @file_count    += result.file_count
+        @add_count     += result.add_count
+        @update_count  += result.update_count
+      end
+    end
+    
     # ---------------------------------------------------------
     private
 
