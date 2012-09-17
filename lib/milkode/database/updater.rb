@@ -100,6 +100,7 @@ module Milkode
 
     def searchDirectory(stdout, dirname, packname, path, depth)
       # 現在位置に.gitignoreがあれば無視設定に加える
+      add_current_gitignore(dirname, path)
       # add_current_gitignore(dirname, path) unless @current_package.options[:no_auto_ignore]
 
       # 子の要素を追加
@@ -151,6 +152,17 @@ module Milkode
       end
     end
 
+    def add_current_gitignore(dirname, path)
+      git_ignore = File.join(dirname, path, ".gitignore")
+      
+      if File.exist? git_ignore
+        # alert_info("add_ignore", git_ignore)
+        
+        open(git_ignore) do |f|
+          @current_ignore.add IgnoreSetting.create_from_gitignore(path, f.read)
+        end
+      end
+    end
 
   end
 end
