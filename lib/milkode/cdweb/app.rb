@@ -268,7 +268,7 @@ EOF
     r << "#{result.file_count} records"
     r << "#{result.add_count} add"
     r << "#{result.update_count} update"
-    "result : #{r.join(', ')}"
+    "#{r.join(', ')}"
   end
 end
 
