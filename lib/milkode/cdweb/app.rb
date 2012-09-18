@@ -175,8 +175,23 @@ EOF
     #{headicon('go-home-5.png')} <a href="/home" class="headmenu">ホーム</a>
     #{headicon('document-new-4.png')} <a href="#{href}" class="headmenu" onclick="window.open('#{href}'); return false;">新しい検索</a>
     #{headicon('directory.png')} <a href="#{flist}" class="headmenu">ディレクトリ</a> 
-    #{headicon('view-refresh-4.png')} <a class="headmenu" onclick="update_package('#{path}')">パッケージを更新</a>
+    #{headicon('view-refresh-4.png')} <a href="#updateModal" class="headmenu" data-toggle="modal">パッケージを更新</a>
     #{headicon('help.png')} <a href="/help" class="headmenu">ヘルプ</a>
+
+    <div id="updateModal" class="modal hide fade">
+      <div class="modal-header">
+        <a href="#" class="close" data-dismiss="modal">&times;</a>
+        <h3>パッケージを更新</h3>
+      </div>
+      <div class="modal-body">
+        <h4>Update all package?</h4>
+        <h4>Update milkode?</h4>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal">Cancel</a>
+        <a href="#" class="btn btn-primary" onclick="update_package('#{path}')">OK</a>
+      </div>
+    </div>
 EOF
   end
 
