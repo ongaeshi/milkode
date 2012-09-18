@@ -196,8 +196,8 @@ EOF
         <h4>#{modal_body}</h4>
       </div>
       <div class="modal-footer">
-        <a href="#" class="btn" data-dismiss="modal">Cancel</a>
-        <a href="#" class="btn btn-primary" onclick="update_package('#{package_name}')">OK</a>
+        <a href="#" id="updateCancel" class="btn" data-dismiss="modal">Cancel</a>
+        <a href="#" id="updateOk" class="btn btn-primary" data-loading-text="Updating..." milkode-package-name="#{package_name}"">OK</a>
       </div>
     </div>
 EOF
