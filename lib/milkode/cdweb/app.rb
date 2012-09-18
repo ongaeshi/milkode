@@ -173,11 +173,11 @@ EOF
     flist = File.join("/home/#{path}", flistpath)
 
     package_name = ""
-    modal_body = "Update all package?"
+    modal_body = "全てのパッケージを更新しますか？"
 
     if (path != "")
       package_name = path.split('/')[0]
-      modal_body = "Update #{package_name}?"
+      modal_body = "#{package_name} を更新しますか？"
     end
 
     <<EOF
