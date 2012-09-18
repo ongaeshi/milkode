@@ -171,6 +171,15 @@ EOF
   def create_headmenu(path, query, flistpath = '')
     href = Mkurl.new('/home/' + path, params).inherit_query_shead
     flist = File.join("/home/#{path}", flistpath)
+
+    package_name = ""
+    modal_body = "Update all package?"
+
+    if (path != "")
+      package_name = path.split('/')[0]
+      modal_body = "Update #{package_name}?"
+    end
+
     <<EOF
     #{headicon('go-home-5.png')} <a href="/home" class="headmenu">ホーム</a>
     #{headicon('document-new-4.png')} <a href="#{href}" class="headmenu" onclick="window.open('#{href}'); return false;">新しい検索</a>
@@ -184,12 +193,11 @@ EOF
         <h3>パッケージを更新</h3>
       </div>
       <div class="modal-body">
-        <h4>Update all package?</h4>
-        <h4>Update milkode?</h4>
+        <h4>#{modal_body}</h4>
       </div>
       <div class="modal-footer">
         <a href="#" class="btn" data-dismiss="modal">Cancel</a>
-        <a href="#" class="btn btn-primary" onclick="update_package('#{path}')">OK</a>
+        <a href="#" class="btn btn-primary" onclick="update_package('#{package_name}')">OK</a>
       </div>
     </div>
 EOF
