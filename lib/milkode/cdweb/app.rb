@@ -65,12 +65,13 @@ end
 post '/command' do
   case params[:kind]
   when 'update'
+    before = Time.now
     if (params[:name] == '')
       result = Database.instance.update_all
-      update_result_str(result)
+      update_result_str(result, before)
     else
       result = Database.instance.update(params[:name])
-      update_result_str(result)
+      update_result_str(result, before)
     end
   end
 end
@@ -262,13 +263,13 @@ EOF
     (path == "") ? "Package List" : path
   end
 
-  def update_result_str(result)
+  def update_result_str(result, before)
     r = []
     r << "#{result.package_count} packages" if result.package_count > 1
     r << "#{result.file_count} records"
     r << "#{result.add_count} add"
     r << "#{result.update_count} update"
-    "#{r.join(', ')}"
+    "#{r.join(', ')} (#{Time.now - before} sec)"
   end
 end
 
