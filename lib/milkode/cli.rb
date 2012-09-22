@@ -108,9 +108,10 @@ EOF
       cdstk.mcd(options)
     end
 
-    desc "info", "Information of milkode status"
-    def info
-      cdstk.info
+    desc "info [package]", "Display package information"
+    option :all, :type => :boolean, :aliases => '-a', :desc => 'Summary'
+    def info(*args)
+      cdstk.info(args, options)
     end
 
     desc "ignore [path ...]", "Ignore a file or directory"

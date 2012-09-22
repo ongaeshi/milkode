@@ -639,8 +639,13 @@ EOF
       end
     end
 
-    def info
-      milkode_info
+    def info(args, options)
+      if options[:all]
+        milkode_info
+        return
+      end
+
+      p args
     end
 
     def ignore(args, options)
