@@ -651,13 +651,22 @@ EOF
 
       results = packages.map do |package|
         records = @documents.search(:strict_packages => [package.name])
+        linecount = records.reduce(0) do |total, record|
+          unless record.content.nil?
+            # p record.path
+            total + record.content.count($/) + 1
+          else
+            total
+          end
+        end
+        
         <<EOF
 name:      #{package.name}
 ignore:    #{package.ignore}
 options:   #{package.options}
 records:   #{records.size}
 detail:    xxxxx
-lines:     12345
+linecount: #{linecount}
 EOF
       end
 
