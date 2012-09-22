@@ -32,7 +32,7 @@ Samples:
   milk add git://github.com/ongaeshi/milkode.git
 EOF
     option :ignore, :type => :array, :aliases => '-i', :desc => 'Ignore path.'
-    option :no_auto_ignore, :type => :boolean, :desc => 'Disable auto ignore (.gitignore).'
+    option :no_auto_ignore, :type => :boolean, :aliases => '-n', :desc => 'Disable auto ignore (.gitignore).'
     option :verbose, :type => :boolean, :aliases => '-v', :desc => 'Be verbose.'
     
     def add(*args)

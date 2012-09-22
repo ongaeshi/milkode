@@ -23,6 +23,7 @@ require 'milkode/common/ignore_checker'
 require 'milkode/database/groonga_database'
 require 'milkode/database/document_record'
 require 'milkode/common/array_diff'
+require 'milkode/database/updater'
 
 module Milkode
   class IgnoreError < RuntimeError ; end
@@ -712,35 +713,36 @@ EOF
     end
 
     def update_package_in(package, options)
-      if package.options[:update_with_git_pull]
-        Dir.chdir(package.directory) { system("git pull") }
-      end
-
-      unless options[:no_clean]
-        cleanup_package_in(package)
-      end
-
-      update_dir_in(package.directory)
-    end
-
-    def cleanup_package_in(package)
-      db_open
-      @documents.cleanup_package_name(package.name)
+      updater_exec(package, package.options[:update_with_git_pull], options[:no_clean])
     end
 
     def update_dir_in(dir)
-      alert("package", File.basename(dir) )
-      @package_count += 1
-      
       dir = File.expand_path(dir)
 
       if (!FileTest.exist?(dir))
-        @out.puts "[WARNING]  : #{dir} (Not found, skip)"
-      elsif (FileTest.directory? dir)
-        db_add_dir(dir)
+        warning_alert("#{dir} (Not found, skip)")
       else
-        db_add_file(STDOUT, File.dirname(dir), File.basename(dir), File.basename(dir)) # .bashrc/.bashrc のようになる
+        package = @yaml.package_root(dir)
+        updater_exec(package, false, false)
       end
+    end
+
+    def updater_exec(package, is_update_with_git_pull, is_no_clean)
+      alert("package", package.name )
+
+      updater = Updater.new(@grndb, package.name)
+      updater.set_package_ignore IgnoreSetting.new("/", package.ignore)
+      updater.enable_no_auto_ignore       if package.options[:no_auto_ignore]
+      updater.enable_silent_mode          if @is_silent
+      updater.enable_display_info         if @is_display_info
+      updater.enable_update_with_git_pull if is_update_with_git_pull
+      updater.enable_no_clean             if is_no_clean
+      updater.exec
+
+      @package_count += 1
+      @file_count   += updater.result.file_count
+      @add_count    += updater.result.add_count
+      @update_count += updater.result.update_count
     end
 
     def remove_dir(dir, no_yaml = false)
@@ -790,7 +792,6 @@ EOF
       r << "#{@file_count} records" if @file_count > 0
       r << "#{@add_count} add" if @add_count > 0
       r << "#{@update_count} update" if @update_count > 0
-      r.join(', ')
       alert('result', "#{r.join(', ')}. (#{Gren::Util::time_s(time)})")
     end
 
@@ -835,108 +836,6 @@ EOF
       end
     end
       
-    def db_add_dir(dir)
-      @current_package = @yaml.package_root(dir)
-      @current_ignore = IgnoreChecker.new
-      @current_ignore.add IgnoreSetting.new("/", @current_package.ignore) # 手動設定
-      searchDirectory(STDOUT, dir, @current_package.name, "/", 0)
-    end
-    private :db_add_dir
-
-    def db_add_file(stdout, package_dir, restpath, package_name = nil)
-      # サイレントモード
-      return if @is_silent
-
-      # データベースには先頭の'/'を抜いて登録する
-      #   最初から'/'を抜いておけば高速化の余地あり?
-      #   ignore設定との互換性保持が必要
-      restpath = restpath.sub(/^\//, "")
-
-      # パッケージ名を設定
-      package_name = package_name || File.basename(package_dir)
-
-      # レコードの追加
-      result = @documents.add(package_dir, restpath, package_name)
-
-      # メッセージの表示
-      case result
-      when :newfile
-        @add_count += 1
-        alert_info("add_record", File.join(package_dir, restpath))
-      when :update
-        @grndb.packages.touch(package_name, :updatetime)
-        @update_count += 1
-        alert_info("update", File.join(package_dir, restpath))
-      end
-    end
-
-    def searchDirectory(stdout, dirname, packname, path, depth)
-      # 現在位置に.gitignoreがあれば無視設定に加える
-      add_current_gitignore(dirname, path) unless @current_package.options[:no_auto_ignore]
-
-      # 子の要素を追加
-      Dir.foreach(File.join(dirname, path)) do |name|
-        next if (name == '.' || name == '..')
-
-        next_path = File.join(path, name)
-        fpath     = File.join(dirname, next_path)
-        shortpath = File.join(packname, next_path)
-
-        # 除外ディレクトリならばパス
-        next if ignoreDir?(fpath, next_path)
-
-        # 読み込み不可ならばパス
-        next unless FileTest.readable?(fpath)
-
-        # ファイルならば中身を探索、ディレクトリならば再帰
-        case File.ftype(fpath)
-        when "directory"
-          searchDirectory(stdout, dirname, packname, next_path, depth + 1)
-        when "file"
-          unless ignoreFile?(fpath, next_path)
-            db_add_file(stdout, dirname, next_path) # shortpathの先頭に'/'が付いているのが気になる
-            @file_count += 1
-            # @out.puts "file_count : #{@file_count}" if (@file_count % 100 == 0)
-          end
-        end          
-      end
-    end
-
-    def add_current_gitignore(dirname, path)
-      git_ignore = File.join(dirname, path, ".gitignore")
-      
-      if File.exist? git_ignore
-        alert_info("add_ignore", git_ignore)
-        
-        open(git_ignore) do |f|
-          @current_ignore.add IgnoreSetting.create_from_gitignore(path, f.read)
-        end
-      end
-    end
-
-    def package_ignore?(fpath, mini_path)
-      if @current_ignore.ignore?(mini_path)
-        alert_info("ignore", fpath)
-        true
-      else
-        false
-      end
-    end
-
-    def ignoreDir?(fpath, mini_path)
-      FileTest.directory?(fpath) &&
-        (GrenFileTest::ignoreDir?(fpath) ||
-         package_ignore?(fpath, mini_path))
-    end
-    private :ignoreDir?
-
-    def ignoreFile?(fpath, mini_path)
-      GrenFileTest::ignoreFile?(fpath) ||
-        GrenFileTest::binary?(fpath) ||
-        package_ignore?(fpath, mini_path)
-    end
-    private :ignoreFile?
-
     def alert(title, msg)
       if (Util::platform_win?)
         @out.puts "#{title.ljust(10)} : #{Kconv.kconv(msg, Kconv::SJIS)}"

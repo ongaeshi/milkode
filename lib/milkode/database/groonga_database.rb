@@ -9,9 +9,9 @@ require 'rubygems'
 require 'groonga'
 require 'milkode/common/dbdir'
 require 'fileutils'
-require 'milkode/database/package_table.rb'
-require 'milkode/database/document_table.rb'
-require 'milkode/database/document_record.rb'
+require 'milkode/database/package_table'
+require 'milkode/database/document_table'
+require 'milkode/database/document_record'
 
 module Milkode
   class GroongaDatabase
@@ -91,7 +91,7 @@ EOF
         true
       end
     end
-    
+
     private
 
     def define_schema
