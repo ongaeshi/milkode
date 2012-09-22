@@ -665,7 +665,7 @@ name:      #{package.name}
 ignore:    #{package.ignore}
 options:   #{package.options}
 records:   #{records.size}
-detail:    xxxxx
+breakdown: Ruby:80(72%), JavaScript:20(18%), Rakefile:1(0.1%), etc:9(9.9%)
 linecount: #{linecount}
 EOF
       end
