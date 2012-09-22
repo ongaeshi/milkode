@@ -645,7 +645,18 @@ EOF
         return
       end
 
-      p args
+      packages = find_packages(args)
+
+      p packages.map{|v| v.name}
+    end
+
+    # 引数が指定されている時は名前にマッチするパッケージを、未指定の時は現在位置から見つける
+    def find_packages(args)
+      unless args.empty?
+        args.map {|v| @yaml.find_name(v)}
+      else
+        [@yaml.package_root(File.expand_path('.'))]
+      end
     end
 
     def ignore(args, options)
