@@ -653,7 +653,7 @@ EOF
         records = @documents.search(:strict_packages => [package.name])
         linecount = records.reduce(0) do |total, record|
           unless record.content.nil?
-            # p record.path
+            warning_alert("invalid byte sequence : #{record.path}")
             total + record.content.count($/) + 1
           else
             total
