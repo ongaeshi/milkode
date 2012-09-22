@@ -645,9 +645,23 @@ EOF
         return
       end
 
+      db_open
+
       packages = find_packages(args)
 
-      p packages.map{|v| v.name}
+      results = packages.map do |package|
+        records = @documents.search(:strict_packages => [package.name])
+        <<EOF
+name:      #{package.name}
+ignore:    #{package.ignore}
+options:   #{package.options}
+records:   #{records.size}
+detail:    xxxxx
+lines:     12345
+EOF
+      end
+
+      @out.puts results.join("\n")
     end
 
     # 引数が指定されている時は名前にマッチするパッケージを、未指定の時は現在位置から見つける
