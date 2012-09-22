@@ -639,8 +639,51 @@ EOF
       end
     end
 
-    def info
-      milkode_info
+    def info(args, options)
+      if options[:all]
+        milkode_info
+        return
+      end
+
+      db_open
+
+      packages = find_packages(args)
+
+      results = packages.map do |package|
+        records = @documents.search(:strict_packages => [package.name])
+        linecount = records.reduce(0) do |total, record|
+          unless record.content.nil?
+            begin
+              total + record.content.count($/) + 1
+            rescue ArgumentError
+              warning_alert("invalid byte sequence : #{record.path}")
+              total
+            end
+          else
+            total
+          end
+        end
+        
+        <<EOF
+name:      #{package.name}
+ignore:    #{package.ignore}
+options:   #{package.options}
+records:   #{records.size}
+breakdown: Ruby:80(72%), JavaScript:20(18%), Rakefile:1(0.1%), etc:9(9.9%)
+linecount: #{linecount}
+EOF
+      end
+
+      @out.puts results.join("\n")
+    end
+
+    # 引数が指定されている時は名前にマッチするパッケージを、未指定の時は現在位置から見つける
+    def find_packages(args)
+      unless args.empty?
+        args.map {|v| @yaml.find_name(v)}
+      else
+        [@yaml.package_root(File.expand_path('.'))]
+      end
     end
 
     def ignore(args, options)
