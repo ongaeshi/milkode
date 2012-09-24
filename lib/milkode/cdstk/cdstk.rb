@@ -649,6 +649,8 @@ EOF
       end
 
       packages = find_packages(args)
+      packages.compact!
+      return if (packages.empty?)
 
       if (options[:table])
         @out.puts info_format_table(packages)        
@@ -717,9 +719,16 @@ EOF
     # 引数が指定されている時は名前にマッチするパッケージを、未指定の時は現在位置から見つける
     def find_packages(args)
       unless args.empty?
-        args.map {|v| @yaml.find_name(v)}
+        args.map do |v|
+          r = @yaml.find_name(v)
+          @out.puts "Not found package '#{v}'." if r.nil?
+          r
+        end
       else
-        [@yaml.package_root(File.expand_path('.'))]
+        dir = File.expand_path('.')
+        r = @yaml.package_root(dir)
+        @out.puts "Not registered '#{dir}'." if r.nil?
+        [r]
       end
     end
 
