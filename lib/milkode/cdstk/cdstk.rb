@@ -649,28 +649,66 @@ EOF
 
       packages = find_packages(args)
 
+      if (options[:table])
+        @out.puts info_format_table(packages)        
+      else
+        @out.puts info_format_detail(packages)
+      end
+    end
+
+    def info_format_detail(packages)
       results = packages.map do |package|
-        records = @documents.search(:strict_packages => [package.name])
-        linecount = records.reduce(0) do |total, record|
-          begin
-            total + record.content.count($/) + 1
-          rescue ArgumentError
-            warning_alert("invalid byte sequence : #{record.path}")
-            total
-          end
-        end
+        records = package_records(package.name)
         
         <<EOF
-name:      #{package.name}
-ignore:    #{package.ignore}
-options:   #{package.options}
-records:   #{records.size}
-breakdown: Ruby:80(72%), JavaScript:20(18%), Rakefile:1(0.1%), etc:9(9.9%)
-linecount: #{linecount}
+Name:      #{package.name}
+Ignore:    #{package.ignore}
+Options:   #{package.options}
+Records:   #{records.size}
+Breakdown: Ruby:80(72%), JavaScript:20(18%), Rakefile:1(0.1%), etc:9(9.9%)
+Linecount: #{linecount_total(records)}
 EOF
       end
 
-      @out.puts results.join("\n")
+      results.join("\n")
+    end
+
+    NAME = 'Name'
+    
+    def info_format_table(packages)
+      max = packages.map{|p| p.name.length}.max
+      max = NAME.length  if max < NAME.length
+
+      header = <<EOF.chomp
+#{NAME.ljust(max)}     Records   Linecount
+#{'=' * max}========================
+EOF
+
+      results = packages.map do |package|
+        records = package_records(package.name)
+        "#{package.name.ljust(max)}  #{records.size.to_s.rjust(10)}  #{linecount_total(records).to_s.rjust(10)}"
+      end
+      
+      ([header] + results).join("\n")
+    end
+
+    def package_records(name)
+      @documents.search(:strict_packages => [name])
+    end
+
+    def linecount_total(records)
+      records.reduce(0) do |total, record|
+        begin
+          unless record.content.nil?
+            total + record.content.count($/) + 1
+          else
+            total
+          end
+        rescue ArgumentError
+          warning_alert("invalid byte sequence : #{record.path}")
+          total
+        end
+      end
     end
 
     # 引数が指定されている時は名前にマッチするパッケージを、未指定の時は現在位置から見つける

@@ -109,7 +109,8 @@ EOF
     end
 
     desc "info [package]", "Display package information"
-    option :all, :type => :boolean, :aliases => '-a', :desc => 'Summary'
+    option :all, :type => :boolean, :aliases => '-a', :desc => 'Display all packages'
+    option :table, :type => :boolean, :aliases => '-t', :desc => 'Display table format'
     def info(*args)
       cdstk.info(args, options)
     end
