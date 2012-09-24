@@ -660,15 +660,17 @@ EOF
     def info_format_detail(packages)
       results = packages.map do |package|
         records = package_records(package.name)
-        
-        <<EOF
-Name:      #{package.name}
-Ignore:    #{package.ignore}
-Options:   #{package.options}
-Records:   #{records.size}
-Breakdown: Ruby:80(72%), JavaScript:20(18%), Rakefile:1(0.1%), etc:9(9.9%)
-Linecount: #{linecount_total(records)}
-EOF
+
+        r = []
+        r.push "Name:      #{package.name}"
+        r.push "Ignore:    #{package.ignore}" unless package.ignore.empty?
+        r.push "Options:   #{package.options}" unless package.options.empty?
+        r.push "Records:   #{records.size}"
+        r.push "Breakdown: Ruby:80(72%), JavaScript:20(18%), Rakefile:1(0.1%), etc:9(9.9%)"
+        r.push "Linecount: #{linecount_total(records)}"
+        r.push ""
+
+        r.join("\n")
       end
 
       results.join("\n")
