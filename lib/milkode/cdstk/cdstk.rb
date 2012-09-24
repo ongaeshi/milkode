@@ -640,12 +640,13 @@ EOF
     end
 
     def info(args, options)
+      db_open
+
       if options[:all]
+        @out.puts info_format_table(@yaml.contents)
         milkode_info
         return
       end
-
-      db_open
 
       packages = find_packages(args)
 
