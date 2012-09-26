@@ -112,7 +112,7 @@ EOF
     option :all, :type => :boolean, :aliases => '-a', :desc => 'Display all packages'
     option :table, :type => :boolean, :aliases => '-t', :desc => 'Display table format'
     def info(*args)
-      cdstk.info(args, options)
+      cdstk.info(args_or_pipe(args, $stdin), options)
     end
 
     desc "ignore [path ...]", "Ignore a file or directory"
@@ -211,5 +211,16 @@ EOF
       end
     end
 
+    # 引数が空の場合はパイプ(標準入力)を受け取る
+    def args_or_pipe(args, stdin)
+      if !args.empty?
+        args 
+      elsif File.pipe?(stdin)
+        stdin.readlines.map{|v| v.chomp}
+      else
+        []
+      end
+    end
+    
   end
 end
