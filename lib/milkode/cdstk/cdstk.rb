@@ -388,10 +388,12 @@ module Milkode
       @out.puts str
 
       # print information
-      if args.empty?
-        milkode_info
-      else
-        list_info(match_p) unless match_p.empty?
+      unless File.pipe?($stdout)
+        if args.empty?
+          milkode_info
+        else
+          list_info(match_p) unless match_p.empty?
+        end
       end
     end
 
