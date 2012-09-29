@@ -24,6 +24,7 @@ require 'milkode/database/groonga_database'
 require 'milkode/database/document_record'
 require 'milkode/common/array_diff'
 require 'milkode/database/updater'
+require 'milkode/common/plang_detector'
 
 module Milkode
   class IgnoreError < RuntimeError ; end
@@ -670,7 +671,7 @@ EOF
         r.push "Ignore:    #{package.ignore}" unless package.ignore.empty?
         r.push "Options:   #{package.options}" unless package.options.empty?
         r.push "Records:   #{records.size}"
-        r.push "Breakdown: Ruby:80(72%), JavaScript:20(18%), Rakefile:1(0.1%), etc:9(9.9%)"
+        r.push "Breakdown: #{breakdown(records)}"
         r.push "Linecount: #{linecount_total(records)}"
         r.push ""
 
@@ -716,6 +717,28 @@ EOF
           total
         end
       end
+    end
+
+    def breakdown(records)
+      total = {}
+      
+      records.each do |record|
+        lang = PlangDetector.new(record.restpath)
+
+        if total[lang.name]
+          total[lang.name] += 1
+        else
+          total[lang.name] = 1
+        end
+      end
+
+      total.map {|name, count|
+        [name, count]
+      }.sort {|a, b|
+        a[1] <=> b[1]
+      }.reverse.map {|name, count|
+        "#{name}:#{count}(#{(count.to_f / records.size * 100).to_i}%)"
+      }.join(', ')
     end
 
     # 引数が指定されている時は名前にマッチするパッケージを、未指定の時は現在位置から見つける
