@@ -646,7 +646,12 @@ EOF
       db_open
 
       if options[:all]
-        @out.puts info_format_table(@yaml.contents)
+        # default :table
+        if options[:table] || !options[:detail]
+          @out.puts info_format_table(@yaml.contents)
+        else
+          @out.puts info_format_detail(@yaml.contents)
+        end
         milkode_info
         return
       end
@@ -655,10 +660,11 @@ EOF
       packages.compact!
       return if (packages.empty?)
 
-      if (options[:table])
-        @out.puts info_format_table(packages)        
-      else
+      # default :detail
+      if options[:detail] || !options[:table]
         @out.puts info_format_detail(packages)
+      elsif options[:table]
+        @out.puts info_format_table(packages)
       end
     end
 
