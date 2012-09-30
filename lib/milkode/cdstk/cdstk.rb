@@ -812,6 +812,19 @@ EOF
       end
     end
 
+    def files
+      packages = find_packages([])
+      return if (packages.empty?)
+
+      db_open
+      
+      packages.each do |package|
+        package_records(package.name).each do |record|
+          @out.puts record.restpath
+        end
+      end
+    end
+
     private
 
     def db_file

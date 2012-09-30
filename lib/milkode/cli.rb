@@ -176,6 +176,11 @@ emacs-milkode       https://github.com/ongaeshi/emacs-milkode
 EOF
     end
 
+    desc "files", "Display package files"
+    def files(*args)
+      cdstk.files
+    end
+
     # --------------------------------------------------------------------------
     
     no_tasks do
