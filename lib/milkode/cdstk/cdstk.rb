@@ -647,9 +647,9 @@ EOF
       if options[:all]
         # default :table
         if options[:table] || !options[:detail]
-          @out.puts info_format_table(@yaml.contents)
+          info_format_table(@yaml.contents)
         else
-          @out.puts info_format_detail(@yaml.contents)
+          info_format_detail(@yaml.contents)
         end
         milkode_info
         return
@@ -661,14 +661,14 @@ EOF
 
       # default :detail
       if options[:detail] || !options[:table]
-        @out.puts info_format_detail(packages)
+        info_format_detail(packages)
       elsif options[:table]
-        @out.puts info_format_table(packages)
+        info_format_table(packages)
       end
     end
 
     def info_format_detail(packages)
-      results = packages.map do |package|
+      packages.each do |package|
         records = package_records(package.name)
 
         r = []
@@ -680,10 +680,8 @@ EOF
         r.push "Linecount: #{linecount_total(records)}"
         r.push ""
 
-        r.join("\n")
+        @out.puts r.join("\n") + "\n"
       end
-
-      results.join("\n")
     end
 
     NAME = 'Name'
@@ -692,17 +690,15 @@ EOF
       max = packages.map{|p| p.name.length}.max
       max = NAME.length  if max < NAME.length
 
-      header = <<EOF.chomp
+      @out.puts <<EOF.chomp
 #{NAME.ljust(max)}     Records   Linecount
 #{'=' * max}========================
 EOF
 
-      results = packages.map do |package|
+      packages.each do |package|
         records = package_records(package.name)
-        "#{package.name.ljust(max)}  #{records.size.to_s.rjust(10)}  #{linecount_total(records).to_s.rjust(10)}"
+        @out.puts "#{package.name.ljust(max)}  #{records.size.to_s.rjust(10)}  #{linecount_total(records).to_s.rjust(10)}"
       end
-      
-      ([header] + results).join("\n")
     end
 
     def package_records(name)
