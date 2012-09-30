@@ -735,9 +735,9 @@ EOF
       total.map {|name, count|
         [name, count]
       }.sort {|a, b|
-        if (a[0] == 'etc')
+        if (a[0] == PlangDetector::UNKNOWN)
           -1
-        elsif (b[0] == 'etc')
+        elsif (b[0] == PlangDetector::UNKNOWN)
           1
         else
           a[1] <=> b[1]

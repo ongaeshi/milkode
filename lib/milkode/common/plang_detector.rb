@@ -42,7 +42,8 @@ module Milkode
        # { :name => ''              , :suffixs   => []          , :filenames => [] },
       ]
 
-   ETC_LANGUAGE = {:name => 'etc'}
+    UNKNOWN          = 'unknown'
+    UNKNOWN_LANGUAGE = {:name => UNKNOWN}
     
     def initialize(filename)
       suffix = File.extname(filename)
@@ -62,11 +63,14 @@ module Milkode
         is_found
       }
 
-      @lang ||= ETC_LANGUAGE
+      @lang ||= UNKNOWN_LANGUAGE
     end
 
     def name
       @lang[:name]
+    end
+
+    def <=>(rhs)
     end
   end
 end
