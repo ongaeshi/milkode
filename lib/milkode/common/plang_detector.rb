@@ -37,9 +37,12 @@ module Milkode
        { :name => 'eRuby'       , :suffixs => ['erb']          },
        { :name => 'RubyGems'    , :suffixs => ['gemspec']      },
 
+       { :name => 'Rakefile'    , :filenames => ['Rakefile']      },
+       { :name => 'Bundler'     , :filenames => ['Gemfile', 'Gemfile.lock'] },
+       { :name => 'gitignore'   , :filenames => ['.gitignore'] },
+       { :name => 'Makefile'    , :filenames => ['Makefile', 'makefile'], :suffixs => ['mk'] },
+
        # { :name => ''     ,  :suffixs => ['']       },
-
-
 
       ]
 
@@ -50,7 +53,17 @@ module Milkode
       suffix = suffix[1..-1]
 
       @lang = LANGUAGES.find {|v|
-        v[:suffixs].include?(suffix)
+        is_found = false
+
+        if v[:suffixs]
+          is_found = v[:suffixs].include?(suffix)
+        end
+        
+        if v[:filenames]
+          is_found = v[:filenames].include?(filename)
+        end
+
+        is_found
       }
 
       @lang ||= ETC_LANGUAGE
