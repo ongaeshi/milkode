@@ -32,6 +32,10 @@ module Milkode
        { :name => 'Python'      , :suffixs => ['py']           },
        { :name => 'Scala'       , :suffixs => ['scm']          },
        { :name => 'Yaml'        , :suffixs => ['yml', 'yaml']  },
+       { :name => 'RDoc'        , :suffixs => ['rdoc']         },
+       { :name => 'Haml'        , :suffixs => ['haml']         },
+       { :name => 'eRuby'       , :suffixs => ['erb']          },
+       { :name => 'RubyGems'    , :suffixs => ['gemspec']      },
 
        # { :name => ''     ,  :suffixs => ['']       },
 
