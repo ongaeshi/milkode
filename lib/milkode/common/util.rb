@@ -178,6 +178,11 @@ module Milkode
     def git_url?(src)
       (src =~ /^(:?git[:@])|(:?ssh:)/) != nil
     end
+
+    # StringIO patch
+    def pipe?(io)
+      !io.instance_of?(IO) || !File.pipe?(io) 
+    end
   end
 end
 

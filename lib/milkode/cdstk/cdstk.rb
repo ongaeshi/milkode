@@ -388,8 +388,7 @@ module Milkode
 
       @out.puts str
 
-      # print information
-      unless File.pipe?($stdout)
+      if Util.pipe? $stdout
         if args.empty?
           milkode_info
         else
