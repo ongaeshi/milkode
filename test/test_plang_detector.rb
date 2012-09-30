@@ -21,10 +21,10 @@ module Milkode
       assert_equal 'JavaScript'  , PlangDetector.new('main.js').name
     end
 
-    def test_etc
-      assert_equal 'etc', PlangDetector.new('').name
-      assert_equal 'etc', PlangDetector.new('.').name
-      assert_equal 'etc', PlangDetector.new('abcdefg').name
+    def test_unknown
+      assert_equal 'unknown', PlangDetector.new('').name
+      assert_equal 'unknown', PlangDetector.new('.').name
+      assert_equal 'unknown', PlangDetector.new('abcdefg').name
     end
   end
 end
