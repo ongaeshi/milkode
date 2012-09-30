@@ -110,8 +110,9 @@ EOF
 
     desc "info [package]", "Display package information"
     option :all, :type => :boolean, :aliases => '-a', :desc => 'Display all packages'
-    option :detail, :type => :boolean, :aliases => '-d', :desc => 'Display detail format'
-    option :table, :type => :boolean, :aliases => '-t', :desc => 'Display table format'
+    option :detail, :type => :boolean, :aliases => '-d', :desc => 'Detail format'
+    option :table, :type => :boolean, :aliases => '-t', :desc => 'Table format'
+    option :breakdown, :type => :boolean, :aliases => '-b', :desc => 'Breakdown format'
     
     def info(*args)
       cdstk.info(args_or_pipe(args, $stdin), options)

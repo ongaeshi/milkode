@@ -677,7 +677,7 @@ EOF
     end
 
     def info_format_detail(packages)
-      packages.each do |package|
+      packages.each_with_index do |package, index|
         records = package_records(package.name)
 
         r = []
@@ -685,11 +685,12 @@ EOF
         r.push "Ignore:    #{package.ignore}" unless package.ignore.empty?
         r.push "Options:   #{package.options}" unless package.options.empty?
         r.push "Records:   #{records.size}"
-        r.push "Breakdown: #{breakdown(records)}"
+        r.push "Breakdown: #{breakdown_shorten(records)}"
         r.push "Linecount: #{linecount_total(records)}"
         r.push ""
 
-        @out.puts r.join("\n") + "\n"
+        @out.puts if index != 0
+        @out.puts r.join("\n")
       end
     end
 
@@ -707,6 +708,18 @@ EOF
       packages.each do |package|
         records = package_records(package.name)
         @out.puts "#{package.name.ljust(max)}  #{records.size.to_s.rjust(10)}  #{linecount_total(records).to_s.rjust(10)}"
+      end
+    end
+
+    def info_format_breakdown(packages)
+      packages.each_with_index do |package, index|
+        # plangs = sorted_plangs(records)
+        
+        # max = package.name.length
+        # max = NAME.length  if max < NAME.length
+        @out.puts if index != 0
+        @out.puts "Name:      #{package.name}"
+        @out.puts breakdown_detail(package_records(package.name), 10)
       end
     end
 
@@ -729,7 +742,7 @@ EOF
       end
     end
 
-    def breakdown(records)
+    def sorted_plangs(records)
       total = {}
       
       records.each do |record|
@@ -752,9 +765,20 @@ EOF
         else
           a[1] <=> b[1]
         end
-      }.reverse.map {|name, count|
+      }.reverse
+    end
+
+    def breakdown_shorten(records)
+      sorted_plangs(records).map {|name, count|
         "#{name}:#{count}(#{(count.to_f / records.size * 100).to_i}%)"
       }.join(', ')
+    end
+
+    def breakdown_detail(records, name_width)
+      sorted_plangs(records).map {|name, count|
+        percent = (count.to_f / records.size * 100).to_i
+        sprintf("%-#{name_width}s  %5d  %3d%%", name, count, percent)
+      }.join("\n")
     end
 
     # 引数が指定されている時は名前にマッチするパッケージを、未指定の時は現在位置から見つける
