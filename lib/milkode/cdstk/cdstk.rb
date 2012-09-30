@@ -735,7 +735,13 @@ EOF
       total.map {|name, count|
         [name, count]
       }.sort {|a, b|
-        a[1] <=> b[1]
+        if (a[0] == 'etc')
+          -1
+        elsif (b[0] == 'etc')
+          1
+        else
+          a[1] <=> b[1]
+        end
       }.reverse.map {|name, count|
         "#{name}:#{count}(#{(count.to_f / records.size * 100).to_i}%)"
       }.join(', ')
