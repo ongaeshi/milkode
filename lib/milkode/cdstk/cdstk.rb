@@ -694,7 +694,8 @@ EOF
       end
     end
 
-    NAME = 'Name'
+    NAME  = 'Name'
+    TOTAL = 'Total'
     
     def info_format_table(packages)
       max = packages.map{|p| p.name.length}.max
@@ -713,13 +714,21 @@ EOF
 
     def info_format_breakdown(packages)
       packages.each_with_index do |package, index|
-        # plangs = sorted_plangs(records)
+        records = package_records(package.name)
+        plangs = sorted_plangs(records)
+
+        # column1's width
+        plang_names = plangs.map{|v| v[0]}
+        max = (plang_names + [package.name, TOTAL]).map{|name| name.length}.max
         
-        # max = package.name.length
-        # max = NAME.length  if max < NAME.length
         @out.puts if index != 0
-        @out.puts "Name:      #{package.name}"
-        @out.puts breakdown_detail(package_records(package.name), 10)
+      @out.puts <<EOF.chomp
+#{package.name.ljust(max)}  files  rate
+#{'=' * max}=============
+#{breakdown_detail(package_records(package.name), max)}
+#{'-' * max}-------------
+#{sprintf("%-#{max}s  %5d  %3d%%", TOTAL, records.size, 100)}
+EOF
       end
     end
 
