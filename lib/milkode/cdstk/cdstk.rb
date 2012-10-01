@@ -777,9 +777,33 @@ EOF
       }.reverse
     end
 
+    def calc_percent(count, size)
+      (count.to_f / size * 100).to_i
+    end
+
     def breakdown_shorten(records)
-      sorted_plangs(records).map {|name, count|
-        "#{name}:#{count}(#{(count.to_f / records.size * 100).to_i}%)"
+      plangs = sorted_plangs(records)
+
+      plangs = plangs.reduce([]) {|array, plang|
+        name, count = plang
+        percent = calc_percent(count, records.size)
+
+        if percent == 0
+          if array[-1][0] != 'other'
+            array << ['other', count]
+          else
+            array[-1][1] += count
+          end
+        else
+          array << plang
+        end
+
+        array
+      }
+      
+      plangs.map {|name, count|
+        percent = calc_percent(count, records.size)
+        "#{name}:#{count}(#{percent}%)"
       }.join(', ')
     end
 
