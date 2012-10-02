@@ -662,6 +662,7 @@ EOF
       format = :detail     if options[:detail]
       format = :table      if options[:table]
       format = :breakdown  if options[:breakdown]
+      format = :unknown    if options[:unknown]
       format
     end
 
@@ -673,6 +674,8 @@ EOF
         info_format_table(packages)        
       when :breakdown
         info_format_breakdown(packages)        
+      when :unknown
+        info_format_unknown(packages)
       end
     end
 
@@ -729,6 +732,18 @@ EOF
 #{'-' * max}-------------
 #{sprintf("%-#{max}s  %5d  %3d%%", TOTAL, records.size, 100)}
 EOF
+      end
+    end
+
+    def info_format_unknown(packages)
+      packages.each_with_index do |package, index|
+        @out.puts if index != 0
+
+        package_records(package.name).each do |record|
+          path = record.restpath
+          @out.puts path if PlangDetector.new(path).unknown?
+        end
+        @out.puts package.name
       end
     end
 

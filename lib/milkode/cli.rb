@@ -113,6 +113,7 @@ EOF
     option :detail, :type => :boolean, :aliases => '-d', :desc => 'Detail format'
     option :table, :type => :boolean, :aliases => '-t', :desc => 'Table format'
     option :breakdown, :type => :boolean, :aliases => '-b', :desc => 'Breakdown format'
+    option :unknown, :type => :boolean, :aliases => '-u', :desc => 'Display unknown files'
     
     def info(*args)
       cdstk.info(args_or_pipe(args, $stdin), options)
