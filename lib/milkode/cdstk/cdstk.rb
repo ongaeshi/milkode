@@ -789,7 +789,7 @@ EOF
         percent = calc_percent(count, records.size)
 
         if percent == 0
-          if array[-1][0] != 'other'
+          if array.empty? || array[-1][0] != 'other'
             array << ['other', count]
           else
             array[-1][1] += count
