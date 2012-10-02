@@ -743,7 +743,6 @@ EOF
           path = record.restpath
           @out.puts path if PlangDetector.new(path).unknown?
         end
-        @out.puts package.name
       end
     end
 
