@@ -899,8 +899,8 @@ EOF
       end
     end
 
-    def files
-      packages = find_packages([])
+    def files(args)
+      packages = find_packages(args)
       return if (packages.empty?)
 
       db_open

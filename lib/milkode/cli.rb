@@ -182,7 +182,7 @@ EOF
 
     desc "files", "Display package files"
     def files(*args)
-      cdstk.files
+      cdstk.files(args)
     end
 
     # --------------------------------------------------------------------------
