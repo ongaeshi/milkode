@@ -24,6 +24,7 @@ require 'milkode/database/groonga_database'
 require 'milkode/database/document_record'
 require 'milkode/common/array_diff'
 require 'milkode/database/updater'
+require 'milkode/common/plang_detector'
 
 module Milkode
   class IgnoreError < RuntimeError ; end
@@ -387,11 +388,12 @@ module Milkode
 
       @out.puts str
 
-      # print information
-      if args.empty?
-        milkode_info
-      else
-        list_info(match_p) unless match_p.empty?
+      if Util.pipe? $stdout
+        if args.empty?
+          milkode_info
+        else
+          list_info(match_p) unless match_p.empty?
+        end
       end
     end
 
@@ -639,8 +641,207 @@ EOF
       end
     end
 
-    def info
-      milkode_info
+    def info(args, options)
+      db_open
+
+      if options[:all]
+        info_format(@yaml.contents, select_format(options, :table))
+        milkode_info
+        return
+      end
+
+      packages = find_packages(args)
+      packages.compact!
+      return if (packages.empty?)
+
+      info_format(packages, select_format(options, :detail))
+    end
+
+    def select_format(options, default_value)
+      format = default_value
+      format = :detail     if options[:detail]
+      format = :table      if options[:table]
+      format = :breakdown  if options[:breakdown]
+      format = :unknown    if options[:unknown]
+      format
+    end
+
+    def info_format(packages, format)
+      case format
+      when :detail
+        info_format_detail(packages)
+      when :table
+        info_format_table(packages)        
+      when :breakdown
+        info_format_breakdown(packages)        
+      when :unknown
+        info_format_unknown(packages)
+      end
+    end
+
+    def info_format_detail(packages)
+      packages.each_with_index do |package, index|
+        records = package_records(package.name)
+
+        r = []
+        r.push "Name:      #{package.name}"
+        r.push "Ignore:    #{package.ignore}" unless package.ignore.empty?
+        r.push "Options:   #{package.options}" unless package.options.empty?
+        r.push "Records:   #{records.size}"
+        r.push "Breakdown: #{breakdown_shorten(records)}"
+        r.push "Linecount: #{linecount_total(records)}"
+        r.push ""
+
+        @out.puts if index != 0
+        @out.puts r.join("\n")
+      end
+    end
+
+    NAME  = 'Name'
+    TOTAL = 'Total'
+    
+    def info_format_table(packages)
+      max = packages.map{|p| p.name.length}.max
+      max = NAME.length  if max < NAME.length
+
+      @out.puts <<EOF.chomp
+#{NAME.ljust(max)}     Records   Linecount
+#{'=' * max}========================
+EOF
+
+      packages.each do |package|
+        records = package_records(package.name)
+        @out.puts "#{package.name.ljust(max)}  #{records.size.to_s.rjust(10)}  #{linecount_total(records).to_s.rjust(10)}"
+      end
+    end
+
+    def info_format_breakdown(packages)
+      packages.each_with_index do |package, index|
+        records = package_records(package.name)
+        plangs = sorted_plangs(records)
+
+        # column1's width
+        plang_names = plangs.map{|v| v[0]}
+        max = (plang_names + [package.name, TOTAL]).map{|name| name.length}.max
+        
+        @out.puts if index != 0
+      @out.puts <<EOF.chomp
+#{package.name.ljust(max)}  files  rate
+#{'=' * max}=============
+#{breakdown_detail(package_records(package.name), max)}
+#{'-' * max}-------------
+#{sprintf("%-#{max}s  %5d  %3d%%", TOTAL, records.size, 100)}
+EOF
+      end
+    end
+
+    def info_format_unknown(packages)
+      packages.each_with_index do |package, index|
+        @out.puts if index != 0
+
+        package_records(package.name).each do |record|
+          path = record.restpath
+          @out.puts path if PlangDetector.new(path).unknown?
+        end
+      end
+    end
+
+    def package_records(name)
+      @documents.search(:strict_packages => [name])
+    end
+
+    def linecount_total(records)
+      records.reduce(0) do |total, record|
+        begin
+          unless record.content.nil?
+            total + record.content.count($/) + 1
+          else
+            total
+          end
+        rescue ArgumentError
+          warning_alert("invalid byte sequence : #{record.path}")
+          total
+        end
+      end
+    end
+
+    def sorted_plangs(records)
+      total = {}
+      
+      records.each do |record|
+        lang = PlangDetector.new(record.restpath)
+
+        if total[lang.name]
+          total[lang.name] += 1
+        else
+          total[lang.name] = 1
+        end
+      end
+
+      total.map {|name, count|
+        [name, count]
+      }.sort {|a, b|
+        if (a[0] == PlangDetector::UNKNOWN)
+          -1
+        elsif (b[0] == PlangDetector::UNKNOWN)
+          1
+        else
+          a[1] <=> b[1]
+        end
+      }.reverse
+    end
+
+    def calc_percent(count, size)
+      (count.to_f / size * 100).to_i
+    end
+
+    def breakdown_shorten(records)
+      plangs = sorted_plangs(records)
+
+      plangs = plangs.reduce([]) {|array, plang|
+        name, count = plang
+        percent = calc_percent(count, records.size)
+
+        if percent == 0
+          if array.empty? || array[-1][0] != 'other'
+            array << ['other', count]
+          else
+            array[-1][1] += count
+          end
+        else
+          array << plang
+        end
+
+        array
+      }
+      
+      plangs.map {|name, count|
+        percent = calc_percent(count, records.size)
+        "#{name}:#{count}(#{percent}%)"
+      }.join(', ')
+    end
+
+    def breakdown_detail(records, name_width)
+      sorted_plangs(records).map {|name, count|
+        percent = (count.to_f / records.size * 100).to_i
+        sprintf("%-#{name_width}s  %5d  %3d%%", name, count, percent)
+      }.join("\n")
+    end
+
+    # 引数が指定されている時は名前にマッチするパッケージを、未指定の時は現在位置から見つける
+    def find_packages(args)
+      unless args.empty?
+        args.map do |v|
+          r = @yaml.find_name(v)
+          @out.puts "Not found package '#{v}'." if r.nil?
+          r
+        end
+      else
+        dir = File.expand_path('.')
+        r = @yaml.package_root(dir)
+        @out.puts "Not registered '#{dir}'." if r.nil?
+        [r]
+      end
     end
 
     def ignore(args, options)
@@ -694,6 +895,19 @@ EOF
           @out.puts add_ignore.map{|v| "Delete : #{v}"}
         else
           @out.puts add_ignore.map{|v| "Add : #{v}"}
+        end
+      end
+    end
+
+    def files(args)
+      packages = find_packages(args)
+      return if (packages.empty?)
+
+      db_open
+      
+      packages.each do |package|
+        package_records(package.name).each do |record|
+          @out.puts record.restpath
         end
       end
     end

@@ -108,9 +108,15 @@ EOF
       cdstk.mcd(options)
     end
 
-    desc "info", "Information of milkode status"
-    def info
-      cdstk.info
+    desc "info [package]", "Display package information"
+    option :all, :type => :boolean, :aliases => '-a', :desc => 'Display all packages'
+    option :detail, :type => :boolean, :aliases => '-d', :desc => 'Detail format'
+    option :table, :type => :boolean, :aliases => '-t', :desc => 'Table format'
+    option :breakdown, :type => :boolean, :aliases => '-b', :desc => 'Breakdown format'
+    option :unknown, :type => :boolean, :aliases => '-u', :desc => 'Display unknown files'
+    
+    def info(*args)
+      cdstk.info(args_or_pipe(args, $stdin), options)
     end
 
     desc "ignore [path ...]", "Ignore a file or directory"
@@ -174,6 +180,11 @@ emacs-milkode       https://github.com/ongaeshi/emacs-milkode
 EOF
     end
 
+    desc "files", "Display package files"
+    def files(*args)
+      cdstk.files(args)
+    end
+
     # --------------------------------------------------------------------------
     
     no_tasks do
@@ -209,5 +220,16 @@ EOF
       end
     end
 
+    # 引数が空の場合はパイプ(標準入力)を受け取る
+    def args_or_pipe(args, stdin)
+      if !args.empty?
+        args 
+      elsif File.pipe?(stdin)
+        stdin.readlines.map{|v| v.chomp}
+      else
+        []
+      end
+    end
+    
   end
 end
