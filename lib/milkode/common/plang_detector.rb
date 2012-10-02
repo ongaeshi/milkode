@@ -10,12 +10,16 @@ module Milkode
     LANGUAGES =
       [
        { :name => 'ActionScript'  , :suffixs   => ["as"]                                                },
+       { :name => 'Autotools'     , :suffixs   => ['am', 'in']                                          },
+       { :name => 'BatchFile'     , :suffixs   => ["bat"]                                               },
        { :name => 'Bundler'       , :filenames => ["Gemfile", "Gemfile.lock"]                           },
        { :name => 'C'             , :suffixs   => ["c", "h"]                                            },
        { :name => 'C#'            , :suffixs   => ["cs"]                                                },
        { :name => 'C++'           , :suffixs   => ["cpp", "hpp"]                                        },
+       { :name => 'ChangeLog'     , :filenames => ["ChangeLog"]                                         },
        { :name => 'Common Lisp'   , :suffixs   => ["cl"]                                                },
        { :name => 'CSS'           , :suffixs   => ["css"]                                               },
+       { :name => 'CSV'           , :suffixs   => ["csv"]                                               },
        { :name => 'Diff'          , :suffixs   => ["diff"]                                              },
        { :name => 'Emacs Lisp'    , :suffixs   => ["el"]                                                },
        { :name => 'Erlang'        , :suffixs   => ["erl"]                                               },
@@ -26,18 +30,26 @@ module Milkode
        { :name => 'HTML'          , :suffixs   => ["html"]                                              },
        { :name => 'Java'          , :suffixs   => ["java"]                                              },
        { :name => 'JavaScript'    , :suffixs   => ["js"]                                                },
+       { :name => 'JSON'          , :suffixs   => ["json"]                                              },
        { :name => 'Lua'           , :suffixs   => ["lua"]                                               },
        { :name => 'Makefile'      , :suffixs   => ["mk"]       , :filenames => ["Makefile", "makefile"] },
+       { :name => 'Markdown'      , :suffixs   => ["md", "markdown"]                                    },
+       { :name => 'M4'            , :suffixs   => ["m4"]                                                },
        { :name => 'Objective-C'   , :suffixs   => ["m", "mm"]                                           },
-       { :name => 'Perl'          , :suffixs   => ["pl"]                                                },
+       { :name => 'Perl'          , :suffixs   => ["pl", "PL", "pm", "t"]                               },
+       { :name => 'POD'           , :suffixs   => ["pod"]                                               },
        { :name => 'PHP'           , :suffixs   => ["php"]                                               },
        { :name => 'Python'        , :suffixs   => ["py"]                                                },
+       { :name => 'Rackup'        , :suffixs   => ["ru"]                                                },
        { :name => 'Rakefile'      , :filenames => ["Rakefile"]                                          },
        { :name => 'RDoc'          , :suffixs   => ["rdoc"]                                              },
        { :name => 'Ruby'          , :suffixs   => ["rb"]                                                },
        { :name => 'RubyGems'      , :suffixs   => ["gemspec"]                                           },
        { :name => 'Scala'         , :suffixs   => ["scm"]                                               },
+       { :name => 'Shell'         , :suffixs   => ["sh"]                                                },
+       { :name => 'SVG'           , :suffixs   => ["svg"]                                               },
        { :name => 'Text'          , :suffixs   => ["txt"]                                               },
+       { :name => 'XML'           , :suffixs   => ["xml"]                                               },
        { :name => 'Yaml'          , :suffixs   => ["yml", "yaml"]                                       },
        # { :name => ''              , :suffixs   => []          , :filenames => [] },
       ]
@@ -49,6 +61,8 @@ module Milkode
       suffix = File.extname(filename)
       suffix = suffix[1..-1]
 
+      filename = File.basename(filename)
+
       @lang = LANGUAGES.find {|v|
         is_found = false
 
@@ -56,7 +70,7 @@ module Milkode
           is_found = v[:suffixs].include?(suffix)
         end
         
-        if v[:filenames]
+        if !is_found && v[:filenames]
           is_found = v[:filenames].include?(filename)
         end
 
@@ -70,7 +84,8 @@ module Milkode
       @lang[:name]
     end
 
-    def <=>(rhs)
+    def unknown?
+      name == UNKNOWN
     end
   end
 end
