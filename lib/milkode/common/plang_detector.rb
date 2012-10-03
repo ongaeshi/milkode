@@ -9,13 +9,19 @@ module Milkode
   class PlangDetector
     LANGUAGES =
       [
+       # high priority
+       { :name => 'README'        , :filepatterns  => ['README', 'readme']                              },
+
+       # normal priority
        { :name => 'ActionScript'  , :suffixs   => ['as']                                                },
        { :name => 'Autotools'     , :suffixs   => ['am', 'in']                                          },
+       { :name => 'AWK'           , :suffixs   => ['awk']                                               },
        { :name => 'Batch File'    , :suffixs   => ['bat']                                               },
        { :name => 'Bundler'       , :filenames => ['Gemfile', 'Gemfile.lock']                           },
        { :name => 'C'             , :suffixs   => ['c', 'h']                                            },
        { :name => 'C#'            , :suffixs   => ['cs']                                                },
        { :name => 'C++'           , :suffixs   => ['cc', 'cpp', 'hpp']                                  },
+       { :name => 'CGI'           , :suffixs   => ['cgi']                                               },
        { :name => 'ChangeLog'     , :filenames => ['ChangeLog']                                         },
        { :name => 'Common Lisp'   , :suffixs   => ['cl']                                                },
        { :name => 'CSS'           , :suffixs   => ['css']                                               },
@@ -43,12 +49,15 @@ module Milkode
        { :name => 'Python'        , :suffixs   => ['py']                                                },
        { :name => 'Rackup'        , :suffixs   => ['ru']                                                },
        { :name => 'Rakefile'      , :suffixs   => ['rake']     , :filenames => ['Rakefile']             },
+       { :name => 'RD'            , :suffixs   => ['rd']       , :filepatterns => [/rd.ja\Z/]           },
        { :name => 'RDoc'          , :suffixs   => ['rdoc']                                              },
        { :name => 'Ruby'          , :suffixs   => ['rb']                                                },
        { :name => 'RubyGems'      , :suffixs   => ['gemspec']                                           },
        { :name => 'Scheme'        , :suffixs   => ['scm']                                               },
+       { :name => 'sed'           , :suffixs   => ['sed']                                               },
        { :name => 'Shell'         , :suffixs   => ['sh']                                                },
        { :name => 'SVG'           , :suffixs   => ['svg']                                               },
+       { :name => 'Tcl'           , :suffixs   => ['tcl']                                               },
        { :name => 'Text'          , :suffixs   => ['txt']                                               },
        { :name => 'XML'           , :suffixs   => ['xml']                                               },
        { :name => 'Yaml'          , :suffixs   => ['yml', 'yaml']                                       },
@@ -73,6 +82,15 @@ module Milkode
         
         if !is_found && v[:filenames]
           is_found = v[:filenames].include?(filename)
+        end
+
+        if !is_found && v[:filepatterns]
+          v[:filepatterns].each do |pattern|
+            if filename.match pattern
+              is_found = true
+              break
+            end
+          end
         end
 
         is_found
