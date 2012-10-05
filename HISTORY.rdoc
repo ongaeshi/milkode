@@ -1,3 +1,23 @@
+=== 0.9.3 2012/10/06
+
+* milk web
+  * Update from web interface
+
+* milk info
+  * file_count, line_count, breakdown
+  * -a(--all), -t(--table), -b(--breakdown)
+
+* milk
+  * milk plugins: add Milkode_Sublime
+  * milk add:     add -n(--no-auto-ignore)
+
+* database
+  * Add Updater
+
+* common
+  * grenfiletest.rb: Add ignore suffix
+  * Add PlgnDetector
+
 === 0.9.2 2012/09/07
 
 * etc

@@ -23,6 +23,8 @@ require 'milkode/common/ignore_checker'
 require 'milkode/database/groonga_database'
 require 'milkode/database/document_record'
 require 'milkode/common/array_diff'
+require 'milkode/database/updater'
+require 'milkode/common/plang_detector'
 
 module Milkode
   class IgnoreError < RuntimeError ; end
@@ -386,11 +388,12 @@ module Milkode
 
       @out.puts str
 
-      # print information
-      if args.empty?
-        milkode_info
-      else
-        list_info(match_p) unless match_p.empty?
+      if Util.pipe? $stdout
+        if args.empty?
+          milkode_info
+        else
+          list_info(match_p) unless match_p.empty?
+        end
       end
     end
 
@@ -638,8 +641,207 @@ EOF
       end
     end
 
-    def info
-      milkode_info
+    def info(args, options)
+      db_open
+
+      if options[:all]
+        info_format(@yaml.contents, select_format(options, :table))
+        milkode_info
+        return
+      end
+
+      packages = find_packages(args)
+      packages.compact!
+      return if (packages.empty?)
+
+      info_format(packages, select_format(options, :detail))
+    end
+
+    def select_format(options, default_value)
+      format = default_value
+      format = :detail     if options[:detail]
+      format = :table      if options[:table]
+      format = :breakdown  if options[:breakdown]
+      format = :unknown    if options[:unknown]
+      format
+    end
+
+    def info_format(packages, format)
+      case format
+      when :detail
+        info_format_detail(packages)
+      when :table
+        info_format_table(packages)        
+      when :breakdown
+        info_format_breakdown(packages)        
+      when :unknown
+        info_format_unknown(packages)
+      end
+    end
+
+    def info_format_detail(packages)
+      packages.each_with_index do |package, index|
+        records = package_records(package.name)
+
+        r = []
+        r.push "Name:      #{package.name}"
+        r.push "Ignore:    #{package.ignore}" unless package.ignore.empty?
+        r.push "Options:   #{package.options}" unless package.options.empty?
+        r.push "Records:   #{records.size}"
+        r.push "Breakdown: #{breakdown_shorten(records)}"
+        r.push "Linecount: #{linecount_total(records)}"
+        r.push ""
+
+        @out.puts if index != 0
+        @out.puts r.join("\n")
+      end
+    end
+
+    NAME  = 'Name'
+    TOTAL = 'Total'
+    
+    def info_format_table(packages)
+      max = packages.map{|p| p.name.length}.max
+      max = NAME.length  if max < NAME.length
+
+      @out.puts <<EOF.chomp
+#{NAME.ljust(max)}     Records   Linecount
+#{'=' * max}========================
+EOF
+
+      packages.each do |package|
+        records = package_records(package.name)
+        @out.puts "#{package.name.ljust(max)}  #{records.size.to_s.rjust(10)}  #{linecount_total(records).to_s.rjust(10)}"
+      end
+    end
+
+    def info_format_breakdown(packages)
+      packages.each_with_index do |package, index|
+        records = package_records(package.name)
+        plangs = sorted_plangs(records)
+
+        # column1's width
+        plang_names = plangs.map{|v| v[0]}
+        max = (plang_names + [package.name, TOTAL]).map{|name| name.length}.max
+        
+        @out.puts if index != 0
+      @out.puts <<EOF.chomp
+#{package.name.ljust(max)}  files  rate
+#{'=' * max}=============
+#{breakdown_detail(package_records(package.name), max)}
+#{'-' * max}-------------
+#{sprintf("%-#{max}s  %5d  %3d%%", TOTAL, records.size, 100)}
+EOF
+      end
+    end
+
+    def info_format_unknown(packages)
+      packages.each_with_index do |package, index|
+        @out.puts if index != 0
+
+        package_records(package.name).each do |record|
+          path = record.restpath
+          @out.puts path if PlangDetector.new(path).unknown?
+        end
+      end
+    end
+
+    def package_records(name)
+      @documents.search(:strict_packages => [name])
+    end
+
+    def linecount_total(records)
+      records.reduce(0) do |total, record|
+        begin
+          unless record.content.nil?
+            total + record.content.count($/) + 1
+          else
+            total
+          end
+        rescue ArgumentError
+          warning_alert("invalid byte sequence : #{record.path}")
+          total
+        end
+      end
+    end
+
+    def sorted_plangs(records)
+      total = {}
+      
+      records.each do |record|
+        lang = PlangDetector.new(record.restpath)
+
+        if total[lang.name]
+          total[lang.name] += 1
+        else
+          total[lang.name] = 1
+        end
+      end
+
+      total.map {|name, count|
+        [name, count]
+      }.sort {|a, b|
+        if (a[0] == PlangDetector::UNKNOWN)
+          -1
+        elsif (b[0] == PlangDetector::UNKNOWN)
+          1
+        else
+          a[1] <=> b[1]
+        end
+      }.reverse
+    end
+
+    def calc_percent(count, size)
+      (count.to_f / size * 100).to_i
+    end
+
+    def breakdown_shorten(records)
+      plangs = sorted_plangs(records)
+
+      plangs = plangs.reduce([]) {|array, plang|
+        name, count = plang
+        percent = calc_percent(count, records.size)
+
+        if percent == 0
+          if array.empty? || array[-1][0] != 'other'
+            array << ['other', count]
+          else
+            array[-1][1] += count
+          end
+        else
+          array << plang
+        end
+
+        array
+      }
+      
+      plangs.map {|name, count|
+        percent = calc_percent(count, records.size)
+        "#{name}:#{count}(#{percent}%)"
+      }.join(', ')
+    end
+
+    def breakdown_detail(records, name_width)
+      sorted_plangs(records).map {|name, count|
+        percent = (count.to_f / records.size * 100).to_i
+        sprintf("%-#{name_width}s  %5d  %3d%%", name, count, percent)
+      }.join("\n")
+    end
+
+    # 引数が指定されている時は名前にマッチするパッケージを、未指定の時は現在位置から見つける
+    def find_packages(args)
+      unless args.empty?
+        args.map do |v|
+          r = @yaml.find_name(v)
+          @out.puts "Not found package '#{v}'." if r.nil?
+          r
+        end
+      else
+        dir = File.expand_path('.')
+        r = @yaml.package_root(dir)
+        @out.puts "Not registered '#{dir}'." if r.nil?
+        [r]
+      end
     end
 
     def ignore(args, options)
@@ -697,6 +899,19 @@ EOF
       end
     end
 
+    def files(args)
+      packages = find_packages(args)
+      return if (packages.empty?)
+
+      db_open
+      
+      packages.each do |package|
+        package_records(package.name).each do |record|
+          @out.puts record.restpath
+        end
+      end
+    end
+
     private
 
     def db_file
@@ -712,35 +927,36 @@ EOF
     end
 
     def update_package_in(package, options)
-      if package.options[:update_with_git_pull]
-        Dir.chdir(package.directory) { system("git pull") }
-      end
-
-      unless options[:no_clean]
-        cleanup_package_in(package)
-      end
-
-      update_dir_in(package.directory)
-    end
-
-    def cleanup_package_in(package)
-      db_open
-      @documents.cleanup_package_name(package.name)
+      updater_exec(package, package.options[:update_with_git_pull], options[:no_clean])
     end
 
     def update_dir_in(dir)
-      alert("package", File.basename(dir) )
-      @package_count += 1
-      
       dir = File.expand_path(dir)
 
       if (!FileTest.exist?(dir))
-        @out.puts "[WARNING]  : #{dir} (Not found, skip)"
-      elsif (FileTest.directory? dir)
-        db_add_dir(dir)
+        warning_alert("#{dir} (Not found, skip)")
       else
-        db_add_file(STDOUT, File.dirname(dir), File.basename(dir), File.basename(dir)) # .bashrc/.bashrc のようになる
+        package = @yaml.package_root(dir)
+        updater_exec(package, false, false)
       end
+    end
+
+    def updater_exec(package, is_update_with_git_pull, is_no_clean)
+      alert("package", package.name )
+
+      updater = Updater.new(@grndb, package.name)
+      updater.set_package_ignore IgnoreSetting.new("/", package.ignore)
+      updater.enable_no_auto_ignore       if package.options[:no_auto_ignore]
+      updater.enable_silent_mode          if @is_silent
+      updater.enable_display_info         if @is_display_info
+      updater.enable_update_with_git_pull if is_update_with_git_pull
+      updater.enable_no_clean             if is_no_clean
+      updater.exec
+
+      @package_count += 1
+      @file_count   += updater.result.file_count
+      @add_count    += updater.result.add_count
+      @update_count += updater.result.update_count
     end
 
     def remove_dir(dir, no_yaml = false)
@@ -790,7 +1006,6 @@ EOF
       r << "#{@file_count} records" if @file_count > 0
       r << "#{@add_count} add" if @add_count > 0
       r << "#{@update_count} update" if @update_count > 0
-      r.join(', ')
       alert('result', "#{r.join(', ')}. (#{Gren::Util::time_s(time)})")
     end
 
@@ -835,108 +1050,6 @@ EOF
       end
     end
       
-    def db_add_dir(dir)
-      @current_package = @yaml.package_root(dir)
-      @current_ignore = IgnoreChecker.new
-      @current_ignore.add IgnoreSetting.new("/", @current_package.ignore) # 手動設定
-      searchDirectory(STDOUT, dir, @current_package.name, "/", 0)
-    end
-    private :db_add_dir
-
-    def db_add_file(stdout, package_dir, restpath, package_name = nil)
-      # サイレントモード
-      return if @is_silent
-
-      # データベースには先頭の'/'を抜いて登録する
-      #   最初から'/'を抜いておけば高速化の余地あり?
-      #   ignore設定との互換性保持が必要
-      restpath = restpath.sub(/^\//, "")
-
-      # パッケージ名を設定
-      package_name = package_name || File.basename(package_dir)
-
-      # レコードの追加
-      result = @documents.add(package_dir, restpath, package_name)
-
-      # メッセージの表示
-      case result
-      when :newfile
-        @add_count += 1
-        alert_info("add_record", File.join(package_dir, restpath))
-      when :update
-        @grndb.packages.touch(package_name, :updatetime)
-        @update_count += 1
-        alert_info("update", File.join(package_dir, restpath))
-      end
-    end
-
-    def searchDirectory(stdout, dirname, packname, path, depth)
-      # 現在位置に.gitignoreがあれば無視設定に加える
-      add_current_gitignore(dirname, path) unless @current_package.options[:no_auto_ignore]
-
-      # 子の要素を追加
-      Dir.foreach(File.join(dirname, path)) do |name|
-        next if (name == '.' || name == '..')
-
-        next_path = File.join(path, name)
-        fpath     = File.join(dirname, next_path)
-        shortpath = File.join(packname, next_path)
-
-        # 除外ディレクトリならばパス
-        next if ignoreDir?(fpath, next_path)
-
-        # 読み込み不可ならばパス
-        next unless FileTest.readable?(fpath)
-
-        # ファイルならば中身を探索、ディレクトリならば再帰
-        case File.ftype(fpath)
-        when "directory"
-          searchDirectory(stdout, dirname, packname, next_path, depth + 1)
-        when "file"
-          unless ignoreFile?(fpath, next_path)
-            db_add_file(stdout, dirname, next_path) # shortpathの先頭に'/'が付いているのが気になる
-            @file_count += 1
-            # @out.puts "file_count : #{@file_count}" if (@file_count % 100 == 0)
-          end
-        end          
-      end
-    end
-
-    def add_current_gitignore(dirname, path)
-      git_ignore = File.join(dirname, path, ".gitignore")
-      
-      if File.exist? git_ignore
-        alert_info("add_ignore", git_ignore)
-        
-        open(git_ignore) do |f|
-          @current_ignore.add IgnoreSetting.create_from_gitignore(path, f.read)
-        end
-      end
-    end
-
-    def package_ignore?(fpath, mini_path)
-      if @current_ignore.ignore?(mini_path)
-        alert_info("ignore", fpath)
-        true
-      else
-        false
-      end
-    end
-
-    def ignoreDir?(fpath, mini_path)
-      FileTest.directory?(fpath) &&
-        (GrenFileTest::ignoreDir?(fpath) ||
-         package_ignore?(fpath, mini_path))
-    end
-    private :ignoreDir?
-
-    def ignoreFile?(fpath, mini_path)
-      GrenFileTest::ignoreFile?(fpath) ||
-        GrenFileTest::binary?(fpath) ||
-        package_ignore?(fpath, mini_path)
-    end
-    private :ignoreFile?
-
     def alert(title, msg)
       if (Util::platform_win?)
         @out.puts "#{title.ljust(10)} : #{Kconv.kconv(msg, Kconv::SJIS)}"

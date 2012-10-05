@@ -89,7 +89,11 @@ module Milkode
     end
 
     def larger_than_oneline(content)
-      content && content.count($/) > 1      
+      begin
+        content && content.count($/) > 1      
+      rescue ArgumentError
+        true
+      end
     end
 
     def normalize_filename(str)
@@ -173,6 +177,11 @@ module Milkode
 
     def git_url?(src)
       (src =~ /^(:?git[:@])|(:?ssh:)/) != nil
+    end
+
+    # StringIO patch
+    def pipe?(io)
+      !io.instance_of?(IO) || !File.pipe?(io) 
     end
   end
 end

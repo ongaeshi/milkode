@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{milkode}
-  s.version = "0.9.2"
+  s.version = "0.9.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ongaeshi"]
-  s.date = %q{2012-09-07}
+  s.date = %q{2012-10-06}
   s.description = %q{Line based local source code search engine & grep-command & web-app.}
   s.email = %q{ongaeshi0621@gmail.com}
   s.executables = ["gmilk", "milk"]
@@ -75,6 +75,8 @@ Gem::Specification.new do |s|
     "lib/milkode/cdweb/public/images/file.png",
     "lib/milkode/cdweb/public/images/go-home-5.png",
     "lib/milkode/cdweb/public/images/help.png",
+    "lib/milkode/cdweb/public/images/view-refresh-4.png",
+    "lib/milkode/cdweb/public/images/waiting.gif",
     "lib/milkode/cdweb/public/img/glyphicons-halflings-white.png",
     "lib/milkode/cdweb/public/img/glyphicons-halflings.png",
     "lib/milkode/cdweb/public/js/bootstrap.min.js",
@@ -103,6 +105,7 @@ Gem::Specification.new do |s|
     "lib/milkode/common/grensnip.rb",
     "lib/milkode/common/ignore_checker.rb",
     "lib/milkode/common/ignore_setting.rb",
+    "lib/milkode/common/plang_detector.rb",
     "lib/milkode/common/platform.rb",
     "lib/milkode/common/string_snip.rb",
     "lib/milkode/common/util.rb",
@@ -110,6 +113,7 @@ Gem::Specification.new do |s|
     "lib/milkode/database/document_table.rb",
     "lib/milkode/database/groonga_database.rb",
     "lib/milkode/database/package_table.rb",
+    "lib/milkode/database/updater.rb",
     "lib/milkode/findgrep/findgrep.rb",
     "lib/milkode/findgrep/result.rb",
     "lib/milkode/grep/cli_grep.rb",
@@ -130,6 +134,8 @@ Gem::Specification.new do |s|
     "test/data/c_project/c.txt",
     "test/data/c_project/cc.txt",
     "test/data/c_project/to/file.rb",
+    "test/data/ignore_test/.gitignore",
+    "test/data/ignore_test/a.txt",
     "test/data/no_auto_ignore/.gitignore",
     "test/data/no_auto_ignore/a.txt",
     "test/data/nodir_abc.zip",
@@ -162,8 +168,10 @@ Gem::Specification.new do |s|
     "test/test_package.rb",
     "test/test_package_list.rb",
     "test/test_package_table.rb",
+    "test/test_plang_detector.rb",
     "test/test_query.rb",
     "test/test_string_snip.rb",
+    "test/test_updater.rb",
     "test/test_util.rb",
     "test/test_yaml_file_wrapper.rb"
   ]

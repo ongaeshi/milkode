@@ -22,7 +22,7 @@ set :haml, :format => :html5
 
 get '/' do
   @setting = WebSetting.new
-  @version = "0.9.2"
+  @version = "0.9.3"
   @package_num = Database.instance.yaml_package_num
   @file_num = Database.instance.totalRecords
   @package_list = PackageList.new(Database.instance.grndb)
@@ -58,6 +58,20 @@ post '/search*' do
       redirect Mkurl.new(path2, params).inherit_query_shead + "#n#{gotoline[1]}"
     else
       redirect Mkurl.new("#{path}", params).inherit_query_shead
+    end
+  end
+end
+
+post '/command' do
+  case params[:kind]
+  when 'update'
+    before = Time.now
+    if (params[:name] == '')
+      result = Database.instance.update_all
+      update_result_str(result, before)
+    else
+      result = Database.instance.update(params[:name])
+      update_result_str(result, before)
     end
   end
 end
@@ -158,11 +172,35 @@ EOF
   def create_headmenu(path, query, flistpath = '')
     href = Mkurl.new('/home/' + path, params).inherit_query_shead
     flist = File.join("/home/#{path}", flistpath)
+
+    package_name = ""
+    modal_body = "全てのパッケージを更新しますか？"
+
+    if (path != "")
+      package_name = path.split('/')[0]
+      modal_body = "#{package_name} を更新しますか？"
+    end
+
     <<EOF
-    #{headicon('go-home-5.png')} <a href="/home" class="headmenu">全てのパッケージ</a>
+    #{headicon('go-home-5.png')} <a href="/home" class="headmenu">ホーム</a>
     #{headicon('document-new-4.png')} <a href="#{href}" class="headmenu" onclick="window.open('#{href}'); return false;">新しい検索</a>
     #{headicon('directory.png')} <a href="#{flist}" class="headmenu">ディレクトリ</a> 
+    #{headicon('view-refresh-4.png')} <a href="#updateModal" class="headmenu" data-toggle="modal">パッケージを更新</a>
     #{headicon('help.png')} <a href="/help" class="headmenu">ヘルプ</a>
+
+    <div id="updateModal" class="modal hide fade">
+      <div class="modal-header">
+        <a href="#" class="close" data-dismiss="modal">&times;</a>
+        <h3>パッケージを更新</h3>
+      </div>
+      <div class="modal-body">
+        <h4>#{modal_body}</h4>
+      </div>
+      <div class="modal-footer">
+        <a href="#" id="updateCancel" class="btn" data-dismiss="modal">Cancel</a>
+        <a href="#" id="updateOk" class="btn btn-primary" data-loading-text="Updating..." milkode-package-name="#{package_name}"">OK</a>
+      </div>
+    </div>
 EOF
   end
 
@@ -223,6 +261,15 @@ EOF
 
   def filelist_title(path)
     (path == "") ? "Package List" : path
+  end
+
+  def update_result_str(result, before)
+    r = []
+    r << "#{result.package_count} packages" if result.package_count > 1
+    r << "#{result.file_count} records"
+    r << "#{result.add_count} add"
+    r << "#{result.update_count} update"
+    "#{r.join(', ')} (#{Time.now - before} sec)"
   end
 end
 
