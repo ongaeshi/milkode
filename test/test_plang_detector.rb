@@ -17,7 +17,7 @@ module Milkode
       assert_equal 'C#'          , PlangDetector.new('AssemblyInfo.cs').name
       assert_equal 'C++'         , PlangDetector.new('path/to/file.hpp').name
       assert_equal 'Ruby'        , PlangDetector.new('template.rb').name
-      assert_equal 'Text'        , PlangDetector.new('readme.txt').name
+      assert_equal 'README'      , PlangDetector.new('readme.txt').name
       assert_equal 'JavaScript'  , PlangDetector.new('main.js').name
     end
 
