@@ -51,7 +51,7 @@ EOF
       cdstk.update(args, options)
     end
 
-    desc "remove keyword1 [keyword2 ...]", "Remove package"
+    desc "remove keyword_or_path1 [keyword_or_path2 ...]", "Remove package"
     option :all, :type => :boolean, :desc => 'Remove all.'
     option :force, :type => :boolean, :aliases => '-f', :desc => 'Force remove.'
     option :verbose, :type => :boolean, :aliases => '-v', :desc => 'Be verbose.'
