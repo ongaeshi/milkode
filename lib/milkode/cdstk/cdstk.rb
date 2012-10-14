@@ -332,7 +332,7 @@ module Milkode
           print_result do
             db_open
             args.each do |name|
-              package = @yaml.find_name(name)
+              package = @yaml.find_name(name) || @yaml.find_dir(name)
               if (package)
                 remove_dir(package.directory)                
               else
