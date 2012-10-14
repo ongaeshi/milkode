@@ -173,10 +173,12 @@ EOF
     long_desc "Display plugin list."
     def plugins(*args)
       $stdout.puts <<EOF
-Gitomb              https://github.com/tomykaira/gitomb
-redmine_milkode     https://github.com/suer/redmine_milkode
-Milkode_Sublime     https://github.com/tsurushuu/Milkode_Sublime
+bundle-milkode      https://github.com/kou/bundle-milkode
 emacs-milkode       https://github.com/ongaeshi/emacs-milkode
+gem-milkode         https://github.com/kou/gem-milkode 
+Gitomb              https://github.com/tomykaira/gitomb
+Milkode_Sublime     https://github.com/tsurushuu/Milkode_Sublime
+redmine_milkode     https://github.com/suer/redmine_milkode
 EOF
     end
 
