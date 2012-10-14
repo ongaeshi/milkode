@@ -95,7 +95,8 @@ module Milkode
       updater = Updater.new(@grndb, 'ignore_test')
       updater.enable_no_auto_ignore
       updater.exec
-      result_test updater.result, 6, 2, 0
+      # result_test updater.result, 6, 2, 0
+      result_test updater.result, 5, 1, 0
     end
 
     def t_silent_mode
