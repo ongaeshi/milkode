@@ -1,3 +1,8 @@
+=== 0.9.3.1 2012/10/14
+
+* 'milk plugins' add gem-milkode, bundle-milkode
+* Support removing by path
+
 === 0.9.3 2012/10/06
 
 * milk web
