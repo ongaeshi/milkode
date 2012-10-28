@@ -59,6 +59,7 @@ module Milkode
        { :name => 'SVG'           , :suffixs   => ['svg']                                               },
        { :name => 'Tcl'           , :suffixs   => ['tcl']                                               },
        { :name => 'Text'          , :suffixs   => ['txt']                                               },
+       { :name => 'Visual Studio' , :suffixs   => ['csproj', 'vbproj', 'sln']                           },
        { :name => 'XML'           , :suffixs   => ['xml']                                               },
        { :name => 'Yaml'          , :suffixs   => ['yml', 'yaml']                                       },
        # { :name => ''              , :suffixs   => []          , :filenames => [] },
