@@ -316,29 +316,21 @@ module Milkode
       if (options[:all])
         remove_all
       else
-        if (args.empty?)
-          path = File.expand_path('.')
-          package = @yaml.package_root(path)
+        print_result do
+          db_open
+          args.each do |arg|
+            package = @yaml.find_name(arg) || @yaml.find_dir(arg)
 
-          if (package)
-            print_result do
-              db_open
-              remove_dir(package.directory)
+            unless package
+              path = File.expand_path(arg)
+              package = @yaml.package_root(path)
             end
-          else
-            @out.puts "Not registered. '#{path}'."
-          end
-        else
-          print_result do
-            db_open
-            args.each do |name|
-              package = @yaml.find_name(name) || @yaml.find_dir(name)
-              if (package)
-                remove_dir(package.directory)                
-              else
-                @out.puts "Not found package '#{name}'."
-                return
-              end
+            
+            if (package)
+              remove_dir(package.directory)                
+            else
+              @out.puts "Not found package '#{arg}'."
+              return
             end
           end
         end
