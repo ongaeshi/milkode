@@ -327,7 +327,13 @@ module Milkode
     private
 
     def load_content(filename)
-      Kconv.kconv(File.read(filename), Kconv::UTF8)
+      str = File.read(filename)
+      begin
+        Kconv.kconv(str, Kconv::UTF8)
+      rescue ArgumentError
+        Util.warning_alert($stdout, "skip kconv. file size too big (or negative string size) : #{filename}.")
+        str
+      end
     end
 
     def package_expression(record, packages)

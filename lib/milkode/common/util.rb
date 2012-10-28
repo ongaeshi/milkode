@@ -183,6 +183,10 @@ module Milkode
     def pipe?(io)
       !io.instance_of?(IO) || !File.pipe?(io) 
     end
+
+    def warning_alert(out, msg)
+      out.puts "[warning] #{msg}"
+    end
   end
 end
 
