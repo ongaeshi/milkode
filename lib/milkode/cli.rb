@@ -8,7 +8,7 @@ require 'milkode/grep/cli_grep'
 module Milkode
   class CLI < Thor
     class_option :help,    :type => :boolean, :aliases => '-h', :desc => 'Help message.'
-    class_option :version, :type => :boolean, :aliases => '-v', :desc => 'Show version.'
+    class_option :version, :type => :boolean, :desc => 'Show version.'
 
     desc "init [db_dir]", "Initialize database directory. If db_dir is omitted"
     option :default, :type => :boolean, :desc => "Init default db, ENV['MILKODE_DEFAULT_DIR'] or ~/.milkode."
