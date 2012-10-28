@@ -576,13 +576,14 @@ module Milkode
       end
     end
 
-    def setdb(dbpath, options)
+    def setdb(args, options)
       if (options[:reset])
         CdstkCommand.setdb_reset
         @out.puts "Reset default db\n  remove:      #{Dbdir.milkode_db_dir}\n  default_db:  #{Dbdir.default_dir}"
-      elsif (dbpath.nil?)
+      elsif (args.empty?)
         @out.puts Dbdir.default_dir
       else
+        dbpath = args.first
         path = File.expand_path(dbpath)
         begin
           CdstkCommand.setdb_set path
