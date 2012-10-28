@@ -139,13 +139,15 @@ module Milkode
       paths = records.map {|record|
         DocumentRecord.new(record).shortpath.split("/")
       }.find_all {|parts|
-        parts.length > base_depth and parts[0, base_depth] == base_parts
+        # 先頭フォルダ名が一致するものをピックアップ
+        parts.length > base_depth && parts[0, base_depth] == base_parts
       }.map {|parts|
-        is_file = parts.length == base_depth + 1
-        path = parts[0, base_depth + 1].join("/")
-        [path, is_file]
+        # [path, is_file]
+        [parts[0, base_depth + 1].join("/"), parts.length == base_depth + 1]
       }.sort_by {|parts|
-        [if parts[1] then 1 else 0 end, parts[0].downcase]
+        # 配列の比較を利用したディレクトリ優先ソート
+        # aaa, bbb/, aaa/, bbb -> [aaa/, bbb/, aaa, bbb]
+        [parts[1] ? 1 : 0, parts[0].downcase] # [is_file(int), path(downcase)]
       }.uniq
       
       paths
@@ -159,7 +161,9 @@ module Milkode
       elsif (sort_kind)
         sorted = @grndb.packages.sort(sort_kind)
       else
-        sorted = @grndb.packages.sort("name", "ascending")
+        # 大文字／小文字を無視してソートするため、速度を犠牲に
+        # sorted = @grndb.packages.sort("name", "ascending")
+        sorted = @grndb.packages.to_a.sort_by {|r| r.name.downcase}        
       end
 
       sorted.map {|r| r.name}
