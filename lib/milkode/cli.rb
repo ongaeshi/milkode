@@ -102,8 +102,8 @@ EOF
 
     desc "setdb [dbpath]", "Set default db to dbpath"
     option :reset, :type => :boolean, :aliases => '--default', :desc => 'Reset to the system default database.'
-    def setdb(dbpath = nil)
-      cdstk.setdb(dbpath, options)
+    def setdb(*args)
+      cdstk.setdb(args, options)
     end
 
     desc "mcd", "Generate `mcd' command"
