@@ -156,6 +156,7 @@ module Encoders
       anchor_prefix = options[:line_number_anchors]
       anchor_prefix = 'line' if anchor_prefix == true
       anchor_prefix = anchor_prefix.to_s[/\w+/] if anchor_prefix
+      content_array = options[:content_array]
 
       if anchor_prefix
         anchor_url = options[:line_number_anchor_url] || ""
@@ -168,9 +169,7 @@ module Encoders
       elsif options[:onclick_copy_line_number]
         prefix = options[:onclick_copy_prefix] || ""
         proc do |line|
-          # "<a href=\"#updateModal\" class=\"headmenu\" data-toggle=\"modal\">パッケージを更新</a>"
-          # "<a href=\"#!\" onclick=\"alert('#{prefix + line.to_s}');\" title=\"Display line number\">#{line.to_s}</a>"
-          "<a href=\"#lineno-modal\" data-toggle=\"modal\" onclick=\"lineno_setup('#{prefix + line.to_s}', 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');\" title=\"Display line number\">#{line.to_s}</a>"
+          "<a href=\"#lineno-modal\" data-toggle=\"modal\" onclick=\"lineno_setup('#{prefix + line.to_s}', '#{content_array[line-1]}');\" title=\"Display line number\">#{line.to_s}</a>"
         end
       else
         proc { |line| line.to_s }  # :to_s.to_proc in Ruby 1.8.7+
