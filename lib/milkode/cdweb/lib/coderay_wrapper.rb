@@ -59,7 +59,7 @@ module Milkode
               :line_number_anchors => false,
               :onclick_copy_line_number => true,
               :onclick_copy_prefix => "/#{@filename}:",
-              :content_array       => @content.split("\n")
+              :content_array       => @content.nil? ? [] : @content.split("\n")
               )
     end
 
