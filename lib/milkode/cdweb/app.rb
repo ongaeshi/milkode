@@ -208,8 +208,11 @@ EOF
         <h3 id="lineno-path"></h3>
       </div>
       <div class="modal-body">
-        <p id="lineno-body"></p>
-      </div>
+        <table class="CodeRay"><tr>
+          <td class="code"><pre id="lineno-body">
+          </pre></td>
+        </tr></table>
+    </div>
       <div class="modal-footer">
         <a href="#" id="lineno-ok" class="btn" data-dismiss="modal">OK</a>
       </div>
