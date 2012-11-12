@@ -1,5 +1,6 @@
 /* for CodeRay */
 .CodeRay .highlight-line { background-color: #d0ff9c; }
+.CodeRay .select-line    { background-color: #fff280; }
 
 /* html_anchor */
 .match-num { font-size: 13px; font-weight: bold; }
