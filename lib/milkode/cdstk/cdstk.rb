@@ -316,29 +316,21 @@ module Milkode
       if (options[:all])
         remove_all
       else
-        if (args.empty?)
-          path = File.expand_path('.')
-          package = @yaml.package_root(path)
+        print_result do
+          db_open
+          args.each do |arg|
+            package = @yaml.find_name(arg) || @yaml.find_dir(arg)
 
-          if (package)
-            print_result do
-              db_open
-              remove_dir(package.directory)
+            unless package
+              path = File.expand_path(arg)
+              package = @yaml.package_root(path)
             end
-          else
-            @out.puts "Not registered. '#{path}'."
-          end
-        else
-          print_result do
-            db_open
-            args.each do |name|
-              package = @yaml.find_name(name) || @yaml.find_dir(name)
-              if (package)
-                remove_dir(package.directory)                
-              else
-                @out.puts "Not found package '#{name}'."
-                return
-              end
+            
+            if (package)
+              remove_dir(package.directory)                
+            else
+              @out.puts "Not found package '#{arg}'."
+              return
             end
           end
         end
@@ -584,13 +576,14 @@ module Milkode
       end
     end
 
-    def setdb(dbpath, options)
+    def setdb(args, options)
       if (options[:reset])
         CdstkCommand.setdb_reset
         @out.puts "Reset default db\n  remove:      #{Dbdir.milkode_db_dir}\n  default_db:  #{Dbdir.default_dir}"
-      elsif (dbpath.nil?)
+      elsif (args.empty?)
         @out.puts Dbdir.default_dir
       else
+        dbpath = args.first
         path = File.expand_path(dbpath)
         begin
           CdstkCommand.setdb_set path

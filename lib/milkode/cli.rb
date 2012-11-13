@@ -8,7 +8,7 @@ require 'milkode/grep/cli_grep'
 module Milkode
   class CLI < Thor
     class_option :help,    :type => :boolean, :aliases => '-h', :desc => 'Help message.'
-    class_option :version, :type => :boolean, :aliases => '-v', :desc => 'Show version.'
+    class_option :version, :type => :boolean, :desc => 'Show version.'
 
     desc "init [db_dir]", "Initialize database directory. If db_dir is omitted"
     option :default, :type => :boolean, :desc => "Init default db, ENV['MILKODE_DEFAULT_DIR'] or ~/.milkode."
@@ -52,11 +52,15 @@ EOF
     end
 
     desc "remove keyword_or_path1 [keyword_or_path2 ...]", "Remove package"
-    option :all, :type => :boolean, :desc => 'Remove all.'
+    option :all, :type => :boolean, :aliases => '-a', :desc => 'Remove all.'
     option :force, :type => :boolean, :aliases => '-f', :desc => 'Force remove.'
     option :verbose, :type => :boolean, :aliases => '-v', :desc => 'Be verbose.'
     def remove(*args)
-      cdstk.remove(args, options)
+      if args.empty? && !options[:all]
+        CLI.task_help(shell, "remove")
+      else
+        cdstk.remove(args, options)
+      end
     end
 
     desc "list [package1 package2 ...]", "List package"
@@ -98,8 +102,8 @@ EOF
 
     desc "setdb [dbpath]", "Set default db to dbpath"
     option :reset, :type => :boolean, :aliases => '--default', :desc => 'Reset to the system default database.'
-    def setdb(dbpath = nil)
-      cdstk.setdb(dbpath, options)
+    def setdb(*args)
+      cdstk.setdb(args, options)
     end
 
     desc "mcd", "Generate `mcd' command"

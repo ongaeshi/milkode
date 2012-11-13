@@ -19,6 +19,7 @@ module Milkode
       assert_equal 'Ruby'        , PlangDetector.new('template.rb').name
       assert_equal 'README'      , PlangDetector.new('readme.txt').name
       assert_equal 'JavaScript'  , PlangDetector.new('main.js').name
+      assert_equal 'Visual Studio', PlangDetector.new('hoge.sln').name
     end
 
     def test_unknown

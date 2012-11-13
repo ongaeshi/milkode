@@ -10,10 +10,12 @@ require 'coderay'
 require 'coderay/helpers/file_type'
 require 'milkode/common/util'
 require 'milkode/cdweb/lib/coderay_html2'
+require 'milkode/cdweb/lib/coderay_php_utf8'
 
 module Milkode
   class CodeRayWrapper
     attr_reader :line_number_start
+    attr_reader :highlight_lines
     
     def initialize(content, filename, match_lines = [])
       @content = content
@@ -76,6 +78,8 @@ module Milkode
 
     def file_type
       case File.extname(@filename)
+      when ".php"
+        :php_utf8
       when ".el"
         # :scheme
         CodeRay::FileType.fetch @filename, :plaintext

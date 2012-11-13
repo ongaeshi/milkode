@@ -22,7 +22,7 @@ set :haml, :format => :html5
 
 get '/' do
   @setting = WebSetting.new
-  @version = "0.9.3.1"
+  @version = "0.9.4"
   @package_num = Database.instance.yaml_package_num
   @file_num = Database.instance.totalRecords
   @package_list = PackageList.new(Database.instance.grndb)
@@ -183,7 +183,7 @@ EOF
 
     <<EOF
     #{headicon('go-home-5.png')} <a href="/home" class="headmenu">ホーム</a>
-    #{headicon('document-new-4.png')} <a href="#{href}" class="headmenu" onclick="window.open('#{href}'); return false;">新しい検索</a>
+    #{headicon('document-new-4.png')} <a href="#{href}" class="headmenu" onclick="window.open('#{href}'); return false;">タブを複製</a>
     #{headicon('directory.png')} <a href="#{flist}" class="headmenu">ディレクトリ</a> 
     #{headicon('view-refresh-4.png')} <a href="#updateModal" class="headmenu" data-toggle="modal">パッケージを更新</a>
     #{headicon('help.png')} <a href="/help" class="headmenu">ヘルプ</a>
@@ -199,6 +199,22 @@ EOF
       <div class="modal-footer">
         <a href="#" id="updateCancel" class="btn" data-dismiss="modal">Cancel</a>
         <a href="#" id="updateOk" class="btn btn-primary" data-loading-text="Updating..." milkode-package-name="#{package_name}"">OK</a>
+      </div>
+    </div>
+
+    <div id="lineno-modal" class="modal hide">
+      <div class="modal-header">
+        <a href="#" class="close" data-dismiss="modal">&times;</a>
+        <h3 id="lineno-path"></h3>
+      </div>
+      <div class="modal-body">
+        <table class="CodeRay"><tr>
+          <td class="code"><pre id="lineno-body">
+          </pre></td>
+        </tr></table>
+    </div>
+      <div class="modal-footer">
+        <a href="#" id="lineno-ok" class="btn" data-dismiss="modal">OK</a>
       </div>
     </div>
 EOF

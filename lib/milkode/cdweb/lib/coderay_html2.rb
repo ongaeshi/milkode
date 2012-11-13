@@ -5,6 +5,9 @@
 # @author ongaeshi
 # @date   2012/03/18
 
+require 'rubygems'
+require 'rack'
+
 module CodeRay
 module Encoders
   class HTML2 < HTML
@@ -168,7 +171,8 @@ module Encoders
       elsif options[:onclick_copy_line_number]
         prefix = options[:onclick_copy_prefix] || ""
         proc do |line|
-          "<a href=\"#!\" onclick=\"alert('#{prefix + line.to_s}');\" title=\"Display line number\">#{line.to_s}</a>"
+          "<a href=\"#lineno-modal\" data-toggle=\"modal\" onclick=\"lineno_setup('#{prefix}', '#{line.to_s}');\" title=\"Display line number\">#{line.to_s}</a>"
+          # "<a onclick=\"lineno_setup('#{prefix}', '#{line.to_s}');\" title=\"Display line number\">#{line.to_s}</a>"
         end
       else
         proc { |line| line.to_s }  # :to_s.to_proc in Ruby 1.8.7+
