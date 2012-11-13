@@ -1,3 +1,28 @@
+=== 0.9.4 2012/11/14
+
+* milk web
+  * 行番号クリック時の処理を改善 
+    * ウィンドウをモーダルに変更
+    * ハイライト、URLを選択行に差し替え (thanks asane)
+  * 検索ボックスの操作性を改善 (thanks kenhys)
+    * Select query text on click event
+    * keep query text selected after searching
+    * suppress select() call for query text by tag jump
+  * パッケージ一覧のソートのルールを整理
+  * ソースコードの文字コードがEUC-JPの場合、検索結果に表示される日本語が文字化けする問題を修正 (thanks azurite)
+  * 文言修正 : '新しい検索' -> 'タブを複製'
+
+* milk
+  * milk remove 改善
+  * milk init /path/to/dir -s が正しく動作しない問題を修正
+  * milkode_yaml.rb: package_root の正規表現調整
+  * 他のオプションとのバッティングを防ぐために milk -v は使えないように、 milk --version を推奨
+  * 拡張子 csproj, vbproj, sln に対応 (VisualStudio)
+  * document_table.rb: addするとnegative string size (or size too big) (ArgumentError)となる問題を修正 (thanks azurite)
+
+* Bug fix
+  * termcolorの要求バージョンを '< 1.2.2' に (thanks mallowlabs)
+
 === 0.9.3.1 2012/10/14
 
 * 'milk plugins' add gem-milkode, bundle-milkode

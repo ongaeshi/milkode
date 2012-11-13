@@ -1,3 +1,20 @@
+=== 0.9.4
+
+* milk web
+  * Improve handling when you click the line number 
+  * Improve the usability of the search box (thanks kenhys)
+
+* milk
+  * Improve milk remove
+  * Fix milk init /path/to/dir -s
+  * milkode_yaml.rb: Fix package_root regexp
+  * milk -v -> milk --version
+  * plang_detector.rb: Add csproj, vbproj, sln (VisualStudio)
+  * document_table.rb: Fix error negative string size (or size too big)
+
+* Bug fix
+  * termcolor require version '< 1.2.2' (thanks mallowlabs)
+
 === 0.9.3.1 2012/10/14
 
 * 'milk plugins' add gem-milkode, bundle-milkode
