@@ -197,7 +197,7 @@ EOF
       url = "/home/" + record_link(record)
       
       <<EOS
-    <dt class='result-record'><a href='#{url + "#n#{coderay.line_number_start}"}'>#{Util::relative_path record.shortpath, @path}</a></dt>
+    <dt class='result-record'><a href='#{url + "#n#{coderay.highlight_lines[0]}"}'>#{Util::relative_path record.shortpath, @path}</a></dt>
     <dd>
 #{coderay.to_html_anchorlink(url)}
     </dd>
@@ -222,7 +222,7 @@ EOS
 EOS
     end
 
-    def record_link(record)     # 
+    def record_link(record)
       Mkurl.new(record.shortpath, @params).inherit_query_shead
     end
 

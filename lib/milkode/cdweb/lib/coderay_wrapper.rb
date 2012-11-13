@@ -15,6 +15,7 @@ require 'milkode/cdweb/lib/coderay_php_utf8'
 module Milkode
   class CodeRayWrapper
     attr_reader :line_number_start
+    attr_reader :highlight_lines
     
     def initialize(content, filename, match_lines = [])
       @content = content
