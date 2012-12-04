@@ -169,3 +169,8 @@ label.ui-corner-all {
     margin-top: 20px;
 }
 
+/* lineno-modal */
+
+#lineno-copyall {
+    font-size: 13px;
+}

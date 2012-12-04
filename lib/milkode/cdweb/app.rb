@@ -214,6 +214,7 @@ EOF
         </tr></table>
     </div>
       <div class="modal-footer">
+        <span id="lineno-copyall"></span>
         <a href="#" id="lineno-ok" class="btn" data-dismiss="modal">OK</a>
       </div>
     </div>
