@@ -198,7 +198,7 @@ EOF
       </div>
       <div class="modal-footer">
         <a href="#" id="updateCancel" class="btn" data-dismiss="modal">Cancel</a>
-        <a href="#" id="updateOk" class="btn btn-primary" data-loading-text="Updating..." milkode-package-name="#{package_name}"">OK</a>
+        <a href="#" id="updateOk" class="btn btn-primary" data-loading-text="Updating..." milkode-package-name="#{package_name}">OK</a>
       </div>
     </div>
 
@@ -214,6 +214,7 @@ EOF
         </tr></table>
     </div>
       <div class="modal-footer">
+        <span id="lineno-copyall"></span>
         <a href="#" id="lineno-ok" class="btn" data-dismiss="modal">OK</a>
       </div>
     </div>
