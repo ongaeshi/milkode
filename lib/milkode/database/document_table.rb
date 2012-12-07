@@ -266,9 +266,10 @@ module Milkode
       records = result.sort([{:key => "package", :order => "ascending"},
                             {:key => "restpath", :order => "ascending"}],
                            :offset => offset,
-                           :limit => limit)
+                            :limit => limit)
 
-      records
+      # 検索結果のレコード(limitの影響を受ける), 総マッチ数(limitの影響を受けない)
+      return records, result.size
     end
 
     def select_all_sort_by_shortpath(offset = 0, limit = -1)
