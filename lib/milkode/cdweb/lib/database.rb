@@ -90,7 +90,7 @@ module Milkode
       result, total_records = [], 0
       
       unless is_not_search
-        result, total_records = @documents.search(
+        result, total_records = @documents.search_with_match(
           :patterns  => patterns,
           :keywords  => keywords,
           :paths     => paths,

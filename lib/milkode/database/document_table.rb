@@ -154,7 +154,7 @@ module Milkode
     #  :suffixs  => 拡張子
     #  :offset   => オフセット(default = 0)
     #  :limit    => 表示リミット(default = -1)
-    def search(options)
+    def search_with_match(options)
       patterns = options[:patterns] || []
       keywords = options[:keywords] || []
       packages = options[:packages] || []
@@ -272,6 +272,12 @@ module Milkode
       return records, result.size
     end
 
+    # マッチしたレコードのみを返す
+    def search(options)
+      records, match_total = search_with_match(options)
+      records
+    end
+    
     def select_all_sort_by_shortpath(offset = 0, limit = -1)
       result = @table.select
 
