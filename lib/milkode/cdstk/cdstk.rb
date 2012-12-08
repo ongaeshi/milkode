@@ -142,7 +142,7 @@ module Milkode
             set_yaml_options(package, options, is_update_with_git_pull)
 
             # アップデート
-            update_dir_in(dir)
+            update_dir_in(dir) unless options[:empty]
           end
         rescue ConvetError
           return
