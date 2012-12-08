@@ -25,14 +25,17 @@ Add package(s) to milkode
 Samples:
   milk add /path/to/dir1
   milk add /path/to/dir2 /path/to/dir3
+  milk add /path/to/dir1 -i cache .htaccess       # With ignore setting
+  milk add /path/to/dir1 --empty                  # Add empty package
   milk add /path/is/*
   milk add /path/to/zipfile.zip
   milk add /path/to/addon.xpi
   milk add http://example.com/urlfile.zip
   milk add git://github.com/ongaeshi/milkode.git
 EOF
+    option :empty, :type => :boolean, :desc => 'Add empty package.'
     option :ignore, :type => :array, :aliases => '-i', :desc => 'Ignore path.'
-    option :no_auto_ignore, :type => :boolean, :aliases => '-n', :desc => 'Disable auto ignore (.gitignore).'
+    option :no_auto_ignore, :type => :boolean, :aliases => '-n', :desc => 'Disable auto ignore.'
     option :verbose, :type => :boolean, :aliases => '-v', :desc => 'Be verbose.'
     
     def add(*args)
