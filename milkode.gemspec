@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{milkode}
-  s.version = "0.9.4"
+  s.version = "0.9.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ongaeshi"]
-  s.date = %q{2012-11-14}
+  s.date = %q{2012-12-09}
   s.description = %q{Line based local source code search engine & grep-command & web-app.}
   s.email = %q{ongaeshi0621@gmail.com}
   s.executables = ["gmilk", "milk"]
@@ -70,6 +70,7 @@ Gem::Specification.new do |s|
     "lib/milkode/cdweb/public/css/smoothness/images/ui-icons_888888_256x240.png",
     "lib/milkode/cdweb/public/css/smoothness/images/ui-icons_cd0a0a_256x240.png",
     "lib/milkode/cdweb/public/css/smoothness/jquery-ui-1.8.22.custom.css",
+    "lib/milkode/cdweb/public/flash/clippy.swf",
     "lib/milkode/cdweb/public/images/MilkodeIcon135.png",
     "lib/milkode/cdweb/public/images/directory.png",
     "lib/milkode/cdweb/public/images/document-new-4.png",

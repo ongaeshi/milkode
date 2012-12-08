@@ -1,4 +1,18 @@
-=== 0.9.4
+=== 0.9.5 2012/12/09
+
+* milk web 
+  * Add copy buttons in modal
+    * 'Direct path' button
+    * 'Lineno + Text' button
+  * Bug fix
+    * Fix incorrect total match count (thanks yosyyy)
+    * search_gotoline.rb: Fix link
+    * typo
+
+* milk
+  * Add 'milk add --empty' options
+
+=== 0.9.4 2012/11/14
 
 * milk web
   * Improve handling when you click the line number 
