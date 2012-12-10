@@ -226,9 +226,21 @@ EOS
     end
 
     def result_refinement(record)
-      <<EOF
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="result-refinement">[<a href=''>.rbで絞り込み</a>&nbsp;&nbsp;,&nbsp;&nbsp;<a href=''>test/以下で再検索</a>]</span>
+      refinements = []
+      # refinements << '<a href=''>.rbで絞り込み</a>'
+      # refinements << '<a href=''>test/以下で再検索</a>'
+
+      unless refinements.empty?
+        space1            = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+        space2            = '&nbsp;&nbsp;,&nbsp;&nbsp;'
+
+        <<EOF
+#{space1}<span id="result-refinement">[#{refinements.join(space2)}]</span>
 EOF
+      else
+        ''
+      end
+
     end
 
   end
