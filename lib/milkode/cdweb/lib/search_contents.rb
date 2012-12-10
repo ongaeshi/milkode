@@ -13,7 +13,6 @@ require 'milkode/common/util'
 module Milkode
   class SearchContents
     attr_reader :total_records
-    attr_reader :elapsed
     attr_reader :page
     
     DISP_NUM = 20              # 1ページの表示数
@@ -35,7 +34,7 @@ module Milkode
       @is_sensitive = params[:sensitive] == 'on'
 
       # メインの検索
-      @records, @total_records, @elapsed = Database.instance.search(@q.keywords, @q.multi_match_keywords, @q.packages, path, @q.fpaths, @q.suffixs, @q.fpath_or_packages, @offset, LIMIT_NUM)
+      @records, @total_records = Database.instance.search(@q.keywords, @q.multi_match_keywords, @q.packages, path, @q.fpaths, @q.suffixs, @q.fpath_or_packages, @offset, LIMIT_NUM)
 
       # マッチするファイル
       @match_files = []
@@ -43,9 +42,9 @@ module Milkode
         t = 0
 
         if (@path != "")
-          @match_files, t, @elapsed = Database.instance.search([], @q.multi_match_keywords, @q.packages, path, @q.fpaths + @q.keywords, @q.suffixs, @q.fpath_or_packages, @offset, MATH_FILE_LIMIT)
+          @match_files, t = Database.instance.search([], @q.multi_match_keywords, @q.packages, path, @q.fpaths + @q.keywords, @q.suffixs, @q.fpath_or_packages, @offset, MATH_FILE_LIMIT)
         else
-          @match_files, t, @elapsed = Database.instance.search([], @q.multi_match_keywords, @q.packages, path, @q.fpaths, @q.suffixs, @q.fpath_or_packages + @q.keywords, @offset, MATH_FILE_LIMIT)
+          @match_files, t = Database.instance.search([], @q.multi_match_keywords, @q.packages, path, @q.fpaths, @q.suffixs, @q.fpath_or_packages + @q.keywords, @offset, MATH_FILE_LIMIT)
         end
       end
 
