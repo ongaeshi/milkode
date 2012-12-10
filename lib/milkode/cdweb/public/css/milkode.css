@@ -31,6 +31,11 @@ dt.result-file {
     font-size: 95%;
 }
 
+#result-refinement {
+    font-size:80%;
+    font-weight:500;
+}
+
 div.pagination {
     /* border-color: #e92926; */
     /* background-color:#FFF0F0; */

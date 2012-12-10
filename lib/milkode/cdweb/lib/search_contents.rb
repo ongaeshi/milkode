@@ -197,7 +197,7 @@ EOF
       url = "/home/" + record_link(record)
       
       <<EOS
-    <dt class='result-record'><a href='#{url + "#n#{coderay.highlight_lines[0]}"}'>#{Util::relative_path record.shortpath, @path}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size:80%; font-weight:500;">[<a href=''>.rbで絞り込み</a>&nbsp;&nbsp;,&nbsp;&nbsp;<a href=''>test/以下で再検索</a>]</span></dt>
+    <dt class='result-record'><a href='#{url + "#n#{coderay.highlight_lines[0]}"}'>#{Util::relative_path record.shortpath, @path}</a>#{result_refinement(record)}</dt>
     <dd>
 #{coderay.to_html_anchorlink(url)}
     </dd>
@@ -224,6 +224,12 @@ EOS
 
     def record_link(record)
       Mkurl.new(record.shortpath, @params).inherit_query_shead
+    end
+
+    def result_refinement(record)
+      <<EOF
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="result-refinement">[<a href=''>.rbで絞り込み</a>&nbsp;&nbsp;,&nbsp;&nbsp;<a href=''>test/以下で再検索</a>]</span>
+EOF
     end
 
   end
