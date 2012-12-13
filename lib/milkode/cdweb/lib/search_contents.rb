@@ -225,16 +225,26 @@ EOS
       Mkurl.new(record.shortpath, @params).inherit_query_shead
     end
 
-    def add_suffix(suffix)
+    def refinement_suffix(suffix)
       params = @params.clone
       params[:query] = [@params[:query], "s:#{suffix}"].join(" ")
-      Mkurl.new(@path, params).inherit_query_shead      
+      "/home/" + Mkurl.new(@path, params).inherit_query_shead
+    end
+
+    def refinement_directory(path)
+      "/home/" + Mkurl.new(path, @params).inherit_query_shead
     end
 
     def result_refinement(record)
       refinements = []
-      refinements << "<a href='#{add_suffix(record.suffix)}'>.#{record.suffix}で絞り込み</a>" if record.suffix
-      # refinements << '<a href=''>test/以下で再検索</a>'
+
+      # 拡張子で絞り込み
+      refinements << "<a href='#{refinement_suffix(record.suffix)}'>.#{record.suffix}で絞り込み</a>" if record.suffix
+
+      # ディレクトリで絞り込み
+      path    = Util::relative_path(record.shortpath, @path)
+      dirname = path.to_s.split('/')[-2]
+      refinements << "<a href='#{refinement_directory(record.shortpath + '/..')}'>#{dirname}/以下で再検索</a>" if dirname
 
       unless refinements.empty?
         space1            = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
