@@ -225,9 +225,15 @@ EOS
       Mkurl.new(record.shortpath, @params).inherit_query_shead
     end
 
+    def add_suffix(suffix)
+      params = @params.clone
+      params[:query] = [@params[:query], "s:#{suffix}"].join(" ")
+      Mkurl.new(@path, params).inherit_query_shead      
+    end
+
     def result_refinement(record)
       refinements = []
-      # refinements << '<a href=''>.rbで絞り込み</a>'
+      refinements << "<a href='#{add_suffix(record.suffix)}'>.#{record.suffix}で絞り込み</a>" if record.suffix
       # refinements << '<a href=''>test/以下で再検索</a>'
 
       unless refinements.empty?
