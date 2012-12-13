@@ -13,7 +13,6 @@ require 'milkode/common/util'
 module Milkode
   class SearchContents
     attr_reader :total_records
-    attr_reader :elapsed
     attr_reader :page
     
     DISP_NUM = 20              # 1ページの表示数
@@ -35,7 +34,7 @@ module Milkode
       @is_sensitive = params[:sensitive] == 'on'
 
       # メインの検索
-      @records, @total_records, @elapsed = Database.instance.search(@q.keywords, @q.multi_match_keywords, @q.packages, path, @q.fpaths, @q.suffixs, @q.fpath_or_packages, @offset, LIMIT_NUM)
+      @records, @total_records = Database.instance.search(@q.keywords, @q.multi_match_keywords, @q.packages, path, @q.fpaths, @q.suffixs, @q.fpath_or_packages, @offset, LIMIT_NUM)
 
       # マッチするファイル
       @match_files = []
@@ -43,9 +42,9 @@ module Milkode
         t = 0
 
         if (@path != "")
-          @match_files, t, @elapsed = Database.instance.search([], @q.multi_match_keywords, @q.packages, path, @q.fpaths + @q.keywords, @q.suffixs, @q.fpath_or_packages, @offset, MATH_FILE_LIMIT)
+          @match_files, t = Database.instance.search([], @q.multi_match_keywords, @q.packages, path, @q.fpaths + @q.keywords, @q.suffixs, @q.fpath_or_packages, @offset, MATH_FILE_LIMIT)
         else
-          @match_files, t, @elapsed = Database.instance.search([], @q.multi_match_keywords, @q.packages, path, @q.fpaths, @q.suffixs, @q.fpath_or_packages + @q.keywords, @offset, MATH_FILE_LIMIT)
+          @match_files, t = Database.instance.search([], @q.multi_match_keywords, @q.packages, path, @q.fpaths, @q.suffixs, @q.fpath_or_packages + @q.keywords, @offset, MATH_FILE_LIMIT)
         end
       end
 
@@ -197,7 +196,7 @@ EOF
       url = "/home/" + record_link(record)
       
       <<EOS
-    <dt class='result-record'><a href='#{url + "#n#{coderay.highlight_lines[0]}"}'>#{Util::relative_path record.shortpath, @path}</a></dt>
+    <dt class='result-record'><a href='#{url + "#n#{coderay.highlight_lines[0]}"}'>#{Util::relative_path record.shortpath, @path}</a>#{result_refinement(record)}</dt>
     <dd>
 #{coderay.to_html_anchorlink(url)}
     </dd>
@@ -224,6 +223,40 @@ EOS
 
     def record_link(record)
       Mkurl.new(record.shortpath, @params).inherit_query_shead
+    end
+
+    def refinement_suffix(suffix)
+      params = @params.clone
+      params[:query] = [@params[:query], "s:#{suffix}"].join(" ")
+      "/home/" + Mkurl.new(@path, params).inherit_query_shead
+    end
+
+    def refinement_directory(path)
+      "/home/" + Mkurl.new(path, @params).inherit_query_shead
+    end
+
+    def result_refinement(record)
+      refinements = []
+
+      # 拡張子で絞り込み
+      refinements << "<a href='#{refinement_suffix(record.suffix)}'>.#{record.suffix}で絞り込み</a>" if record.suffix
+
+      # ディレクトリで絞り込み
+      path    = Util::relative_path(record.shortpath, @path)
+      dirname = path.to_s.split('/')[-2]
+      refinements << "<a href='#{refinement_directory(record.shortpath + '/..')}'>#{dirname}/以下で再検索</a>" if dirname
+
+      unless refinements.empty?
+        space1            = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+        space2            = '&nbsp;&nbsp;,&nbsp;&nbsp;'
+
+        <<EOF
+#{space1}<span id="result-refinement">[#{refinements.join(space2)}]</span>
+EOF
+      else
+        ''
+      end
+
     end
 
   end
