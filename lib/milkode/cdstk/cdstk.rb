@@ -247,10 +247,10 @@ module Milkode
     end
 
     def download_file(src, options)
-      if (src =~ /^https?:/)
-        download_file_in(src)
-      elsif (git_url? src)
+      if options[:protocol] == 'git' || git_url?(src)
         git_clone_in(src, options)
+      elsif src =~ /^https?:/
+        download_file_in(src)
       else
         src
       end
