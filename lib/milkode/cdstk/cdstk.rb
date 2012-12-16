@@ -249,6 +249,8 @@ module Milkode
     def download_file(src, options)
       if options[:protocol] == 'git' || git_url?(src)
         git_clone_in(src, options)
+      elsif options[:protocol] == 'svn' || svn_url?(src)
+        svn_clone_in(src, options)
       elsif src =~ /^https?:/
         download_file_in(src)
       else
@@ -290,6 +292,19 @@ module Milkode
 
       # with output
       system("git clone #{url} #{filename}")
+
+      filename
+    end
+
+    def svn_clone_in(url, options)
+      alert("svn", url)
+
+      dst_dir  = File.join(@db_dir, "packages/svn")
+      name     = options[:name] || File.basename(url)
+      filename = File.join(dst_dir, name)
+
+      # with output
+      system("svn checkout #{url} #{filename}")
 
       filename
     end
