@@ -33,9 +33,12 @@ Samples:
   milk add http://example.com/urlfile.zip
   milk add git://github.com/ongaeshi/milkode.git
 EOF
-    option :empty, :type => :boolean, :desc => 'Add empty package.'
-    option :ignore, :type => :array, :aliases => '-i', :desc => 'Ignore path.'
-    option :no_auto_ignore, :type => :boolean, :aliases => '-n', :desc => 'Disable auto ignore.'
+    option :empty,          :type => :boolean,                     :desc => 'Add empty package.'
+    option :ignore,         :type => :array,   :aliases => '-i',   :desc => 'Ignore path.'
+    option :name,           :type => :string,  :aliases => '-n',   :desc => 'Rename package.'
+    option :no_auto_ignore, :type => :boolean, :aliases => '--ni', :desc => 'Disable auto ignore.'
+    option :protocol,       :type => :string,  :aliases => '-p',   :desc => 'Specify protocol. (git, svn)'
+    
     option :verbose, :type => :boolean, :aliases => '-v', :desc => 'Be verbose.'
     
     def add(*args)
