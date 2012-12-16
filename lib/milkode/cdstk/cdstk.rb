@@ -138,7 +138,7 @@ module Milkode
             add_yaml(package)
 
             # オプション設定
-            is_update_with_git_pull = git_url?(v)
+            is_update_with_git_pull = git_protocol?(options, v)
             set_yaml_options(package, options, is_update_with_git_pull)
 
             # アップデート
@@ -247,9 +247,9 @@ module Milkode
     end
 
     def download_file(src, options)
-      if options[:protocol] == 'git' || git_url?(src)
+      if git_protocol?(options, src)
         git_clone_in(src, options)
-      elsif options[:protocol] == 'svn' || svn_url?(src)
+      elsif svn_protocol?(options, src)
         svn_clone_in(src, options)
       elsif src =~ /^https?:/
         download_file_in(src)
@@ -257,11 +257,6 @@ module Milkode
         src
       end
     end
-
-    def git_url?(src)
-      Util::git_url?(src)
-    end
-    private :git_url?
 
     def download_file_in(url)
       alert("download", "#{url}")
@@ -921,6 +916,14 @@ EOF
     end
 
     private
+
+    def git_protocol?(options, src)
+      options[:protocol] == 'git' || Util::git_url?(src)
+    end
+
+    def svn_protocol?(options, src)
+      options[:protocol] == 'svn' || Util::svn_url?(src)
+    end
 
     def db_file
       Dbdir.expand_groonga_path(@db_dir)
