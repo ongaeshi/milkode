@@ -30,6 +30,11 @@ module Milkode
         Dir.chdir(@package.directory) { system("git pull") }        
       end
       
+      # svn update
+      if @options[:update_with_svn_update]
+        Dir.chdir(@package.directory) { system("svn update") }
+      end
+
       # cleanup
       unless @options[:no_clean]
         @grndb.documents.cleanup_package_name(@package_name)
@@ -60,6 +65,10 @@ module Milkode
 
     def enable_update_with_git_pull
       @options[:update_with_git_pull] = true      
+    end
+
+    def enable_update_with_svn_update
+      @options[:update_with_svn_update] = true
     end
 
     def enable_no_clean

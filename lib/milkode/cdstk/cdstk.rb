@@ -138,8 +138,9 @@ module Milkode
             add_yaml(package)
 
             # オプション設定
-            is_update_with_git_pull = git_protocol?(options, v)
-            set_yaml_options(package, options, is_update_with_git_pull)
+            is_update_with_git_pull   = git_protocol?(options, v)
+            is_update_with_svn_update = svn_protocol?(options, v)
+            set_yaml_options(package, options, is_update_with_git_pull, is_update_with_svn_update)
 
             # アップデート
             update_dir_in(dir) unless options[:empty]
@@ -150,7 +151,7 @@ module Milkode
       end
     end
 
-    def set_yaml_options(package, options, is_update_with_git_pull)
+    def set_yaml_options(package, options, is_update_with_git_pull, is_update_with_svn_update)
       is_dirty = false
       
       if options[:no_auto_ignore]
@@ -171,6 +172,13 @@ module Milkode
       if is_update_with_git_pull
         dst = package.options
         dst[:update_with_git_pull] = is_update_with_git_pull
+        package.set_options(dst)
+        is_dirty = true
+      end
+
+      if is_update_with_svn_update
+        dst = package.options
+        dst[:update_with_svn_update] = is_update_with_svn_update
         package.set_options(dst)
         is_dirty = true
       end
@@ -938,7 +946,7 @@ EOF
     end
 
     def update_package_in(package, options)
-      updater_exec(package, package.options[:update_with_git_pull], options[:no_clean])
+      updater_exec(package, package.options[:update_with_git_pull], package.options[:update_with_svn_update], options[:no_clean])
     end
 
     def update_dir_in(dir)
@@ -948,20 +956,21 @@ EOF
         warning_alert("#{dir} (Not found, skip)")
       else
         package = @yaml.package_root(dir)
-        updater_exec(package, false, false)
+        updater_exec(package, false, false, false)
       end
     end
 
-    def updater_exec(package, is_update_with_git_pull, is_no_clean)
+    def updater_exec(package, is_update_with_git_pull, is_update_with_svn_update, is_no_clean)
       alert("package", package.name )
 
       updater = Updater.new(@grndb, package.name)
       updater.set_package_ignore IgnoreSetting.new("/", package.ignore)
-      updater.enable_no_auto_ignore       if package.options[:no_auto_ignore]
-      updater.enable_silent_mode          if @is_silent
-      updater.enable_display_info         if @is_display_info
-      updater.enable_update_with_git_pull if is_update_with_git_pull
-      updater.enable_no_clean             if is_no_clean
+      updater.enable_no_auto_ignore         if package.options[:no_auto_ignore]
+      updater.enable_silent_mode            if @is_silent
+      updater.enable_display_info           if @is_display_info
+      updater.enable_update_with_git_pull   if is_update_with_git_pull
+      updater.enable_update_with_svn_update if is_update_with_svn_update
+      updater.enable_no_clean               if is_no_clean
       updater.exec
 
       @package_count += 1
