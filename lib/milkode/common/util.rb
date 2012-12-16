@@ -179,6 +179,10 @@ module Milkode
       (src =~ /^(:?git[:@])|(:?ssh:)/) != nil
     end
 
+    def svn_url?(src)
+      (src =~ /^(:?svn|svn\+ssh):\/\//) != nil
+    end
+
     # StringIO patch
     def pipe?(io)
       !io.instance_of?(IO) || !File.pipe?(io) 

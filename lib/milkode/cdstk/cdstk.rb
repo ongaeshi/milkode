@@ -131,15 +131,16 @@ module Milkode
         begin
           dirs.each do |v|
             # コンテンツを読み込める形に変換
-            dir = convert_content(v)
+            dir = convert_content(v, options)
 
             # YAMLに追加
             package = Package.create(dir, options[:ignore])
             add_yaml(package)
 
             # オプション設定
-            is_update_with_git_pull = git_url?(v)
-            set_yaml_options(package, options, is_update_with_git_pull)
+            is_update_with_git_pull   = git_protocol?(options, v)
+            is_update_with_svn_update = svn_protocol?(options, v)
+            set_yaml_options(package, options, is_update_with_git_pull, is_update_with_svn_update)
 
             # アップデート
             update_dir_in(dir) unless options[:empty]
@@ -150,7 +151,7 @@ module Milkode
       end
     end
 
-    def set_yaml_options(package, options, is_update_with_git_pull)
+    def set_yaml_options(package, options, is_update_with_git_pull, is_update_with_svn_update)
       is_dirty = false
       
       if options[:no_auto_ignore]
@@ -160,16 +161,24 @@ module Milkode
         is_dirty = true
       end
 
-      if options[:name]
-        dst = package.options
-        dst[:name] = src[:name]
-        package.set_options(dst)
-        is_dirty = true
-      end
+      # ローカルディレクトリの名前変更は後回し
+      # if options[:name]
+      #   dst = package.options
+      #   dst[:name] = src[:name]
+      #   package.set_options(dst)
+      #   is_dirty = true
+      # end
 
       if is_update_with_git_pull
         dst = package.options
         dst[:update_with_git_pull] = is_update_with_git_pull
+        package.set_options(dst)
+        is_dirty = true
+      end
+
+      if is_update_with_svn_update
+        dst = package.options
+        dst[:update_with_svn_update] = is_update_with_svn_update
         package.set_options(dst)
         is_dirty = true
       end
@@ -211,10 +220,10 @@ module Milkode
       @grndb.yaml_sync(@yaml.contents)
     end
 
-    def convert_content(src)
+    def convert_content(src, options)
       # httpファイルならダウンロード
       begin
-        src = download_file(src)
+        src = download_file(src, options)
       rescue => e
         error_alert("download failure '#{src}'.")
         raise e                 # そのまま上に持ち上げてスタックトレース表示
@@ -245,20 +254,17 @@ module Milkode
       end
     end
 
-    def download_file(src)
-      if (src =~ /^https?:/)
+    def download_file(src, options)
+      if git_protocol?(options, src)
+        git_clone_in(src, options)
+      elsif svn_protocol?(options, src)
+        svn_clone_in(src, options)
+      elsif src =~ /^https?:/
         download_file_in(src)
-      elsif (git_url? src)
-        git_clone_in(src)
       else
         src
       end
     end
-
-    def git_url?(src)
-      Util::git_url?(src)
-    end
-    private :git_url?
 
     def download_file_in(url)
       alert("download", "#{url}")
@@ -277,19 +283,31 @@ module Milkode
       filename
     end
 
-    def git_clone_in(url)
+    def git_clone_in(url, options)
       alert("git", url)
 
-      dst_dir = File.join(@db_dir, "packages/git")
-      # FileUtils.mkdir_p dst_dir
-
-      filename = File.join(dst_dir, File.basename(url).sub(/\.git\Z/, ""))
+      dst_dir  = File.join(@db_dir, "packages/git")
+      name     = options[:name] || File.basename(url).sub(/\.git\Z/, "")
+      filename = File.join(dst_dir, name)
 
       # git output progress to stderr.
       # `git clone #{url} #{filename} 2>&1`
 
       # with output
       system("git clone #{url} #{filename}")
+
+      filename
+    end
+
+    def svn_clone_in(url, options)
+      alert("svn", url)
+
+      dst_dir  = File.join(@db_dir, "packages/svn")
+      name     = options[:name] || File.basename(url)
+      filename = File.join(dst_dir, name)
+
+      # with output
+      system("svn checkout #{url} #{filename}")
 
       filename
     end
@@ -907,6 +925,14 @@ EOF
 
     private
 
+    def git_protocol?(options, src)
+      options[:protocol] == 'git' || Util::git_url?(src)
+    end
+
+    def svn_protocol?(options, src)
+      options[:protocol] == 'svn' || Util::svn_url?(src)
+    end
+
     def db_file
       Dbdir.expand_groonga_path(@db_dir)
     end
@@ -920,7 +946,7 @@ EOF
     end
 
     def update_package_in(package, options)
-      updater_exec(package, package.options[:update_with_git_pull], options[:no_clean])
+      updater_exec(package, package.options[:update_with_git_pull], package.options[:update_with_svn_update], options[:no_clean])
     end
 
     def update_dir_in(dir)
@@ -930,20 +956,21 @@ EOF
         warning_alert("#{dir} (Not found, skip)")
       else
         package = @yaml.package_root(dir)
-        updater_exec(package, false, false)
+        updater_exec(package, false, false, false)
       end
     end
 
-    def updater_exec(package, is_update_with_git_pull, is_no_clean)
+    def updater_exec(package, is_update_with_git_pull, is_update_with_svn_update, is_no_clean)
       alert("package", package.name )
 
       updater = Updater.new(@grndb, package.name)
       updater.set_package_ignore IgnoreSetting.new("/", package.ignore)
-      updater.enable_no_auto_ignore       if package.options[:no_auto_ignore]
-      updater.enable_silent_mode          if @is_silent
-      updater.enable_display_info         if @is_display_info
-      updater.enable_update_with_git_pull if is_update_with_git_pull
-      updater.enable_no_clean             if is_no_clean
+      updater.enable_no_auto_ignore         if package.options[:no_auto_ignore]
+      updater.enable_silent_mode            if @is_silent
+      updater.enable_display_info           if @is_display_info
+      updater.enable_update_with_git_pull   if is_update_with_git_pull
+      updater.enable_update_with_svn_update if is_update_with_svn_update
+      updater.enable_no_clean               if is_no_clean
       updater.exec
 
       @package_count += 1

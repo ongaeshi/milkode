@@ -198,8 +198,9 @@ module Milkode
     def update_in(package)
       updater = Updater.new(@grndb, package.name)
       updater.set_package_ignore IgnoreSetting.new("/", package.ignore)
-      updater.enable_no_auto_ignore       if package.options[:no_auto_ignore]
-      updater.enable_update_with_git_pull if package.options[:update_with_git_pull]
+      updater.enable_no_auto_ignore         if package.options[:no_auto_ignore]
+      updater.enable_update_with_git_pull   if package.options[:update_with_git_pull]
+      updater.enable_update_with_svn_update if package.options[:update_with_svn_update]
       updater.exec
       updater.result
     end
