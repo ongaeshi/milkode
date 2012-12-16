@@ -84,9 +84,22 @@ module Milkode
       end
       
       <<EOF
-#{match_files_contents}
+#{recommended_contents}
 #{match_groups.map{|g|result_match_record(g)}.join}
 EOF
+    end
+
+    def recommended_contents
+      contents = []
+
+      str = match_files_contents
+      contents << str unless str.empty?
+
+      unless contents.empty?
+        contents.join + "<hr>\n"
+      else
+        ""
+      end
     end
 
     def match_files_contents
@@ -100,7 +113,6 @@ EOF
         <<EOF
 #{@match_files.map {|record| result_record(DocumentRecord.new(record))}.join}
 #{"<a href='#{url}'>...and more</a></a>" if is_and_more}
-<hr>
 EOF
       else
         ""
