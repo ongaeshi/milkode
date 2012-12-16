@@ -106,9 +106,13 @@ EOF
     end
 
     def recommended_query
-      if (@q.keywords.size == 2)
+      if (@q.keywords.size >= 2 && @q.only_keywords)
+        conv_query   = @q.conv_head_keyword_to_fpath_or_packages
+        tmpp         = @params.clone
+        tmpp[:query] = conv_query.query_string
+        url          = Mkurl.new(@path, tmpp).inherit_query_shead
         <<EOS
-<dt class='result-file'>#{img_icon('document-new-4.png')}<a href='#{"/home/"}'>f:search_contents result</a></dt>
+<dt class='result-file'>#{img_icon('document-new-4.png')}<a href='#{url}'>#{conv_query.query_string}</a></dt>
 <hr>
 EOS
       else
