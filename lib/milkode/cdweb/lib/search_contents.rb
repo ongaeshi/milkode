@@ -92,16 +92,30 @@ EOF
     def recommended_contents
       contents = []
 
+      str = recommended_query
+      contents << str unless str.empty?
+
       str = match_files_contents
       contents << str unless str.empty?
 
       unless contents.empty?
-        contents.join + "<hr>\n"
+        contents.join
       else
         ""
       end
     end
 
+    def recommended_query
+      if (@q.keywords.size == 2)
+        <<EOS
+<dt class='result-file'>#{img_icon('document-new-4.png')}<a href='#{"/home/"}'>f:search_contents result</a></dt>
+<hr>
+EOS
+      else
+        ""
+      end
+  end
+    
     def match_files_contents
       unless @match_files.empty?
         is_and_more = @match_files.size >= MATH_FILE_LIMIT
@@ -113,12 +127,13 @@ EOF
         <<EOF
 #{@match_files.map {|record| result_record(DocumentRecord.new(record))}.join}
 #{"<a href='#{url}'>...and more</a></a>" if is_and_more}
+<hr>
 EOF
       else
         ""
       end
     end
-    
+
     def html_pagination
       return "" if @q.empty?
       return "" if next_offset >= @total_records

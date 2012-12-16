@@ -114,8 +114,12 @@ module Milkode
   private
   
   def file_or_dirimg(is_file)
-    src = (is_file) ? '/images/file.png' : '/images/directory.png'
-    "<img alt='' style='vertical-align:bottom; border: 0; margin: 1px;' src='#{src}'>"
+    src = (is_file) ? 'file.png' : 'directory.png'
+    img_icon(src)
+  end
+
+  def img_icon(srcfile)
+    "<img alt='' style='vertical-align:bottom; border: 0; margin: 1px;' src='/images/#{srcfile}'>"
   end
 
   def sort_change_content(current_value, text, sort_kind = nil)
