@@ -131,7 +131,7 @@ module Milkode
         begin
           dirs.each do |v|
             # コンテンツを読み込める形に変換
-            dir = convert_content(v)
+            dir = convert_content(v, options)
 
             # YAMLに追加
             package = Package.create(dir, options[:ignore])
@@ -160,12 +160,13 @@ module Milkode
         is_dirty = true
       end
 
-      if options[:name]
-        dst = package.options
-        dst[:name] = src[:name]
-        package.set_options(dst)
-        is_dirty = true
-      end
+      # ローカルディレクトリの名前変更は後回し
+      # if options[:name]
+      #   dst = package.options
+      #   dst[:name] = src[:name]
+      #   package.set_options(dst)
+      #   is_dirty = true
+      # end
 
       if is_update_with_git_pull
         dst = package.options
@@ -211,10 +212,10 @@ module Milkode
       @grndb.yaml_sync(@yaml.contents)
     end
 
-    def convert_content(src)
+    def convert_content(src, options)
       # httpファイルならダウンロード
       begin
-        src = download_file(src)
+        src = download_file(src, options)
       rescue => e
         error_alert("download failure '#{src}'.")
         raise e                 # そのまま上に持ち上げてスタックトレース表示
@@ -245,11 +246,11 @@ module Milkode
       end
     end
 
-    def download_file(src)
+    def download_file(src, options)
       if (src =~ /^https?:/)
         download_file_in(src)
       elsif (git_url? src)
-        git_clone_in(src)
+        git_clone_in(src, options)
       else
         src
       end
@@ -277,13 +278,12 @@ module Milkode
       filename
     end
 
-    def git_clone_in(url)
+    def git_clone_in(url, options)
       alert("git", url)
 
-      dst_dir = File.join(@db_dir, "packages/git")
-      # FileUtils.mkdir_p dst_dir
-
-      filename = File.join(dst_dir, File.basename(url).sub(/\.git\Z/, ""))
+      dst_dir  = File.join(@db_dir, "packages/git")
+      name     = options[:name] || File.basename(url).sub(/\.git\Z/, "")
+      filename = File.join(dst_dir, name)
 
       # git output progress to stderr.
       # `git clone #{url} #{filename} 2>&1`
