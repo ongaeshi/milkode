@@ -98,14 +98,14 @@ module Milkode
       result = search(:paths => [path])
 
       result.each do |r|
-          yield r if block_given?
-          r.record_id.delete
+        yield r if block_given?
+        remove(r.path)
       end
     end
 
     def remove_all
       self.each do |r|
-        r.record_id.delete
+        remove(r.path)
       end
     end
 
@@ -137,7 +137,7 @@ module Milkode
         unless File.exist? r.path
           yield r if block_given?
           # p r.restpath
-          r.record_id.delete
+          remove(r.path)
         end
       end
     end
@@ -310,7 +310,7 @@ module Milkode
         unless File.exist? r.path
           yield r if block_given?
           # p r.restpath
-          r.record_id.delete
+          remove(r.path)
         end
       end
     end
