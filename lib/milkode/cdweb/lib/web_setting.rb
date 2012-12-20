@@ -17,12 +17,18 @@ module Milkode
       :header_title => "Milkode",
       :header_icon  => "/images/MilkodeIcon135.png",
 
+      :favicon      => "/images/favicon.ico",
+
       :display_about_milkode => true
     }
 
     def self.hash_method(name)
       define_method(name) do
-        @data[name]
+        if @data[name]
+          @data[name]
+        else
+          DEFAULT_SETTING[name]
+        end
       end
     end
 
@@ -43,6 +49,8 @@ module Milkode
     hash_method :header_title
     hash_method :header_icon
 
+    hash_method :favicon
+    
     def about_milkode
       if (@data[:display_about_milkode])
         ', <a href="http://milkode.ongaeshi.me">milkodeについて</a>'
