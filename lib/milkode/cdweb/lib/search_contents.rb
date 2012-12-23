@@ -103,7 +103,7 @@ EOF
     def recommended_contents
       contents = []
 
-      str = recommended_query
+      str = recommended_query_contents
       contents << str unless str.empty?
 
       str = match_files_contents
@@ -120,7 +120,7 @@ EOF
       @q.keywords.size >= 2 && @q.only_keywords
     end
 
-    def recommended_query
+    def recommended_query_contents
       if has_recommended_query?
         conv_query   = @q.conv_head_keyword_to_fpath_or_packages
         tmpp         = @params.clone
