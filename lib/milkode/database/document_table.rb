@@ -33,6 +33,37 @@ module Milkode
         end
       end
     end
+
+    # レコードをまとめて削除する
+    #   検索結果にマッチしたレコード等をまとめて削除
+    #   削除前にインデックスを削除し、削除後にインデックスを再度追加してい
+    #   大量のレコードを削除する場合に高速に動作する
+    def remove_records(records, &block)
+      Groonga::Schema.define do |schema|
+        schema.change_table("terms") do |table|
+          table.remove_index("documents.path")
+          table.remove_index("documents.package")
+          table.remove_index("documents.restpath")
+          table.remove_index("documents.content")
+          table.remove_index("documents.suffix")
+        end
+      end
+
+      records.each do |record|
+        yield record if block
+        record.key.delete
+      end
+
+      Groonga::Schema.define do |schema|
+        schema.change_table("terms") do |table|
+          table.index("documents.path", :with_position => true)
+          table.index("documents.package", :with_position => true)
+          table.index("documents.restpath", :with_position => true)
+          table.index("documents.content", :with_position => true)
+          table.index("documents.suffix", :with_position => true)
+        end
+      end
+    end
     
     def initialize(table)
       @table = table
@@ -94,39 +125,12 @@ module Milkode
       @table[name].delete
     end
 
-    def remove_match_path(path)
-      records = search(:paths => [path])
-
-      Groonga::Schema.define do |schema|
-        schema.change_table("terms") do |table|
-          table.remove_index("documents.path")
-          table.remove_index("documents.package")
-          table.remove_index("documents.restpath")
-          table.remove_index("documents.content")
-          table.remove_index("documents.suffix")
-        end
-      end
-
-      records.each do |record|
-        yield record if block_given?
-        record.key.delete
-      end
-
-      Groonga::Schema.define do |schema|
-        schema.change_table("terms") do |table|
-          table.index("documents.path", :with_position => true)
-          table.index("documents.package", :with_position => true)
-          table.index("documents.restpath", :with_position => true)
-          table.index("documents.content", :with_position => true)
-          table.index("documents.suffix", :with_position => true)
-        end
-      end
+    def remove_match_path(path, &block)
+      remove_records(search(:paths => [path]), &block)
     end
 
     def remove_all
-      self.each do |r|
-        remove(r.path)
-      end
+      remove_records( @table.select )
     end
 
     # shortpathの一致するレコードを取得
@@ -321,9 +325,9 @@ module Milkode
     end
 
     # 指定されたパッケージのクリーンアップ
-    def cleanup_package_name(package)
+    def cleanup_package_name(package_name)
       # クリーンアップ対象のファイルを検索
-      result = @table.select { |record| record.package == package }
+      result = @table.select { |record| record.package == package_name }
 
       # 存在しないファイルの削除
       result.each do |r|
