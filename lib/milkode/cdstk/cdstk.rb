@@ -487,7 +487,16 @@ module Milkode
           @out.puts dir
         else
           package = @yaml.package_root(File.expand_path('.'))
-          name = package ? package.name : "'not_package_dir'"
+
+          name = ""
+          if package
+            name = package.name
+          elsif Dbdir.dbdir?
+            name = 'On database'
+          else
+            name = 'Not package dir'
+          end
+          
           @out.puts "#{name} in #{dir}"
         end
       else
