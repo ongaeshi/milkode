@@ -54,6 +54,12 @@ EOF
       update_contents
     end
 
+    # 全てのパッケージを削除
+    def remove_all
+      @contents = []
+      update_contents
+    end
+
     # 名前が同じパッケージを検索
     def find_name(name)
       @contents.find {|v| v.same_name?(name)}

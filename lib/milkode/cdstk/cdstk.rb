@@ -319,9 +319,19 @@ module Milkode
         if yes_or_no("Remove #{@yaml.contents.size} contents? (yes/no)")
           db_open
 
-          @yaml.contents.each do |package|
-            remove_dir(package.directory)
+          # documents
+          @documents.remove_all do |record|
+            alert_info("rm_record", record.path)
+            @file_count += 1
           end
+
+          # packages
+          @grndb.packages.remove_all
+          
+          # yaml
+          @package_count += @yaml.contents.size
+          @yaml.remove_all
+          @yaml.save
         else
           return
         end

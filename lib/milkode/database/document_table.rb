@@ -129,8 +129,8 @@ module Milkode
       remove_records(search(:paths => [path]), &block)
     end
 
-    def remove_all
-      remove_records( @table.select )
+    def remove_all(&block)
+      remove_records(@table.select, &block)
     end
 
     # shortpathの一致するレコードを取得

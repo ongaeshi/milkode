@@ -76,6 +76,10 @@ module Milkode
       @data.remove package
     end
 
+    def remove_all
+      @data.remove_all
+    end
+
     def package_root(dir)
       @data.package_root(dir)
     end
