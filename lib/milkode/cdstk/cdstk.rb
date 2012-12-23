@@ -28,6 +28,8 @@ require 'milkode/common/plang_detector'
 
 module Milkode
   class IgnoreError < RuntimeError ; end
+  class AddError    < RuntimeError ; end
+  class ConvertError < RuntimeError ; end
 
   class Cdstk
     # バイグラムでトークナイズする。連続する記号・アルファベット・数字は一語として扱う。
@@ -36,8 +38,6 @@ module Milkode
     # 記号・アルファベット・数字もバイグラムでトークナイズする。
     DEFAULT_TOKENIZER = "TokenBigramSplitSymbolAlphaDigit"
 
-    class ConvetError < RuntimeError ; end
-    
     def initialize(io = $stdout, db_dir = ".")
       @db_dir = db_dir
       @out = io
@@ -145,7 +145,10 @@ module Milkode
             # アップデート
             update_dir_in(dir) unless options[:empty]
           end
-        rescue ConvetError
+        rescue AddError => e
+          error_alert(e.message)
+          return
+        rescue ConvertError => e
           return
         end
       end
@@ -224,6 +227,8 @@ module Milkode
       # httpファイルならダウンロード
       begin
         src = download_file(src, options)
+      rescue AddError => e
+        raise e
       rescue => e
         error_alert("download failure '#{src}'.")
         raise e                 # そのまま上に持ち上げてスタックトレース表示
@@ -262,6 +267,7 @@ module Milkode
       elsif src =~ /^https?:/
         download_file_in(src)
       else
+        raise AddError, "'--name' option is not available in local directory." if options[:name]
         src
       end
     end
