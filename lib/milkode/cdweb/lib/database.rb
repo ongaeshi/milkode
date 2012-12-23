@@ -88,20 +88,23 @@ module Milkode
 
       # 検索
       result, total_records = [], 0
-      
-      unless is_not_search
-        result, total_records = @documents.search_with_match(
-          :patterns  => patterns,
-          :keywords  => keywords,
-          :paths     => paths,
-          :packages  => packages,
-          :strict_packages  => strict_packages,
-          :restpaths => fpaths,
-          :suffixs   => suffixs,
-          :fpath_or_packages => fpath_or_packages,
-          :offset    => offset,
-          :limit     => limit
-        )
+
+      begin
+        unless is_not_search
+          result, total_records = @documents.search_with_match(
+            :patterns  => patterns,
+            :keywords  => keywords,
+            :paths     => paths,
+            :packages  => packages,
+            :strict_packages  => strict_packages,
+            :restpaths => fpaths,
+            :suffixs   => suffixs,
+            :fpath_or_packages => fpath_or_packages,
+            :offset    => offset,
+            :limit     => limit
+          )
+        end
+      rescue Groonga::TooLargeOffset
       end
 
       # 結果
