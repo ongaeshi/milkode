@@ -72,6 +72,12 @@ module Milkode
       assert_equal q.conv_keywords_to_fpath_or_packages.query_string, 'fp:array fp:test s:rb'
     end
 
+    def test_gotolines
+      q = create_query("g:test.rb:11 a.rb")
+      assert_equal q.gotolines, ['test.rb:11']
+      assert_equal q.keywords , ['a.rb']
+    end
+
     def create_query(query)
       Query.new(query)
     end

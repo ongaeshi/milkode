@@ -52,8 +52,10 @@ module Milkode
     query = Query.new(params[:query])
     @title = "'#{query.query_string}' in #{path_title(path)}"
 
-    if (query.keywords.size > 0)
-      if Util::gotoline_keyword? query.keywords[0]
+    if (query.gotolines.size > 0)
+      searcher = SearchGotoLine.new(path, params, query)
+    elsif (query.keywords.size > 0)
+      if Util::gotoline_keyword?(query.keywords[0])
         searcher = SearchGotoLine.new(path, params, query)
       else
         searcher = SearchContents.new(path, params, query)
