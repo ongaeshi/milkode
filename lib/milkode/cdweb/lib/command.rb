@@ -10,6 +10,7 @@ require 'milkode/cdweb/lib/coderay_wrapper'
 require 'milkode/cdweb/lib/search_contents'
 require 'milkode/cdweb/lib/search_files'
 require 'milkode/cdweb/lib/search_gotoline'
+require 'milkode/cdweb/lib/search_fuzzy_gotoline'
 require 'milkode/cdweb/lib/mkurl'
 require 'milkode/common/util'
 
@@ -53,7 +54,7 @@ module Milkode
     @title = "'#{query.query_string}' in #{path_title(path)}"
 
     if (query.gotolines.size > 0)
-      searcher = SearchGotoLine.new(path, params, query)
+      searcher = SearchFuzzyGotoLine.new(path, params, query)
     elsif (query.keywords.size > 0)
       if Util::gotoline_keyword?(query.keywords[0])
         searcher = SearchGotoLine.new(path, params, query)
