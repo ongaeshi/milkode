@@ -65,6 +65,10 @@ module Milkode
         searcher = SearchGotoLine.new(path, params, query)
       else
         searcher = SearchContents.new(path, params, query)
+
+        if searcher.directjump?
+          redirect searcher.directjump_url
+        end
       end
     else
       searcher = SearchFiles.new(path, params, query)

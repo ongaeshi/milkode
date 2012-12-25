@@ -181,6 +181,17 @@ EOF
       @match_records.size
     end
 
+    def directjump?
+      recommended_gotoline?
+    end
+
+    def directjump_url
+      conv_query   = @q.conv_gotoline
+      tmpp         = @params.clone
+      tmpp[:query] = conv_query.query_string
+      Mkurl.new(File.join('/home', @path), tmpp).inherit_query_shead
+    end
+
     private
 
     MatchRecord = Struct.new(:record, :match_line)
