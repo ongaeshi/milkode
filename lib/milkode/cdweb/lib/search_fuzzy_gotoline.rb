@@ -76,6 +76,16 @@ EOF
       @match_records.size
     end
 
+    def directjump?
+      match_num == 1
+    end
+
+    def directjump_url
+      path   = File.join('/home', @match_records[0].record.shortpath)
+      lineno = "#n#{@gotoline[1]}"
+      Mkurl.new(path, @params).inherit_query_shead + lineno
+    end
+
     private
 
     MatchRecord = Struct.new(:record, :match_line)
@@ -86,10 +96,10 @@ EOF
       @next_line = nil
 
       @records.each_with_index do |record, index|
-        lineno = @gotoline[1] - 1
+        lineidx = @gotoline[1] - 1
         
-        if (lineno < record.content.split("\n").size)
-          @match_records << MatchRecord.new(record, Grep::MatchLineResult.new(lineno, nil))
+        if (lineidx < record.content.split("\n").size)
+          @match_records << MatchRecord.new(record, Grep::MatchLineResult.new(lineidx, nil))
 
           if @match_records.size >= DISP_NUM
             @end_index  = index
