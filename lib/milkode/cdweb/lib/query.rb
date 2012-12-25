@@ -18,6 +18,7 @@ module Milkode
                ['suffix',   's'],
                ['fp'],          # fpath or package
                ['keyword',  'k'],
+               ['gotoline', 'g'],
               ]
 
     def initialize(str)
@@ -31,11 +32,11 @@ module Milkode
     end
 
     def empty?
-      keywords.size == 0 && packages.size == 0 && fpaths.size == 0 && suffixs.size == 0 && fpath_or_packages.size == 0
+      keywords.size == 0 && packages.size == 0 && fpaths.size == 0 && suffixs.size == 0 && fpath_or_packages.size == 0 && gotolines.size == 0
     end
 
     def only_keywords
-      packages.size == 0 && fpaths.size == 0 && suffixs.size == 0 && fpath_or_packages.size == 0
+      packages.size == 0 && fpaths.size == 0 && suffixs.size == 0 && fpath_or_packages.size == 0 && gotolines.size == 0
     end
 
     def keywords
@@ -61,6 +62,10 @@ module Milkode
     def multi_match_keywords
       # 本当はkeywordsにしたかった・・
       calc_param(4)
+    end
+
+    def gotolines
+      calc_param(5)
     end
 
     def conv_keywords_to_fpath
@@ -92,6 +97,19 @@ module Milkode
       s = query_string.split.map {|v|
         if keywords[0].include? v
           "fp:#{v}"
+        else
+          v
+        end
+      }.join(' ')
+
+      Query.new(s)
+    end
+
+    # 'cdstk.rb:11' -> 'g:cdstk.rb:11'
+    def conv_fuzzy_gotoline
+      s = query_string.split.map {|v|
+        if keywords[0].include? v
+          "g:#{v}"
         else
           v
         end

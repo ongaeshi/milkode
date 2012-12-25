@@ -9,6 +9,7 @@ require 'milkode/cdweb/lib/query'
 require 'milkode/cdweb/lib/grep'
 require 'milkode/cdweb/lib/mkurl'
 require 'milkode/common/util'
+require 'milkode/cdweb/lib/search_fuzzy_gotoline'
 
 module Milkode
   class SearchContents
@@ -32,21 +33,35 @@ module Milkode
       @line = params[:line].to_i
       @is_onematch = params[:onematch] == 'on'
       @is_sensitive = params[:sensitive] == 'on'
+      @searcher_fuzzy_gotoline = nil
 
       # 検索1 : クエリーそのまま
       @records, @total_records = Database.instance.search(@q.keywords, @q.multi_match_keywords, @q.packages, path, @q.fpaths, @q.suffixs, @q.fpath_or_packages, @offset, LIMIT_NUM)
       grep_contents(@q.keywords)
 
       # 検索2 : マッチしなかった時におすすめクエリーがある場合
-      if @match_records.empty? && has_recommended_query?
-        # おすすめクエリーに変換
-        q2 = @q.conv_head_keyword_to_fpath_or_packages
+      if @match_records.empty?
+        if recommended_fuzzy_gotoline?
+          # 専用の Searcher を作成
+          @searcher_fuzzy_gotoline = SearchFuzzyGotoLine.new(@path, @params, @q)
 
-        # 検索
-        @records, @total_records = Database.instance.search(q2.keywords, q2.multi_match_keywords, q2.packages, path, q2.fpaths, q2.suffixs, q2.fpath_or_packages, @offset, LIMIT_NUM)
-
-        # 再grep
-        grep_contents(q2.keywords)
+          # 結果をコピーする
+          @total_records = @searcher_fuzzy_gotoline.total_records
+          @match_records = @searcher_fuzzy_gotoline.match_records
+          @next_index    = @searcher_fuzzy_gotoline.next_index
+          @end_index     = @searcher_fuzzy_gotoline.end_index
+          @next_line     = nil
+          
+        elsif recommended_fpath_or_packages?
+          # おすすめクエリーに変換
+          q2 = @q.conv_head_keyword_to_fpath_or_packages
+          
+          # 検索
+          @records, @total_records = Database.instance.search(q2.keywords, q2.multi_match_keywords, q2.packages, path, q2.fpaths, q2.suffixs, q2.fpath_or_packages, @offset, LIMIT_NUM)
+          
+          # 再grep
+          grep_contents(q2.keywords)
+        end
       end
       
       # 検索3 : マッチするファイル
@@ -116,12 +131,25 @@ EOF
       end
     end
 
-    def has_recommended_query?
+    def recommended_fuzzy_gotoline?
+      @q.keywords.size == 1 && @q.only_keywords && Util::fuzzy_gotoline_keyword?(@q.keywords[0])
+    end
+
+    def recommended_fpath_or_packages?
       @q.keywords.size >= 2 && @q.only_keywords
     end
 
     def recommended_query_contents
-      if has_recommended_query?
+      if recommended_fuzzy_gotoline?
+        conv_query   = @q.conv_fuzzy_gotoline
+        tmpp         = @params.clone
+        tmpp[:query] = conv_query.query_string
+        url          = Mkurl.new(@path, tmpp).inherit_query_shead
+        <<EOS
+<dt class='result-file'>#{img_icon('document-new-4.png')}<a href='#{url}'>#{conv_query.query_string}</a></dt>
+<hr>
+EOS
+      elsif recommended_fpath_or_packages?
         conv_query   = @q.conv_head_keyword_to_fpath_or_packages
         tmpp         = @params.clone
         tmpp[:query] = conv_query.query_string
@@ -166,6 +194,14 @@ EOF
 
     def match_num
       @match_records.size
+    end
+
+    def directjump?
+      @searcher_fuzzy_gotoline && @searcher_fuzzy_gotoline.directjump?
+    end
+
+    def directjump_url
+      @searcher_fuzzy_gotoline.directjump_url
     end
 
     private
