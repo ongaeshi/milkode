@@ -13,6 +13,9 @@ require 'milkode/common/util'
 module Milkode
   class SearchFuzzyGotoLine
     attr_reader :total_records
+    attr_reader :match_records
+    attr_reader :next_index
+    attr_reader :end_index
     
     DISP_NUM = 20              # 1ページの表示数
     LIMIT_NUM = 50             # 最大検索ファイル数

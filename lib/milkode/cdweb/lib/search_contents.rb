@@ -9,6 +9,7 @@ require 'milkode/cdweb/lib/query'
 require 'milkode/cdweb/lib/grep'
 require 'milkode/cdweb/lib/mkurl'
 require 'milkode/common/util'
+require 'milkode/cdweb/lib/search_fuzzy_gotoline'
 
 module Milkode
   class SearchContents
@@ -32,6 +33,7 @@ module Milkode
       @line = params[:line].to_i
       @is_onematch = params[:onematch] == 'on'
       @is_sensitive = params[:sensitive] == 'on'
+      @searcher_fuzzy_gotoline = nil
 
       # 検索1 : クエリーそのまま
       @records, @total_records = Database.instance.search(@q.keywords, @q.multi_match_keywords, @q.packages, path, @q.fpaths, @q.suffixs, @q.fpath_or_packages, @offset, LIMIT_NUM)
@@ -40,6 +42,16 @@ module Milkode
       # 検索2 : マッチしなかった時におすすめクエリーがある場合
       if @match_records.empty?
         if recommended_fuzzy_gotoline?
+          # 専用の Searcher を作成
+          @searcher_fuzzy_gotoline = SearchFuzzyGotoLine.new(@path, @params, @q)
+
+          # 結果をコピーする
+          @total_records = @searcher_fuzzy_gotoline.total_records
+          @match_records = @searcher_fuzzy_gotoline.match_records
+          @next_index    = @searcher_fuzzy_gotoline.next_index
+          @end_index     = @searcher_fuzzy_gotoline.end_index
+          @next_line     = nil
+          
         elsif recommended_fpath_or_packages?
           # おすすめクエリーに変換
           q2 = @q.conv_head_keyword_to_fpath_or_packages
@@ -185,14 +197,11 @@ EOF
     end
 
     def directjump?
-      recommended_fuzzy_gotoline?
+      @searcher_fuzzy_gotoline && @searcher_fuzzy_gotoline.directjump?
     end
 
     def directjump_url
-      conv_query   = @q.conv_fuzzy_gotoline
-      tmpp         = @params.clone
-      tmpp[:query] = conv_query.query_string
-      Mkurl.new(File.join('/home', @path), tmpp).inherit_query_shead
+      @searcher_fuzzy_gotoline.directjump_url
     end
 
     private
