@@ -13,16 +13,12 @@ require 'milkode/common/util'
 module Milkode
   class SearchFuzzyGotoLine
     attr_reader :total_records
-    attr_reader :page
     
     DISP_NUM = 20              # 1ページの表示数
     LIMIT_NUM = 50             # 最大検索ファイル数
     NTH = 3                    # 表示範囲
     COL_LIMIT = 200            # 1行の桁制限
 
-    MATH_FILE_DISP  = 3        # マッチファイルの最大表示数
-    MATH_FILE_LIMIT = MATH_FILE_DISP + 1 # マッチファイルの検索リミット数
-    
     def initialize(path, params, query)
       @path = path
       @params = params
@@ -89,14 +85,14 @@ EOF
       @end_index = @next_index = @records.size
       @next_line = nil
 
-      @records.each_with_index do |record|
+      @records.each_with_index do |record, index|
         lineno = @gotoline[1] - 1
         
         if (lineno < record.content.split("\n").size)
           @match_records << MatchRecord.new(record, Grep::MatchLineResult.new(lineno, nil))
 
           if @match_records.size >= DISP_NUM
-            @end_index = index
+            @end_index  = index
             @next_index = index + 1
             break
           end
