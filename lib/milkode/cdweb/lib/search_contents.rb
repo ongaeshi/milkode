@@ -38,15 +38,18 @@ module Milkode
       grep_contents(@q.keywords)
 
       # 検索2 : マッチしなかった時におすすめクエリーがある場合
-      if @match_records.empty? && recommended_fpath_or_packages?
-        # おすすめクエリーに変換
-        q2 = @q.conv_head_keyword_to_fpath_or_packages
-
-        # 検索
-        @records, @total_records = Database.instance.search(q2.keywords, q2.multi_match_keywords, q2.packages, path, q2.fpaths, q2.suffixs, q2.fpath_or_packages, @offset, LIMIT_NUM)
-
-        # 再grep
-        grep_contents(q2.keywords)
+      if @match_records.empty?
+        if recommended_fuzzy_gotoline?
+        elsif recommended_fpath_or_packages?
+          # おすすめクエリーに変換
+          q2 = @q.conv_head_keyword_to_fpath_or_packages
+          
+          # 検索
+          @records, @total_records = Database.instance.search(q2.keywords, q2.multi_match_keywords, q2.packages, path, q2.fpaths, q2.suffixs, q2.fpath_or_packages, @offset, LIMIT_NUM)
+          
+          # 再grep
+          grep_contents(q2.keywords)
+        end
       end
       
       # 検索3 : マッチするファイル
@@ -116,8 +119,8 @@ EOF
       end
     end
 
-    def recommended_gotoline?
-      @q.keywords.size == 1 && @q.only_keywords && Util::sub_gotoline_keyword?(@q.keywords[0])
+    def recommended_fuzzy_gotoline?
+      @q.keywords.size == 1 && @q.only_keywords && Util::fuzzy_gotoline_keyword?(@q.keywords[0])
     end
 
     def recommended_fpath_or_packages?
@@ -125,8 +128,8 @@ EOF
     end
 
     def recommended_query_contents
-      if recommended_gotoline?
-        conv_query   = @q.conv_gotoline
+      if recommended_fuzzy_gotoline?
+        conv_query   = @q.conv_fuzzy_gotoline
         tmpp         = @params.clone
         tmpp[:query] = conv_query.query_string
         url          = Mkurl.new(@path, tmpp).inherit_query_shead
@@ -182,11 +185,11 @@ EOF
     end
 
     def directjump?
-      recommended_gotoline?
+      recommended_fuzzy_gotoline?
     end
 
     def directjump_url
-      conv_query   = @q.conv_gotoline
+      conv_query   = @q.conv_fuzzy_gotoline
       tmpp         = @params.clone
       tmpp[:query] = conv_query.query_string
       Mkurl.new(File.join('/home', @path), tmpp).inherit_query_shead

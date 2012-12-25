@@ -116,7 +116,7 @@ module Milkode
       keyword =~ /\A\/.*:\d+\Z/
     end
 
-    def sub_gotoline_keyword?(keyword)
+    def fuzzy_gotoline_keyword?(keyword)
       keyword =~ /\A.*:\d+\Z/
     end
 

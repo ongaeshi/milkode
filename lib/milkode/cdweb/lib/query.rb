@@ -106,7 +106,7 @@ module Milkode
     end
 
     # 'cdstk.rb:11' -> 'g:cdstk.rb:11'
-    def conv_gotoline
+    def conv_fuzzy_gotoline
       s = query_string.split.map {|v|
         if keywords[0].include? v
           "g:#{v}"
