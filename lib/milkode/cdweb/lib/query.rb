@@ -105,6 +105,19 @@ module Milkode
       Query.new(s)
     end
 
+    # 'cdstk.rb:11' -> 'g:cdstk.rb:11'
+    def conv_gotoline
+      s = query_string.split.map {|v|
+        if keywords[0].include? v
+          "g:#{v}"
+        else
+          v
+        end
+      }.join(' ')
+
+      Query.new(s)
+    end
+
     private
 
     def calc_param(index)

@@ -38,7 +38,7 @@ module Milkode
       grep_contents(@q.keywords)
 
       # 検索2 : マッチしなかった時におすすめクエリーがある場合
-      if @match_records.empty? && has_recommended_query?
+      if @match_records.empty? && recommended_fpath_or_packages?
         # おすすめクエリーに変換
         q2 = @q.conv_head_keyword_to_fpath_or_packages
 
@@ -116,12 +116,25 @@ EOF
       end
     end
 
-    def has_recommended_query?
+    def recommended_gotoline?
+      @q.keywords.size == 1 && @q.only_keywords && Util::sub_gotoline_keyword?(@q.keywords[0])
+    end
+
+    def recommended_fpath_or_packages?
       @q.keywords.size >= 2 && @q.only_keywords
     end
 
     def recommended_query_contents
-      if has_recommended_query?
+      if recommended_gotoline?
+        conv_query   = @q.conv_gotoline
+        tmpp         = @params.clone
+        tmpp[:query] = conv_query.query_string
+        url          = Mkurl.new(@path, tmpp).inherit_query_shead
+        <<EOS
+<dt class='result-file'>#{img_icon('document-new-4.png')}<a href='#{url}'>#{conv_query.query_string}</a></dt>
+<hr>
+EOS
+      elsif recommended_fpath_or_packages?
         conv_query   = @q.conv_head_keyword_to_fpath_or_packages
         tmpp         = @params.clone
         tmpp[:query] = conv_query.query_string
