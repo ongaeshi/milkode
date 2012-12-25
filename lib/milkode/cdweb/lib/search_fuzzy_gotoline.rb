@@ -149,7 +149,7 @@ EOS
 EOS
     end
 
-    def record_link(record)     # 
+    def record_link(record)
       Mkurl.new(record.shortpath, @params).inherit_query_shead
     end
 
