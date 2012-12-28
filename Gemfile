@@ -5,7 +5,7 @@ source "http://rubygems.org"
 #   gem "activesupport", ">= 2.3.5"
 # gemspec
 gem 'termcolor','>= 1.2.0', '< 1.2.2'
-gem 'rroonga','>= 1.1.0'
+gem 'rroonga','>= 1.1.0', '< 2.1.0'
 gem 'rack','>=1.3.4'
 gem 'sinatra', '>=1.2.6'
 gem 'launchy', '>=0.3.7'

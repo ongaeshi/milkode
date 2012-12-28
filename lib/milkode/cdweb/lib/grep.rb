@@ -17,7 +17,7 @@ module Milkode
 
     def match_lines_stopover(patterns, max_match, start_index, is_sensitive)
       result = []
-      patternRegexps = strs2regs(patterns, Util::ignore_case?(patterns, is_sensitive))
+      patternRegexps = strs2regs(patterns, is_sensitive)
       index = start_index
 
       lines = @content.split($/)
@@ -45,7 +45,7 @@ module Milkode
     
     def match_lines_and(patterns, is_sensitive)
       result = []
-      patternRegexps = strs2regs(patterns, Util::ignore_case?(patterns, is_sensitive))
+      patternRegexps = strs2regs(patterns, is_sensitive)
       index = 0
       
       @content.each_line do |line|
@@ -63,7 +63,7 @@ module Milkode
     end
 
     def one_match_and(patterns, is_sensitive)
-      patternRegexps = strs2regs(patterns, Util::ignore_case?(patterns, is_sensitive))
+      patternRegexps = strs2regs(patterns, is_sensitive)
       index = 0
       
       @content.each_line do |line|
@@ -82,13 +82,13 @@ module Milkode
 
     private
     
-    def strs2regs(strs, ignore = false)
+    def strs2regs(strs, is_sensitive)
       regs = []
 
       strs.each do |v|
         option = 0
-        option |= Regexp::IGNORECASE if (ignore)
-        regs << Regexp.new(Regexp.escape(v), option)
+        option |= Regexp::IGNORECASE if (!is_sensitive && Util::downcase?(v))
+        regs   << Regexp.new(Regexp.escape(v), option)
       end
 
       regs

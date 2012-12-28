@@ -42,7 +42,8 @@ class TestCdstk < Test::Unit::TestCase
       # obj.add(['git@github.com:ongaeshi/kodeworld.git'], {})
       assert_raise(OpenURI::HTTPError) { obj.add(['http://ongaeshi.me/test_data/not_found.zip'], {}) }
       obj.add(['../data/no_auto_ignore'], {:no_auto_ignore => true})
-
+      obj.add(['git://github.com/ongaeshi/duplicate-thing.git'], {:protocol => 'git', :name => 'ddd'})
+      
       FileUtils.touch('last1.txt')
       obj.add(['last1.txt'], {})
       FileUtils.touch('atodekesu.txt')

@@ -10,6 +10,7 @@ require 'milkode/cdweb/lib/coderay_wrapper'
 require 'milkode/cdweb/lib/search_contents'
 require 'milkode/cdweb/lib/search_files'
 require 'milkode/cdweb/lib/search_gotoline'
+require 'milkode/cdweb/lib/search_fuzzy_gotoline'
 require 'milkode/cdweb/lib/mkurl'
 require 'milkode/common/util'
 
@@ -52,11 +53,22 @@ module Milkode
     query = Query.new(params[:query])
     @title = "'#{query.query_string}' in #{path_title(path)}"
 
-    if (query.keywords.size > 0)
-      if Util::gotoline_keyword? query.keywords[0]
+    if (query.gotolines.size > 0)
+      searcher = SearchFuzzyGotoLine.new(path, params, query)
+
+      if searcher.directjump?
+        redirect searcher.directjump_url
+      end
+
+    elsif (query.keywords.size > 0)
+      if Util::gotoline_keyword?(query.keywords[0])
         searcher = SearchGotoLine.new(path, params, query)
       else
         searcher = SearchContents.new(path, params, query)
+
+        if searcher.directjump?
+          redirect searcher.directjump_url
+        end
       end
     else
       searcher = SearchFiles.new(path, params, query)
@@ -114,8 +126,12 @@ module Milkode
   private
   
   def file_or_dirimg(is_file)
-    src = (is_file) ? '/images/file.png' : '/images/directory.png'
-    "<img alt='' style='vertical-align:bottom; border: 0; margin: 1px;' src='#{src}'>"
+    src = (is_file) ? 'file.png' : 'directory.png'
+    img_icon(src)
+  end
+
+  def img_icon(srcfile)
+    "<img alt='' style='vertical-align:bottom; border: 0; margin: 1px;' src='/images/#{srcfile}'>"
   end
 
   def sort_change_content(current_value, text, sort_kind = nil)

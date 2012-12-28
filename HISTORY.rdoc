@@ -1,3 +1,17 @@
+=== 0.9.6 2012/12/28
+
+* milk web
+  * Narrow down search
+  * filename + keyword search
+  * Fuzzy direct jump
+  * Recommended search query
+  * Support favicon
+  * Bug fix
+
+* milk
+  * Support svn (milk add -p svn http://svn/trunk -n a_proj)
+  * Quickly milk remove & rebuild
+  
 === 0.9.5 2012/12/09
 
 * milk web 

@@ -33,6 +33,37 @@ module Milkode
         end
       end
     end
+
+    # レコードをまとめて削除する
+    #   検索結果にマッチしたレコード等をまとめて削除
+    #   削除前にインデックスを削除し、削除後にインデックスを再度追加してい
+    #   大量のレコードを削除する場合に高速に動作する
+    def remove_records(records, &block)
+      Groonga::Schema.define do |schema|
+        schema.change_table("terms") do |table|
+          table.remove_index("documents.path")
+          table.remove_index("documents.package")
+          table.remove_index("documents.restpath")
+          table.remove_index("documents.content")
+          table.remove_index("documents.suffix")
+        end
+      end
+
+      records.each do |record|
+        yield record if block
+        record.key.delete
+      end
+
+      Groonga::Schema.define do |schema|
+        schema.change_table("terms") do |table|
+          table.index("documents.path", :with_position => true)
+          table.index("documents.package", :with_position => true)
+          table.index("documents.restpath", :with_position => true)
+          table.index("documents.content", :with_position => true)
+          table.index("documents.suffix", :with_position => true)
+        end
+      end
+    end
     
     def initialize(table)
       @table = table
@@ -94,19 +125,12 @@ module Milkode
       @table[name].delete
     end
 
-    def remove_match_path(path)
-      result = search(:paths => [path])
-
-      result.each do |r|
-          yield r if block_given?
-          r.record_id.delete
-      end
+    def remove_match_path(path, &block)
+      remove_records(search(:paths => [path]), &block)
     end
 
-    def remove_all
-      self.each do |r|
-        r.record_id.delete
-      end
+    def remove_all(&block)
+      remove_records(@table.select, &block)
     end
 
     # shortpathの一致するレコードを取得
@@ -137,7 +161,7 @@ module Milkode
         unless File.exist? r.path
           yield r if block_given?
           # p r.restpath
-          r.record_id.delete
+          remove(r.path)
         end
       end
     end
@@ -301,16 +325,16 @@ module Milkode
     end
 
     # 指定されたパッケージのクリーンアップ
-    def cleanup_package_name(package)
+    def cleanup_package_name(package_name)
       # クリーンアップ対象のファイルを検索
-      result = @table.select { |record| record.package == package }
+      result = @table.select { |record| record.package == package_name }
 
       # 存在しないファイルの削除
       result.each do |r|
         unless File.exist? r.path
           yield r if block_given?
           # p r.restpath
-          r.record_id.delete
+          remove(r.path)
         end
       end
     end
@@ -334,13 +358,7 @@ module Milkode
     private
 
     def load_content(filename)
-      str = File.read(filename)
-      begin
-        Kconv.kconv(str, Kconv::UTF8)
-      rescue ArgumentError
-        Util.warning_alert($stdout, "skip kconv. file size too big (or negative string size) : #{filename}.")
-        str
-      end
+      Util::load_content($stdout, filename)
     end
 
     def package_expression(record, packages)

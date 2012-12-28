@@ -22,7 +22,7 @@ set :haml, :format => :html5
 
 get '/' do
   @setting = WebSetting.new
-  @version = "0.9.5"
+  @version = "0.9.6"
   @package_num = Database.instance.yaml_package_num
   @file_num = Database.instance.totalRecords
   @package_list = PackageList.new(Database.instance.grndb)
@@ -136,7 +136,7 @@ helpers do
 
     <<EOF
 <select name="shead" id="shead">
-#{data.map{|v| "<option value='#{v[0]}' #{v[0] == value ? 'selected' : ''}>#{v[1]}</option>"}}
+#{data.map{|v| "<option value='#{v[0]}' #{v[0] == value ? 'selected' : ''}>#{v[1]}</option>"}.join}
 </select>
 EOF
   end
@@ -148,7 +148,7 @@ EOF
 
     <<EOF
 <select name="package" id="package" onchange="select_package()">
-#{data.map{|v| "<option value='#{v}' #{v == value ? 'selected' : ''}>#{v}</option>"}}
+#{data.map{|v| "<option value='#{v}' #{v == value ? 'selected' : ''}>#{v}</option>"}.join}
 </select>
 EOF
   end
@@ -159,7 +159,7 @@ EOF
 
     <<EOF
 <select name="package" id="package_home" onchange="select_package_home()">
-#{data.map{|v| "<option value='#{v}' #{v == value ? 'selected' : ''}>#{v}</option>"}}
+#{data.map{|v| "<option value='#{v}' #{v == value ? 'selected' : ''}>#{v}</option>"}.join}
 </select>
 EOF
   end
@@ -183,7 +183,7 @@ EOF
 
     <<EOF
     #{headicon('go-home-5.png')} <a href="/home" class="headmenu">ホーム</a>
-    #{headicon('document-new-4.png')} <a href="#{href}" class="headmenu" onclick="window.open('#{href}'); return false;">タブを複製</a>
+    #{headicon('document-new-4.png')} <a href="#{href}" class="headmenu" onclick="window.open(document.URL); return false;">タブを複製</a>
     #{headicon('directory.png')} <a href="#{flist}" class="headmenu">ディレクトリ</a> 
     #{headicon('view-refresh-4.png')} <a href="#updateModal" class="headmenu" data-toggle="modal">パッケージを更新</a>
     #{headicon('help.png')} <a href="/help" class="headmenu">ヘルプ</a>

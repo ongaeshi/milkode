@@ -44,7 +44,7 @@ module Milkode
 
     def remove_all
       self.each do |r|
-        r.record_id.delete
+        remove(r.name)
       end
     end
 

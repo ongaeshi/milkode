@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{milkode}
-  s.version = "0.9.5"
+  s.version = "0.9.6"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ongaeshi"]
-  s.date = %q{2012-12-09}
+  s.date = %q{2012-12-28}
   s.description = %q{Line based local source code search engine & grep-command & web-app.}
   s.email = %q{ongaeshi0621@gmail.com}
   s.executables = ["gmilk", "milk"]
@@ -47,6 +47,7 @@ Gem::Specification.new do |s|
     "lib/milkode/cdweb/lib/query.rb",
     "lib/milkode/cdweb/lib/search_contents.rb",
     "lib/milkode/cdweb/lib/search_files.rb",
+    "lib/milkode/cdweb/lib/search_fuzzy_gotoline.rb",
     "lib/milkode/cdweb/lib/search_gotoline.rb",
     "lib/milkode/cdweb/lib/web_setting.rb",
     "lib/milkode/cdweb/public/css/bootstrap-responsive.min.css",
@@ -74,6 +75,7 @@ Gem::Specification.new do |s|
     "lib/milkode/cdweb/public/images/MilkodeIcon135.png",
     "lib/milkode/cdweb/public/images/directory.png",
     "lib/milkode/cdweb/public/images/document-new-4.png",
+    "lib/milkode/cdweb/public/images/favicon.ico",
     "lib/milkode/cdweb/public/images/file.png",
     "lib/milkode/cdweb/public/images/go-home-5.png",
     "lib/milkode/cdweb/public/images/help.png",
@@ -121,6 +123,7 @@ Gem::Specification.new do |s|
     "lib/milkode/grep/cli_grep.rb",
     "milkode.gemspec",
     "test/data/.gitignore",
+    "test/data/.gitignore.sjis",
     "test/data/a_project/cdstk.rb",
     "test/data/a_project/cdstk_yaml.rb",
     "test/data/a_project/empty.txt",
@@ -138,6 +141,8 @@ Gem::Specification.new do |s|
     "test/data/c_project/to/file.rb",
     "test/data/ignore_test/.gitignore",
     "test/data/ignore_test/a.txt",
+    "test/data/ignore_test_sjis/.gitignore",
+    "test/data/ignore_test_sjis/a.txt",
     "test/data/no_auto_ignore/.gitignore",
     "test/data/no_auto_ignore/a.txt",
     "test/data/nodir_abc.zip",
@@ -189,7 +194,7 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<termcolor>, [">= 1.2.0", "< 1.2.2"])
-      s.add_runtime_dependency(%q<rroonga>, [">= 1.1.0"])
+      s.add_runtime_dependency(%q<rroonga>, [">= 1.1.0", "< 2.1.0"])
       s.add_runtime_dependency(%q<rack>, [">= 1.3.4"])
       s.add_runtime_dependency(%q<sinatra>, [">= 1.2.6"])
       s.add_runtime_dependency(%q<launchy>, [">= 0.3.7"])
@@ -204,7 +209,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rack-test>, [">= 0"])
     else
       s.add_dependency(%q<termcolor>, [">= 1.2.0", "< 1.2.2"])
-      s.add_dependency(%q<rroonga>, [">= 1.1.0"])
+      s.add_dependency(%q<rroonga>, [">= 1.1.0", "< 2.1.0"])
       s.add_dependency(%q<rack>, [">= 1.3.4"])
       s.add_dependency(%q<sinatra>, [">= 1.2.6"])
       s.add_dependency(%q<launchy>, [">= 0.3.7"])
@@ -220,7 +225,7 @@ Gem::Specification.new do |s|
     end
   else
     s.add_dependency(%q<termcolor>, [">= 1.2.0", "< 1.2.2"])
-    s.add_dependency(%q<rroonga>, [">= 1.1.0"])
+    s.add_dependency(%q<rroonga>, [">= 1.1.0", "< 2.1.0"])
     s.add_dependency(%q<rack>, [">= 1.3.4"])
     s.add_dependency(%q<sinatra>, [">= 1.2.6"])
     s.add_dependency(%q<launchy>, [">= 0.3.7"])

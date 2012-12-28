@@ -116,6 +116,10 @@ module Milkode
       keyword =~ /\A\/.*:\d+\Z/
     end
 
+    def fuzzy_gotoline_keyword?(keyword)
+      keyword =~ /\A.*:\d+\Z/
+    end
+
     # parse_gotoline(['a', '123', 'b']) #=> [['a', 'b'], 123]]
     # parse_gotoline(['a', '123', 'b', 55]) #=> [['a', 'b', '123'], 55]]
     # parse_gotoline(['a:5']) #=> [['a'], 55]]
@@ -179,6 +183,10 @@ module Milkode
       (src =~ /^(:?git[:@])|(:?ssh:)/) != nil
     end
 
+    def svn_url?(src)
+      (src =~ /^(:?svn|svn\+ssh):\/\//) != nil
+    end
+
     # StringIO patch
     def pipe?(io)
       !io.instance_of?(IO) || !File.pipe?(io) 
@@ -187,6 +195,17 @@ module Milkode
     def warning_alert(out, msg)
       out.puts "[warning] #{msg}"
     end
+
+    def load_content(out, filename)
+      str = File.read(filename)
+      begin
+        Kconv.kconv(str, Kconv::UTF8)
+      rescue ArgumentError
+        warning_alert(out, "skip kconv. file size too big (or negative string size) : #{filename}.")
+        str
+      end
+    end
+    
   end
 end
 

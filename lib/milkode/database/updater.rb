@@ -30,6 +30,11 @@ module Milkode
         Dir.chdir(@package.directory) { system("git pull") }        
       end
       
+      # svn update
+      if @options[:update_with_svn_update]
+        Dir.chdir(@package.directory) { system("svn update") }
+      end
+
       # cleanup
       unless @options[:no_clean]
         @grndb.documents.cleanup_package_name(@package_name)
@@ -60,6 +65,10 @@ module Milkode
 
     def enable_update_with_git_pull
       @options[:update_with_git_pull] = true      
+    end
+
+    def enable_update_with_svn_update
+      @options[:update_with_svn_update] = true
     end
 
     def enable_no_clean
@@ -209,14 +218,12 @@ module Milkode
     end
 
     def add_current_gitignore(dirname, path)
-      git_ignore = File.join(dirname, path, ".gitignore")
+      filename = File.join(dirname, path, ".gitignore")
       
-      if File.exist? git_ignore
-        alert_info("add_ignore", git_ignore)
-        
-        open(git_ignore) do |f|
-          @current_ignore.add IgnoreSetting.create_from_gitignore(path, f.read)
-        end
+      if File.exist? filename
+        alert_info("add_ignore", filename)
+        str = Util::load_content($stdout, filename)
+        @current_ignore.add IgnoreSetting.create_from_gitignore(path, str)
       end
     end
 

@@ -102,6 +102,16 @@ class TestUtil < Test::Unit::TestCase
     assert_equal  true, Milkode::Util::git_url?('ssh:foo@bar/baz.git')
   end
 
+  def test_svn_url?
+    assert_equal  true, Milkode::Util::svn_url?('svn://ongaeshi.me/svn/trunk/')
+    assert_equal  true, Milkode::Util::svn_url?('svn+ssh://ongaeshi.me/svn/trunk/')
+    assert_equal false, Milkode::Util::svn_url?('svna://ongaeshi.me/svn/trunk/')
+    assert_equal false, Milkode::Util::svn_url?('http:://ongaeshi.me')
+    assert_equal false, Milkode::Util::svn_url?('git://github.com/ongaeshi/milkode.git')
+    assert_equal false, Milkode::Util::svn_url?('git@github.com:ongaeshi/milkode.git')
+    assert_equal false, Milkode::Util::svn_url?('ssh:foo@bar/baz.git')
+  end
+
   def test_divide_shortpath
     package, restpath = Milkode::Util::divide_shortpath('package/to/a.txt')
     assert_equal 'package', package
