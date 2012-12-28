@@ -22,6 +22,9 @@ module Milkode
       FileUtils.cp_r @work.expand_path("../data/ignore_test"), @work.expand_path(".")
       @work.add_package "db1", @work.expand_path("ignore_test")
       
+      FileUtils.cp_r @work.expand_path("../data/ignore_test_sjis"), @work.expand_path(".")
+      @work.add_package "db1", @work.expand_path("ignore_test_sjis")
+      
       @grndb = GroongaDatabase.new
       @grndb.open(@work.expand_path("db1"))
     end
@@ -32,6 +35,7 @@ module Milkode
       t_add_file
       t_update_file
       t_local_gitignore
+      t_local_gitignore_sjis
       t_global_ignore
       t_no_auto_ignore
       t_silent_mode
@@ -45,7 +49,7 @@ module Milkode
     private
 
     def t_pre_check
-      assert_equal    2, @grndb.packages.size
+      assert_equal    3, @grndb.packages.size
       assert_not_nil  @grndb.packages['a_project']
     end
 
@@ -74,6 +78,14 @@ module Milkode
       FileUtils.touch(@work.expand_path("ignore_test/b.bak")) # *.bak は除外対象
       FileUtils.touch(@work.expand_path("ignore_test/b.txt"))
       updater = Updater.new(@grndb, 'ignore_test')
+      updater.exec
+      result_test updater.result, 3, 1, 0
+    end
+
+    def t_local_gitignore_sjis
+      FileUtils.touch(@work.expand_path("ignore_test_sjis/b.bak")) # *.bak は除外対象
+      FileUtils.touch(@work.expand_path("ignore_test_sjis/b.txt"))
+      updater = Updater.new(@grndb, 'ignore_test_sjis')
       updater.exec
       result_test updater.result, 3, 1, 0
     end

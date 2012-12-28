@@ -104,6 +104,15 @@ EOF
     end
   end
 
+  def test_create_from_gitignore_sjis
+    Dir.chdir(File.join(File.dirname(__FILE__))) do
+      str = Milkode::Util::load_content($stdout, "data/.gitignore.sjis") # sjis -> utf-8
+      is  = IgnoreSetting.create_from_gitignore("/doc", str)
+      assert_equal "/doc", is.path
+      assert_equal ["coverage", "rdoc", "doc", ".yardoc", ".bundle", "pkg"], is.ignores
+    end
+  end
+
   def test_last_slash
     is = IgnoreSetting.new "/doc", ["/lib/"]
 

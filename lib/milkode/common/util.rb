@@ -195,6 +195,17 @@ module Milkode
     def warning_alert(out, msg)
       out.puts "[warning] #{msg}"
     end
+
+    def load_content(out, filename)
+      str = File.read(filename)
+      begin
+        Kconv.kconv(str, Kconv::UTF8)
+      rescue ArgumentError
+        warning_alert(out, "skip kconv. file size too big (or negative string size) : #{filename}.")
+        str
+      end
+    end
+    
   end
 end
 
