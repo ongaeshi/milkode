@@ -60,7 +60,7 @@ EOF
       opt.on('-c', '--count', 'Disp count num.') {|v| my_option[:count] = true }
       opt.on('--cache', 'Search only db.') {|v| option.groongaOnly = true }
       opt.on('--color', 'Color highlight.') {|v| option.colorHighlight = true}
-      opt.on('--cs', '--case-sensitive', 'Case sensitivity.') {|v| my_option[:case_sensitive] = true }
+      opt.on('--cs', '--case-sensitive', 'Case sensitivity.') {|v| option.caseSensitive = true }
       opt.on('-d DIR', '--directory DIR', 'Start directory. (deafult:".")') {|v| current_dir = File.expand_path(v); my_option[:find_mode] = true} 
       opt.on('--db DB_DIR', "Specify dbdir. (Use often with '-a')") {|v| option.dbFile = Dbdir.groonga_path(v) }
       opt.on('-f FILE_PATH', '--file-path FILE_PATH', 'File path. (Enable multiple call)') {|v| option.filePatterns << v; my_option[:find_mode] = true }
@@ -116,9 +116,6 @@ EOF
       end
 
       if (arguments.size > 0 || my_option[:find_mode])
-        # ignore?
-        option.ignoreCase = true if Util::ignore_case?(arguments, my_option[:case_sensitive])
-
         # update
         if my_option[:update]
           cdstk = Cdstk.new(stdout, Dbdir.select_dbdir)

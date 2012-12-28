@@ -20,6 +20,7 @@ module FindGrep
                         :directory,
                         :depth,
                         :ignoreCase,
+                        :caseSensitive,
                         :colorHighlight,
                         :isSilent,
                         :debugMode,
@@ -47,6 +48,7 @@ module FindGrep
                                 false,
                                 false,
                                 false,
+                                false,
                                 [],
                                 [],
                                 [],
@@ -68,15 +70,15 @@ module FindGrep
     attr_reader :documents
     
     def initialize(patterns, option)
-      @patterns = patterns
-      @option = option
-      @patternRegexps = strs2regs(patterns, @option.ignoreCase)
-      @subRegexps = strs2regs(option.patternsNot, @option.ignoreCase)
-      @orRegexps = strs2regs(option.patternsOr, @option.ignoreCase)
-      @filePatterns = (!@option.dbFile) ? strs2regs(option.filePatterns) : []
-      @ignoreFiles = strs2regs(option.ignoreFiles)
-      @ignoreDirs = strs2regs(option.ignoreDirs)
-      @result = Result.new(option.directory)
+      @patterns       = patterns
+      @option         = option
+      @patternRegexps = strs2regs(patterns)
+      @subRegexps     = strs2regs(option.patternsNot)
+      @orRegexps      = strs2regs(option.patternsOr)
+      @filePatterns   = (!@option.dbFile) ? strs2regs_simple(option.filePatterns) : []
+      @ignoreFiles    = strs2regs_simple(option.ignoreFiles)
+      @ignoreDirs     = strs2regs_simple(option.ignoreDirs)
+      @result         = Result.new(option.directory)
       open_database if (@option.dbFile)
     end
 
@@ -97,13 +99,23 @@ module FindGrep
       end
     end
 
-    def strs2regs(strs, ignore = false)
+    def strs2regs(strs)
       regs = []
 
       strs.each do |v|
         option = 0
-        option |= Regexp::IGNORECASE if (ignore)
+        option |= Regexp::IGNORECASE if (@option.ignoreCase || (!@option.caseSensitive && Milkode::Util::downcase?(v)))
         regs << Regexp.new(v, option)
+      end
+
+      regs
+    end
+
+    def strs2regs_simple(strs)
+      regs = []
+
+      strs.each do |v|
+        regs << Regexp.new(v, 0)
       end
 
       regs
