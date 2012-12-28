@@ -136,7 +136,7 @@ helpers do
 
     <<EOF
 <select name="shead" id="shead">
-#{data.map{|v| "<option value='#{v[0]}' #{v[0] == value ? 'selected' : ''}>#{v[1]}</option>"}}
+#{data.map{|v| "<option value='#{v[0]}' #{v[0] == value ? 'selected' : ''}>#{v[1]}</option>"}.join}
 </select>
 EOF
   end
@@ -148,7 +148,7 @@ EOF
 
     <<EOF
 <select name="package" id="package" onchange="select_package()">
-#{data.map{|v| "<option value='#{v}' #{v == value ? 'selected' : ''}>#{v}</option>"}}
+#{data.map{|v| "<option value='#{v}' #{v == value ? 'selected' : ''}>#{v}</option>"}.join}
 </select>
 EOF
   end
@@ -159,7 +159,7 @@ EOF
 
     <<EOF
 <select name="package" id="package_home" onchange="select_package_home()">
-#{data.map{|v| "<option value='#{v}' #{v == value ? 'selected' : ''}>#{v}</option>"}}
+#{data.map{|v| "<option value='#{v}' #{v == value ? 'selected' : ''}>#{v}</option>"}.join}
 </select>
 EOF
   end
