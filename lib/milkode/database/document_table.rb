@@ -291,7 +291,7 @@ module Milkode
                              {:key => "restpath", :order => "ascending"}],
                             :offset => offset,
                             :limit => limit)
-        .map {|r| r.value}
+      records = records.map {|r| r.value}
 
       # 検索結果のレコード(limitの影響を受ける), 総マッチ数(limitの影響を受けない)
       return records, result.size
