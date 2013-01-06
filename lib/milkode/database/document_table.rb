@@ -96,6 +96,7 @@ module Milkode
       record = @table[path]
 
       unless record
+        p [':newfile', timestamp, timestamp.nsec] if restpath == 'b.txt'
         # 新規追加
         @table.add(path, 
                    :path => path,
@@ -104,9 +105,10 @@ module Milkode
                    :content => load_content(filename),
                    :timestamp => timestamp,
                    :suffix => suffix)
+        p [':record', @table[path].timestamp, @table[path].timestamp.nsec] if restpath == 'b.txt'
         return :newfile
       else
-        p [record.timestamp, record.timestamp.nsec, timestamp, timestamp.nsec] if restpath == 'b.txt'
+        p [':update', record.timestamp, record.timestamp.nsec, timestamp, timestamp.nsec] if restpath == 'b.txt'
         
         if (record.timestamp < timestamp)
           # 更新
