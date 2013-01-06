@@ -59,7 +59,7 @@ module Milkode
     end
 
     def sort(kind, order = "descending")
-      @table.sort([{:key => kind, :order => order}])
+      @table.sort([{:key => kind, :order => order}]).map {|r| r.value}
     end
 
     def dump
