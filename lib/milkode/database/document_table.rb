@@ -91,12 +91,13 @@ module Milkode
       package = Util::filename_to_utf8(package)
       restpath = Util::filename_to_utf8(restpath)
       suffix = File.extname(path).sub('.', "")
-      timestamp = File.mtime(filename) # OSへの問い合わせは変換前のファイル名で
+      mtime     = File.mtime(filename) # OSへの問い合わせは変換前のファイル名で
+      timestamp = Time.at(mtime.to_i, mtime.usec) # nsecは切り捨て(rroongaはマイクロ秒までしか格納出来ない)
 
       record = @table[path]
 
       unless record
-        p [':newfile', timestamp, timestamp.nsec] if restpath == 'b.txt'
+        # p [':newfile', timestamp, timestamp.nsec, timestamp.usec] if restpath == 'b.txt'
         # 新規追加
         @table.add(path, 
                    :path => path,
@@ -105,11 +106,10 @@ module Milkode
                    :content => load_content(filename),
                    :timestamp => timestamp,
                    :suffix => suffix)
-        p [':record', @table[path].timestamp, @table[path].timestamp.nsec] if restpath == 'b.txt'
+        # p [':record', @table[path].timestamp, @table[path].timestamp.nsec] if restpath == 'b.txt'
         return :newfile
       else
-        p [':update', record.timestamp, record.timestamp.nsec, timestamp, timestamp.nsec] if restpath == 'b.txt'
-        
+        # p [':update', record.timestamp, record.timestamp.nsec, timestamp, timestamp.nsec] if restpath == 'b.txt'
         if (record.timestamp < timestamp)
           # 更新
           record.package   = package
