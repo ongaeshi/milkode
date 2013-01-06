@@ -106,6 +106,8 @@ module Milkode
                    :suffix => suffix)
         return :newfile
       else
+        p [record.timestamp, record.timestamp.nsec, timestamp, timestamp.nsec] if restpath == 'b.txt'
+        
         if (record.timestamp < timestamp)
           # 更新
           record.package   = package
