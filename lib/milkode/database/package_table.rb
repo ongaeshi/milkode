@@ -36,8 +36,8 @@ module Milkode
       @table.add(name,
                  :name      => name,
                  :directory => directory,
-                 :addtime   => Util::truncate_nsec(Time.now),
-                 :favtime   => options[:fav] ? Util::truncate_nsec(Time.now) : Time.at(0))
+                 :addtime   => Time.now,
+                 :favtime   => options[:fav] ? Time.now : Time.at(0))
     end
 
     def remove(name)
@@ -71,14 +71,14 @@ module Milkode
     end
 
     def touch(name, kind, time = Time.now)
-      @table[name][kind] = Util::truncate_nsec(time)
+      @table[name][kind] = time
     end
 
     def touch_if(name, kind, time = Time.now)
       record = @table[name]
 
       if record
-        record[kind] = Util::truncate_nsec(time)
+        record[kind] = time
       else
         nil
       end
