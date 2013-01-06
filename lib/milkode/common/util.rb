@@ -205,7 +205,12 @@ module Milkode
         str
       end
     end
-    
+
+    # Timeからnsecを切り捨てる
+    #   rroongaのTimeカラムはマイクロ秒までしか格納出来ない
+    def truncate_nsec(t)
+      Time.at(t.to_i, t.usec) 
+    end
   end
 end
 

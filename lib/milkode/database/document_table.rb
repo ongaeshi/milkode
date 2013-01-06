@@ -6,7 +6,7 @@
 # @date   2012/05/29
 
 require 'kconv'
-require 'milkode/common/util.rb'
+require 'milkode/common/util'
 
 module Milkode
   class DocumentTable
@@ -84,20 +84,18 @@ module Milkode
     # @retval nil      タイムスタンプ比較により更新無し
     #
     def add(package_dir, restpath, package_name = nil)
-      filename = File.join(package_dir, restpath) # フルパスの作成
-      filename = File.expand_path(filename) # 絶対パスに変換
-      path = Util::filename_to_utf8(filename) # データベースに格納する時のファイル名はutf8
-      package = package_name || File.basename(package_dir)
-      package = Util::filename_to_utf8(package)
-      restpath = Util::filename_to_utf8(restpath)
-      suffix = File.extname(path).sub('.', "")
-      mtime     = File.mtime(filename) # OSへの問い合わせは変換前のファイル名で
-      timestamp = Time.at(mtime.to_i, mtime.usec) # nsecは切り捨て(rroongaはマイクロ秒までしか格納出来ない)
+      filename  = File.join(package_dir, restpath)           # フルパスの作成
+      filename  = File.expand_path(filename)                 # 絶対パスに変換
+      path      = Util::filename_to_utf8(filename)           # データベースに格納する時のファイル名はutf8
+      package   = package_name || File.basename(package_dir)
+      package   = Util::filename_to_utf8(package)
+      restpath  = Util::filename_to_utf8(restpath)
+      suffix    = File.extname(path).sub('.', "")
+      timestamp = Util::truncate_nsec(File.mtime(filename)) # OSへの問い合わせは変換前のファイル名で
 
       record = @table[path]
 
       unless record
-        # p [':newfile', timestamp, timestamp.nsec, timestamp.usec] if restpath == 'b.txt'
         # 新規追加
         @table.add(path, 
                    :path => path,
@@ -106,10 +104,8 @@ module Milkode
                    :content => load_content(filename),
                    :timestamp => timestamp,
                    :suffix => suffix)
-        # p [':record', @table[path].timestamp, @table[path].timestamp.nsec] if restpath == 'b.txt'
         return :newfile
       else
-        # p [':update', record.timestamp, record.timestamp.nsec, timestamp, timestamp.nsec] if restpath == 'b.txt'
         if (record.timestamp < timestamp)
           # 更新
           record.package   = package

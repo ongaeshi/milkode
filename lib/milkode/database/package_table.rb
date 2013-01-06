@@ -5,6 +5,8 @@
 # @author ongaeshi
 # @date   2012/05/29
 
+require 'milkode/common/util'
+
 module Milkode
   class PackageTable
     include Enumerable
@@ -32,10 +34,10 @@ module Milkode
 
     def add(name, directory, options)
       @table.add(name,
-                 :name => name,
+                 :name      => name,
                  :directory => directory,
-                 :addtime => Time.now,
-                 :favtime => options[:fav] ? Time.now : Time.at(0))
+                 :addtime   => Util::truncate_nsec(Time.now),
+                 :favtime   => options[:fav] ? Util::truncate_nsec(Time.now) : Time.at(0))
     end
 
     def remove(name)
@@ -69,14 +71,14 @@ module Milkode
     end
 
     def touch(name, kind, time = Time.now)
-      @table[name][kind] = time
+      @table[name][kind] = Util::truncate_nsec(time)
     end
 
     def touch_if(name, kind, time = Time.now)
       record = @table[name]
 
       if record
-        record[kind] = time
+        record[kind] = Util::truncate_nsec(time)
       else
         nil
       end
