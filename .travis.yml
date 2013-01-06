@@ -3,7 +3,7 @@ language: ruby
 notifications:
   email:
     recipients:  
-      # - kou@clear-code.com
+      - kou@clear-code.com
       - ongaeshi0621@gmail.com
       
 rvm:
