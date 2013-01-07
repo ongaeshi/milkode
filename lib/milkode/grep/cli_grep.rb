@@ -45,6 +45,7 @@ Stateful:
 Gotoline:
     -g,                              Go to line mode.
     Enter a file name and line number. If you omit the line number jumps to the line:1.
+
     Example:
       gmilk -g database lib 7
       lib/database.rb:7:xxxxxxxxxxxxxxx
@@ -53,6 +54,14 @@ Gotoline:
       gmilk -g lib/database.rb:7 test/test_database.rb:5
       lib/database.rb:7:xxxxxxxxxxxxxxx
       test/test_database.rb:5:yyyyyyyyy
+
+    Maybe jump to the same place:
+      gmilk -g /milkode/path/to/file.rb:7
+      gmilk -g path/to/file.rb:7
+      gmilk -g /Documents/milkode/path/to/file.rb:7
+      gmilk -g C:\\Documents\\milkode\\path\\to\\file.rb:7
+      gmilk -g ./to/file.rb:7
+      gmilk -g path\\to\\file.rb(7,10)
 
 Normal:
 EOF
