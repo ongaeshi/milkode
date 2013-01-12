@@ -935,15 +935,21 @@ EOF
       end
     end
 
-    def files(args)
+    def files(args, options)
       packages = find_packages(args)
       return if (packages.empty?)
 
       db_open
+
+      basedir = File.expand_path('.') if options[:relative]
       
       packages.each do |package|
         package_records(package.name).each do |record|
-          @out.puts record.restpath
+          if options[:relative]
+            @out.puts Util::relative_path(record.path, basedir)
+          else
+            @out.puts record.restpath
+          end
         end
       end
     end
