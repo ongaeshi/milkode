@@ -76,6 +76,11 @@ class TestCLI < Test::Unit::TestCase
     end
   end
 
+  def test_files
+    command("files")
+    command("files -r")
+  end
+  
   private
 
   def command(arg)

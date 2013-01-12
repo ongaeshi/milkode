@@ -875,8 +875,12 @@ EOF
       else
         dir = File.expand_path('.')
         r = @yaml.package_root(dir)
-        @out.puts "Not registered '#{dir}'." if r.nil?
-        [r]
+        if r.nil?
+          @out.puts "Not registered '#{dir}'."
+          []
+        else
+          [r]
+        end
       end
     end
 
