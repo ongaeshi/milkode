@@ -5,6 +5,7 @@ require 'milkode/common/archive-zip'
 require 'fileutils'
 require 'pathname'
 require 'kconv'
+require 'groonga'
 
 module Milkode
   module Util
@@ -210,6 +211,20 @@ module Milkode
     #   rroongaのTimeカラムはマイクロ秒までしか格納出来ない
     def truncate_nsec(t)
       Time.at(t.to_i, t.usec) 
+    end
+
+    # gem_version_more?('rroonga', '2.1.0')  #=> rroonga >= '2.1.0'
+    def gem_version_more?(name, version)
+      Gem.loaded_specs[name].version >= Gem::Version.new(version)
+    end
+
+    # 互換性保持のため
+    def groonga_table_sort(table, keys, options = {})
+      if gem_version_more?('rroonga', '2.1.0')
+        table.sort(keys, options).map{|r| r.value}
+      else
+        table.sort(keys, options)
+      end
     end
   end
 end

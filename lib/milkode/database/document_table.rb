@@ -287,11 +287,11 @@ module Milkode
       #                      :limit => limit)
       
       # ファイル名でソート
-      records = result.sort([{:key => "package", :order => "ascending"},
-                             {:key => "restpath", :order => "ascending"}],
-                            :offset => offset,
-                            :limit => limit)
-      records = records.map {|r| r.value}
+      records = Util.groonga_table_sort(result,
+                                        [{:key => "package", :order => "ascending"},
+                                         {:key => "restpath", :order => "ascending"}],
+                                        :offset => offset,
+                                        :limit => limit)
 
       # 検索結果のレコード(limitの影響を受ける), 総マッチ数(limitの影響を受けない)
       return records, result.size

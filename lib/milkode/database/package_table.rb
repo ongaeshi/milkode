@@ -61,7 +61,7 @@ module Milkode
     end
 
     def sort(kind, order = "descending")
-      @table.sort([{:key => kind, :order => order}]).map {|r| r.value}
+      Util.groonga_table_sort(@table, [{:key => kind, :order => order}])
     end
 
     def dump
