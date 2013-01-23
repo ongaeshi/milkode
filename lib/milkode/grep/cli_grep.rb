@@ -221,11 +221,17 @@ EOF
 
       def prev
         @arguments.map! do |v|
-          v.gsub("-l", ":l").
-            gsub("-k", ":k").
-            gsub("-g", ":g")            
+          case v
+          when "-l"
+            ":l"
+          when "-k"
+            ":k"
+          when "-g"
+            ":g"
+          else
+            v
+          end
         end
-
       end
 
       def after
