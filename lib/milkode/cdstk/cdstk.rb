@@ -407,6 +407,8 @@ module Milkode
         h = File.exist?(p.directory) ? '' : '? '
         if (options[:verbose])
           "#{(h + p.name).ljust(max+2)} #{p.directory}"
+        elsif (options[:directory])
+          "#{p.directory}"
         else
           "#{h}#{p.name}"
         end
@@ -414,7 +416,7 @@ module Milkode
 
       @out.puts str
 
-      if Util.pipe? $stdout
+      if !options[:directory] && Util.pipe?($stdout)
         if args.empty?
           milkode_info
         else
