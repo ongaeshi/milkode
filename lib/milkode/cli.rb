@@ -71,6 +71,7 @@ EOF
 
     desc "list [package1 package2 ...]", "List package"
     option :verbose, :type => :boolean, :aliases => '-v', :desc => 'Be verbose.'
+    option :directory, :type => :boolean, :aliases => '-d', :desc => 'Display direcory.'
     option :check, :type => :boolean, :aliases => '-c', :desc => "Check integrity 'yaml and database'"
     def list(*args)
       cdstk.list(args, options)
@@ -193,8 +194,9 @@ EOF
     end
 
     desc "files", "Display package files"
+    option :relative, :type => :boolean, :aliases => '-r', :desc => "Display relative path."
     def files(*args)
-      cdstk.files(args)
+      cdstk.files(args, options)
     end
 
     # --------------------------------------------------------------------------

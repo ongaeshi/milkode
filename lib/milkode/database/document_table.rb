@@ -6,7 +6,7 @@
 # @date   2012/05/29
 
 require 'kconv'
-require 'milkode/common/util.rb'
+require 'milkode/common/util'
 
 module Milkode
   class DocumentTable
@@ -84,14 +84,14 @@ module Milkode
     # @retval nil      タイムスタンプ比較により更新無し
     #
     def add(package_dir, restpath, package_name = nil)
-      filename = File.join(package_dir, restpath) # フルパスの作成
-      filename = File.expand_path(filename) # 絶対パスに変換
-      path = Util::filename_to_utf8(filename) # データベースに格納する時のファイル名はutf8
-      package = package_name || File.basename(package_dir)
-      package = Util::filename_to_utf8(package)
-      restpath = Util::filename_to_utf8(restpath)
-      suffix = File.extname(path).sub('.', "")
-      timestamp = File.mtime(filename) # OSへの問い合わせは変換前のファイル名で
+      filename  = File.join(package_dir, restpath)           # フルパスの作成
+      filename  = File.expand_path(filename)                 # 絶対パスに変換
+      path      = Util::filename_to_utf8(filename)           # データベースに格納する時のファイル名はutf8
+      package   = package_name || File.basename(package_dir)
+      package   = Util::filename_to_utf8(package)
+      restpath  = Util::filename_to_utf8(restpath)
+      suffix    = File.extname(path).sub('.', "")
+      timestamp = Util::truncate_nsec(File.mtime(filename)) # OSへの問い合わせは変換前のファイル名で
 
       record = @table[path]
 
@@ -287,10 +287,11 @@ module Milkode
       #                      :limit => limit)
       
       # ファイル名でソート
-      records = result.sort([{:key => "package", :order => "ascending"},
-                            {:key => "restpath", :order => "ascending"}],
-                           :offset => offset,
-                            :limit => limit)
+      records = Util.groonga_table_sort(result,
+                                        [{:key => "package", :order => "ascending"},
+                                         {:key => "restpath", :order => "ascending"}],
+                                        :offset => offset,
+                                        :limit => limit)
 
       # 検索結果のレコード(limitの影響を受ける), 総マッチ数(limitの影響を受けない)
       return records, result.size

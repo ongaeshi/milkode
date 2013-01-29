@@ -5,6 +5,8 @@
 # @author ongaeshi
 # @date   2012/05/29
 
+require 'milkode/common/util'
+
 module Milkode
   class PackageTable
     include Enumerable
@@ -32,10 +34,10 @@ module Milkode
 
     def add(name, directory, options)
       @table.add(name,
-                 :name => name,
+                 :name      => name,
                  :directory => directory,
-                 :addtime => Time.now,
-                 :favtime => options[:fav] ? Time.now : Time.at(0))
+                 :addtime   => Time.now,
+                 :favtime   => options[:fav] ? Time.now : Time.at(0))
     end
 
     def remove(name)
@@ -59,7 +61,7 @@ module Milkode
     end
 
     def sort(kind, order = "descending")
-      @table.sort([{:key => kind, :order => order}])
+      Util.groonga_table_sort(@table, [{:key => kind, :order => order}])
     end
 
     def dump

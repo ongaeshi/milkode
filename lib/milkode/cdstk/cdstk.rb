@@ -407,6 +407,8 @@ module Milkode
         h = File.exist?(p.directory) ? '' : '? '
         if (options[:verbose])
           "#{(h + p.name).ljust(max+2)} #{p.directory}"
+        elsif (options[:directory])
+          "#{p.directory}"
         else
           "#{h}#{p.name}"
         end
@@ -414,7 +416,7 @@ module Milkode
 
       @out.puts str
 
-      if Util.pipe? $stdout
+      if !options[:directory] && Util.pipe?($stdout)
         if args.empty?
           milkode_info
         else
@@ -875,8 +877,12 @@ EOF
       else
         dir = File.expand_path('.')
         r = @yaml.package_root(dir)
-        @out.puts "Not registered '#{dir}'." if r.nil?
-        [r]
+        if r.nil?
+          @out.puts "Not registered '#{dir}'."
+          []
+        else
+          [r]
+        end
       end
     end
 
@@ -935,15 +941,21 @@ EOF
       end
     end
 
-    def files(args)
+    def files(args, options)
       packages = find_packages(args)
       return if (packages.empty?)
 
       db_open
+
+      basedir = File.expand_path('.') if options[:relative]
       
       packages.each do |package|
         package_records(package.name).each do |record|
-          @out.puts record.restpath
+          if options[:relative]
+            @out.puts Util::relative_path(record.path, basedir)
+          else
+            @out.puts record.restpath
+          end
         end
       end
     end

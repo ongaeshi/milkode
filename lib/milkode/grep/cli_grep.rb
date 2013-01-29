@@ -6,10 +6,16 @@ require 'milkode/common/dbdir'
 require 'milkode/cdstk/cdstk'
 require 'milkode/cdstk/yaml_file_wrapper'
 require 'milkode/cdstk/package'
+require 'kconv'
 
 module Milkode
   class CLI_Grep
     def self.execute(stdout, arguments=[])
+      # 引数の文字コードをUTF-8に変換
+      if (Util::platform_win?)
+        arguments = arguments.map{|arg| Kconv.kconv(arg, Kconv::UTF8)}
+      end
+
       option = FindGrep::FindGrep::DEFAULT_OPTION.dup
 
       # default option
@@ -221,11 +227,17 @@ EOF
 
       def prev
         @arguments.map! do |v|
-          v.gsub("-l", ":l").
-            gsub("-k", ":k").
-            gsub("-g", ":g")            
+          case v
+          when "-l"
+            ":l"
+          when "-k"
+            ":k"
+          when "-g"
+            ":g"
+          else
+            v
+          end
         end
-
       end
 
       def after
