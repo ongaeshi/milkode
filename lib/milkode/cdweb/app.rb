@@ -288,6 +288,11 @@ EOF
     r << "#{result.update_count} update"
     "#{r.join(', ')} (#{Time.now - before} sec)"
   end
+
+  # .search-summary に追加情報を表示したい時はこの関数をオーバーライド
+  def search_summary_hook(path)
+    ""
+  end
 end
 
 class Array
