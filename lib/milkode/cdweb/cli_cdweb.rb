@@ -46,7 +46,12 @@ module Rack
       server.run wrapped_app, options do
         if (options[:LaunchBrowser])
           host = options[:Host] || options[:BindAddress] # options[:BindAddress] for WEBrick
-          Launchy.open("http://#{host}:#{options[:Port]}")
+
+          if (options[:LaunchURL])
+            Launchy.open("http://#{host}:#{options[:Port]}#{options[:LaunchURL]}")
+          else
+            Launchy.open("http://#{host}:#{options[:Port]}")
+          end
         end
       end
     end

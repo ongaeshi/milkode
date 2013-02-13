@@ -9,5 +9,6 @@
     <span class="search-range">#{@range.first} - #{@range.last}ファイルを検索</span>
     <span class="match-num">#{@match_num}</span>件マッチ</span>
     （#{@elapsed}秒）
+    #{search_summary_hook(@path)}
     
   ~ @record_content

@@ -33,11 +33,14 @@ module Milkode
     end
 
     def add(name, directory, options)
+       now = Time.now
       @table.add(name,
-                 :name      => name,
-                 :directory => directory,
-                 :addtime   => Time.now,
-                 :favtime   => options[:fav] ? Time.now : Time.at(0))
+                 :name       => name,
+                 :directory  => directory,
+                 :addtime    => now,
+                 :updatetime => options[:same_add] ? now : Time.at(0),
+                 :viewtime   => options[:same_add] ? now : Time.at(0),
+                 :favtime    => options[:fav] ? now : Time.at(0))
     end
 
     def remove(name)
