@@ -7,8 +7,8 @@
 
 require 'rubygems'
 require 'sinatra'
-require 'haml'
 require 'sass'
+require 'haml'
 
 $LOAD_PATH.unshift '../..'
 require 'milkode/cdweb/lib/database'
@@ -22,7 +22,7 @@ set :haml, :format => :html5
 
 get '/' do
   @setting = WebSetting.new
-  @version = "0.9.7"
+  @version = "0.9.8"
   @package_num = Database.instance.yaml_package_num
   @file_num = Database.instance.totalRecords
   @package_list = PackageList.new(Database.instance.grndb)
@@ -103,10 +103,10 @@ get %r{/help} do
   haml :help
 end
 
-get '*' do
-  @setting = WebSetting.new
-  @path    = ''
-  haml :error
+begin
+  NO_REQUIRE_APP_ERROR
+rescue NameError
+  require 'milkode/cdweb/app_error'
 end
 
 # -- helper function --
@@ -287,6 +287,11 @@ EOF
     r << "#{result.add_count} add"
     r << "#{result.update_count} update"
     "#{r.join(', ')} (#{Time.now - before} sec)"
+  end
+
+  # .search-summary に追加情報を表示したい時はこの関数をオーバーライド
+  def search_summary_hook(path)
+    ""
   end
 end
 
