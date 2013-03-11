@@ -42,6 +42,75 @@ module Milkode
       index = 0 if (index >= lines.size)
       {:result => result, :next_line => index}
     end
+
+    # 複数行間にキーワードが存在すればマッチする
+    MATCH_RANGE = 7
+    def match_lines_stopover_wide(patterns, max_match, start_index, is_sensitive)
+      result = []
+      patternRegexps = strs2regs(patterns, is_sensitive)
+      index = start_index
+
+      lines = @content.split($/)
+
+      while (index < lines.size) do
+        currentline = lines[index]
+
+        # 一度でもマッチしたらtrue
+        flags = Array.new(patternRegexps.size)
+
+        # マッチ情報
+        match_datas = []
+
+        # result小計
+        rsub = []
+
+        # マッチするかテスト
+        patternRegexps.each_with_index do |regexp, no|
+          matched     =  regexp.match(currentline)
+          flags[no]   |= matched
+          match_datas << matched
+        end
+
+        # ある行にキーワードのどれかがマッチ
+        if match_datas.any?
+          # マッチ行情報を追記
+          rsub << MatchLineResult.new(index, match_datas)
+
+          # マッチ情報をリセット
+          match_datas = []          
+          
+          # 現在行からMATCH_RANGE離れた所まで検索対象を広げる
+          (1...MATCH_RANGE).each do |i|
+            break if index + i >= lines.size
+            line = lines[index + i]
+
+            # マッチするかテスト
+            patternRegexps.each_with_index do |regexp, no|
+              matched     =  regexp.match(line)
+              flags[no]   |= matched
+              match_datas << matched
+            end
+
+            # マッチ行情報を追記
+            rsub << MatchLineResult.new(index + i, match_datas) if match_datas.all?
+          end
+
+          # 全てのキーワードがマッチしていれば成功
+          if flags.all?
+            result += rsub
+            if result.size >= max_match
+              index += 1
+              break
+            end
+          end
+        end
+
+        index += 1
+      end
+
+      index = 0 if (index >= lines.size)
+      {:result => result, :next_line => index}
+    end
     
     def match_lines_and(patterns, is_sensitive)
       result = []
