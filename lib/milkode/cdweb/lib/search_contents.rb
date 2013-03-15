@@ -244,7 +244,6 @@ EOF
     def grep_match_lines_stopover(record, index, keywords)
       grep = Grep.new(record.content)      
       r = grep.match_lines_stopover(keywords, DISP_NUM - @match_records.size, (index == 0) ? @line : 0, @is_sensitive)
-      # r = grep.match_lines_stopover_wide(keywords, DISP_NUM - @match_records.size, (index == 0) ? @line : 0, @is_sensitive)
 
       r[:result].each do |match_line|
         @match_records << MatchRecord.new(record, match_line) if match_line
