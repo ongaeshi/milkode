@@ -16,7 +16,7 @@ aaa
 bbb
 ccc
 ddd
-eee
+aaa
 EOF
 
   def test_initialize
@@ -31,21 +31,22 @@ EOF
     
     obj = WideMatcher.new(3)
 
-    obj.add_line_matchs( match_regexps(lines[0], regexps) )
+    obj.add_line_matchs( 0, match_regexps(lines[0], regexps) )
     assert_equal false, obj.match?
 
-    obj.add_line_matchs( match_regexps(lines[1], regexps) )
+    obj.add_line_matchs( 1, match_regexps(lines[1], regexps) )
     assert_equal false, obj.match?
 
-    obj.add_line_matchs( match_regexps(lines[2], regexps) )
+    obj.add_line_matchs( 2, match_regexps(lines[2], regexps) )
     assert_equal true, obj.match?
-    # p obj.realy_matches.map {|v| v.string }
+    assert_equal [0, 2], obj.match_lines.map{|v| v.index}
 
-    obj.add_line_matchs( match_regexps(lines[3], regexps) )
+    obj.add_line_matchs( 3, match_regexps(lines[3], regexps) )
     assert_equal false, obj.match?
 
-    obj.add_line_matchs( match_regexps(lines[4], regexps) )
-    assert_equal false, obj.match?
+    obj.add_line_matchs( 4, match_regexps(lines[4], regexps) )
+    assert_equal true, obj.match?
+    assert_equal [2, 4], obj.match_lines.map{|v| v.index}
   end
 
   private

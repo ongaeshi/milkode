@@ -6,14 +6,13 @@
 # @date   2010/10/18
 
 require 'milkode/common/util'
+require 'milkode/common/wide_matcher'
 
 module Milkode
   class Grep
     def initialize(content)
       @content = content
     end
-
-    MatchLineResult = Struct.new(:index, :match_datas)
 
     def match_lines_stopover(patterns, max_match, start_index, is_sensitive)
       result = []

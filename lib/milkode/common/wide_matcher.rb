@@ -6,6 +6,8 @@
 # @date   2013/03/15
 
 module Milkode
+  MatchLineResult = Struct.new(:index, :match_datas)
+  
   class WideMatcher
     attr_reader :num_max
     
@@ -18,7 +20,8 @@ module Milkode
       @container.size
     end
 
-    def add_line_matchs(matches)
+    def add_line_matchs(index, matches)
+      @last_index = index
       @container.shift if linenum >= @num_max
       @container << matches
       # p @container
@@ -33,12 +36,15 @@ module Milkode
       }.all?
     end
 
-    def realy_matches
-      a = @container.flatten
-      a.delete(nil)
-      a
+    def match_lines
+      index = @last_index - @container.size + 1
+      @container.reduce([]) do |result, matches|
+        m = matches.compact
+        result << MatchLineResult.new(index, m) unless m.empty?
+        index += 1
+        result
+      end
     end
-
   end
 end
 
