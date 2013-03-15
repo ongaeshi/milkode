@@ -130,6 +130,22 @@ module Milkode
       result
     end
 
+    def match_lines_and_wide(patterns, is_sensitive)
+      regexps = strs2regs(patterns, is_sensitive)
+      result  = []
+      index   = 0
+
+      matcher = WideMatcher.new(MATCH_RANGE)
+      
+      @content.each_line do |line|
+        matcher.add_line_matchs(index, match_regexps(line, regexps))
+        result += matcher.match_lines if matcher.match?
+        index += 1
+      end
+      
+      result.uniq
+    end
+
     def one_match_and(patterns, is_sensitive)
       patternRegexps = strs2regs(patterns, is_sensitive)
       index = 0
@@ -160,6 +176,10 @@ module Milkode
       end
 
       regs
+    end
+
+    def match_regexps(line, regexps)
+      regexps.reduce([]) {|result, v| result << v.match(line); result}
     end
   end
 end
