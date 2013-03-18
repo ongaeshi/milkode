@@ -80,8 +80,9 @@ module Milkode
 
     def test_wide_match_range
       assert_equal 1, create_query("").wide_match_range
+      assert_equal 1, create_query("w:").wide_match_range
       assert_equal 1, create_query("w:1").wide_match_range
-      assert_equal 7, create_query("w:5 w:7").wide_match_range
+      assert_equal 6, create_query("w:5 w:6").wide_match_range
       assert_equal 1, create_query("w:aaa").wide_match_range
     end
 
