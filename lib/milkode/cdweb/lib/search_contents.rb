@@ -25,19 +25,20 @@ module Milkode
     MATH_FILE_LIMIT = MATH_FILE_DISP + 1 # マッチファイルの検索リミット数
 
     def initialize(path, params, query)
-      @path = path
-      @params = params
-      @q = query
-      @page = params[:page].to_i || 0
-      @offset = params[:offset].to_i
-      @line = params[:line].to_i
-      @is_onematch = params[:onematch] == 'on'
-      @is_sensitive = params[:sensitive] == 'on'
+      @path             = path
+      @params           = params
+      @q                = query
+      @page             = params[:page].to_i || 0
+      @offset           = params[:offset].to_i
+      @line             = params[:line].to_i
+      @is_onematch      = params[:onematch]  == 'on'
+      @is_sensitive     = params[:sensitive] == 'on'
+
       @searcher_fuzzy_gotoline = nil
 
       # 検索1 : クエリーそのまま
       @records, @total_records = Database.instance.search(@q.keywords, @q.multi_match_keywords, @q.packages, path, @q.fpaths, @q.suffixs, @q.fpath_or_packages, @offset, LIMIT_NUM)
-      grep_contents(@q.keywords)
+      grep_contents(@q.keywords, @q.wide_match_range)
 
       # 検索2 : マッチしなかった時におすすめクエリーがある場合
       if @match_records.empty?
@@ -60,7 +61,7 @@ module Milkode
           @records, @total_records = Database.instance.search(q2.keywords, q2.multi_match_keywords, q2.packages, path, q2.fpaths, q2.suffixs, q2.fpath_or_packages, @offset, LIMIT_NUM)
           
           # 再grep
-          grep_contents(q2.keywords)
+          grep_contents(q2.keywords, q2.wide_match_range)
         end
       end
       
@@ -208,7 +209,7 @@ EOF
 
     MatchRecord = Struct.new(:record, :match_line)
 
-    def grep_contents(keywords)
+    def grep_contents(keywords, wide_match_range)
       @match_records = []
       @end_index = @next_index = @records.size
       @next_line = nil
@@ -227,7 +228,7 @@ EOF
               break
             end
           else
-            break if grep_match_lines_stopover(record, index, keywords)
+            break if grep_match_lines_stopover(record, index, keywords, wide_match_range)
           end
         else
           @match_records << MatchRecord.new(record, Grep::MatchLineResult.new(0, nil))
@@ -241,9 +242,9 @@ EOF
       end
     end
 
-    def grep_match_lines_stopover(record, index, keywords)
+    def grep_match_lines_stopover(record, index, keywords, wide_match_range)
       grep = Grep.new(record.content)      
-      r = grep.match_lines_stopover(keywords, DISP_NUM - @match_records.size, (index == 0) ? @line : 0, @is_sensitive)
+      r = grep.match_lines_stopover(keywords, DISP_NUM - @match_records.size, (index == 0) ? @line : 0, @is_sensitive, wide_match_range)
 
       r[:result].each do |match_line|
         @match_records << MatchRecord.new(record, match_line) if match_line

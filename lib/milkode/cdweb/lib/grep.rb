@@ -14,12 +14,12 @@ module Milkode
       @content = content
     end
 
-    def match_lines_stopover(patterns, max_match, start_index, is_sensitive, match_range = 1)
+    def match_lines_stopover(patterns, max_match, start_index, is_sensitive, wide_match_range)
       regexps = strs2regs(patterns, is_sensitive)
       result  = []
       index   = start_index
 
-      matcher = WideMatcher.new(match_range)
+      matcher = WideMatcher.new(wide_match_range)
       lines   = @content.split($/)
 
       while (index < lines.size) do
