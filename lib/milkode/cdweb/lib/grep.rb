@@ -43,12 +43,12 @@ module Milkode
       {:result => result.uniq, :next_line => index}
     end
     
-    def match_lines_and(patterns, is_sensitive, match_range = 1)
+    def match_lines_and(patterns, is_sensitive, wide_match_range)
       regexps = strs2regs(patterns, is_sensitive)
       result  = []
       index   = 0
 
-      matcher = WideMatcher.new(match_range)
+      matcher = WideMatcher.new(wide_match_range)
       
       @content.each_line do |line|
         matcher.add_line_matchs(index, match_regexps(line, regexps))

@@ -35,7 +35,7 @@ module Milkode
         @record_content = CodeRayWrapper.new(record.content, record.shortpath, match_lines).to_html
       else
         grep = Grep.new(record.content)
-        match_lines = grep.match_lines_and(q.keywords, is_sensitive)
+        match_lines = grep.match_lines_and(q.keywords, is_sensitive, q.wide_match_range)
         @record_content = CodeRayWrapper.new(record.content, record.shortpath, match_lines).to_html
       end
     else
