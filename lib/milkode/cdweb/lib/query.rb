@@ -13,12 +13,13 @@ module Milkode
     attr_reader :query_string
 
     OPTIONS = [
-               ['package',  'p'],
-               ['filepath', 'fpath', 'f'],
-               ['suffix',   's'],
-               ['fp'],          # fpath or package
-               ['keyword',  'k'],
-               ['gotoline', 'g'],
+               ['package'  , 'p'],
+               ['filepath' , 'fpath', 'f'],
+               ['suffix'   , 's'],
+               ['fp']      , # fpath or package
+               ['keyword'  , 'k'],
+               ['gotoline' , 'g'],
+               ['wide'     , 'w'],
               ]
 
     def initialize(str)
@@ -66,6 +67,22 @@ module Milkode
 
     def gotolines
       calc_param(5)
+    end
+
+    def wide_match_range
+      a = calc_param(6)
+
+      if a.empty?
+        1
+      else
+        i = a[-1].to_i
+
+        if (i == 0)
+          1
+        else
+          i
+        end
+      end
     end
 
     def conv_keywords_to_fpath

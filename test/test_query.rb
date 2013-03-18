@@ -78,6 +78,15 @@ module Milkode
       assert_equal q.keywords , ['a.rb']
     end
 
+    def test_wide_match_range
+      assert_equal 1, create_query("").wide_match_range
+      assert_equal 1, create_query("w:1").wide_match_range
+      assert_equal 7, create_query("w:5 w:7").wide_match_range
+      assert_equal 1, create_query("w:aaa").wide_match_range
+    end
+
+    private
+
     def create_query(query)
       Query.new(query)
     end
