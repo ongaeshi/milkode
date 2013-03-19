@@ -26,6 +26,7 @@ module Milkode
       @query_string = str
       init_hash
       parse
+      @wide_match_range = calc_param(6)
     end
 
     def escape_html
@@ -33,11 +34,11 @@ module Milkode
     end
 
     def empty?
-      keywords.size == 0 && packages.size == 0 && fpaths.size == 0 && suffixs.size == 0 && fpath_or_packages.size == 0 && gotolines.size == 0
+      keywords.size == 0 && only_keywords
     end
 
     def only_keywords
-      packages.size == 0 && fpaths.size == 0 && suffixs.size == 0 && fpath_or_packages.size == 0 && gotolines.size == 0
+      packages.size == 0 && fpaths.size == 0 && suffixs.size == 0 && fpath_or_packages.size == 0 && gotolines.size == 0 && wide_match_range_empty?
     end
 
     def keywords
@@ -70,7 +71,7 @@ module Milkode
     end
 
     def wide_match_range
-      a = calc_param(6)
+      a = @wide_match_range
 
       if a.empty?
         1
@@ -83,6 +84,10 @@ module Milkode
           i
         end
       end
+    end
+
+    def wide_match_range_empty?
+      @wide_match_range.empty?
     end
 
     def conv_keywords_to_fpath
