@@ -24,6 +24,8 @@ module Milkode
     MATH_FILE_DISP  = 3        # マッチファイルの最大表示数
     MATH_FILE_LIMIT = MATH_FILE_DISP + 1 # マッチファイルの検索リミット数
 
+    DEFAULT_WIDE_MATCH_RANGE = 7 # 未指定時のワイド検索範囲
+
     def initialize(path, params, query)
       @path             = path
       @params           = params
@@ -41,28 +43,35 @@ module Milkode
       grep_contents(@q.keywords, @q.wide_match_range)
 
       # 検索2 : マッチしなかった時におすすめクエリーがある場合
-      if @match_records.empty?
-        if recommended_fuzzy_gotoline?
-          # 専用の Searcher を作成
-          @searcher_fuzzy_gotoline = SearchFuzzyGotoLine.new(@path, @params, @q)
 
-          # 結果をコピーする
-          @total_records = @searcher_fuzzy_gotoline.total_records
-          @match_records = @searcher_fuzzy_gotoline.match_records
-          @next_index    = @searcher_fuzzy_gotoline.next_index
-          @end_index     = @searcher_fuzzy_gotoline.end_index
-          @next_line     = nil
-          
-        elsif recommended_fpath_or_packages?
-          # おすすめクエリーに変換
-          q2 = @q.conv_head_keyword_to_fpath_or_packages
-          
-          # 検索
-          @records, @total_records = Database.instance.search(q2.keywords, q2.multi_match_keywords, q2.packages, path, q2.fpaths, q2.suffixs, q2.fpath_or_packages, @offset, LIMIT_NUM)
-          
-          # 再grep
-          grep_contents(q2.keywords, q2.wide_match_range)
-        end
+      # gotolineモード (test_cdstk.rb:55)
+      if @match_records.empty? && recommended_fuzzy_gotoline?
+        # 専用の Searcher を作成
+        @searcher_fuzzy_gotoline = SearchFuzzyGotoLine.new(@path, @params, @q)
+
+        # 結果をコピーする
+        @total_records = @searcher_fuzzy_gotoline.total_records
+        @match_records = @searcher_fuzzy_gotoline.match_records
+        @next_index    = @searcher_fuzzy_gotoline.next_index
+        @end_index     = @searcher_fuzzy_gotoline.end_index
+        @next_line     = nil
+      end
+
+      # ワイド検索範囲
+      if @match_records.empty? && recommended_wide_match_range?
+        grep_contents(@q.keywords, DEFAULT_WIDE_MATCH_RANGE)
+      end
+
+      # 先頭をファイル名とみなす
+      if @match_records.empty? && recommended_fpath_or_packages?
+        # おすすめクエリーに変換
+        q2 = @q.conv_head_keyword_to_fpath_or_packages
+        
+        # 検索
+        @records, @total_records = Database.instance.search(q2.keywords, q2.multi_match_keywords, q2.packages, path, q2.fpaths, q2.suffixs, q2.fpath_or_packages, @offset, LIMIT_NUM)
+        
+        # 再grep
+        grep_contents(q2.keywords, q2.wide_match_range)
       end
       
       # 検索3 : マッチするファイル
@@ -134,6 +143,10 @@ EOF
 
     def recommended_fuzzy_gotoline?
       @q.keywords.size == 1 && @q.only_keywords && Util::fuzzy_gotoline_keyword?(@q.keywords[0])
+    end
+
+    def recommended_wide_match_range?
+      @q.keywords.size >= 2 && @q.wide_match_range_empty?
     end
 
     def recommended_fpath_or_packages?

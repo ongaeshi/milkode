@@ -36,6 +36,12 @@ module Milkode
       else
         grep = Grep.new(record.content)
         match_lines = grep.match_lines_and(q.keywords, is_sensitive, q.wide_match_range)
+
+        if match_lines.empty? && q.wide_match_range_empty?
+          # 検索範囲を広げる
+          match_lines = grep.match_lines_and(q.keywords, is_sensitive, 7)
+        end
+        
         @record_content = CodeRayWrapper.new(record.content, record.shortpath, match_lines).to_html
       end
     else
