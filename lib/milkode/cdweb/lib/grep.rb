@@ -59,22 +59,8 @@ module Milkode
       result.uniq
     end
 
-    def one_match_and(patterns, is_sensitive)
-      patternRegexps = strs2regs(patterns, is_sensitive)
-      index = 0
-      
-      @content.each_line do |line|
-        match_datas = []
-        patternRegexps.each {|v| match_datas << v.match(line)}
-
-        if (match_datas.all?)
-          return MatchLineResult.new(index, match_datas)
-        end
-
-        index += 1
-      end
-      
-      nil
+    def one_match_and(patterns, is_sensitive, wide_match_range)
+      match_lines_stopover(patterns, 1, 0, is_sensitive, wide_match_range)
     end
 
     private

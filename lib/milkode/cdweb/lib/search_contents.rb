@@ -216,19 +216,8 @@ EOF
 
       @records.each_with_index do |record, index|
         if (Util::larger_than_oneline(record.content))
-
-          if @is_onematch
-            grep = Grep.new(record.content)
-            match_line = grep.one_match_and(keywords, @is_sensitive)
-            @match_records << MatchRecord.new(record, match_line) if match_line
-
-            if @match_records.size >= DISP_NUM
-              @end_index = index
-              @next_index = index + 1
-              break
-            end
-          else
-            break if grep_match_lines_stopover(record, index, keywords, wide_match_range)
+          if grep_match_lines_stopover(record, index, keywords, wide_match_range)
+            break
           end
         else
           @match_records << MatchRecord.new(record, Grep::MatchLineResult.new(0, nil))
@@ -243,8 +232,13 @@ EOF
     end
 
     def grep_match_lines_stopover(record, index, keywords, wide_match_range)
-      grep = Grep.new(record.content)      
-      r = grep.match_lines_stopover(keywords, DISP_NUM - @match_records.size, (index == 0) ? @line : 0, @is_sensitive, wide_match_range)
+      grep = Grep.new(record.content)
+
+      if @is_onematch
+        r = grep.one_match_and(keywords, @is_sensitive, wide_match_range)
+      else
+        r = grep.match_lines_stopover(keywords, DISP_NUM - @match_records.size, (index == 0) ? @line : 0, @is_sensitive, wide_match_range)
+      end
 
       r[:result].each do |match_line|
         @match_records << MatchRecord.new(record, match_line) if match_line
