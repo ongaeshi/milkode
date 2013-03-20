@@ -107,12 +107,6 @@ get %r{/help} do
   haml :help
 end
 
-begin
-  NO_REQUIRE_APP_ERROR
-rescue NameError
-  require 'milkode/cdweb/app_error'
-end
-
 # -- helper function --
 
 helpers do
