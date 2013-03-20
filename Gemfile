@@ -19,7 +19,8 @@ gem 'thor', '~> 0.15.0'
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
 group :development do
-  gem "bundler"
-  gem "jeweler"
-  gem "rack-test"
+  gem 'bundler'
+  gem 'jeweler'
+  gem 'rack-test'
+  gem 'sinatra-reloader'
 end

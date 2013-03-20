@@ -7,6 +7,10 @@
 
 require 'rubygems'
 require 'sinatra'
+if development?
+  require "sinatra/reloader" 
+  also_reload '../../**/*.rb'
+end
 require 'sass'
 require 'haml'
 
