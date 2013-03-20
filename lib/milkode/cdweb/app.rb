@@ -7,8 +7,8 @@
 
 require 'rubygems'
 require 'sinatra'
-if development?
-  require "sinatra/reloader" 
+if ENV['MILKODE_SINATRA_RELOADER']
+  require 'sinatra/reloader'
   also_reload '../../**/*.rb'
 end
 require 'sass'
