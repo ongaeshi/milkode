@@ -79,7 +79,7 @@ module Milkode
         i = a[-1].to_i
 
         if (i == 0)
-          1
+          0
         else
           i
         end

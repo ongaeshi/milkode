@@ -86,7 +86,8 @@ module Milkode
       assert_equal 1     , create_query("w:1").wide_match_range
       assert_equal false , create_query("w:1").wide_match_range_empty?
       assert_equal 6     , create_query("w:5 w:6").wide_match_range
-      assert_equal 1     , create_query("w:aaa").wide_match_range
+      assert_equal 0     , create_query("w:0").wide_match_range
+      assert_equal 0     , create_query("w:aaa").wide_match_range
     end
 
     private

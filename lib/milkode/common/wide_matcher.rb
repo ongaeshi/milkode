@@ -22,7 +22,7 @@ module Milkode
 
     def add_line_matchs(index, matches)
       @last_index = index
-      @container.shift if linenum >= @num_max
+      @container.shift if @num_max > 0 && linenum >= @num_max
       @container << matches
       # p @container
     end
