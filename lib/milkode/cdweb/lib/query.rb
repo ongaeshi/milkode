@@ -140,6 +140,10 @@ module Milkode
       Query.new(s)
     end
 
+    def conv_wide_match_range(match_range)
+      Query.new(query_string + " w:#{match_range}")
+    end
+
     private
 
     def calc_param(index)

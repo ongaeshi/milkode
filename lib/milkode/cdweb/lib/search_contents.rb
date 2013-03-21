@@ -154,28 +154,38 @@ EOF
     end
 
     def recommended_query_contents
+      result = []
+      
       if recommended_fuzzy_gotoline?
         conv_query   = @q.conv_fuzzy_gotoline
         tmpp         = @params.clone
         tmpp[:query] = conv_query.query_string
         url          = Mkurl.new(@path, tmpp).inherit_query_shead
-        <<EOS
-<dt class='result-file'>#{img_icon('document-new-4.png')}<a href='#{url}'>#{conv_query.query_string}</a></dt>
-<hr>
-EOS
-      elsif recommended_fpath_or_packages?
+        result << "<dt class='result-file'>#{img_icon('document-new-4.png')}<a href='#{url}'>#{conv_query.query_string}</a></dt>"
+      end
+
+      if recommended_wide_match_range?
+        conv_query   = @q.conv_wide_match_range(DEFAULT_WIDE_MATCH_RANGE)
+        tmpp         = @params.clone
+        tmpp[:query] = conv_query.query_string
+        url          = Mkurl.new(@path, tmpp).inherit_query_shead
+        result << "<dt class='result-file'>#{img_icon('document-new-4.png')}<a href='#{url}'>#{conv_query.query_string}</a></dt>"
+      end
+      
+      if recommended_fpath_or_packages?
         conv_query   = @q.conv_head_keyword_to_fpath_or_packages
         tmpp         = @params.clone
         tmpp[:query] = conv_query.query_string
         url          = Mkurl.new(@path, tmpp).inherit_query_shead
-        <<EOS
-<dt class='result-file'>#{img_icon('document-new-4.png')}<a href='#{url}'>#{conv_query.query_string}</a></dt>
-<hr>
-EOS
+        result << "<dt class='result-file'>#{img_icon('document-new-4.png')}<a href='#{url}'>#{conv_query.query_string}</a></dt>"
+      end
+
+      unless result.empty?
+        result.join("\n") + "<hr>\n"
       else
         ""
       end
-  end
+    end
     
     def match_files_contents
       unless @match_files.empty?
