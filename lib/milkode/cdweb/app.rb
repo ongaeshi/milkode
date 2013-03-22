@@ -25,12 +25,20 @@ require 'milkode/common/util'
 set :haml, :format => :html5
 
 get '/' do
-  @setting = WebSetting.new
-  @version = "0.9.8"
-  @package_num = Database.instance.yaml_package_num
-  @file_num = Database.instance.totalRecords
-  @package_list = PackageList.new(Database.instance.grndb)
-  haml :index, :layout => false
+  if Database.validate?
+    @setting = WebSetting.new
+    @version = "0.9.8"
+
+    @package_num = Database.instance.yaml_package_num
+    @file_num = Database.instance.totalRecords
+    @package_list = PackageList.new(Database.instance.grndb)
+    haml :index, :layout => false
+  else
+    <<EOF
+<h1>Setup Error!</h1>
+Database Directory: #{Database.dbdir}<br>
+EOF
+  end
 end
 
 def package_path(path)

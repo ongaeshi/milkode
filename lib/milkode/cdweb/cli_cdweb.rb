@@ -112,7 +112,8 @@ module Milkode
     end
 
     def self.select_dbdir
-      if (Dbdir.dbdir?('.') || !Dbdir.dbdir?(Dbdir.default_dir))
+      # if (Dbdir.dbdir?('.') || !Dbdir.dbdir?(Dbdir.default_dir))
+      if Dbdir.dbdir?('.')
         '.'
       else
         Dbdir.default_dir
