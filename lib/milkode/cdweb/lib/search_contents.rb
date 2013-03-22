@@ -60,6 +60,10 @@ module Milkode
       # ワイド検索範囲
       if @match_records.empty? && recommended_wide_match_range?
         grep_contents(@q.keywords, DEFAULT_WIDE_MATCH_RANGE)
+
+        if @match_records.empty?
+          grep_contents(@q.keywords, 0)
+        end
       end
 
       # 先頭をファイル名とみなす
@@ -165,11 +169,22 @@ EOF
       end
 
       if recommended_wide_match_range?
+        conv_query   = @q.conv_wide_match_range(0)
+        tmpp         = @params.clone
+        tmpp[:query] = conv_query.query_string
+        w0_url        = Mkurl.new(@path, tmpp).inherit_query_shead
+
+        conv_query   = @q.conv_wide_match_range(1)
+        tmpp         = @params.clone
+        tmpp[:query] = conv_query.query_string
+        w1_url        = Mkurl.new(@path, tmpp).inherit_query_shead
+
         conv_query   = @q.conv_wide_match_range(DEFAULT_WIDE_MATCH_RANGE)
         tmpp         = @params.clone
         tmpp[:query] = conv_query.query_string
         url          = Mkurl.new(@path, tmpp).inherit_query_shead
-        result << "<dt class='result-file'>#{img_icon('document-new-4.png')}<a href='#{url}'>#{conv_query.query_string}</a></dt>"
+
+        result << "<dt class='result-file'>#{img_icon('document-new-4.png')}<a href='#{url}'>#{conv_query.query_string}</a> (<a href='#{w0_url}'>w:0</a>, <a href='#{w1_url}'>w:1</a>)</dt>"
       end
       
       if recommended_fpath_or_packages?
