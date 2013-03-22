@@ -6,6 +6,7 @@
 # @date   2010/10/18
 
 require 'milkode/common/util'
+require 'milkode/common/wide_matcher'
 
 module Milkode
   class Grep
@@ -13,23 +14,22 @@ module Milkode
       @content = content
     end
 
-    MatchLineResult = Struct.new(:index, :match_datas)
+    def match_lines_stopover(patterns, max_match, start_index, is_sensitive, wide_match_range)
+      regexps = strs2regs(patterns, is_sensitive)
+      result  = []
+      index   = start_index
 
-    def match_lines_stopover(patterns, max_match, start_index, is_sensitive)
-      result = []
-      patternRegexps = strs2regs(patterns, is_sensitive)
-      index = start_index
-
-      lines = @content.split($/)
+      matcher = WideMatcher.create(wide_match_range)
+      lines   = @content.split($/)
 
       while (index < lines.size) do
         line = lines[index]
 
-        match_datas = []
-        patternRegexps.each {|v| match_datas << v.match(line)}
+        matcher.add_line_matchs(index, match_regexps(line, regexps))
 
-        if (match_datas.all?)
-          result << MatchLineResult.new(index, match_datas)
+        if matcher.match?
+          result += matcher.match_lines
+          
           if result.size >= max_match
             index += 1
             break
@@ -40,44 +40,27 @@ module Milkode
       end
 
       index = 0 if (index >= lines.size)
-      {:result => result, :next_line => index}
+      {:result => result.uniq, :next_line => index}
     end
     
-    def match_lines_and(patterns, is_sensitive)
-      result = []
-      patternRegexps = strs2regs(patterns, is_sensitive)
-      index = 0
+    def match_lines_and(patterns, is_sensitive, wide_match_range)
+      regexps = strs2regs(patterns, is_sensitive)
+      result  = []
+      index   = 0
+
+      matcher = WideMatcher.create(wide_match_range)
       
       @content.each_line do |line|
-        match_datas = []
-        patternRegexps.each {|v| match_datas << v.match(line)}
-
-        if (match_datas.all?)
-          result << MatchLineResult.new(index, match_datas)
-        end
-
+        matcher.add_line_matchs(index, match_regexps(line, regexps))
+        result += matcher.match_lines if matcher.match?
         index += 1
       end
       
-      result
+      result.uniq
     end
 
-    def one_match_and(patterns, is_sensitive)
-      patternRegexps = strs2regs(patterns, is_sensitive)
-      index = 0
-      
-      @content.each_line do |line|
-        match_datas = []
-        patternRegexps.each {|v| match_datas << v.match(line)}
-
-        if (match_datas.all?)
-          return MatchLineResult.new(index, match_datas)
-        end
-
-        index += 1
-      end
-      
-      nil
+    def one_match_and(patterns, is_sensitive, wide_match_range)
+      match_lines_stopover(patterns, 1, 0, is_sensitive, wide_match_range)
     end
 
     private
@@ -92,6 +75,10 @@ module Milkode
       end
 
       regs
+    end
+
+    def match_regexps(line, regexps)
+      regexps.reduce([]) {|result, v| result << v.match(line); result}
     end
   end
 end

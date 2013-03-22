@@ -170,7 +170,7 @@ EOF
         :DbDir         => options[:db],
       }
       opts[:customize] = options[:customize]
-      cdstk(opts[:DbDir]).assert_compatible
+      # cdstk(opts[:DbDir]).assert_compatible
       Milkode::CLI_Cdweb.execute_with_options($stdout, opts)
     end
 

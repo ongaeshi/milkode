@@ -191,6 +191,10 @@ module Milkode
       end
       result
     end
+
+    def self.validate?
+      YamlFileWrapper.load_if(Database.dbdir) != nil
+    end
     
     private 
 
