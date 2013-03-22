@@ -20,7 +20,7 @@ aaa
 EOF
 
   def test_initialize
-    obj = WideMatcher.new(5)
+    obj = WideMatcher.create(5)
     assert_equal 5, obj.num_max
     assert_equal 0, obj.linenum
   end
@@ -29,7 +29,7 @@ EOF
     lines   = SRC.split("\n")
     regexps = strs2regs(['a', 'c'])
     
-    obj = WideMatcher.new(3)
+    obj = WideMatcher.create(3)
 
     obj.add_line_matchs( 0, match_regexps(lines[0], regexps) )
     assert_equal false, obj.match?

@@ -19,7 +19,7 @@ module Milkode
       result  = []
       index   = start_index
 
-      matcher = WideMatcher.new(wide_match_range)
+      matcher = WideMatcher.create(wide_match_range)
       lines   = @content.split($/)
 
       while (index < lines.size) do
@@ -48,7 +48,7 @@ module Milkode
       result  = []
       index   = 0
 
-      matcher = WideMatcher.new(wide_match_range)
+      matcher = WideMatcher.create(wide_match_range)
       
       @content.each_line do |line|
         matcher.add_line_matchs(index, match_regexps(line, regexps))
