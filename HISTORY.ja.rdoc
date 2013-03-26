@@ -1,3 +1,20 @@
+=== 0.9.9 2013/02/26
+
+* ワイド範囲検索のサポート
+  * 指定行内に複数のキーワードが含まれている場所を探す
+  * 複数のキーワードが一行でマッチしなかった場合、自動的に範囲を広げて再検索
+
+* 検索オプション w: を追加
+  * w:7 で7行以内に全てのキーワードが含まれている場所を返す
+  * w:1 で今までの検索
+  * w:0 の時は検索範囲をファイル全域に
+
+* Support sinatra-reloader
+  * export MILKODE_SINATRA_RELOADER=1
+
+* Delete 'milkode/cdweb/app_error.rb'
+  * Recommend 'RACK_ENV=production'
+
 === 0.9.8 2013/02/27
 
 * Support MyGithub

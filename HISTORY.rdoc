@@ -1,3 +1,12 @@
+=== 0.9.9 2013/02/26
+
+* Suppor wide range search
+  * Add 'w:' search option
+* Support sinatra-reloader
+  * export MILKODE_SINATRA_RELOADER=1
+* Delete 'milkode/cdweb/app_error.rb'
+  * Recommend 'RACK_ENV=production'
+
 === 0.9.8 2013/02/27
 
 * Support MyGithub

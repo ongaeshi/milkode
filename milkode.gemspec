@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{milkode}
-  s.version = "0.9.8"
+  s.version = "0.9.9"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ongaeshi"]
-  s.date = %q{2013-02-27}
+  s.date = %q{2013-03-26}
   s.description = %q{Line based local source code search engine & grep-command & web-app.}
   s.email = %q{ongaeshi0621@gmail.com}
   s.executables = ["gmilk", "milk"]
@@ -35,7 +35,6 @@ Gem::Specification.new do |s|
     "lib/milkode/cdstk/package.rb",
     "lib/milkode/cdstk/yaml_file_wrapper.rb",
     "lib/milkode/cdweb/app.rb",
-    "lib/milkode/cdweb/app_error.rb",
     "lib/milkode/cdweb/cli_cdweb.rb",
     "lib/milkode/cdweb/config.ru",
     "lib/milkode/cdweb/lib/coderay_html2.rb",
@@ -117,6 +116,7 @@ Gem::Specification.new do |s|
     "lib/milkode/common/platform.rb",
     "lib/milkode/common/string_snip.rb",
     "lib/milkode/common/util.rb",
+    "lib/milkode/common/wide_matcher.rb",
     "lib/milkode/database/document_record.rb",
     "lib/milkode/database/document_table.rb",
     "lib/milkode/database/groonga_database.rb",
@@ -184,6 +184,7 @@ Gem::Specification.new do |s|
     "test/test_string_snip.rb",
     "test/test_updater.rb",
     "test/test_util.rb",
+    "test/test_wide_matcher.rb",
     "test/test_yaml_file_wrapper.rb"
   ]
   s.homepage = %q{http://github.com/ongaeshi/milkode}
@@ -211,6 +212,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<bundler>, [">= 0"])
       s.add_development_dependency(%q<jeweler>, [">= 0"])
       s.add_development_dependency(%q<rack-test>, [">= 0"])
+      s.add_development_dependency(%q<sinatra-reloader>, [">= 0"])
     else
       s.add_dependency(%q<termcolor>, [">= 1.2.0", "< 1.2.2"])
       s.add_dependency(%q<rroonga>, [">= 1.1.0"])
@@ -226,6 +228,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<bundler>, [">= 0"])
       s.add_dependency(%q<jeweler>, [">= 0"])
       s.add_dependency(%q<rack-test>, [">= 0"])
+      s.add_dependency(%q<sinatra-reloader>, [">= 0"])
     end
   else
     s.add_dependency(%q<termcolor>, [">= 1.2.0", "< 1.2.2"])
@@ -242,6 +245,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<bundler>, [">= 0"])
     s.add_dependency(%q<jeweler>, [">= 0"])
     s.add_dependency(%q<rack-test>, [">= 0"])
+    s.add_dependency(%q<sinatra-reloader>, [">= 0"])
   end
 end
 
