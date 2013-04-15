@@ -127,8 +127,12 @@ helpers do
   end
   
   # -- utility -- 
-  def link(query)
-    "<a href='#{'/home?query=' + escape_url(query)}'>#{query}</a>"
+  def link(query, text = nil)
+    if text.nil?
+      "<a href='#{'/home?query=' + escape_url(query)}'>#{query}</a>"
+    else
+      "<a href='#{'/home?query=' + escape_url(query)}'>#{text}</a>"
+    end
   end
 
   def create_select_shead(value)
