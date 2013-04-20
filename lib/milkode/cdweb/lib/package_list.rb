@@ -13,6 +13,8 @@ module Milkode
     ADD_NUM    = 5
     UPDATE_NUM = 5
     FAV_NUM    = 7
+
+    FAVORITE_LIST_NUM = 5
     
     def initialize(grndb)
       @grndb = grndb
@@ -40,6 +42,22 @@ module Milkode
       a = @grndb.packages.favs.map{|r| r.name}
       top_list(a[0...FAV_NUM], 'favtime')
     end
+
+    def favorite_list(params)
+      names = @grndb.packages.favs.map{|r| r.name}[0..FAVORITE_LIST_NUM-1]
+
+      list = names.map {|v|
+        "<strong><a href=\"#{Mkurl.new('/home/' + v, params).inherit_query_shead}\">#{v}</a></strong>"
+      }.join("&nbsp;&nbsp;\n")
+
+      <<EOF
+#{list}&nbsp;&nbsp;
+<a href="/home?sort=favtime">...</a>
+EOF
+    end
+
+    # ------------------------------------------------------
+    private
 
     def grndb_list(column_name, num)
       a = @grndb.packages.sort(column_name).map {|r| r.name}

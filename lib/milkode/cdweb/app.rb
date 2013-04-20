@@ -92,6 +92,7 @@ get '/home*' do |path|
   before = Time.now
   path = path.sub(/^\//, "")
   record = Database.instance.record(path)
+  @package_list = PackageList.new(Database.instance.grndb)
 
   if path.empty?
     if (params[:query] and !params[:query].empty?)
@@ -226,6 +227,16 @@ EOF
       <div class="modal-footer">
         <span id="lineno-copyall"></span>
         <a href="#" id="lineno-ok" class="btn" data-dismiss="modal">OK</a>
+      </div>
+    </div>
+EOF
+  end
+
+  def create_favorite_list(package_list)
+    <<EOF
+      <div class="favorite_list">
+        お気に入り:
+        #{package_list.favorite_list(params)}
       </div>
     </div>
 EOF
