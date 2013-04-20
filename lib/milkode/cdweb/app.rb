@@ -92,6 +92,7 @@ get '/home*' do |path|
   before = Time.now
   path = path.sub(/^\//, "")
   record = Database.instance.record(path)
+  @package_list = PackageList.new(Database.instance.grndb)
 
   if path.empty?
     if (params[:query] and !params[:query].empty?)
@@ -231,13 +232,11 @@ EOF
 EOF
   end
 
-  def create_favorite_list
+  def create_favorite_list(package_list)
     <<EOF
       <div class="favorite_list">
         お気に入り:
-        <a href="/home/milkode">milkode</a>&nbsp;&nbsp;
-        <a href="/home/export-memo">export-memo</a>&nbsp;&nbsp;
-        <a href="/home/junk">jump</a>&nbsp;&nbsp;
+        #{package_list.favorite_list}
       </div>
     </div>
 EOF
