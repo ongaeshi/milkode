@@ -236,7 +236,7 @@ EOF
     <<EOF
       <div class="favorite_list">
         お気に入り:
-        #{package_list.favorite_list}
+        #{package_list.favorite_list(params)}
       </div>
     </div>
 EOF

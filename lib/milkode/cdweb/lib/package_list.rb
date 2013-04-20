@@ -41,11 +41,11 @@ module Milkode
       top_list(a[0...FAV_NUM], 'favtime')
     end
 
-    def favorite_list
+    def favorite_list(params)
       names = @grndb.packages.favs.map{|r| r.name}
 
       names.map {|v|
-        "<a href=\"/home/#{v}\">#{v}</a>"
+        "<a href=\"#{Mkurl.new('/home/' + v, params).inherit_query_shead}\">#{v}</a>"
       }.join("&nbsp;&nbsp;\n")
     end
 
