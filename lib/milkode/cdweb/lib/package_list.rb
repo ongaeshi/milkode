@@ -41,6 +41,17 @@ module Milkode
       top_list(a[0...FAV_NUM], 'favtime')
     end
 
+    def favorite_list
+      names = @grndb.packages.favs.map{|r| r.name}
+
+      names.map {|v|
+        "<a href=\"/home/#{v}\">#{v}</a>"
+      }.join("&nbsp;&nbsp;\n")
+    end
+
+    # ------------------------------------------------------
+    private
+
     def grndb_list(column_name, num)
       a = @grndb.packages.sort(column_name).map {|r| r.name}
       top_list(a[0...num], column_name)
