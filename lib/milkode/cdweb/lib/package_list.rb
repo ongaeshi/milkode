@@ -46,8 +46,8 @@ module Milkode
     def favorite_list(params)
       names = @grndb.packages.favs.map{|r| r.name}[0..FAVORITE_LIST_NUM-1]
 
-      list = names.map {|v|
-        "<strong><a href=\"#{Mkurl.new('/home/' + v, params).inherit_query_shead}\">#{v}</a></strong>"
+      list = names.map_with_index {|v, index|
+        "<strong><a id='favorite_list_#{index}' href='#{Mkurl.new('/home/' + v, params).inherit_query_shead}' onclick='topic_path(\"favorite_list_#{index}\");'>#{v}</a></strong>"
       }.join("&nbsp;&nbsp;\n")
 
       <<EOF
