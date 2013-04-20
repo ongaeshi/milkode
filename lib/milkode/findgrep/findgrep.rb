@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
+
 require 'find'
 require 'milkode/findgrep/result'
 require 'rubygems'
-require 'termcolor'
+# require 'termcolor'
 require 'kconv'
 require 'milkode/common/platform'
 require 'milkode/common/grenfiletest'
@@ -80,7 +81,8 @@ module FindGrep
       @ignoreFiles    = strs2regs_simple(option.ignoreFiles)
       @ignoreDirs     = strs2regs_simple(option.ignoreDirs)
       @result         = Result.new(option.directory)
-      open_database if (@option.dbFile)
+      open_database       if @option.dbFile
+      require 'termcolor' if @option.colorHighlight
     end
 
     def open_database()
