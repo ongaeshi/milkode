@@ -231,6 +231,18 @@ EOF
 EOF
   end
 
+  def create_favorite_list
+    <<EOF
+      <div class="favorite_list">
+        お気に入り:
+        <a href="/home/milkode">milkode</a>&nbsp;&nbsp;
+        <a href="/home/export-memo">export-memo</a>&nbsp;&nbsp;
+        <a href="/home/junk">jump</a>&nbsp;&nbsp;
+      </div>
+    </div>
+EOF
+  end
+
   def headicon(name)
     "<img alt='' style='vertical-align:center; border: 0px; margin: 0px;' src='/images/#{name}'>"
   end
