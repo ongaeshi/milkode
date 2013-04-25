@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-require 'optparse'
-require 'milkode/findgrep/findgrep'
-require 'milkode/common/dbdir'
-require 'milkode/cdstk/cdstk'
-require 'milkode/cdstk/yaml_file_wrapper'
-require 'milkode/cdstk/package'
 require 'kconv'
+require 'milkode/cdstk/cdstk'
+require 'milkode/cdstk/package'
+require 'milkode/cdstk/yaml_file_wrapper'
+require 'milkode/common/dbdir'
+require 'milkode/findgrep/findgrep'
+require 'optparse'
 
 module Milkode
   class CLI_Grep
