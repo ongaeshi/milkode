@@ -5,7 +5,6 @@ require 'milkode/common/archive-zip'
 require 'fileutils'
 require 'pathname'
 require 'kconv'
-require 'groonga'
 
 module Milkode
   module Util
