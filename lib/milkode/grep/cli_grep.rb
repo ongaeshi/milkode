@@ -16,7 +16,7 @@ module Milkode
         arguments = arguments.map{|arg| Kconv.kconv(arg, Kconv::UTF8)}
       end
 
-      option = FindGrep::FindGrep::DEFAULT_OPTION.dup
+      option = FindGrep::FindGrep::create_default_option
 
       # default option
       option.dbFile = Dbdir.groonga_path(Dbdir.default_dir)
