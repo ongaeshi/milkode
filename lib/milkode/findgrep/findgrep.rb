@@ -40,33 +40,34 @@ module FindGrep
                         :matchCountLimit,
                         :keywords,
                         :gotoline)
-    
-    DEFAULT_OPTION = Option.new([],
-                                [],
-                                ".",
-                                -1,
-                                false,
-                                false,
-                                false,
-                                false,
-                                false,
-                                [],
-                                [],
-                                [],
-                                [],
-                                [],
-                                [],
-                                # Platform.get_shell_kcode,
-                                Kconv::UTF8,
-                                false,
-                                nil,
-                                false,
-                                false,
-                                false,
-                                -1,
-                                [],
-                                -1)
-    
+
+    def self.create_default_option
+      Option.new([],
+                 [],
+                 ".",
+                 -1,
+                 false,
+                 false,
+                 false,
+                 false,
+                 false,
+                 [],
+                 [],
+                 [],
+                 [],
+                 [],
+                 [],
+                 Kconv::UTF8, # Platform.get_shell_kcode,
+                 false,
+                 nil,
+                 false,
+                 false,
+                 false,
+                 -1,
+                 [],
+                 -1)
+    end
+
     class MatchCountOverError < RuntimeError ; end
 
     attr_reader :documents
