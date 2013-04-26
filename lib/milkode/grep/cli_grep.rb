@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 require 'kconv'
-require 'milkode/cdstk/cdstk'
 require 'milkode/cdstk/package'
 require 'milkode/cdstk/yaml_file_wrapper'
 require 'milkode/common/dbdir'
+require 'milkode/common/util'
 require 'milkode/findgrep/findgrep'
 require 'optparse'
 
@@ -124,6 +124,7 @@ EOF
       if (arguments.size > 0 || my_option[:find_mode])
         # update
         if my_option[:update]
+          require 'milkode/cdstk/cdstk'
           cdstk = Cdstk.new(stdout, Dbdir.select_dbdir)
 
           if (my_option[:all])

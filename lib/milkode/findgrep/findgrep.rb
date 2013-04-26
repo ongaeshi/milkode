@@ -93,7 +93,7 @@ module FindGrep
       # データベース開く
       if dbfile.exist?
         if !@grndb || @grndb.closed?
-          @grndb = GroongaDatabase.new
+          @grndb = Milkode::GroongaDatabase.new
           @grndb.open_file(dbfile.to_s)
           @documents = @grndb.documents
           puts "open    : #{dbfile.to_s} open." unless @option.isSilent
