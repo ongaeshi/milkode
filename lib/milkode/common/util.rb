@@ -14,7 +14,7 @@ module Milkode
     # zipファイルを展開し、展開フォルダ名を返す
     # ファイルが見つからなかった時はnilを返す
     def zip_extract(filename, dst_dir)
-      require 'milkode/common/archive-zip'
+      require 'archive/zip'
 
       raise ZipfileNotFound unless File.exist?(filename)
       
