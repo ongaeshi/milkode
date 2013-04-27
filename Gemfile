@@ -6,7 +6,7 @@ source "http://rubygems.org"
 # gemspec
 gem 'termcolor'   , '>= 1.2.0' , '< 1.2.2'
 gem 'rroonga'     , '>= 1.1.0'
-gem 'rack'        , '>= 1.3.4' , '~> 1.4.0'
+gem 'rack'        , '>= 1.5.2'
 gem 'sinatra'     , '>= 1.2.6'
 gem 'launchy'     , '>= 0.3.7'
 gem 'coderay'     , '>= 1.0.5'
