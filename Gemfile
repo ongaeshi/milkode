@@ -14,7 +14,7 @@ gem 'thin'        , '>= 1.2.10'
 gem 'archive-zip' , '>= 0.4.0'
 gem 'haml'        , '>= 3.1.2'
 gem 'sass'        , '>= 3.1.3'
-gem 'thor'        , '~> 0.15.0'
+gem 'thor'        , '>= 0.18.1'
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
