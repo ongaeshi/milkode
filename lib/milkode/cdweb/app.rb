@@ -87,6 +87,8 @@ post '/command' do
     end
   when 'favorite'
     Database.instance.set_fav(params[:name], params[:favorited] == 'true')
+    @package_list = PackageList.new(Database.instance.grndb)
+    "お気に入り: " + @package_list.favorite_list({})
   end
 end
 
