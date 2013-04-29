@@ -11,7 +11,7 @@ require 'milkode_test_work'
 
 class TestCLI < Test::Unit::TestCase
   def setup
-    $stdout = StringIO.new
+    $stdout = @stringio = StringIO.new
     @first_default_dir = Dbdir.default_dir
     @work = MilkodeTestWork.new({:default_db => true})
     @work.add_package "db1", @work.expand_path("../data/a_project")
@@ -65,8 +65,10 @@ class TestCLI < Test::Unit::TestCase
   def test_fav
     command("fav")
     command("fav a_not_found_package_xxxxxxx")
+    @stringio.string = ""
     # command("fav package")
     # command("fav -d package")
+    assert_equal "", command("fav --sync-yaml")
   end
 
   def test_help_with_h_option

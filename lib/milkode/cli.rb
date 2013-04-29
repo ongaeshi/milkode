@@ -144,7 +144,8 @@ EOF
     end
 
     desc "fav [package1 package2 ...]", "Add favorite"
-    option :delete, :type => :boolean, :aliases => '-d', :desc => "Delete favorite."
+    option :delete    , :type => :boolean, :aliases => '-d', :desc => "Delete favorite."
+    option :sync_yaml , :type => :boolean, :aliases => '-s', :desc => "Sync yaml with database."
     def fav(*paths)
       cdstk.fav(paths, options)
     end

@@ -69,6 +69,22 @@ module Milkode
       name == rhs.name && directory == rhs.directory && ignore == rhs.ignore
     end
 
+    def fav?
+      options[:fav] == true
+    end
+
+    def set_fav(value)
+      if value
+        if @hash['options']
+          @hash['options'][:fav] = true
+        else
+          @hash['options'] = {:fav => true}
+        end
+      else
+        @hash['options'].delete(:fav) if @hash['options']
+      end
+    end
+
     private
 
     def normalize
