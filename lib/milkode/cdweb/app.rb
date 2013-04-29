@@ -86,7 +86,7 @@ post '/command' do
       update_result_str(result, before)
     end
   when 'favorite'
-    p "favorite : #{params[:name]}"
+    p params
   end
 end
 
@@ -315,9 +315,9 @@ EOF
   def favstar(path)
     pname   = package_name(path)
 
-    unless pname == "root"
+    if pname != "root"
       classes = Database.instance.fav?(pname) ? "star favorited" : "star"
-      "<a href=\"javascript:\" class=\"#{classes}\">Favorite Me</a>"
+      "<a href=\"javascript:\" class=\"#{classes}\" milkode-package-name=\"#{pname}\">Favorite Me</a>"
     else
       ""
     end
