@@ -310,6 +310,10 @@ EOF
     "#{r.join(', ')} (#{Time.now - before} sec)"
   end
 
+  def favstar
+    '<a href="javascript:" class="star">Favorite Me</a>'
+  end
+
   # .search-summary に追加情報を表示したい時はこの関数をオーバーライド
   def search_summary_hook(path)
     ""

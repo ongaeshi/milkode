@@ -7,6 +7,8 @@ div.header {
 div.footer {
 }
 
+/* search-summary */
+
 div.search-summary {
     /* border-color: #e92926; */
     /* background-color:#FFF0F0; */
@@ -22,6 +24,21 @@ div.search-summary {
     padding-top:5px;
     padding-left:5px;
 }
+
+.search-summary .keyword {
+    font-weight: bold;    
+}
+
+.search-summary .ss-box {
+    float: left;
+    margin-right: 5px;
+}
+
+.search-summary .ss-end {
+    clear: both;
+}
+
+/* result */
 
 dt.result-record {
     font-size: 105%;
@@ -60,10 +77,6 @@ pre.lines {
     margin-top: 5px;
     padding-top: 5px;
     padding-bottom: 5px;
-}
-
-span.keyword {
-    font-weight: bold;    
 }
 
 span.sort-change {

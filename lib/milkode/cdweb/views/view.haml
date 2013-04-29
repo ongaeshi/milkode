@@ -4,7 +4,15 @@
   = haml :search_form
 
   .search-summary
-    <span class="keyword">#{topic_path(@path, params)}</span>#{additional_info(@path, params)}（#{@elapsed}秒） #{search_summary_hook(@path)}
+    .favstar.ss-box
+      #{favstar}
+    .keyword.ss-box
+      #{topic_path(@path, params)}
+    .additional-info.ss-box
+      #{additional_info(@path, params)}（#{@elapsed}秒）
+    .search-summary-hook.ss-box
+      #{search_summary_hook(@path)}
+    .ss-end
   ~ @record_content
 
 
