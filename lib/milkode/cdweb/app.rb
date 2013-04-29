@@ -85,6 +85,8 @@ post '/command' do
       result = Database.instance.update(params[:name])
       update_result_str(result, before)
     end
+  when 'favorite'
+    p "favorite : #{params[:name]}"
   end
 end
 
