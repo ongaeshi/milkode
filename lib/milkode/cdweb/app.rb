@@ -86,7 +86,7 @@ post '/command' do
       update_result_str(result, before)
     end
   when 'favorite'
-    p params
+    Database.instance.set_fav(params[:name], params[:favorited] == 'true')
   end
 end
 
