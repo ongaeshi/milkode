@@ -97,6 +97,10 @@ module Milkode
         sorted
       end
     end
+
+    def fav?(name)
+      @table[name].favtime != Time.at(0)
+    end
   end
 end
 

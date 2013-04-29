@@ -178,6 +178,10 @@ module Milkode
       @grndb.packages.touch_if(package, :viewtime) if package
     end
 
+    def fav?(name)
+      @grndb.packages.fav?(name)
+    end
+
     def update(name)
       result = Updater::ResultAccumulator.new
       result << update_in(yaml_load.find_name(name))

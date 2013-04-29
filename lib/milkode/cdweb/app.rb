@@ -312,8 +312,15 @@ EOF
     "#{r.join(', ')} (#{Time.now - before} sec)"
   end
 
-  def favstar
-    '<a href="javascript:" class="star">Favorite Me</a>'
+  def favstar(path)
+    pname   = package_name(path)
+
+    unless pname == "root"
+      classes = Database.instance.fav?(pname) ? "star favorited" : "star"
+      "<a href=\"javascript:\" class=\"#{classes}\">Favorite Me</a>"
+    else
+      ""
+    end
   end
 
   # .search-summary に追加情報を表示したい時はこの関数をオーバーライド
