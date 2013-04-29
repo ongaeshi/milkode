@@ -14,7 +14,7 @@ module Milkode
     UPDATE_NUM = 5
     FAV_NUM    = 7
 
-    FAVORITE_LIST_NUM = 5
+    FAVORITE_LIST_NUM = 7
     
     def initialize(grndb)
       @grndb = grndb
