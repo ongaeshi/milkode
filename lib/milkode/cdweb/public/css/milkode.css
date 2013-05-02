@@ -197,7 +197,7 @@ label.ui-corner-all {
 }
 
 #mainpage .help-content h1 {
-    margin-top: 40px;
+    margin-top: 30px;
     margin-bottom: 15px;
 }
 
@@ -208,7 +208,12 @@ label.ui-corner-all {
 }
 
 #mainpage .help-content p {
-    margin-left: 20px;
+    font-size: 108%;
+    margin-left: 10px;
+}
+
+#mainpage .help-content img {
+    margin-left: 10px;
 }
 
 #mainpage .help-content pre {

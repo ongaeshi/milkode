@@ -65,12 +65,14 @@
       Milkodeにおける<strong>"絶対パス"</strong>に相当するもの
       
     %ul
-      %li ファイルモードで行番号をクリックすると取得可能
-      .poi 画像をはる
-
       %li ダイレクトパスで検索すると直接ジャンプ
       %pre
         :preserve
           /proj/a/file.rb:81                      <span class="comment"># /パッケージ名/ファイル名:行番号</span>
           "/proj/a file.rb:3"                     <span class="comment"># 空白を含むダイレクトパスは""で囲む</span>
-          /proj/a/file.rb:1 /proj2/a/file.c:121   <span class="comment"># 空白で区切れば複数個渡せる</span>
+          /proj1/file.rb:1 /proj2/file.c:2         <span class="comment"># 空白で区切れば複数個渡せる</span>
+
+      %li ファイルモードで行番号をクリックすると取得可能
+      <img src="/images/milkode-directpath-copy.gif" />
+
+      %li <a href="https://github.com/ongaeshi/emacs-milkode">emacs-milkode</a>との連携にも使う
