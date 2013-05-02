@@ -1,30 +1,68 @@
-- @title = 'help'
+- @title = 'ヘルプ'
 
 .header
   %h1
     <a href="/"><img src=#{@setting.header_icon} alt="milkode-icon-mini" border="0" height="75px"/></a>
-    #{@title} - #{@setting.header_title}
+    #{@title}
 
 .content
-  .sample-code
-    %h2 基本
+  .help-content
+    %h1 検索
     %ol
-      %li キーワードを並べてAND検索<br>#{link('def open')} 
-      %li １フレーズとして検索<br>#{link('"def open"')}
+      %li キーワードを並べてAND検索
+      %pre
+        :preserve
+          def open
       
-    %h2 オプション
+      %li １フレーズとして検索
+      %pre
+        :preserve
+          "def open"
+      
+    %h1 絞り込みオプション
+    %p
+      検索キーワードと組み合わせて使う
+      
     %ol
-      %li パッケージ名で絞り込み<br>#{link('def open p:milkode')}
-      %li ファイル名で絞り込み<br>#{link('def open f:test')}
-      %li 拡張子で絞り込み<br>#{link('s:rb')}
-      %li ファイル名もしくはパッケージ名で絞り込み<br>#{link('fp:milkode')}
-      %li ファイル名、パッケージ名、もしくはファイルの内容<br>#{link('k:test')}
-      %li 検索範囲を複数行に広げる(#{link('w:0 read write', 'w:0')}ならファイル内全て)<br>#{link('w:7 read write')}
+      %li パッケージ名で絞り込み
+      %pre
+        :preserve
+          p:milkode
       
-    %h2 ダイレクトパス
+      %li ファイル名で絞り込み
+      %pre
+        :preserve
+          f:test
+      
+      %li 拡張子で絞り込み
+      %pre
+        :preserve
+          s:rb
+      
+      %li ファイル名もしくはパッケージ名で絞り込み
+      %pre
+        :preserve
+          fp:milkode
+      
+      %li ファイル名、パッケージ名、もしくはファイルの内容
+      %pre
+        :preserve
+          k:test
+      
+      %li 検索範囲を複数行に広げる
+      %pre
+        :preserve
+          w:7 read write                          <span class="comment"># 7行以内に'read'と'write'が含まれる箇所</span>
+          w:0 read write                          <span class="comment"># 'w:0'ならファイル内全て</span>
+
+    %h1 ダイレクトパス
     %ol
-      %li viewモードで行番号をクリックするとダイレクトパス(現在行を表すテキスト)を表示
-      %li ダイレクトパスで検索すると直接ジャンプ<br>#{link('/milkode/lib/milkode/cdstk/cdstk.rb:81')}
-      %li 空白を含むダイレクトパスは""で囲む<br>#{link('"/path/a to text/dir:3"')}
-      %li ダイレクトパスは空白で区切って複数渡せる<br>#{link('/milkode/lib/milkode/cli.rb:41 /milkode/lib/milkode/cdstk/cdstk.rb:121')}
-      
+      %li ファイル表示時に行番号をクリックすると取得可能
+      .poi 画像をはる
+
+      %li ダイレクトパスで検索すると直接ジャンプ
+      %pre
+        :preserve
+          /proj/a/file.rb:81                      <span class="comment"># /パッケージ名/ファイル名:行番号</span>
+          "/proj/a file.rb:3"                     <span class="comment"># 空白を含むダイレクトパスは""で囲む</span>
+          /proj/a/file.rb:1 /proj2/a/file.c:121   <span class="comment"># 空白で区切れば複数個渡せる</span>
