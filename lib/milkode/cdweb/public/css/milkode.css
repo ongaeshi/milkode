@@ -201,9 +201,18 @@ label.ui-corner-all {
     margin-bottom: 15px;
 }
 
-#mainpage .help-content li {
+#mainpage .help-content ul li {
+    list-style: none;
     margin-top: 10px;
     margin-bottom: 10px;
+}
+
+#mainpage .help-content p {
+    margin-left: 20px;
+}
+
+#mainpage .help-content pre {
+    margin-left: 10px;
 }
 
 #mainpage .help-content .comment {
