@@ -192,8 +192,22 @@ label.ui-corner-all {
 
 /* mainpage - help */
 
-#mainpage .sample-code {
+#mainpage .help-content {
     margin-top: 20px;
+}
+
+#mainpage .help-content h1 {
+    margin-top: 40px;
+    margin-bottom: 15px;
+}
+
+#mainpage .help-content li {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#mainpage .help-content .comment {
+    color: #008E1D;
 }
 
 /* lineno-modal */
