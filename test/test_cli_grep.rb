@@ -5,7 +5,7 @@
 # @author ongaeshi
 # @date   2011/12/03
 
-require 'milkode/grep/cli_grep.rb'
+require 'milkode/grep/cli_grep'
 require 'test_helper'
 require 'milkode_test_work'
 

@@ -5,7 +5,8 @@ require 'milkode/cdstk/package'
 require 'milkode/cdstk/yaml_file_wrapper'
 require 'milkode/common/dbdir'
 require 'milkode/common/util'
-require 'milkode/findgrep/findgrep'
+require 'milkode/grep/findgrep_option'
+require 'milkode/grep/findgrep'
 require 'optparse'
 
 module Milkode
@@ -16,7 +17,7 @@ module Milkode
         arguments = arguments.map{|arg| Kconv.kconv(arg, Kconv::UTF8)}
       end
 
-      option = FindGrep::FindGrep::create_default_option
+      option = FindGrepOption::create_default
 
       # default option
       option.dbFile = Dbdir.groonga_path(Dbdir.default_dir)
@@ -143,7 +144,7 @@ EOF
         if (my_option[:count])
           # count mode
           option.isSilent = true
-          findGrep = FindGrep::FindGrep.new(arguments, option)
+          findGrep = FindGrep.new(arguments, option)
           records = findGrep.pickupRecords
           # stdout.puts "#{records.size} records (#{findGrep.time_s})"
           stdout.puts "#{records.size} records"
@@ -162,12 +163,12 @@ EOF
             end
             
             option.gotoline = v[1]
-            findGrep = FindGrep::FindGrep.new(arguments, option)
+            findGrep = FindGrep.new(arguments, option)
             findGrep.searchAndPrint(stdout)
           end
         else
           # search mode
-          findGrep = FindGrep::FindGrep.new(arguments, option)
+          findGrep = FindGrep.new(arguments, option)
           findGrep.searchAndPrint(stdout)
         end
       else

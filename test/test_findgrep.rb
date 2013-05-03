@@ -7,9 +7,9 @@
 
 require 'test_helper'
 require 'file_assert'
-require 'milkode/findgrep/findgrep'
+require 'milkode/grep/findgrep'
 
-module FindGrep
+module Milkode
   class TestFindGrep < Test::Unit::TestCase
     def test_basic
 
