@@ -197,11 +197,11 @@ EOF
     end
 
     <<EOF
-    #{headicon('go-home-5.png')} <a href="/home" class="headmenu">ホーム</a>
-    #{headicon('directory.png')} <a href="#{flist}" class="headmenu">ディレクトリ</a> 
-    #{headicon('view-refresh-4.png')} <a href="#updateModal" class="headmenu" data-toggle="modal">パッケージを更新</a>
-    #{headicon('info.png')} <a href="/help" class="headmenu">統計情報</a>
-    #{headicon('help.png')} <a href="/help" class="headmenu">ヘルプ</a>
+    #{headicon('go-home-5.png')}<a href="/home" class="headmenu">ホーム</a>&nbsp;
+    #{headicon('directory.png')}<a href="#{flist}" class="headmenu">ディレクトリ</a>
+    #{headicon('view-refresh-4.png')}<a href="#updateModal" class="headmenu" data-toggle="modal">パッケージを更新</a>&nbsp;
+    #{headicon('info.png')}<a href="/help" class="headmenu">統計情報</a>&nbsp;
+    #{headicon('help.png')}<a href="/help" class="headmenu">ヘルプ</a>
 
     <div id="updateModal" class="modal hide fade">
       <div class="modal-header">
