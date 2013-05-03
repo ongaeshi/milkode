@@ -6,7 +6,6 @@ require 'milkode/cdstk/yaml_file_wrapper'
 require 'milkode/common/dbdir'
 require 'milkode/common/util'
 require 'milkode/grep/findgrep_option'
-require 'milkode/grep/findgrep'
 require 'optparse'
 
 module Milkode
@@ -141,35 +140,46 @@ EOF
           stdout.puts
         end
 
-        if (my_option[:count])
-          # count mode
-          option.isSilent = true
-          findGrep = FindGrep.new(arguments, option)
-          records = findGrep.pickupRecords
-          # stdout.puts "#{records.size} records (#{findGrep.time_s})"
-          stdout.puts "#{records.size} records"
-        elsif my_option[:gotoline_data]
-          # gotoline mode
-          basePatterns = option.filePatterns 
+        if is_abs_path
+          require 'milkode/grep/fast_gotoline'
 
-          my_option[:gotoline_data].each do |v|
-            if is_abs_path
-              package, restpath = Util::divide_shortpath(v[0][0])
-              # p [package, restpath]
-              option.packages = [package]
-              option.filePatterns = [restpath]
-            else
-              option.filePatterns = basePatterns + v[0]
+          obj = FastGotoline.new(my_option[:gotoline_data], yaml_load)
+          obj.search_and_print(stdout)
+          
+        else
+          require 'milkode/grep/findgrep'
+
+          if (my_option[:count])
+            # count mode
+            option.isSilent = true
+            findGrep = FindGrep.new(arguments, option)
+            records = findGrep.pickupRecords
+            # stdout.puts "#{records.size} records (#{findGrep.time_s})"
+            stdout.puts "#{records.size} records"
+          elsif my_option[:gotoline_data]
+            # gotoline mode
+            basePatterns = option.filePatterns 
+
+            my_option[:gotoline_data].each do |v|
+              if is_abs_path
+                # @memo ここにはこないはず
+                package, restpath = Util::divide_shortpath(v[0][0])
+                # p [package, restpath]
+                option.packages = [package]
+                option.filePatterns = [restpath]
+              else
+                option.filePatterns = basePatterns + v[0]
+              end
+              
+              option.gotoline = v[1]
+              findGrep = FindGrep.new(arguments, option)
+              findGrep.searchAndPrint(stdout)
             end
-            
-            option.gotoline = v[1]
+          else
+            # search mode
             findGrep = FindGrep.new(arguments, option)
             findGrep.searchAndPrint(stdout)
           end
-        else
-          # search mode
-          findGrep = FindGrep.new(arguments, option)
-          findGrep.searchAndPrint(stdout)
         end
       else
         stdout.print opt.help
