@@ -18,11 +18,11 @@ module Milkode
       # plangs  = sorted_plangs(records)
       
       @summary_content = <<EOF
-<pre>
-パッケージ名: #{name}
-ファイル数:   #{records.size}
-行数:         #{line_count_total(records)}
-</pre>
+<table class="table-striped table-bordered table-condensed">
+  <tr><td>パッケージ名</td><td align="right">#{name}</td></tr>
+  <tr><td>ファイル数</td><td align="right">#{records.size}</td></tr>
+  <tr><td>行数</td><td align="right">#{line_count_total(records)}</td></tr>
+</table>
 EOF
 
       @plang_content = <<EOF
