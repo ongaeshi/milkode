@@ -20,6 +20,7 @@ require 'milkode/cdweb/lib/command'
 require 'milkode/cdweb/lib/mkurl'
 require 'milkode/cdweb/lib/web_setting'
 require 'milkode/cdweb/lib/package_list'
+require 'milkode/cdweb/lib/info_home'
 require 'milkode/common/util'
 
 set :haml, :format => :html5
@@ -120,6 +121,24 @@ get %r{/help} do
   haml :help
 end
 
+get '/info' do
+  obj = InfoHome.new
+
+  @setting             = WebSetting.new
+  @path                = ""
+  
+  # @sort_change_content = obj.sort_change_content
+  @record_content      = obj.record_content
+  @total_records       = obj.total_records
+  # @elapsed             = obj.elapsed
+  
+  haml :info_home
+end
+
+get '/info/:kind' do
+  params[:kind]
+end
+
 # -- helper function --
 
 helpers do
@@ -200,7 +219,7 @@ EOF
     #{headicon('go-home-5.png')}<a href="/home" class="headmenu">ホーム</a>&nbsp;
     #{headicon('directory.png')}<a href="#{flist}" class="headmenu">ディレクトリ</a>
     #{headicon('view-refresh-4.png')}<a href="#updateModal" class="headmenu" data-toggle="modal">パッケージを更新</a>&nbsp;
-    #{headicon('info.png')}<a href="/help" class="headmenu">統計情報</a>&nbsp;
+    #{headicon('info.png')}<a href="/info" class="headmenu">統計情報</a>&nbsp;
     #{headicon('help.png')}<a href="/help" class="headmenu">ヘルプ</a>
 
     <div id="updateModal" class="modal hide fade">

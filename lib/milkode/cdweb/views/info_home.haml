@@ -1,0 +1,13 @@
+= haml :header_menu
+
+.content
+  .search-summary
+    .sort-change.ss-box
+      #{@sort_change_content}
+    .total-entries.ss-box
+      #{@total_records}</span>件（#{@elapsed}秒）
+    .ss-end
+
+  ~ @record_content
+
+
