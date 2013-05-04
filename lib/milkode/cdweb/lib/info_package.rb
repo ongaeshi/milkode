@@ -26,9 +26,9 @@ module Milkode
 EOF
 
       @plang_content = <<EOF
-<pre>
-#{breakdown_detail(records, 10)}
-</pre>
+<table class="table-striped table-bordered table-condensed">
+#{breakdown_detail(records)}
+</table>
 EOF
     end
 
@@ -47,10 +47,10 @@ EOF
       end
     end
 
-    def breakdown_detail(records, name_width)
+    def breakdown_detail(records)
       sorted_plangs(records).map {|name, count|
         percent = (count.to_f / records.size * 100).to_i
-        sprintf("%-#{name_width}s  %5d  %3d%%", name, count, percent)
+        "<tr><td>#{name}</td><td align=\"right\">#{count}</td><td align=\"right\">#{percent}%</td></tr>"
       }.join("\n")
     end
 
