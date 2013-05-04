@@ -127,11 +127,7 @@ get '/info' do
 
   @setting             = WebSetting.new
   @path                = ""
-  
-  # @sort_change_content = obj.sort_change_content
   @record_content      = obj.record_content
-  @total_records       = obj.total_records
-  # @elapsed             = obj.elapsed
   
   haml :info_home
 end

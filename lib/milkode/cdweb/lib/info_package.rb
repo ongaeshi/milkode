@@ -20,7 +20,7 @@ module Milkode
       @summary_content = <<EOF
 <pre>
 パッケージ名: #{name}
-レコード数:   #{records.size}
+ファイル数:   #{records.size}
 行数:         #{line_count_total(records)}
 </pre>
 EOF
