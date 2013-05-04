@@ -120,6 +120,11 @@ module Milkode
       @documents.size
     end
 
+    # 指定パッケージに属する全てのレコードを得る
+    def package_records(name)
+      @documents.package_records(name)
+    end
+
     # yamlからパッケージの総数を得る
     # @todo PackageTableから取得するように変更する
     def yaml_package_num

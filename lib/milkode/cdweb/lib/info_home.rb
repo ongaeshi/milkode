@@ -12,11 +12,37 @@ module Milkode
 
     def initialize
       packages       = Database.instance.packages(nil)
-      @total_records = packages.size      
-      
-      @record_content = packages.map {|name|
-        "<dt class='result-file'><a href='/info/#{name}'>#{name}</a></dt>"
-      }.join
+      @total_records = packages.size
+
+      # table
+      table_header = "<tr><th>名前</th><th>レコード数</th><th>行数</th><tr>"
+
+      table_content = packages.map {|name|
+        records = Database.instance.package_records(name)
+        "<tr><td><a href='/info/#{name}'>#{name}</a></td><td>#{records.size}<td/><td>#{line_count_total(records)}</td></tr>"
+      }.join("\n")
+
+      @record_content = <<EOF
+<table>
+#{table_header}
+#{table_content}
+</table>
+EOF
+    end
+
+    def line_count_total(records)
+      records.reduce(0) do |total, record|
+        begin
+          unless record.content.nil?
+            total + record.content.count($/) + 1
+          else
+            total
+          end
+        rescue ArgumentError
+          # warning_alert("invalid byte sequence : #{record.path}")
+          total
+        end
+      end
     end
   end
 end
