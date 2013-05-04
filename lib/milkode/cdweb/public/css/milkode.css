@@ -79,7 +79,7 @@ pre.lines {
     padding-bottom: 5px;
 }
 
-span.sort-change {
+.sort-change {
     font-weight: bold;    
     margin-right: 10px;
 }
