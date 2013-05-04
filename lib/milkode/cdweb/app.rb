@@ -215,11 +215,14 @@ EOF
       modal_body = "#{package_name} を更新しますか？"
     end
 
+    info_path = "/info"
+    info_path = File.join(info_path, package_name) if package_name != ""
+
     <<EOF
     #{headicon('go-home-5.png')}<a href="/home" class="headmenu">ホーム</a>&nbsp;
     #{headicon('directory.png')}<a href="#{flist}" class="headmenu">ディレクトリ</a>
     #{headicon('view-refresh-4.png')}<a href="#updateModal" class="headmenu" data-toggle="modal">パッケージを更新</a>&nbsp;
-    #{headicon('info.png')}<a href="/info" class="headmenu">統計情報</a>&nbsp;
+    #{headicon('info.png')}<a href="#{info_path}" class="headmenu">統計情報</a>&nbsp;
     #{headicon('help.png')}<a href="/help" class="headmenu">ヘルプ</a>
 
     <div id="updateModal" class="modal hide fade">
