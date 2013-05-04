@@ -224,6 +224,21 @@ label.ui-corner-all {
     color: #008E1D;
 }
 
+/* mainpage - info_package */
+
+#mainpage .info-package-content {
+    margin-top: 10px;
+}
+
+#mainpage .info-package-content h1 {
+    margin-bottom: 15px;
+}
+
+#mainpage .info-package-content h2 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
 /* lineno-modal */
 
 #lineno-copyall {
@@ -243,3 +258,4 @@ label.ui-corner-all {
 .star.favorited {
      background-position: 0px;
 }
+

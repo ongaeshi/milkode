@@ -15,13 +15,14 @@ require 'sass'
 require 'haml'
 
 $LOAD_PATH.unshift '../..'
+require 'milkode/common/util'
 require 'milkode/cdweb/lib/database'
 require 'milkode/cdweb/lib/command'
 require 'milkode/cdweb/lib/mkurl'
 require 'milkode/cdweb/lib/web_setting'
 require 'milkode/cdweb/lib/package_list'
 require 'milkode/cdweb/lib/info_home'
-require 'milkode/common/util'
+require 'milkode/cdweb/lib/info_package'
 
 set :haml, :format => :html5
 
@@ -135,8 +136,20 @@ get '/info' do
   haml :info_home
 end
 
-get '/info/:kind' do
-  params[:kind]
+get '/info/:package' do
+  before = Time.now
+
+  name = params[:package]
+  obj = InfoPackage.new(name)
+    
+  @setting         = WebSetting.new
+  @path            = name
+  @summary_content = obj.summary_content
+  @plang_content   = obj.plang_content
+
+  @elapsed = Time.now - before
+
+  haml :info_package
 end
 
 # -- helper function --
