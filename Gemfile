@@ -23,4 +23,5 @@ group :development do
   gem 'jeweler'
   gem 'rack-test'
   gem 'sinatra-reloader'
+  gem 'test-unit' , '>= 2.5.4'
 end
