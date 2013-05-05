@@ -356,6 +356,10 @@ module Milkode
       @table.to_a
     end
 
+    def package_records(name)
+      search(:strict_packages => [name])
+    end
+
     private
 
     def load_content(filename)

@@ -15,12 +15,14 @@ require 'sass'
 require 'haml'
 
 $LOAD_PATH.unshift '../..'
+require 'milkode/common/util'
 require 'milkode/cdweb/lib/database'
 require 'milkode/cdweb/lib/command'
 require 'milkode/cdweb/lib/mkurl'
 require 'milkode/cdweb/lib/web_setting'
 require 'milkode/cdweb/lib/package_list'
-require 'milkode/common/util'
+require 'milkode/cdweb/lib/info_home'
+require 'milkode/cdweb/lib/info_package'
 
 set :haml, :format => :html5
 
@@ -120,6 +122,33 @@ get %r{/help} do
   haml :help
 end
 
+get '/info' do
+  obj = InfoHome.new
+
+  @setting             = WebSetting.new
+  @path                = ""
+  @summary_content     = obj.summary_content
+  @record_content      = obj.record_content
+  
+  haml :info_home
+end
+
+get '/info/:package' do
+  before = Time.now
+
+  name = params[:package]
+  obj = InfoPackage.new(name)
+    
+  @setting         = WebSetting.new
+  @path            = name
+  @summary_content = obj.summary_content
+  @plang_content   = obj.plang_content
+
+  @elapsed = Time.now - before
+
+  haml :info_package
+end
+
 # -- helper function --
 
 helpers do
@@ -196,11 +225,15 @@ EOF
       modal_body = "#{package_name} を更新しますか？"
     end
 
+    info_path = "/info"
+    info_path = File.join(info_path, package_name) if package_name != ""
+
     <<EOF
-    #{headicon('go-home-5.png')} <a href="/home" class="headmenu">ホーム</a>
-    #{headicon('directory.png')} <a href="#{flist}" class="headmenu">ディレクトリ</a> 
-    #{headicon('view-refresh-4.png')} <a href="#updateModal" class="headmenu" data-toggle="modal">パッケージを更新</a>
-    #{headicon('help.png')} <a href="/help" class="headmenu">ヘルプ</a>
+    #{headicon('go-home-5.png')}<a href="/home" class="headmenu">ホーム</a>&nbsp;
+    #{headicon('directory.png')}<a href="#{flist}" class="headmenu">ディレクトリ</a>
+    #{headicon('view-refresh-4.png')}<a href="#updateModal" class="headmenu" data-toggle="modal">パッケージを更新</a>&nbsp;
+    #{headicon('info.png')}<a href="#{info_path}" class="headmenu">統計情報</a>&nbsp;
+    #{headicon('help.png')}<a href="/help" class="headmenu">ヘルプ</a>
 
     <div id="updateModal" class="modal hide fade">
       <div class="modal-header">

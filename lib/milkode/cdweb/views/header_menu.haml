@@ -1,5 +1,5 @@
 .header
   %h1
     <a href="/"><img src=#{@setting.header_icon} alt="milkode-icon-mini" border="0" height="75px"/></a>
-    #{@setting.header_title}
+    #{@setting.header_title} &nbsp;
     = create_headmenu(@path, params, defined?(flistpath) ? flistpath : '')
