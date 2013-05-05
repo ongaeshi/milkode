@@ -19,7 +19,6 @@ module Milkode
       
       @summary_content = <<EOF
 <table class="table-striped table-bordered table-condensed">
-  <tr><td>パッケージ名</td><td align="right">#{name}</td></tr>
   <tr><td>ファイル数</td><td align="right">#{records.size}</td></tr>
   <tr><td>行数</td><td align="right">#{line_count_total(records)}</td></tr>
 </table>
