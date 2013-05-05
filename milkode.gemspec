@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{milkode}
-  s.version = "0.9.9"
+  s.version = "1.0.0.rc.1"
 
-  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
+  s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["ongaeshi"]
-  s.date = %q{2013-03-26}
+  s.date = %q{2013-05-05}
   s.description = %q{Line based local source code search engine & grep-command & web-app.}
   s.email = %q{ongaeshi0621@gmail.com}
   s.executables = ["gmilk", "milk"]
@@ -43,6 +43,8 @@ Gem::Specification.new do |s|
     "lib/milkode/cdweb/lib/command.rb",
     "lib/milkode/cdweb/lib/database.rb",
     "lib/milkode/cdweb/lib/grep.rb",
+    "lib/milkode/cdweb/lib/info_home.rb",
+    "lib/milkode/cdweb/lib/info_package.rb",
     "lib/milkode/cdweb/lib/mkurl.rb",
     "lib/milkode/cdweb/lib/package_list.rb",
     "lib/milkode/cdweb/lib/query.rb",
@@ -82,6 +84,10 @@ Gem::Specification.new do |s|
     "lib/milkode/cdweb/public/images/file.png",
     "lib/milkode/cdweb/public/images/go-home-5.png",
     "lib/milkode/cdweb/public/images/help.png",
+    "lib/milkode/cdweb/public/images/info-big.png",
+    "lib/milkode/cdweb/public/images/info.png",
+    "lib/milkode/cdweb/public/images/milkode-directpath-copy.gif",
+    "lib/milkode/cdweb/public/images/milkode-star.png",
     "lib/milkode/cdweb/public/images/view-refresh-4.png",
     "lib/milkode/cdweb/public/images/waiting.gif",
     "lib/milkode/cdweb/public/img/glyphicons-halflings-white.png",
@@ -97,13 +103,14 @@ Gem::Specification.new do |s|
     "lib/milkode/cdweb/views/header_menu.haml",
     "lib/milkode/cdweb/views/help.haml",
     "lib/milkode/cdweb/views/index.haml",
+    "lib/milkode/cdweb/views/info_home.haml",
+    "lib/milkode/cdweb/views/info_package.haml",
     "lib/milkode/cdweb/views/layout.haml",
     "lib/milkode/cdweb/views/packages.haml",
     "lib/milkode/cdweb/views/search.haml",
     "lib/milkode/cdweb/views/search_form.haml",
     "lib/milkode/cdweb/views/view.haml",
     "lib/milkode/cli.rb",
-    "lib/milkode/common/archive-zip.rb",
     "lib/milkode/common/array_diff.rb",
     "lib/milkode/common/dbdir.rb",
     "lib/milkode/common/dir.rb",
@@ -122,9 +129,10 @@ Gem::Specification.new do |s|
     "lib/milkode/database/groonga_database.rb",
     "lib/milkode/database/package_table.rb",
     "lib/milkode/database/updater.rb",
-    "lib/milkode/findgrep/findgrep.rb",
-    "lib/milkode/findgrep/result.rb",
     "lib/milkode/grep/cli_grep.rb",
+    "lib/milkode/grep/fast_gotoline.rb",
+    "lib/milkode/grep/findgrep.rb",
+    "lib/milkode/grep/findgrep_option.rb",
     "milkode.gemspec",
     "test/data/.gitignore",
     "test/data/.gitignore.sjis",
@@ -200,7 +208,7 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<termcolor>, [">= 1.2.0", "< 1.2.2"])
       s.add_runtime_dependency(%q<rroonga>, [">= 1.1.0"])
-      s.add_runtime_dependency(%q<rack>, [">= 1.3.4", "~> 1.4.0"])
+      s.add_runtime_dependency(%q<rack>, [">= 1.5.2"])
       s.add_runtime_dependency(%q<sinatra>, [">= 1.2.6"])
       s.add_runtime_dependency(%q<launchy>, [">= 0.3.7"])
       s.add_runtime_dependency(%q<coderay>, [">= 1.0.5"])
@@ -208,15 +216,16 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<archive-zip>, [">= 0.4.0"])
       s.add_runtime_dependency(%q<haml>, [">= 3.1.2"])
       s.add_runtime_dependency(%q<sass>, [">= 3.1.3"])
-      s.add_runtime_dependency(%q<thor>, ["~> 0.15.0"])
+      s.add_runtime_dependency(%q<thor>, [">= 0.18.1"])
       s.add_development_dependency(%q<bundler>, [">= 0"])
       s.add_development_dependency(%q<jeweler>, [">= 0"])
       s.add_development_dependency(%q<rack-test>, [">= 0"])
       s.add_development_dependency(%q<sinatra-reloader>, [">= 0"])
+      s.add_development_dependency(%q<test-unit>, [">= 2.5.4"])
     else
       s.add_dependency(%q<termcolor>, [">= 1.2.0", "< 1.2.2"])
       s.add_dependency(%q<rroonga>, [">= 1.1.0"])
-      s.add_dependency(%q<rack>, [">= 1.3.4", "~> 1.4.0"])
+      s.add_dependency(%q<rack>, [">= 1.5.2"])
       s.add_dependency(%q<sinatra>, [">= 1.2.6"])
       s.add_dependency(%q<launchy>, [">= 0.3.7"])
       s.add_dependency(%q<coderay>, [">= 1.0.5"])
@@ -224,16 +233,17 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<archive-zip>, [">= 0.4.0"])
       s.add_dependency(%q<haml>, [">= 3.1.2"])
       s.add_dependency(%q<sass>, [">= 3.1.3"])
-      s.add_dependency(%q<thor>, ["~> 0.15.0"])
+      s.add_dependency(%q<thor>, [">= 0.18.1"])
       s.add_dependency(%q<bundler>, [">= 0"])
       s.add_dependency(%q<jeweler>, [">= 0"])
       s.add_dependency(%q<rack-test>, [">= 0"])
       s.add_dependency(%q<sinatra-reloader>, [">= 0"])
+      s.add_dependency(%q<test-unit>, [">= 2.5.4"])
     end
   else
     s.add_dependency(%q<termcolor>, [">= 1.2.0", "< 1.2.2"])
     s.add_dependency(%q<rroonga>, [">= 1.1.0"])
-    s.add_dependency(%q<rack>, [">= 1.3.4", "~> 1.4.0"])
+    s.add_dependency(%q<rack>, [">= 1.5.2"])
     s.add_dependency(%q<sinatra>, [">= 1.2.6"])
     s.add_dependency(%q<launchy>, [">= 0.3.7"])
     s.add_dependency(%q<coderay>, [">= 1.0.5"])
@@ -241,11 +251,12 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<archive-zip>, [">= 0.4.0"])
     s.add_dependency(%q<haml>, [">= 3.1.2"])
     s.add_dependency(%q<sass>, [">= 3.1.3"])
-    s.add_dependency(%q<thor>, ["~> 0.15.0"])
+    s.add_dependency(%q<thor>, [">= 0.18.1"])
     s.add_dependency(%q<bundler>, [">= 0"])
     s.add_dependency(%q<jeweler>, [">= 0"])
     s.add_dependency(%q<rack-test>, [">= 0"])
     s.add_dependency(%q<sinatra-reloader>, [">= 0"])
+    s.add_dependency(%q<test-unit>, [">= 2.5.4"])
   end
 end
 

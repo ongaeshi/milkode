@@ -5,59 +5,6 @@ require 'launchy'
 require 'optparse'
 require 'milkode/cdweb/lib/database'
 
-module Rack
-  class Server
-    def start
-      if options[:warn]
-        $-w = true
-      end
-
-      if includes = options[:include]
-        $LOAD_PATH.unshift(*includes)
-      end
-
-      if library = options[:require]
-        require library
-      end
-
-      if options[:debug]
-        $DEBUG = true
-        require 'pp'
-        p options[:server]
-        pp wrapped_app
-        pp app
-      end
-
-      # Touch the wrapped app, so that the config.ru is loaded before
-      # daemonization (i.e. before chdir, etc).
-      wrapped_app
-
-      daemonize_app if options[:daemonize]
-      write_pid if options[:pid]
-
-      trap(:INT) do
-        if server.respond_to?(:shutdown)
-          server.shutdown
-        else
-          exit
-        end
-      end
-
-      server.run wrapped_app, options do
-        if (options[:LaunchBrowser])
-          host = options[:Host] || options[:BindAddress] # options[:BindAddress] for WEBrick
-
-          if (options[:LaunchURL])
-            Launchy.open("http://#{host}:#{options[:Port]}#{options[:LaunchURL]}")
-          else
-            Launchy.open("http://#{host}:#{options[:Port]}")
-          end
-        end
-      end
-    end
-  end
-end
-
 module Milkode
   class CLI_Cdweb
     def self.execute(stdout, argv)
@@ -104,10 +51,33 @@ module Milkode
         # サーバースクリプトのある場所へ移動
         FileUtils.cd(File.dirname(__FILE__))
 
-        # Rackサーバー起動
-        Rack::Server.start(options)
+        # Rackサーバー生成
+        rack_server = Rack::Server.new(options)
+
+        # 起動URL生成
+        launch_url = create_launch_url(options)
+
+        # 起動
+        rack_server.start do
+          # この時点でoptions[:Host]やoptions[:Port]などの値が壊れてしまっているため事前にURLを生成している
+          Launchy.open(launch_url) if launch_url
+        end
       else
         create_customize_file(dbdir)
+      end
+    end
+
+    def self.create_launch_url(options)
+      if (options[:LaunchBrowser])
+        host = options[:Host] || options[:BindAddress] # options[:BindAddress] for WEBrick
+
+        if (options[:LaunchURL])
+          "http://#{host}:#{options[:Port]}#{options[:LaunchURL]}"
+        else
+          "http://#{host}:#{options[:Port]}"
+        end
+      else
+        nil
       end
     end
 

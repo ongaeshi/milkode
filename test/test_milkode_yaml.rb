@@ -19,7 +19,7 @@ contents:
 - directory: /a/dir1
 - directory: /path/to/dir
   ignore:
-  - ! '*.bak'
+  - '*.bak'
   - /rdoc
 - directory: /a/b/c
 EOF
@@ -36,7 +36,21 @@ EOF
 
   def test_dump
     obj = MilkodeYaml.new(SRC)
-    assert_equal SRC, obj.dump if Milkode::Util::ruby19?
+    if Milkode::Util::ruby20?
+      assert_equal SRC, obj.dump
+    elsif Milkode::Util::ruby19?
+      assert_equal <<EOF, obj.dump
+---
+version: '0.2'
+contents:
+- directory: /a/dir1
+- directory: /path/to/dir
+  ignore:
+  - ! '*.bak'
+  - /rdoc
+- directory: /a/b/c
+EOF
+    end
   end
 
   def test_version
@@ -75,7 +89,19 @@ EOF
 
     assert_equal 2, obj.contents.size
 
-    assert_equal <<EOF, obj.dump if Milkode::Util::ruby19?
+    if Milkode::Util::ruby20?
+      assert_equal <<EOF, obj.dump
+---
+version: '0.2'
+contents:
+- directory: /a/dir1
+- directory: /path/to/dir
+  ignore:
+  - '*.bak'
+  - /rdoc
+EOF
+    elsif Milkode::Util::ruby19?
+      assert_equal <<EOF, obj.dump
 ---
 version: '0.2'
 contents:
@@ -85,6 +111,8 @@ contents:
   - ! '*.bak'
   - /rdoc
 EOF
+    end
+
   end
 
   def test_migrate
@@ -117,7 +145,21 @@ EOF
     p = Package.create(p.directory, p.ignore + ['*.a'])
     obj.update(p)
 
-    assert_equal <<EOF, obj.dump if Milkode::Util::ruby19?
+    if Milkode::Util::ruby20?
+      assert_equal <<EOF, obj.dump
+---
+version: '0.2'
+contents:
+- directory: /a/dir1
+- directory: /path/to/dir
+  ignore:
+  - '*.bak'
+  - /rdoc
+  - '*.a'
+- directory: /a/b/c
+EOF
+    elsif Milkode::Util::ruby19?
+      assert_equal <<EOF, obj.dump
 ---
 version: '0.2'
 contents:
@@ -129,6 +171,8 @@ contents:
   - ! '*.a'
 - directory: /a/b/c
 EOF
+    end
+
 
     p = Package.create("not_found")
     assert_raise(RuntimeError) { obj.update(p) }

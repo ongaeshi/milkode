@@ -120,6 +120,11 @@ module Milkode
       @documents.size
     end
 
+    # 指定パッケージに属する全てのレコードを得る
+    def package_records(name)
+      @documents.package_records(name)
+    end
+
     # yamlからパッケージの総数を得る
     # @todo PackageTableから取得するように変更する
     def yaml_package_num
@@ -176,6 +181,15 @@ module Milkode
     def touch_viewtime(path)
       package, restpath = Util::divide_shortpath(path)
       @grndb.packages.touch_if(package, :viewtime) if package
+    end
+
+    def fav?(name)
+      @grndb.packages.fav?(name)
+    end
+
+    def set_fav(name, favorited)
+      time = favorited ? Time.now : Time.at(0)
+      @grndb.packages.touch_if(name, :favtime, time)
     end
 
     def update(name)

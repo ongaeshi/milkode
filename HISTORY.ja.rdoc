@@ -1,3 +1,44 @@
+=== 1.0.0.rc.1 2013/05/05
+
+* milk web
+  * お気に入りリスト
+    * お気に入りを付けたパッケージにすぐアクセス出来る
+    * ☆マークをクリックでwebアプリからも設定が可能に
+
+  * 統計情報ボタンの設置
+    * ファイル数、行数、言語別割合の表示をWebインターフェースで
+
+  * 「新規タブ」ボタンを設置
+    * タブを開きながら検索
+  
+  * help.haml
+    * 全体的にリニューアル
+    * 'w:' オプションについて追記
+
+* gmilk
+  * 依存関係を整理して、起動時間の高速化 
+  * ダイレクトパス検索('gmilk /path/to/file:5')に関してはさらに高速化
+  * gmilk -d が正しく動いていない問題を修正
+
+* milk
+  * milk fav --sync-yaml を追加
+    * webアプリ経由のお気に入り設定をyamlに取り込む
+
+* etc
+  * Ruby2.0.0 に対応
+    * test/test_milkode_yaml.rb が動かない問題を修正: Yaml#dumpの取得形式が変わった
+    * Gemfile更新: test-unit >= 2.5.4
+    * .travis.yml に Ruby2.0 を追加
+
+  * Gemfile
+    * 'thor 0.18.1' に対応
+    * 'rack 1.5.2' に対応
+  
+  * ファイル構造の整理 : findgrep/findgrep.rb -> grep/findgrep.rb
+
+* バグ修正
+  * Issues#47 add meta tag for favicon (thanks y-ken)
+
 === 0.9.9 2013/02/26
 
 * ワイド範囲検索のサポート
@@ -13,7 +54,6 @@
   * export MILKODE_SINATRA_RELOADER=1
 
 * Delete 'milkode/cdweb/app_error.rb'
-  * Recommend 'RACK_ENV=production'
 
 === 0.9.8 2013/02/27
 

@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
 require 'rubygems'
-require 'milkode/common/archive-zip'
 require 'fileutils'
 require 'pathname'
 require 'kconv'
-require 'groonga'
 
 module Milkode
   module Util
@@ -16,6 +14,8 @@ module Milkode
     # zipファイルを展開し、展開フォルダ名を返す
     # ファイルが見つからなかった時はnilを返す
     def zip_extract(filename, dst_dir)
+      require 'archive/zip'
+
       raise ZipfileNotFound unless File.exist?(filename)
       
       root_list = root_entrylist(filename)
@@ -53,6 +53,10 @@ module Milkode
       rescue ArgumentError
         path
       end
+    end
+
+    def ruby20?
+      RUBY_VERSION >= '2.0.0'
     end
 
     def ruby19?

@@ -15,19 +15,21 @@ require 'sass'
 require 'haml'
 
 $LOAD_PATH.unshift '../..'
+require 'milkode/common/util'
 require 'milkode/cdweb/lib/database'
 require 'milkode/cdweb/lib/command'
 require 'milkode/cdweb/lib/mkurl'
 require 'milkode/cdweb/lib/web_setting'
 require 'milkode/cdweb/lib/package_list'
-require 'milkode/common/util'
+require 'milkode/cdweb/lib/info_home'
+require 'milkode/cdweb/lib/info_package'
 
 set :haml, :format => :html5
 
 get '/' do
   if Database.validate?
     @setting = WebSetting.new
-    @version = "0.9.9"
+    @version = "1.0.0.rc.1"
 
     @package_num = Database.instance.yaml_package_num
     @file_num = Database.instance.totalRecords
@@ -85,6 +87,10 @@ post '/command' do
       result = Database.instance.update(params[:name])
       update_result_str(result, before)
     end
+  when 'favorite'
+    Database.instance.set_fav(params[:name], params[:favorited] == 'true')
+    @package_list = PackageList.new(Database.instance.grndb)
+    "お気に入り: " + @package_list.favorite_list({})
   end
 end
 
@@ -92,6 +98,7 @@ get '/home*' do |path|
   before = Time.now
   path = path.sub(/^\//, "")
   record = Database.instance.record(path)
+  @package_list = PackageList.new(Database.instance.grndb)
 
   if path.empty?
     if (params[:query] and !params[:query].empty?)
@@ -112,7 +119,35 @@ end
 
 get %r{/help} do
   @setting = WebSetting.new
+  @path                = ""
   haml :help
+end
+
+get '/info' do
+  obj = InfoHome.new
+
+  @setting             = WebSetting.new
+  @path                = ""
+  @summary_content     = obj.summary_content
+  @record_content      = obj.record_content
+  
+  haml :info_home
+end
+
+get '/info/:package' do
+  before = Time.now
+
+  name = params[:package]
+  obj = InfoPackage.new(name)
+    
+  @setting         = WebSetting.new
+  @path            = name
+  @summary_content = obj.summary_content
+  @plang_content   = obj.plang_content
+
+  @elapsed = Time.now - before
+
+  haml :info_package
 end
 
 # -- helper function --
@@ -127,8 +162,12 @@ helpers do
   end
   
   # -- utility -- 
-  def link(query)
-    "<a href='#{'/home?query=' + escape_url(query)}'>#{query}</a>"
+  def link(query, text = nil)
+    if text.nil?
+      "<a href='#{'/home?query=' + escape_url(query)}'>#{query}</a>"
+    else
+      "<a href='#{'/home?query=' + escape_url(query)}'>#{text}</a>"
+    end
   end
 
   def create_select_shead(value)
@@ -187,12 +226,15 @@ EOF
       modal_body = "#{package_name} を更新しますか？"
     end
 
+    info_path = "/info"
+    info_path = File.join(info_path, package_name) if package_name != ""
+
     <<EOF
-    #{headicon('go-home-5.png')} <a href="/home" class="headmenu">ホーム</a>
-    #{headicon('document-new-4.png')} <a href="#{href}" class="headmenu" onclick="window.open(document.URL); return false;">タブを複製</a>
-    #{headicon('directory.png')} <a href="#{flist}" class="headmenu">ディレクトリ</a> 
-    #{headicon('view-refresh-4.png')} <a href="#updateModal" class="headmenu" data-toggle="modal">パッケージを更新</a>
-    #{headicon('help.png')} <a href="/help" class="headmenu">ヘルプ</a>
+    #{headicon('go-home-5.png')}<a href="/home" class="headmenu">ホーム</a>&nbsp;
+    #{headicon('directory.png')}<a href="#{flist}" class="headmenu">ディレクトリ</a>
+    #{headicon('view-refresh-4.png')}<a href="#updateModal" class="headmenu" data-toggle="modal">パッケージを更新</a>&nbsp;
+    #{headicon('info.png')}<a href="#{info_path}" class="headmenu">統計情報</a>&nbsp;
+    #{headicon('help.png')}<a href="/help" class="headmenu">ヘルプ</a>
 
     <div id="updateModal" class="modal hide fade">
       <div class="modal-header">
@@ -222,6 +264,16 @@ EOF
       <div class="modal-footer">
         <span id="lineno-copyall"></span>
         <a href="#" id="lineno-ok" class="btn" data-dismiss="modal">OK</a>
+      </div>
+    </div>
+EOF
+  end
+
+  def create_favorite_list(package_list)
+    <<EOF
+      <div class="favorite_list">
+        お気に入り:
+        #{package_list.favorite_list(params)}
       </div>
     </div>
 EOF
@@ -293,6 +345,17 @@ EOF
     r << "#{result.add_count} add"
     r << "#{result.update_count} update"
     "#{r.join(', ')} (#{Time.now - before} sec)"
+  end
+
+  def favstar(path)
+    pname   = package_name(path)
+
+    if pname != "root"
+      classes = Database.instance.fav?(pname) ? "star favorited" : "star"
+      "<a href=\"javascript:\" class=\"#{classes}\" milkode-package-name=\"#{pname}\">Favorite Me</a>"
+    else
+      ""
+    end
   end
 
   # .search-summary に追加情報を表示したい時はこの関数をオーバーライド

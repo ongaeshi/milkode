@@ -428,7 +428,21 @@ module Milkode
     def fav(args, options)
       db_open
 
-      if (args.empty?)
+      if (options[:sync_yaml])
+        is_dirty = false
+
+        @yaml.contents.each do |package|
+          db_fav = @grndb.packages.fav?(package.name)
+          if package.fav? != db_fav
+            @out.puts "#{package.name} : #{package.fav?} -> #{db_fav}"
+            package.set_fav(db_fav)
+            is_dirty = true
+          end
+        end
+
+        @yaml.save if is_dirty
+
+      elsif (args.empty?)
         @out.puts @grndb.packages.favs.map{|r| r.name}
       else
         is_dirty = false

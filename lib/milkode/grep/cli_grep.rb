@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-require 'optparse'
-require 'milkode/findgrep/findgrep'
-require 'milkode/common/dbdir'
-require 'milkode/cdstk/cdstk'
-require 'milkode/cdstk/yaml_file_wrapper'
-require 'milkode/cdstk/package'
 require 'kconv'
+require 'milkode/cdstk/package'
+require 'milkode/cdstk/yaml_file_wrapper'
+require 'milkode/common/dbdir'
+require 'milkode/common/util'
+require 'milkode/grep/findgrep_option'
+require 'optparse'
 
 module Milkode
   class CLI_Grep
@@ -16,7 +16,7 @@ module Milkode
         arguments = arguments.map{|arg| Kconv.kconv(arg, Kconv::UTF8)}
       end
 
-      option = FindGrep::FindGrep::DEFAULT_OPTION.dup
+      option = FindGrepOption::create_default
 
       # default option
       option.dbFile = Dbdir.groonga_path(Dbdir.default_dir)
@@ -111,10 +111,10 @@ EOF
 
       # 現在位置のパッケージを記録
       if option.packages.empty? && !my_option[:all] && !is_abs_path
-        if (current_package)
-          option.strict_packages << current_package.name
-        elsif (package_dir_in? current_dir)
+        if package_dir_in?(current_dir)
           option.filePatterns << current_dir
+        elsif current_package
+          option.strict_packages << current_package.name
         else
           stdout.puts "fatal: Not package dir '#{current_dir}'."
           return 
@@ -124,6 +124,7 @@ EOF
       if (arguments.size > 0 || my_option[:find_mode])
         # update
         if my_option[:update]
+          require 'milkode/cdstk/cdstk'
           cdstk = Cdstk.new(stdout, Dbdir.select_dbdir)
 
           if (my_option[:all])
@@ -139,35 +140,46 @@ EOF
           stdout.puts
         end
 
-        if (my_option[:count])
-          # count mode
-          option.isSilent = true
-          findGrep = FindGrep::FindGrep.new(arguments, option)
-          records = findGrep.pickupRecords
-          # stdout.puts "#{records.size} records (#{findGrep.time_s})"
-          stdout.puts "#{records.size} records"
-        elsif my_option[:gotoline_data]
-          # gotoline mode
-          basePatterns = option.filePatterns 
+        if is_abs_path
+          require 'milkode/grep/fast_gotoline'
 
-          my_option[:gotoline_data].each do |v|
-            if is_abs_path
-              package, restpath = Util::divide_shortpath(v[0][0])
-              # p [package, restpath]
-              option.packages = [package]
-              option.filePatterns = [restpath]
-            else
-              option.filePatterns = basePatterns + v[0]
+          obj = FastGotoline.new(my_option[:gotoline_data], yaml_load)
+          obj.search_and_print(stdout)
+          
+        else
+          require 'milkode/grep/findgrep'
+
+          if (my_option[:count])
+            # count mode
+            option.isSilent = true
+            findGrep = FindGrep.new(arguments, option)
+            records = findGrep.pickupRecords
+            # stdout.puts "#{records.size} records (#{findGrep.time_s})"
+            stdout.puts "#{records.size} records"
+          elsif my_option[:gotoline_data]
+            # gotoline mode
+            basePatterns = option.filePatterns 
+
+            my_option[:gotoline_data].each do |v|
+              if is_abs_path
+                # @memo ここにはこないはず
+                package, restpath = Util::divide_shortpath(v[0][0])
+                # p [package, restpath]
+                option.packages = [package]
+                option.filePatterns = [restpath]
+              else
+                option.filePatterns = basePatterns + v[0]
+              end
+              
+              option.gotoline = v[1]
+              findGrep = FindGrep.new(arguments, option)
+              findGrep.searchAndPrint(stdout)
             end
-            
-            option.gotoline = v[1]
-            findGrep = FindGrep::FindGrep.new(arguments, option)
+          else
+            # search mode
+            findGrep = FindGrep.new(arguments, option)
             findGrep.searchAndPrint(stdout)
           end
-        else
-          # search mode
-          findGrep = FindGrep::FindGrep.new(arguments, option)
-          findGrep.searchAndPrint(stdout)
         end
       else
         stdout.print opt.help

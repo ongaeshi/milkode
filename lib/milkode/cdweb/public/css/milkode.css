@@ -7,6 +7,8 @@ div.header {
 div.footer {
 }
 
+/* search-summary */
+
 div.search-summary {
     /* border-color: #e92926; */
     /* background-color:#FFF0F0; */
@@ -22,6 +24,21 @@ div.search-summary {
     padding-top:5px;
     padding-left:5px;
 }
+
+.search-summary .keyword {
+    font-weight: bold;    
+}
+
+.search-summary .ss-box {
+    float: left;
+    margin-right: 5px;
+}
+
+.search-summary .ss-end {
+    clear: both;
+}
+
+/* result */
 
 dt.result-record {
     font-size: 105%;
@@ -62,11 +79,7 @@ pre.lines {
     padding-bottom: 5px;
 }
 
-span.keyword {
-    font-weight: bold;    
-}
-
-span.sort-change {
+.sort-change {
     font-weight: bold;    
     margin-right: 10px;
 }
@@ -88,13 +101,22 @@ input#query {
 input#search {
     margin-left: 10px;
     width: 80px;
+    height: 36px;
     font-size: 20px;
+}
+
+input#newtab {
+    margin-left: 0px;
+    width: 60px;
+    height: 32px;
+    font-size: 12px;
 }
 
 input#clear {
     margin-left: 0px;
-    width: 80px;
-    font-size: 18px;
+    width: 60px;
+    height: 32px;
+    font-size: 12px;
 }
 
 ul.unstyled_margin {
@@ -170,8 +192,56 @@ label.ui-corner-all {
 
 /* mainpage - help */
 
-#mainpage .sample-code {
+#mainpage .help-content {
     margin-top: 20px;
+}
+
+#mainpage .help-content h1 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+#mainpage .help-content h2 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+#mainpage .help-content ul li {
+    list-style: none;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#mainpage .help-content p {
+    font-size: 108%;
+    margin-left: 10px;
+}
+
+#mainpage .help-content img {
+    margin-left: 10px;
+}
+
+#mainpage .help-content pre {
+    margin-left: 10px;
+}
+
+#mainpage .help-content .comment {
+    color: #008E1D;
+}
+
+/* mainpage - info_package */
+
+#mainpage .info-package-content {
+    margin-top: 25px;
+}
+
+#mainpage .info-package-content h1 {
+    margin-bottom: 15px;
+}
+
+#mainpage .info-package-content h2 {
+    margin-top: 20px;
+    margin-bottom: 10px;
 }
 
 /* lineno-modal */
@@ -179,3 +249,18 @@ label.ui-corner-all {
 #lineno-copyall {
     font-size: 13px;
 }
+
+/* star */
+
+.star {
+     text-indent: -5000px;
+     display: block;
+     background: transparent url(/images/milkode-star.png) 20px;
+     height: 20px;
+     width: 20px;
+}
+
+.star.favorited {
+     background-position: 0px;
+}
+

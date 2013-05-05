@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
+
 require 'find'
-require 'milkode/findgrep/result'
 require 'rubygems'
-require 'termcolor'
+# require 'termcolor'
 require 'kconv'
 require 'milkode/common/platform'
 require 'milkode/common/grenfiletest'
@@ -13,59 +13,44 @@ require 'cgi'
 require 'pathname'
 require 'milkode/database/groonga_database'
 
-module FindGrep
+module Milkode
   class FindGrep
-    Option = Struct.new(:patternsNot,
-                        :patternsOr,
-                        :directory,
-                        :depth,
-                        :ignoreCase,
-                        :caseSensitive,
-                        :colorHighlight,
-                        :isSilent,
-                        :debugMode,
-                        :packages,
-                        :strict_packages,
-                        :filePatterns,
-                        :suffixs,
-                        :ignoreFiles,
-                        :ignoreDirs,
-                        :kcode,
-                        :noSnip,
-                        :dbFile,
-                        :groongaOnly,
-                        :isMatchFile,
-                        :dispHtml,
-                        :matchCountLimit,
-                        :keywords,
-                        :gotoline)
-    
-    DEFAULT_OPTION = Option.new([],
-                                [],
-                                ".",
-                                -1,
-                                false,
-                                false,
-                                false,
-                                false,
-                                false,
-                                [],
-                                [],
-                                [],
-                                [],
-                                [],
-                                [],
-                                # Platform.get_shell_kcode,
-                                Kconv::UTF8,
-                                false,
-                                nil,
-                                false,
-                                false,
-                                false,
-                                -1,
-                                [],
-                                -1)
-    
+    class Result
+      attr_accessor :count
+      attr_accessor :search_count
+      attr_accessor :match_file_count
+      attr_accessor :match_count
+      attr_accessor :size
+      attr_accessor :search_size
+      
+      attr_accessor :search_files
+      attr_accessor :match_files
+      attr_accessor :unreadable_files
+      attr_accessor :prune_dirs
+      attr_accessor :ignore_files
+
+      def initialize(start_dir)
+        @start_dir = File.expand_path(start_dir)
+        @count, @search_count, @match_file_count, @match_count, @size, @search_size = 0, 0, 0, 0, 0, 0
+        @start_time = Time.now
+        @search_files, @match_files, @unreadable_files, @prune_dirs, @ignore_files  = [], [], [], [], []
+      end
+
+      def time_stop
+        @end_time = Time.now
+      end
+
+      def time
+        @end_time - @start_time 
+      end
+
+      def print(stdout)
+        stdout.puts "dir   : #{@start_dir} (#{Gren::Util::time_s(time)})"
+        stdout.puts "files : #{@search_count} in #{@count} (#{Gren::Util::size_s(@search_size)} in #{Gren::Util::size_s(@size)})"
+        stdout.puts "match : #{@match_file_count} files, #{match_count} hit"
+      end
+    end
+
     class MatchCountOverError < RuntimeError ; end
 
     attr_reader :documents
@@ -80,7 +65,8 @@ module FindGrep
       @ignoreFiles    = strs2regs_simple(option.ignoreFiles)
       @ignoreDirs     = strs2regs_simple(option.ignoreDirs)
       @result         = Result.new(option.directory)
-      open_database if (@option.dbFile)
+      open_database       if @option.dbFile
+      require 'termcolor' if @option.colorHighlight
     end
 
     def open_database()
@@ -90,7 +76,7 @@ module FindGrep
       # データベース開く
       if dbfile.exist?
         if !@grndb || @grndb.closed?
-          @grndb = GroongaDatabase.new
+          @grndb = Milkode::GroongaDatabase.new
           @grndb.open_file(dbfile.to_s)
           @documents = @grndb.documents
           puts "open    : #{dbfile.to_s} open." unless @option.isSilent

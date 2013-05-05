@@ -144,7 +144,8 @@ EOF
     end
 
     desc "fav [package1 package2 ...]", "Add favorite"
-    option :delete, :type => :boolean, :aliases => '-d', :desc => "Delete favorite."
+    option :delete    , :type => :boolean, :aliases => '-d', :desc => "Delete favorite."
+    option :sync_yaml , :type => :boolean, :aliases => '-s', :desc => "Sync yaml with database."
     def fav(*paths)
       cdstk.fav(paths, options)
     end
@@ -208,7 +209,7 @@ EOF
 
       # デフォルトメソッドを上書きして -h を処理
       # defined in /lib/thor/invocation.rb
-      def invoke_task(task, *args)
+      def invoke_command(task, *args)
         if options[:help] && task.name != 'grep'
           CLI.task_help(shell, task.name)
         elsif options[:version] && task.name == 'help'
