@@ -1,30 +1,28 @@
-- @title = 'ヘルプ'
-
-.header
-  %h1
-    <a href="/"><img src=#{@setting.header_icon} alt="milkode-icon-mini" border="0" height="75px"/></a>
-    #{@title}
+= haml :header_menu
 
 .content
   .help-content
+    %h1 ヘルプ
+    
     %ol
       %li <a href="#search">検索</a>
       %li <a href="#refine">絞り込みオプション</a>
       %li <a href="#directpath">ダイレクトパス</a>
-    
-    %h1 <a name="search">検索</a>
+
+    %h2#search 検索
     %ul
       %li キーワードを並べてAND検索
+
       %pre
         :preserve
           def open
-      
+
       %li １フレーズとして検索
       %pre
         :preserve
           "def open"
       
-    %h1 <a name="refine">絞り込みオプション</a>
+    %h2#refine 絞り込みオプション
     %p
       検索キーワードと組み合わせて使う
       
@@ -60,7 +58,7 @@
           w:7 read write                          <span class="comment"># 7行以内に'read'と'write'が含まれる箇所</span>
           w:0 read write                          <span class="comment"># 'w:0'ならファイル内全て</span>
 
-    %h1 <a name="directpath">ダイレクトパス</a>
+    %h2#directpath ダイレクトパス
     %p
       Milkodeにおける<strong>"絶対パス"</strong>に相当するもの
       

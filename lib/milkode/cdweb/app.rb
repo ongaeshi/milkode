@@ -119,6 +119,7 @@ end
 
 get %r{/help} do
   @setting = WebSetting.new
+  @path                = ""
   haml :help
 end
 
