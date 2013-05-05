@@ -127,6 +127,7 @@ get '/info' do
 
   @setting             = WebSetting.new
   @path                = ""
+  @summary_content     = obj.summary_content
   @record_content      = obj.record_content
   
   haml :info_home
