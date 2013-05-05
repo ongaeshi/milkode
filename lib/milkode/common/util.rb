@@ -55,6 +55,10 @@ module Milkode
       end
     end
 
+    def ruby20?
+      RUBY_VERSION >= '2.0.0'
+    end
+
     def ruby19?
       RUBY_VERSION >= '1.9.0'
     end
