@@ -1,3 +1,31 @@
+=== 1.0.0.rc.1 2013/05/05
+
+* milk web
+  * Add favorite-list
+  * Add info
+  * Add 「newtab」button
+  * Renewal help.haml 
+
+* gmilk
+  * Fast startup time
+  * Fast directpath search('gmilk /path/to/file:5') more
+  * Fix 'gmilk -d'
+
+* milk
+  * Add 'milk fav --sync-yaml'
+
+* etc
+  * Support Ruby2.0.0
+
+  * Gemfile
+    * Support 'thor 0.18.1'
+    * Support 'rack 1.5.2'
+  
+  * findgrep/findgrep.rb -> grep/findgrep.rb
+
+* Bug fix
+  * Issues#47 add meta tag for favicon (thanks y-ken)
+
 === 0.9.9 2013/02/26
 
 * Suppor wide range search
