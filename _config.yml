@@ -1,0 +1,12 @@
+# github setting
+safe: true
+# source: <your pages repo>
+# destination: <the build dir>
+lsi: false
+pygments: true
+markdown: rdiscount
+
+# my setting
+author:
+  name: ongaeshi
+  email: ongaeshi0621@gmail.com
