@@ -2,8 +2,6 @@
 layout: layout
 title: マニュアル
 ---
-# マニュアル
-
 ## 基本
 
 - [milk](./milk.html) - データベースの作成、パッケージ登録
@@ -14,6 +12,7 @@ title: マニュアル
 
 - [エディタから使う](./use-from-editor.html) - Emacs, Sublime Text 2
 - [ブラウザとエディタの連携](./coop-browser-and-editor.html) - Firefox+Emacs
+- [Powから使う](./pow.html) - http://milkode.dev
 - [パッケージ間を簡単にディレクトリ移動](./mcd.html) - mcd
 
 ## その他

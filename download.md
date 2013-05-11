@@ -2,8 +2,12 @@
 layout: layout
 title: ダウンロード
 ---
-# ダウンロード
 [RubyGems](https://rubygems.org/gems/milkode)からインストール出来ます。
+
+- [OSX](#osx)
+- [Windows](#windows)
+- [Linux](#linux)
+- [インストールに成功すると](#success)
 
 ## <a id="osx"></a> OSX 
 **rbenv**
