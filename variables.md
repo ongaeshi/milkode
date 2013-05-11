@@ -1,10 +1,10 @@
 ---
 layout: layout
-title: Variables
+title: 変数一覧
 ---
-# Variables
+# 変数一覧
 
-## Basic
+## 基本
 <dl id="dl-variables" class="variables">
   <dt>%text%</dt>
   <dd>Page title or selected text.</dd>
@@ -18,7 +18,7 @@ title: Variables
   <dd>URL to WikiName ("http://en.wikipedia.org/wiki/Main_Page" -> "Main_Page").</dd>
 </dl>
 
-## Special
+## 特殊文字
 <dl id="dl-variables" class="variables">
   <dt>\n</dt>
   <dd>Enter.</dd>
@@ -26,7 +26,7 @@ title: Variables
   <dd>Tab.</dd>
 </dl>
 
-## Date & Time
+## 日時
 <dl id="dl-variables" class="variables">
   <dt>%date%</dt>
   <dd>2011/03/04</dd>

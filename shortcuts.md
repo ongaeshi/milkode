@@ -1,20 +1,21 @@
 ---
 layout: layout
-title: Shortcuts
+title: ショートカット
 ---
-# Keyboard Shortcuts
+# ショートカットキー
 
-## Create Link (copy to clipboard)
+## リンクの生成 (クリップボードにコピー)
 <dl id="dl-shortcuts-create" class="variables">
   <dt>Ctrl+C</dt>
-  <dd>Create link</dd>
+  <dd>前回のリンク形式でリンク</dd>
   <dt>Ctrl+Shift+C</dt>
-  <dd><strong>Selected text</strong> to <code>%text%</code> and Create link.</dd>
-  <dd>If not selected, <strong>Display edit title panel</strong> and Create link. </dd>
+  <dd><strong>選択したテキスト</strong> の内容を <code>%text%</code> に格納し、リンク生成 </dd>
+  <dd>選択されていなければ<strong>タイトル編集パネルを表示</strong>して、リンク生成 </dd>
 </dl>
 
-## Select Linkform
+## リンク形式の選択
 <dl id="dl-shortcuts-select" class="variables">
   <dt>"1", "2", "3", ... "9", "0"</dt>
-  <dd>Direct select.</dd>
+  <dd>指定番号のリンク形式に切り替え</dd>
 </dl>
+
