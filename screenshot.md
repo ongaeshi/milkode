@@ -1,6 +1,7 @@
 ---
 layout: layout
 title: スクリーンショット
+selected: screenshot
 ---
 ## コンテキストメニューから生成
 HTML, Twitter, MeidaWiki, PukiWikiといった様々な形式に対応

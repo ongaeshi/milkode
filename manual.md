@@ -1,6 +1,7 @@
 ---
 layout: layout
 title: マニュアル
+selected: manual
 ---
 ## 基本
 

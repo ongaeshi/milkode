@@ -10,3 +10,11 @@ markdown: rdiscount
 author:
   name: ongaeshi
   email: ongaeshi0621@gmail.com
+
+# navigation
+navigation:
+  - {id: index,      text: HOME}
+  - {id: download,   text: Download}
+  - {id: manual,     text: Manual}
+  - {id: screenshot, text: ScreenShot}
+  - {id: links,      text: Links}

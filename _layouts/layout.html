@@ -18,11 +18,9 @@
     
     <nav>
       <ul>
-        <li><a href="./index.html">HOME</a></li>
-        <li class="selected"><a href="./download.html">Download</a></li>
-        <li><a href="./manual.html">Manual</a></li>
-        <li><a href="./screenshot.html">ScreenShot</a></li>
-        <li><a href="./links.html">Links</a></li>
+        {% for link in site.navigation %}
+        <li {% if link.id == page.selected %} class="selected" {% endif %}><a href="./{{ link.id }}.html">{{ link.text }}</a></li>
+        {% endfor %}
         <li><a href="https://github.com/ongaeshi/milkode/blob/master/HISTORY.ja.rdoc">History</a></li>
       </ul>
     </nav>
