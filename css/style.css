@@ -15,22 +15,23 @@ body {
 }
 
 h1 {
-  font-size: 24pt;
+  font-size: 24px;
   color: #111;
-  margin-top: 10pt;
+  margin-top: 10px;
 }
 
 h2 {
-  font-size: 16pt;
+  font-size: 16px;
   color: #222;
-  margin-top: 18pt;
+  margin-top: 18px;
+  margin-bottom: 10px;
   border-bottom: 1px solid #666;
 }
 
 h3 {
-  font-size: 14pt;
+  font-size: 14px;
   color: #333;
-  margin-top: 14pt;
+  margin-top: 14px;
 }
 
 section {
@@ -166,8 +167,8 @@ nav ul li {
 }
 
 #toolbar {
-    margin-top: 16pt;
-    margin-bottom: 16pt;
+    margin-top: 16px;
+    margin-bottom: 16px;
 }
 
 #tweet_button, #hatena_button, #github_button {
