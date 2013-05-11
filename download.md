@@ -5,12 +5,7 @@ title: ダウンロード
 # ダウンロード
 [RubyGems](https://rubygems.org/gems/milkode)からインストール出来ます。
 
-- [OSX](#osx)
-- [Windows](#windows)
-- [Linux](#linux)
-- [動作チェック](#validate)
-
-## <a id="osx" /> OSX 
+## <a id="osx"></a> OSX 
 **rbenv**
 
 <pre>
@@ -24,9 +19,9 @@ $ rbenv rehash
 $ sudo gem install milkode
 </pre>
 
-## <a id="windows" /> Windows
+## <a id="windows"></a> Windows
 
-**[RubyInstaller + DevKit](http://rubyinstaller.org/downloads/)**
+**RubyInstaller + DevKit**
 
 <pre>
 $ gem.bat install milkode
@@ -39,27 +34,14 @@ $ gem.bat install rroonga --platform x86-mingw32
 $ gem.bat install milkode
 </pre>
  
-## <a id="linux" /> Linux
+## <a id="linux"></a> Linux
 
 <pre>
 $ gem install milkode
 </pre>
 
-## <a id="validate" /> 動作チェック
-`milk`と`gmilk`というコマンドが使えるようになります。(Windowsならば`milk.bat`, `gmilk.bat`)
+## <a id="success"></a> インストールに成功すると
 
-<pre>
-$ milk
-Commands:
-  milk add PATH
- .
- .
-  
-$ gmilk --help
-gmilk [option] pattern
-gmilk is 'milk grep'.
-.
-.
-</pre>
+`milk`, `gmilk`というコマンドが使えるようになります。(Windowsならば`milk.bat`です。)
 
-コマンドの詳しい使い方は[マニュアル](./manual.html)をどうぞ。
+各コマンドの詳しい使い方は[マニュアル](./manual.html)をどうぞ。
