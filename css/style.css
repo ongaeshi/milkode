@@ -171,16 +171,6 @@ nav ul li.selected {
     border-top: 3px solid #a0a0a0;
 }
 
-#toolbar {
-    margin-top: 16px;
-    margin-bottom: 16px;
-}
-
-#tweet_button, #hatena_button, #github_button {
-    float: right;
-    margin-right: 5px;
-}
-
 /* --- article --- */
 
 /* --- footer --- */
@@ -208,5 +198,10 @@ footer a {
 footer p {
     margin-top: 1em;
     margin-bottom: 1em;
+}
+
+footer .parts {
+    float: right;
+    margin-right: 5px;
 }
 
