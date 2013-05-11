@@ -154,6 +154,7 @@ nav ul {
 }
   
 nav ul li {
+    background-color: #F0F0F0;
     padding: 6px 15px;
     margin: 0 7.5px;
     display: -moz-inline-box;
@@ -162,8 +163,12 @@ nav ul li {
     vertical-align: middle;
     *vertical-align: auto;
     font-size: 16px;
+}
+
+nav ul li.selected {
+    background-color: #FFFFFF;
     border: 1px solid #cacaca;
-    border-bottom: 3px solid #a0a0a0;
+    border-top: 3px solid #a0a0a0;
 }
 
 #toolbar {
