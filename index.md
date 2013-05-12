@@ -9,7 +9,7 @@ selected: index
 <img alt='milkode web app' src='./images/milkode-web-01.jpg' />
 
 ## 特徴
-* 大量のソースコードを素早く検索 
+* 数万オーダーのソースコードを素早く検索 
 * 行指向の検索ルーチン 
 * 簡単インストール
 * gitライクなコマンドラインインターフェース 

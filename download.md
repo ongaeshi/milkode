@@ -8,7 +8,7 @@ selected: download
 - [OSX](#osx)
 - [Windows](#windows)
 - [Linux](#linux)
-- [インストールに成功すると](#success)
+- [インストールに成功](#success)
 
 ## <a id="osx"></a> OSX 
 **rbenv**
@@ -45,7 +45,7 @@ $ gem.bat install milkode
 $ gem install milkode
 </pre>
 
-## <a id="success"></a> インストールに成功すると
+## <a id="success"></a> インストールに成功
 
 `milk`, `gmilk`というコマンドが使えるようになります。(Windowsならば`milk.bat`です。)
 
