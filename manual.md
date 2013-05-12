@@ -17,8 +17,8 @@ selected: manual
 - [ブラウザとエディタの連携](./coop-browser-and-editor.html) - Firefox+Emacs
 - [Powから使う](./pow.html) - http://milkode.dev
 - [パッケージ間を簡単にディレクトリ移動](./mcd.html) - mcd
+- [プラグイン](./plugins.html)
 
 ## その他
 
-- [プラグイン](./plugins.html)
-- [よくある質問](./faq.html)
+- [よくある質問(FAQ)](./faq.html)
