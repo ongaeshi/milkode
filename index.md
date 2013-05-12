@@ -15,3 +15,5 @@ selected: index
 * gitライクなコマンドラインインターフェース 
 * コマンドラインから検索 
 * 便利なwebアプリ
+
+[さらに詳しく](./features.html)
