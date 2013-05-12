@@ -7,7 +7,7 @@ selected: manual
 ## 基本
 
 - [Milkodeの特徴](./features.html)
-- [milk](./milk.html) - データベースの作成、パッケージ登録
+- [milk](./milk.html) - 検索対象の登録
 - [gmilk](./gmilk.html) - コマンドラインから検索
 - [milk web](./milk-web.html) - ウェブアプリから検索
 
