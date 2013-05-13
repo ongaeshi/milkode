@@ -2,6 +2,7 @@
 layout: layout
 title: gmilk
 selected: manual
+rootpath: .
 ---
 Table of Contents
 
@@ -195,7 +196,7 @@ test/test_cdstk_command.rb:8:require 'milkode_test_work'
 
 *\<--color\>*で検索結果を色付けすることが出来ます。
 
-![gmilk-color](./images/gmilk-01.png)
+![gmilk-color]({{page.rootpath}}/images/gmilk-01.png)
 
 <a name="-11"></a> その他のコマンド
 --------------------------------------------------------------------------------------

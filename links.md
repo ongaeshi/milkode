@@ -2,6 +2,7 @@
 layout: layout
 title: リンク集
 selected: links
+rootpath: .
 ---
 ## リソース
 - [Github](https://github.com/ongaeshi/milkode)

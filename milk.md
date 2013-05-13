@@ -2,6 +2,7 @@
 layout: layout
 title: milk
 selected: manual
+rootpath: .
 ---
 # milkコマンド
 

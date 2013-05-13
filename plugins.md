@@ -2,6 +2,7 @@
 layout: layout
 title: プラグイン
 selected: manual
+rootpath: .
 ---
 Milkodeをより便利にするプラグイン達です。 **milk
 plugins**でも同じ情報を取得する事が出来ます。

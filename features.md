@@ -2,6 +2,7 @@
 layout: layout
 title: 特徴
 selected: manual
+rootpath: .
 ---
 # Milkodeの特徴
 
@@ -52,7 +53,7 @@ Milkode本体は**Ruby**で書かれており、Ruby(とRubyGems)が動く環境
 全て**milk**というコマンドから実行出来ます。
 
 ## <a id="feature05"></a> コマンドラインから検索
-<img src="./images/features-01.png" width="400px"/>
+<img src="{{page.rootpath}}/images/features-01.png" width="400px"/>
 
 * grepのようにコマンドラインから検索出来ます。
 * 数千、数万オーダーのファイルが登録されていても瞬時に目的の1行を見つけます。
@@ -62,7 +63,7 @@ Milkode本体は**Ruby**で書かれており、Ruby(とRubyGems)が動く環境
 * 豊富な絞り込みオプション(拡張子、ファイルパス、パッケージ名など)
 
 ## <a id="feature06"></a> 便利なwebアプリ
-<img src="./images/features-02.png" width="500px"/>
+<img src="{{page.rootpath}}/images/features-02.png" width="500px"/>
 
 * コードハイライト
  * ソースコードを見やすく色付けします

@@ -2,6 +2,7 @@
 layout: layout
 title: マニュアル
 selected: manual
+rootpath: .
 ---
 
 ## 基本

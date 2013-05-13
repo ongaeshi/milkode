@@ -2,6 +2,7 @@
 layout: layout
 title: mcd
 selected: manual
+rootpath: .
 ---
 Table of Contents
 

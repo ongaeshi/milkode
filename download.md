@@ -2,6 +2,7 @@
 layout: layout
 title: ダウンロード
 selected: download
+rootpath: .
 ---
 [RubyGems](https://rubygems.org/gems/milkode)からインストール出来ます。
 

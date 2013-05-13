@@ -2,6 +2,7 @@
 layout: layout
 title: milk web
 selected: manual
+rootpath: .
 ---
 # milk web
 
@@ -23,7 +24,7 @@ $ milk web
 
 ブラウザが開き、webアプリが立ち上がれば成功です。
 
-<img src="./images/milk-web-01.png" width="400px"/>
+<img src="{{page.rootpath}}/images/milk-web-01.png" width="400px"/>
 
 <a name="-2"></a> 基本的な検索
 -------------------------------------------------------------------------------------------
@@ -31,7 +32,7 @@ $ milk web
 Milkodeは行指向の検索エンジンなので、指定された単語を全て含む**行**を見つけます。<br>
 基本は`def file`のように調べたい単語を並べていくだけです。
 
-<img src="./images/milk-web-02.png" width="400px"/>
+<img src="{{page.rootpath}}/images/milk-web-02.png" width="400px"/>
 
 - ファイル名'test'で絞り込み: `def file f:test`
 - 拡張子'rdoc'で絞り込み: `s:rdoc`

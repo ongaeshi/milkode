@@ -2,6 +2,7 @@
 layout: layout
 title: よくある質問(FAQ)
 selected: manual
+rootpath: .
 ---
 # よくある質問(FAQ)
 
