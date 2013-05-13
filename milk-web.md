@@ -3,61 +3,50 @@ layout: layout
 title: milk web
 selected: manual
 ---
-ウェブアプリの起動、検索
+# milk web
+
+- [ウェブアプリの起動](#-1)
+- [基本的な検索](#-2)
+- [複数行にまたがる検索](#-3)
+- [ウェブアプリからの更新](#-4)
+- [お気に入りリスト](#-5)
+- [AutoPagerize](#-6)
+
+<a name="-1"></a> ウェブアプリの起動
 -------------------------------------------------------------------------------------------
 
-検索するため、ウェブアプリを起動します。
+`milk web`で起動します。
 
-     $ milk web
+<pre class="shell">
+$ milk web
+</pre>
 
-ブラウザが開き、webアプリが立ち上がれば成功です。 以後、
-[http://127.0.0.1:9292/](http://127.0.0.1:9292/)
-にwebアプリが立ち上がっている、という前提で話を進めます。
+ブラウザが開き、webアプリが立ち上がれば成功です。
 
-![](screenshot_01.png)
+<img src="./images/milk-web-01.png" width="400px"/>
 
-基本は['require
-optparse'](http://127.0.0.1:9292/home/?query=require+optparse)のように調べたい単語を並べていくだけです。
-![](screenshot_02.png)
+<a name="-2"></a> 基本的な検索
+-------------------------------------------------------------------------------------------
 
-Milkodeは行指向の検索エンジンなので、['def
-file'](http://127.0.0.1:9292/home/?query=def+file&shead=directory)でfileという名前のついたメソッドを全て引っ張りだせます。
+Milkodeは行指向の検索エンジンなので、指定された単語を全て含む**行**を見つけます。<br>
+基本は`def file`のように調べたい単語を並べていくだけです。
 
-![](screenshot_03.png)
+<img src="./images/milk-web-02.png" width="400px"/>
 
-ファイル名'test'で絞り込みます。['def file
-f:test'](http://127.0.0.1:9292/home/?query=def+file+f%3Atest&shead=directory)
+- ファイル名'test'で絞り込み: `def file f:test`
+- 拡張子'rdoc'で絞り込み: `s:rdoc`
 
-![](screenshot_04.png)
+詳しい使い方はウェブアプリ右上の**ヘルプ**をどうぞ。
 
-ディレクトリ'milkode-0.1.3/lib'以下から検索します。 ['File.extname' in
-milkode-0.1.3/lib](http://127.0.0.1:9292/home/milkode-0.1.3/lib?query=File.extname&shead=directory)
-
-![](screenshot_05.png)
-
-拡張子'rdoc'で絞り込みます。['s:rdoc'](http://127.0.0.1:9292/home/milkode-0.1.3?query=s%3Ardoc&shead=directory)
-
-![](screenshot_06.png)
-
-外部からソースを取り込む
+<a name="-3"></a> 複数行にまたがる検索
 ---------------------------------------------------------------------------------------------
 
-Milkodeはhttpからの取り込み、zipファイルの展開を自動で行います。試しにRubyのソースコードを取り込んでみましょう。
+<a name="-4"></a> ウェブアプリからの更新
+---------------------------------------------------------------------------------------------
 
-Ruby-1.9.2-p290 のソースコードを追加
+<a name="-5"></a> お気に入りリスト
+---------------------------------------------------------------------------------------------
 
-     $ milk add http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.2-p290.zip
-     download   : http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.2-p290.zip
-     extract    : ./packages/http/ruby-1.9.2-p290.zip
-     package    : ruby-1.9.2-p290
-     .
-     .
-     result     : 1 packages, 3257 records, 3257 add. (1m 5.76s)
+<a name="-6"></a> AutoPagerize
+---------------------------------------------------------------------------------------------
 
-試しに、Enumerable\#each\_with\_indexメソッドを探してみます。['p:ruby
-s:c rb\_define\_method
-each\_with\_index'](http://127.0.0.1:9292/home/?query=p%3Aruby+s%3Ac+rb_define_method+each_with_index&shead=directory)
-
-![](screenshot_07.png)
-
-見つかりました。
