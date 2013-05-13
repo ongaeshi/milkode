@@ -23,8 +23,8 @@ Table of Contents
 
 `gmilk`というコマンドを使うとgrepのようにコマンドラインから検索することが出来ます。
 
-<pre>
-$ gmilk print                     # 'milk grep print' でも同じ
+<pre class="shell">
+$ gmilk print                     <span class="comment"># 'milk grep print' でも同じ</span>
 a_project/c.rb:1:print 'cccccc'
 </pre>
 
@@ -33,13 +33,13 @@ a_project/c.rb:1:print 'cccccc'
 
 登録したパッケージ内から実行します。
 
-<pre>
+<pre class="shell">
 $ cd /path/to/ruby-1.9.2-p290
 </pre>
 
 *gmilk キーワード1 キーワード2 ..*でAND検索です。
 
-<pre>
+<pre class="shell">
 $ gmilk rb_define_method split
 string.c:7505:    rb_define_method(rb_cString, "split", rb_str_split_m, -1);
 .
@@ -49,9 +49,9 @@ string.c:7505:    rb_define_method(rb_cString, "split", rb_str_split_m, -1);
 パッケージ内のどこにいても**パッケージ全体を検索**します。<br>
 小さなことですが使ってみると現在位置を意識する必要がなくなり検索しやすくなります。
 
-<pre>
-$ cd doc/rake/example                      # 移動しても・・
-$ gmilk rb_define_method split rb_cString  # パッケージ全体を検索出来る！
+<pre class="shell">
+$ cd doc/rake/example                      <span class="comment"># 移動しても・・</span>
+$ gmilk rb_define_method split rb_cString  <span class="comment"># パッケージ全体を検索出来る！</span>
 ../../../string.c:7505:    rb_define_method(rb_cString, "split", rb_str_split_m, -1);
 </pre>
 
@@ -60,11 +60,11 @@ $ gmilk rb_define_method split rb_cString  # パッケージ全体を検索出�
 
 *\<-d 相対パス\>*オプションを指定することで現在位置を基準として検索することが出来ます。
 
-<pre>
-# 現在位置から検索
+<pre class="shell">
+<span class="comment"># 現在位置から検索</span>
 $ gmilk -d . test
  
-# 一つ上から検索
+<span class="comment"># 一つ上から検索</span>
 $ gmilk -d .. test
 </pre>
 
@@ -73,8 +73,8 @@ $ gmilk -d .. test
 
 *\<-f パス名\>*を指定することでファイルパスで結果を絞り込むことが出来ます。
 
-<pre>
-# ディレクトリ階層も表現出来る
+<pre class="shell">
+<span class="comment"># ディレクトリ階層も表現出来る</span>
 $ gmilk -f doc/rake/example task default
 doc/rake/example/Rakefile1:3:task :default => [:main]
 .
@@ -85,8 +85,8 @@ doc/rake/example/Rakefile1:3:task :default => [:main]
 
 *\<-s 拡張子\>*を指定することで拡張子で絞り込むことが出来ます。
 
-<pre>
-# 拡張子.hで絞り込み
+<pre class="shell">
+<span class="comment"># 拡張子.hで絞り込み</span>
 $ gmilk rb_define_method -s h
 ext/openssl/ossl_pkey.h:137:   rb_define_method(class, #name, ossl_##keytype##_get_##name, 0); \
 .
@@ -94,8 +94,8 @@ ext/openssl/ossl_pkey.h:137:   rb_define_method(class, #name, ossl_##keytype##_g
 
 複数個指定することも出来ます。
 
-<pre>
-# .rdoc と .txt で絞り込み
+<pre class="shell">
+<span class="comment"># .rdoc と .txt で絞り込み</span>
 $ gmilk rubygems -s rdoc -s txt -i
 doc/rubygems/History.txt:7:http://rubygems.org is now the default source for downloading gems.
 .
@@ -109,13 +109,13 @@ doc/rubygems/History.txt:7:http://rubygems.org is now the default source for dow
 
 キーワードを指定せずに*-d*や*-s*、*-f*だけを指定すると**find-mode**になります。検索条件にマッチしたファイル一覧が表示されます。
 
-<pre>
-# .hを全て表示
-$ gmilk -s h
-debug.h
+<pre class="shell">
+<span class="comment"># .cppを全て表示</span>
+$ gmilk -s cpp
+debug.cpp
 .
      
-# 'README'と'ja'を含むファイルを全て検索
+<span class="comment"># 'README'と'ja'を含むファイルを全て検索</span>
 $ gmilk -f README -f ja
 README.EXT.ja
 README.ja
@@ -128,7 +128,7 @@ README.ja
 **重要な機能**です。*\<-u\>*を付けるとパッケージを更新(`milk update`)してから検索を開始します。<br>
 パッケージ内に修正を加えたら定期的に*-u*を付けましょう。
 
-<pre>
+<pre class="shell">
 $ gmilk -u test
 package    : ruby-1.9.2-p290
 ChangeLog:39178:   * test/ruby/test_m17n_comb.rb: use allpairs.rb to reduce test cases.
@@ -141,7 +141,7 @@ ChangeLog:39178:   * test/ruby/test_m17n_comb.rb: use allpairs.rb to reduce test
 
 *\<-a\>*を付けると全てのパッケージを検索対象に含めます。
 
-<pre>
+<pre class="shell">
 $ gmilk -a dddddd
 ../../../../../../Documents/a_project/d.rb:1:puts 'dddddd'
 .
@@ -150,7 +150,7 @@ $ gmilk -a dddddd
 
 検索結果が多すぎる時は*\<-n\>*オプションで表示数を抑制しましょう。
 
-<pre>
+<pre class="shell">
 $ gmilk -a puts -n 2
 ../../../../../../Documents/a_project/c.rb:1:puts 'cccccc'
 ../../../../../../Documents/a_project/d.rb:1:puts 'dddddd'
@@ -161,31 +161,31 @@ $ gmilk -a puts -n 2
 
 *\<-p\>*で検索するパッケージを指定することが出来ます。
 
-<pre>
+<pre class="shell">
 $ gmilk -p a_project cccccc
 </pre>
 
 パッケージは複数指定出来ます。
 
-<pre>
+<pre class="shell">
 $ gmilk -p a_project -p ruby dddddd
 </pre>
 
 <a name="-9"></a> 大文字小文字の区別
 ---------------------------------------------------------------------------------
 
-<pre>
-# 全て小文字なら大文字／小文字を区別しないように
+<pre class="shell">
+<span class="comment"># 全て小文字なら大文字／小文字を区別しないように</span>
 $ gmilk milkode test
 sample.txt:10:A Milkode test.
 test/milkode_test_work.rb:16:class MilkodeTestWork
 test/test_cdstk_command.rb:8:require 'milkode_test_work'
  
-# 大文字小文字混ざりの時は厳密に区別します
+<span class="comment"># 大文字小文字混ざりの時は厳密に区別します</span>
 $ gmilk Milkode test
 sample.txt:10:A Milkode test.
  
-# 小文字を厳密に区別したい時は--case-sensitive(--cs)オプションを使います
+<span class="comment"># 小文字を厳密に区別したい時は--case-sensitive(--cs)オプションを使います</span>
 $ gmilk milkode test --cs
 test/test_cdstk_command.rb:8:require 'milkode_test_work'
 </pre>
@@ -202,7 +202,7 @@ test/test_cdstk_command.rb:8:require 'milkode_test_work'
 
 ヘルプを参考にして下さい。
 
-<pre>
+<pre class="shell">
 $ gmilk -h
 gmilk [option] pattern
 gmilk is 'milk grep'.

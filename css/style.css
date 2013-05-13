@@ -78,6 +78,14 @@ pre.shell {
     margin-right: 1em;
 }
 
+pre .comment {
+    color: #008E1D;
+}
+
+pre.shell .comment {
+    color: #B1F582;
+}
+
 code {
     background-color: #F8F8F8;
     margin: 0px 2px;
