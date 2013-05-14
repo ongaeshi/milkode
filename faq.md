@@ -9,6 +9,7 @@ rootpath: .
 - [(1) 最新情報を追いかけたい](#faq01)
 - [(2) 不具合を見つけた](#faq02)
 - [(3) milk web でエラーが出る](#faq03)
+- [(4) 推奨バージョンは？](#faq04)
 
 ## <a name="faq01"></a> (1) 最新情報を追いかけたい
 
@@ -37,4 +38,10 @@ rootpath: .
 その場合は `milk web -n` で起動するとブラウザの起動を抑制することが出来ます。
 
 参考 [#3: 【milk0.1.5】milk web コマンドを叩いた時にundefined method `shellsplit' for nil:NilClass (NoMethodError)が出る](https://github.com/ongaeshi/milkode/issues/3)
+
+## <a name="faq04"></a> (4) 推奨バージョンは？
+
+- ruby 1.9.3p392
+- ruby 2.0.0p0
+
 
