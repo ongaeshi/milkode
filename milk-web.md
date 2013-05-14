@@ -21,12 +21,12 @@ $ milk web
 
 ブラウザが開き、webアプリが立ち上がれば成功です。
 
-<img src="{{page.rootpath}}/images/milkode-web-02.jpg" width="400px"/>
+<img src="{{page.rootpath}}/images/milk-web-02.jpg" />
 
 <a name="basicsearch"></a> 使い方
 -------------------------------------------------------------------------------------------
 
-<img src="{{page.rootpath}}/images/milkode-web-01.jpg" width="400px"/>
+<img src="{{page.rootpath}}/images/milk-web-01.jpg" />
 
 - AND検索: `def test`
 - ファイル名'test'で絞り込み: `def file f:test`
