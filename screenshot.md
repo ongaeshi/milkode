@@ -4,24 +4,33 @@ title: スクリーンショット
 selected: screenshot
 rootpath: .
 ---
-## コンテキストメニューから生成
-HTML, Twitter, MeidaWiki, PukiWikiといった様々な形式に対応
+- [ウェブアプリのホーム画面](#shot01)
+- [検索結果](#shot02)
+- [複数行範囲の検索](#shot03)
+- [お気に入りリスト](#shot04)
+- [コマンドラインから検索](#shot05)
+- [エディタから検索](#shot06)
+- [ブラウザとエディタの連携](#shot07)
 
-<img alt='' src='{{page.rootpath}}/images/overview01.png' width='70%' />
+## <a name="shot01"></a> ウェブアプリのホーム画面
+<img src="{{page.rootpath}}/images/milk-web-02.jpg" />
 
-## ショートカットキー
-キーボードだけでリンク種類の切り替え&コピー
+## <a name="shot02"></a> 検索結果
+<img src="{{page.rootpath}}/images/milk-web-01.jpg" />
 
-<img alt='' src='{{page.rootpath}}/images/overview07.png' width='70%' />
+## <a name="shot03"></a> 複数行範囲の検索
+<img src="{{page.rootpath}}/images/screenshot-01.jpg" />
 
-## カスタマイズ
-独自のリンク形式を作成
+## <a name="shot04"></a> お気に入りリスト
+<img src="{{page.rootpath}}/images/screenshot-02.jpg" />
 
-<img alt='' src='{{page.rootpath}}/images/overview02.png' width='70%' />
+## <a name="shot05"></a> コマンドラインから検索
+![gmilk-color]({{page.rootpath}}/images/gmilk-01.png)
 
-## タイトルの編集
-タイトルとURLをその場で編集してリンク生成
+## <a name="shot06"></a> エディタから検索
+<img src="{{page.rootpath}}/images/features-01.png" width="500px"/>
 
-<img alt='' src='{{page.rootpath}}/images/overview10.jpg' width='90%' />
+## <a name="shot07"></a> ブラウザとエディタの連携
+<a href="./coop-browser-and-editor.html">詳しく</a>
 
-
+<img src="{{page.rootpath}}/images/milk-web-03.gif" />
