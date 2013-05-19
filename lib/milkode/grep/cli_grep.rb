@@ -111,7 +111,7 @@ EOF
 
       # 現在位置のパッケージを記録
       if option.packages.empty? && !my_option[:all] && !is_abs_path
-        if package_dir_in?(current_dir)
+        if current_dir && package_dir_in?(current_dir)
           option.filePatterns << current_dir
         elsif current_package
           option.strict_packages << current_package.name
