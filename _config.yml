@@ -6,11 +6,6 @@ lsi: false
 pygments: true
 markdown: rdiscount
 
-# my setting
-author:
-  name: ongaeshi
-  email: ongaeshi0621@gmail.com
-
 # navigation
 navigation:
   - {id: index,      text: HOME}
@@ -18,3 +13,6 @@ navigation:
   - {id: manual,     text: Manual}
   - {id: screenshot, text: ScreenShot}
   - {id: links,      text: Links}
+
+# Google Analytics
+tracking_code: UA-13136329-10
