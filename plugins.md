@@ -11,6 +11,7 @@ Milkodeをより便利にするプラグイン達です。<br>
 - [emacs-milkode](#emacs-milkode)
 - [gem-milkode](#gem-milkode)
 - [Gitomb](#gitomb)
+- [milkode-web](#milkode-web)
 - [Milkode_Sublime](#milkode-sublime)
 - [redmine_milkode](#redmine-milkode)
 
@@ -33,6 +34,13 @@ Emacsと連携してミニバッファからの検索とダイレクトパスか
 [tomykaira/gitomb · GitHub](https://github.com/tomykaira/gitomb)
 
 gitレポジトリを簡単に登録することが出来るWebインターフェースラッパー
+
+## <a name="milkode-web"></a> milkode-web
+ 
+[y-ken/milkode-web · GitHub](https://github.com/y-ken/milkode-web)
+
+MilkodeのWebアプリのbundlerテンプレート(Apache Passenger用)。<br>
+[[紹介記事]](http://y-ken.hatenablog.com/entry/how-to-install-milkode-with-passenger)
 
 ## <a name="milkode-sublime"></a> Milkode_Sublime
 [tsurushuu/Milkode_Sublime · GitHub](https://github.com/tsurushuu/Milkode_Sublime)
