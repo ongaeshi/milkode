@@ -7,6 +7,7 @@
 
 require 'milkode/cdweb/lib/database'
 require 'milkode/common/plang_detector'
+require 'milkode/cdweb/lib/mkurl'
 
 module Milkode
   class InfoPackage
@@ -26,7 +27,7 @@ EOF
 
       @plang_content = <<EOF
 <table class="table-striped table-bordered table-condensed">
-#{breakdown_detail(records)}
+#{breakdown_detail(name, records)}
 </table>
 EOF
     end
@@ -46,11 +47,30 @@ EOF
       end
     end
 
-    def breakdown_detail(records)
-      sorted_plangs(records).map {|name, count|
+    def breakdown_detail(package_name, records)
+      sorted_plangs(records).map {|name, count, lang|
         percent = (count.to_f / records.size * 100).to_i
-        "<tr><td>#{name}</td><td align=\"right\">#{count}</td><td align=\"right\">#{percent}%</td></tr>"
+
+        params = { :query => lang_to_query(lang) }
+
+        if params[:query] != ""
+          url = "/home/" + Mkurl.new(package_name, params).inherit_query_shead
+          "<tr><td>#{name}</td><td align=\"right\"><a href=\"#{url}\">#{count}</a></td><td align=\"right\">#{percent}%</td></tr>"
+        else
+          "<tr><td>#{name}</td><td align=\"right\">#{count}</td><td align=\"right\">#{percent}%</td></tr>"
+        end
       }.join("\n")
+    end
+
+    def lang_to_query(lang)
+      # @memo
+      # この実装には問題がある。Makefileなどの検索クエリが正しくない。
+      # 正しく実装するには AND, OR 検索を実装する必要がある
+      result = []
+      result << lang.suffixs.map{|v|"s:#{v}"}.join(" ")      if lang.suffixs
+      result << lang.filenames.map{|v|"f:#{v}"}.join(" ")    if lang.filenames
+      result << lang.filepatterns.map{|v|"f:#{v}"}.join(" ") if lang.filepatterns
+      result.join(" ")
     end
 
     def sorted_plangs(records)
@@ -58,16 +78,16 @@ EOF
       
       records.each do |record|
         lang = PlangDetector.new(record.restpath)
-
+        
         if total[lang.name]
-          total[lang.name] += 1
+          total[lang.name][0] += 1
         else
-          total[lang.name] = 1
+          total[lang.name] = [1, lang]
         end
       end
 
-      total.map {|name, count|
-        [name, count]
+      total.map {|name, data|
+        [name, data[0], data[1]]
       }.sort {|a, b|
         if (a[0] == PlangDetector::UNKNOWN)
           -1

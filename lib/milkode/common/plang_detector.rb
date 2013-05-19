@@ -110,6 +110,18 @@ module Milkode
       @lang[:name]
     end
 
+    def suffixs
+      @lang[:suffixs]
+    end
+
+    def filenames
+      @lang[:filenames]
+    end
+
+    def filepatterns
+      @lang[:filepatterns]
+    end
+
     def unknown?
       name == UNKNOWN
     end
