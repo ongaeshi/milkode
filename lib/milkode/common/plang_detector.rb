@@ -97,11 +97,29 @@ module Milkode
         is_found
       }
 
-      @lang ||= UNKNOWN_LANGUAGE
+      if @lang.nil?
+        if suffix
+          @lang = {:name => "." + suffix, :suffixs => [suffix]}
+        else
+          @lang = UNKNOWN_LANGUAGE
+        end
+      end
     end
 
     def name
       @lang[:name]
+    end
+
+    def suffixs
+      @lang[:suffixs]
+    end
+
+    def filenames
+      @lang[:filenames]
+    end
+
+    def filepatterns
+      @lang[:filepatterns]
     end
 
     def unknown?

@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{milkode}
-  s.version = "0.9.9.9"
+  s.version = "1.0.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ongaeshi"]
-  s.date = %q{2013-05-05}
+  s.date = %q{2013-05-21}
   s.description = %q{Line based local source code search engine & grep-command & web-app.}
   s.email = %q{ongaeshi0621@gmail.com}
   s.executables = ["gmilk", "milk"]
@@ -140,10 +140,10 @@ Gem::Specification.new do |s|
     "test/data/a_project/cdstk_yaml.rb",
     "test/data/a_project/empty.txt",
     "test/data/abc.zip",
+    "test/data/b_project/dummy_test_dir.rb",
     "test/data/b_project/runner.rb",
-    "test/data/b_project/test_dir.rb",
+    "test/data/b_project2/dummy_test_dir.rb",
     "test/data/b_project2/runner.rb",
-    "test/data/b_project2/test_dir.rb",
     "test/data/c_project/a.txt",
     "test/data/c_project/abc.c",
     "test/data/c_project/abc.h",

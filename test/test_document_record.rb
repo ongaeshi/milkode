@@ -12,7 +12,7 @@ require 'milkode/database/document_record'
 require 'fileutils'
 
 module Milkode
-  class TestDocumentTable < Test::Unit::TestCase
+  class TestDocumentRecord < Test::Unit::TestCase
     def test_database
       begin
         t_setup
