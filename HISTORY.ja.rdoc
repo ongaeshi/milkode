@@ -1,3 +1,18 @@
+=== 1.0.0 2013/05/21
+
+* milk web
+  * 統計情報
+    * 拡張子絞り込みのリンクを追加
+    * unknownの表示形式を変更
+      * 旧: 'hoge.list' -> 'unknown'
+      * 新: 'hoge.list' -> '.list'
+
+* gmilk
+  * Windows環境でgmilkが動かない問題を修正
+
+* etc  
+  * test/unit 2.5.4 で警告が出る箇所を修正
+
 === 0.9.9.9 2013/05/05
 
 * milk web
