@@ -69,6 +69,7 @@ EOF
       opt.on('--cs', '--case-sensitive', 'Case sensitivity.') {|v| option.caseSensitive = true }
       opt.on('-d DIR', '--directory DIR', 'Start directory. (deafult:".")') {|v| current_dir = File.expand_path(v); my_option[:find_mode] = true} 
       opt.on('--db DB_DIR', "Specify dbdir. (Use often with '-a')") {|v| option.dbFile = Dbdir.groonga_path(v) }
+      opt.on('-e GREP', '--external-tool GREP', "Use external tool for file search. (e.g. grep, ag)") {|v| my_option[:external_tool] = v}
       opt.on('-f FILE_PATH', '--file-path FILE_PATH', 'File path. (Enable multiple call)') {|v| option.filePatterns << v; my_option[:find_mode] = true }
       opt.on('-i', '--ignore', 'Ignore case.') {|v| option.ignoreCase = true}
       opt.on('-m', '--match-files', 'Display match files.') {|v| my_option[:match_files] = true}
@@ -157,6 +158,26 @@ EOF
             records = findGrep.pickupRecords
             # stdout.puts "#{records.size} records (#{findGrep.time_s})"
             stdout.puts "#{records.size} records"
+          elsif (my_option[:external_tool])
+            # Use external tool
+            option.isSilent = true
+            findGrep = FindGrep.new(arguments, option)
+            records = findGrep.pickupRecords
+
+            files = []
+            records.each do |r|
+              files << r.path.gsub(' ', '\\\\\\\\ ') if File.exist?(r.path)
+            end
+            unless files.empty?
+              cmd = []
+              cmd << "echo #{files.join(" ")}"
+              cmd << "xargs #{my_option[:external_tool]} #{arguments[0]}"
+              (1...arguments.size).each do |index|
+                cmd << "#{my_option[:external_tool]} #{arguments[index]}"
+              end
+              cmd = cmd.join(" | ")
+              system(cmd)
+            end
           elsif (my_option[:match_files])
             # Display match files
             option.isSilent = true
