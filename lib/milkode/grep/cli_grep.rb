@@ -63,7 +63,7 @@ Gotoline:
 Normal:
 EOF
       opt.on('-a', '--all', 'Search all package.') {|v| my_option[:all] = true }
-      opt.on('-c', '--count', 'Disp count num.') {|v| my_option[:count] = true }
+      opt.on('-c', '--count', 'Display count num.') {|v| my_option[:count] = true }
       opt.on('--cache', 'Search only db.') {|v| option.groongaOnly = true }
       opt.on('--color', 'Color highlight.') {|v| option.colorHighlight = true}
       opt.on('--cs', '--case-sensitive', 'Case sensitivity.') {|v| option.caseSensitive = true }
@@ -71,6 +71,7 @@ EOF
       opt.on('--db DB_DIR', "Specify dbdir. (Use often with '-a')") {|v| option.dbFile = Dbdir.groonga_path(v) }
       opt.on('-f FILE_PATH', '--file-path FILE_PATH', 'File path. (Enable multiple call)') {|v| option.filePatterns << v; my_option[:find_mode] = true }
       opt.on('-i', '--ignore', 'Ignore case.') {|v| option.ignoreCase = true}
+      opt.on('-m', '--match-files', 'Display match files.') {|v| my_option[:match_files] = true}
       opt.on('-n NUM', 'Limits the number of match to show.') {|v| option.matchCountLimit = v.to_i }
       opt.on('--no-snip', 'There being a long line, it does not snip.') {|v| option.noSnip = true }
       opt.on('-p PACKAGE', '--package PACKAGE', 'Specify search package.') {|v| setup_package(option, my_option, v) }
@@ -156,6 +157,14 @@ EOF
             records = findGrep.pickupRecords
             # stdout.puts "#{records.size} records (#{findGrep.time_s})"
             stdout.puts "#{records.size} records"
+          elsif (my_option[:match_files])
+            # Display match files
+            option.isSilent = true
+            findGrep = FindGrep.new(arguments, option)
+            records = findGrep.pickupRecords
+            records.each do |r|
+              stdout.puts r.path.gsub(' ', '\ ') if File.exist?(r.path)
+            end
           elsif my_option[:gotoline_data]
             # gotoline mode
             basePatterns = option.filePatterns 
