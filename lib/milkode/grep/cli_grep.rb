@@ -158,7 +158,7 @@ EOF
           elsif (my_option[:external_tool])
             option.isSilent = true
             records = pickup_records(arguments, option)
-            files   = pickup_files(records, '\\\\\\\\ ')
+            files   = pickup_files(records, '\\\\\\\\ ', option.matchCountLimit)
 
             unless files.empty?
               cmd = []
@@ -174,7 +174,7 @@ EOF
           elsif (my_option[:match_files])
             option.isSilent = true
             records = pickup_records(arguments, option)
-            files   = pickup_files(records, '\ ')
+            files   = pickup_files(records, '\ ', option.matchCountLimit)
 
             files.each do |filename|
               stdout.puts filename
@@ -216,12 +216,12 @@ EOF
       FindGrep.new(arguments, option).pickupRecords
     end
 
-    def self.pickup_files(records, conv_space)
+    def self.pickup_files(records, conv_space, length = -1)
       files = []
       records.each do |r|
         files << r.path.gsub(' ', conv_space) if File.exist?(r.path)
       end
-      files
+      (length > 0) ? files[0, length] : files
     end
 
     def self.setup_package(option, my_option, keyword)
