@@ -7,6 +7,7 @@ require 'milkode/common/dbdir'
 require 'milkode/common/util'
 require 'milkode/grep/findgrep_option'
 require 'optparse'
+require 'tempfile'
 
 module Milkode
   class CLI_Grep
@@ -158,17 +159,26 @@ EOF
           elsif (my_option[:external_tool])
             option.isSilent = true
             records = pickup_records(arguments, option)
-            files   = pickup_files(records, '\\\\\\\\ ', option.matchCountLimit)
+            files   = pickup_files(records, '\\\\ ', option.matchCountLimit)
 
             unless files.empty?
               cmd = []
-              cmd << "echo #{files.join(" ")}"
+
+              tmpfile = Tempfile.open("gmilk_external_tool")
+              tmpfile.write(files.join("\n"))
+              tmpfile.close
+              tmpfile.open
+              cmd << "cat #{tmpfile.path}"
+
               cmd << "xargs #{my_option[:external_tool]} #{arguments[0]}"
+
               (1...arguments.size).each do |index|
                 cmd << "#{my_option[:external_tool]} #{arguments[index]}"
               end
-              cmd = cmd.join(" | ")
-              system(cmd)
+
+              system(cmd.join(" | "))
+
+              tmpfile.close(true)
             end
             
           elsif (my_option[:match_files])
