@@ -152,22 +152,14 @@ EOF
           require 'milkode/grep/findgrep'
 
           if (my_option[:count])
-            # count mode
             option.isSilent = true
-            findGrep = FindGrep.new(arguments, option)
-            records = findGrep.pickupRecords
-            # stdout.puts "#{records.size} records (#{findGrep.time_s})"
-            stdout.puts "#{records.size} records"
+            stdout.puts "#{pickup_records(arguments, option).size} records"
+            
           elsif (my_option[:external_tool])
-            # Use external tool
             option.isSilent = true
-            findGrep = FindGrep.new(arguments, option)
-            records = findGrep.pickupRecords
+            records = pickup_records(arguments, option)
+            files   = pickup_files(records, '\\\\\\\\ ')
 
-            files = []
-            records.each do |r|
-              files << r.path.gsub(' ', '\\\\\\\\ ') if File.exist?(r.path)
-            end
             unless files.empty?
               cmd = []
               cmd << "echo #{files.join(" ")}"
@@ -178,14 +170,16 @@ EOF
               cmd = cmd.join(" | ")
               system(cmd)
             end
+            
           elsif (my_option[:match_files])
-            # Display match files
             option.isSilent = true
-            findGrep = FindGrep.new(arguments, option)
-            records = findGrep.pickupRecords
-            records.each do |r|
-              stdout.puts r.path.gsub(' ', '\ ') if File.exist?(r.path)
+            records = pickup_records(arguments, option)
+            files   = pickup_files(records, '\ ')
+
+            files.each do |filename|
+              stdout.puts filename
             end
+
           elsif my_option[:gotoline_data]
             # gotoline mode
             basePatterns = option.filePatterns 
@@ -217,6 +211,18 @@ EOF
     end
 
     private
+
+    def self.pickup_records(arguments, option)
+      FindGrep.new(arguments, option).pickupRecords
+    end
+
+    def self.pickup_files(records, conv_space)
+      files = []
+      records.each do |r|
+        files << r.path.gsub(' ', conv_space) if File.exist?(r.path)
+      end
+      files
+    end
 
     def self.setup_package(option, my_option, keyword)
       # @memo package指定が簡単になった
