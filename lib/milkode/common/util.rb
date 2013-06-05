@@ -4,6 +4,7 @@ require 'rubygems'
 require 'fileutils'
 require 'pathname'
 require 'kconv'
+require 'open3'
 
 module Milkode
   module Util
@@ -233,7 +234,11 @@ module Milkode
 
     # 指定したコマンドが存在するか？
     def exist_command?(command)
-      system("type #{command} > /dev/null") # 改善
+      begin
+        Open3.capture3("type #{command}")[2].exited?
+      rescue Errno::ENOENT
+        false
+      end
     end
   end
 end
