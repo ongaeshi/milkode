@@ -230,6 +230,11 @@ module Milkode
         table.sort(keys, options)
       end
     end
+
+    # 指定したコマンドが存在するか？
+    def exist_command?(command)
+      system("type #{command} > /dev/null") # 改善
+    end
   end
 end
 
