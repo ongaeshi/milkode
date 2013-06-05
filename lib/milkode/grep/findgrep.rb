@@ -109,10 +109,15 @@ module Milkode
     end
 
     def searchAndPrint(stdout)
+      records = searchDatabase
+      searchAndPrint2(stdout, records)
+    end
+
+    def searchAndPrint2(stdout, records)
       unless (@option.dbFile)
         searchFromDir(stdout, @option.directory, 0)
       else
-        searchFromDB(stdout, @option.directory)
+        searchFromDB(stdout, records, @option.directory)
       end
 
       @result.time_stop
@@ -153,10 +158,7 @@ module Milkode
       Gren::Util::time_s(@result.time)
     end
 
-    def searchFromDB(stdout, dir)
-      # データベースを検索
-      records = searchDatabase
-
+    def searchFromDB(stdout, records, dir)
       # ヒットしたレコード数
       stdout.puts "Found   : #{records.size} records." if (!@option.dispHtml && !@option.isSilent)
 

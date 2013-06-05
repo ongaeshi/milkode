@@ -203,16 +203,16 @@ EOF
             # normal search
             findGrep = FindGrep.new(arguments, option)
             records  = findGrep.pickupRecords
-
+            
             if (records.length < AUTO_EXTERNAL_RECORD_NUM)
-              findGrep.searchAndPrint(stdout)
+              findGrep.searchAndPrint2(stdout, records)
             else
               # レコード数が多い時は"-e grep"で検索
               if Util::exist_command?('grep') && Util::exist_command?('xargs')
                 $stderr.puts "Number of records is large. Use auto external tool (gmilk -e grep)"
                 search_external_tool(arguments, option, records, 'grep -n', 'grep')
               else
-                findGrep.searchAndPrint(stdout)
+                findGrep.searchAndPrint2(stdout, records)
               end
             end
               
