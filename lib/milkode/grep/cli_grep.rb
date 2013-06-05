@@ -11,6 +11,8 @@ require 'tempfile'
 
 module Milkode
   class CLI_Grep
+    AUTO_EXTERNAL_RECORD_NUM = 500
+
     def self.execute(stdout, arguments=[])
       # 引数の文字コードをUTF-8に変換
       if (Util::platform_win?)
@@ -159,26 +161,14 @@ EOF
           elsif (my_option[:external_tool])
             option.isSilent = true
             records = pickup_records(arguments, option)
-            files   = pickup_files(records, '\\\\ ', option.matchCountLimit)
 
-            unless files.empty?
-              cmd = []
-
-              tmpfile = Tempfile.open("gmilk_external_tool")
-              tmpfile.write(files.join("\n"))
-              tmpfile.close
-              tmpfile.open
-              cmd << "cat #{tmpfile.path}"
-
-              cmd << "xargs #{my_option[:external_tool]} #{arguments[0]}"
-
-              (1...arguments.size).each do |index|
-                cmd << "#{my_option[:external_tool]} #{arguments[index]}"
-              end
-
-              system(cmd.join(" | "))
-
-              tmpfile.close(true)
+            case my_option[:external_tool]
+            when 'grep'
+              search_external_tool(arguments, option, records, 'grep -n', 'grep')              
+            when 'ag'
+              search_external_tool(arguments, option, records, 'ag', 'ag')
+            else
+              search_external_tool(arguments, option, records, my_option[:external_tool], my_option[:external_tool])
             end
             
           elsif (my_option[:match_files])
@@ -210,9 +200,22 @@ EOF
               findGrep.searchAndPrint(stdout)
             end
           else
-            # search mode
+            # normal search
             findGrep = FindGrep.new(arguments, option)
-            findGrep.searchAndPrint(stdout)
+            records  = findGrep.pickupRecords
+
+            if (records.length < AUTO_EXTERNAL_RECORD_NUM)
+              findGrep.searchAndPrint(stdout)
+            else
+              # レコード数が多い時は"-e grep"で検索
+              if Util::exist_command?('grep') && Util::exist_command?('xargs')
+                $stderr.puts "Number of records is large. Use auto external tool (gmilk -e grep)"
+                search_external_tool(arguments, option, records, 'grep -n', 'grep')
+              else
+                findGrep.searchAndPrint(stdout)
+              end
+            end
+              
           end
         end
       else
@@ -221,6 +224,30 @@ EOF
     end
 
     private
+
+    def self.search_external_tool(arguments, option, records, first_command, second_command)
+      files   = pickup_files(records, '\\\\ ', option.matchCountLimit)
+
+      unless files.empty?
+        cmd = []
+
+        tmpfile = Tempfile.open("gmilk_external_tool")
+        tmpfile.write(files.join("\n"))
+        tmpfile.close
+        tmpfile.open
+        cmd << "cat #{tmpfile.path}"
+
+        cmd << "xargs #{first_command} #{arguments[0]}"
+
+        (1...arguments.size).each do |index|
+          cmd << "#{second_command} #{arguments[index]}"
+        end
+
+        system(cmd.join(" | "))
+
+        tmpfile.close(true)
+      end
+    end
 
     def self.pickup_records(arguments, option)
       FindGrep.new(arguments, option).pickupRecords
