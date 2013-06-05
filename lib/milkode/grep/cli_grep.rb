@@ -7,9 +7,12 @@ require 'milkode/common/dbdir'
 require 'milkode/common/util'
 require 'milkode/grep/findgrep_option'
 require 'optparse'
+require 'tempfile'
 
 module Milkode
   class CLI_Grep
+    AUTO_EXTERNAL_RECORD_NUM = 500
+
     def self.execute(stdout, arguments=[])
       # 引数の文字コードをUTF-8に変換
       if (Util::platform_win?)
@@ -63,14 +66,16 @@ Gotoline:
 Normal:
 EOF
       opt.on('-a', '--all', 'Search all package.') {|v| my_option[:all] = true }
-      opt.on('-c', '--count', 'Disp count num.') {|v| my_option[:count] = true }
+      opt.on('-c', '--count', 'Display count num.') {|v| my_option[:count] = true }
       opt.on('--cache', 'Search only db.') {|v| option.groongaOnly = true }
       opt.on('--color', 'Color highlight.') {|v| option.colorHighlight = true}
       opt.on('--cs', '--case-sensitive', 'Case sensitivity.') {|v| option.caseSensitive = true }
       opt.on('-d DIR', '--directory DIR', 'Start directory. (deafult:".")') {|v| current_dir = File.expand_path(v); my_option[:find_mode] = true} 
       opt.on('--db DB_DIR', "Specify dbdir. (Use often with '-a')") {|v| option.dbFile = Dbdir.groonga_path(v) }
+      opt.on('-e GREP', '--external-tool GREP', "Use external tool for file search. (e.g. grep, ag)") {|v| my_option[:external_tool] = v}
       opt.on('-f FILE_PATH', '--file-path FILE_PATH', 'File path. (Enable multiple call)') {|v| option.filePatterns << v; my_option[:find_mode] = true }
       opt.on('-i', '--ignore', 'Ignore case.') {|v| option.ignoreCase = true}
+      opt.on('-m', '--match-files', 'Display match files.') {|v| my_option[:match_files] = true}
       opt.on('-n NUM', 'Limits the number of match to show.') {|v| option.matchCountLimit = v.to_i }
       opt.on('--no-snip', 'There being a long line, it does not snip.') {|v| option.noSnip = true }
       opt.on('-p PACKAGE', '--package PACKAGE', 'Specify search package.') {|v| setup_package(option, my_option, v) }
@@ -150,12 +155,31 @@ EOF
           require 'milkode/grep/findgrep'
 
           if (my_option[:count])
-            # count mode
             option.isSilent = true
-            findGrep = FindGrep.new(arguments, option)
-            records = findGrep.pickupRecords
-            # stdout.puts "#{records.size} records (#{findGrep.time_s})"
-            stdout.puts "#{records.size} records"
+            stdout.puts "#{pickup_records(arguments, option).size} records"
+            
+          elsif (my_option[:external_tool])
+            option.isSilent = true
+            records = pickup_records(arguments, option)
+
+            case my_option[:external_tool]
+            when 'grep'
+              search_external_tool(arguments, option, records, 'grep -n', 'grep')              
+            when 'ag'
+              search_external_tool(arguments, option, records, 'ag', 'ag')
+            else
+              search_external_tool(arguments, option, records, my_option[:external_tool], my_option[:external_tool])
+            end
+            
+          elsif (my_option[:match_files])
+            option.isSilent = true
+            records = pickup_records(arguments, option)
+            files   = pickup_files(records, '\ ', option.matchCountLimit)
+
+            files.each do |filename|
+              stdout.puts filename
+            end
+
           elsif my_option[:gotoline_data]
             # gotoline mode
             basePatterns = option.filePatterns 
@@ -176,9 +200,22 @@ EOF
               findGrep.searchAndPrint(stdout)
             end
           else
-            # search mode
+            # normal search
             findGrep = FindGrep.new(arguments, option)
-            findGrep.searchAndPrint(stdout)
+            records  = findGrep.pickupRecords
+            
+            if (records.length < AUTO_EXTERNAL_RECORD_NUM)
+              findGrep.searchAndPrint2(stdout, records)
+            else
+              # レコード数が多い時は"-e grep"で検索
+              if Util::exist_command?('grep') && Util::exist_command?('xargs')
+                $stderr.puts "Number of records is large. Use auto external tool (gmilk -e grep)"
+                search_external_tool(arguments, option, records, 'grep -n', 'grep')
+              else
+                findGrep.searchAndPrint2(stdout, records)
+              end
+            end
+              
           end
         end
       else
@@ -187,6 +224,42 @@ EOF
     end
 
     private
+
+    def self.search_external_tool(arguments, option, records, first_command, second_command)
+      files   = pickup_files(records, '\\\\ ', option.matchCountLimit)
+
+      unless files.empty?
+        cmd = []
+
+        tmpfile = Tempfile.open("gmilk_external_tool")
+        tmpfile.write(files.join("\n"))
+        tmpfile.close
+        tmpfile.open
+        cmd << "cat #{tmpfile.path}"
+
+        cmd << "xargs #{first_command} #{arguments[0]}"
+
+        (1...arguments.size).each do |index|
+          cmd << "#{second_command} #{arguments[index]}"
+        end
+
+        system(cmd.join(" | "))
+
+        tmpfile.close(true)
+      end
+    end
+
+    def self.pickup_records(arguments, option)
+      FindGrep.new(arguments, option).pickupRecords
+    end
+
+    def self.pickup_files(records, conv_space, length = -1)
+      files = []
+      records.each do |r|
+        files << r.path.gsub(' ', conv_space) if File.exist?(r.path)
+      end
+      (length > 0) ? files[0, length] : files
+    end
 
     def self.setup_package(option, my_option, keyword)
       # @memo package指定が簡単になった
