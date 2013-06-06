@@ -232,6 +232,7 @@ EOF
         cmd = []
 
         tmpfile = Tempfile.open("gmilk_external_tool")
+        tmpfile.binmode
         tmpfile.write(files.join("\n"))
         tmpfile.close
         tmpfile.open
