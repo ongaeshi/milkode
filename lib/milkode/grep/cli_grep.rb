@@ -77,6 +77,7 @@ EOF
       opt.on('-i', '--ignore', 'Ignore case.') {|v| option.ignoreCase = true}
       opt.on('-m', '--match-files', 'Display match files.') {|v| my_option[:match_files] = true}
       opt.on('-n NUM', 'Limits the number of match to show.') {|v| option.matchCountLimit = v.to_i }
+      opt.on('--no-external', 'Disable auto external.') {|v| my_option[:no_external] = true }
       opt.on('--no-snip', 'There being a long line, it does not snip.') {|v| option.noSnip = true }
       opt.on('-p PACKAGE', '--package PACKAGE', 'Specify search package.') {|v| setup_package(option, my_option, v) }
       opt.on('-r', '--root', 'Search from package root.') {|v| current_dir = package_root_dir(File.expand_path(".")); my_option[:find_mode] = true }
@@ -204,7 +205,7 @@ EOF
             findGrep = FindGrep.new(arguments, option)
             records  = findGrep.pickupRecords
             
-            if (records.length < AUTO_EXTERNAL_RECORD_NUM)
+            if (my_option[:no_external] || records.length < AUTO_EXTERNAL_RECORD_NUM)
               findGrep.searchAndPrint2(stdout, records)
             else
               # レコード数が多い時は"-e grep"で検索
