@@ -195,6 +195,7 @@ EOF
     end
 
     desc "files", "Display package files"
+    option :all, :type => :boolean, :aliases => '-a', :desc => 'Display all package files.'
     option :relative, :type => :boolean, :aliases => '-r', :desc => "Display relative path."
     def files(*args)
       cdstk.files(args, options)
