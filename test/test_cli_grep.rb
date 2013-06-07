@@ -26,6 +26,7 @@ class TestCLI_Grep < Test::Unit::TestCase
     t_case_sensitive
     t_keyword
     t_db
+    t_match_files
   end
 
   def teardown
@@ -97,6 +98,12 @@ class TestCLI_Grep < Test::Unit::TestCase
   def t_db
     io = StringIO.new
     CLI_Grep.execute(io, "--db #{@work.path("db1")} -a db_dir_expand".split)
+  end
+
+  def t_match_files
+    io = StringIO.new
+    CLI_Grep.execute(io, "-m -p a_project default".split)
+    assert_equal 1, io.string.split("\n").count
   end
 end
 

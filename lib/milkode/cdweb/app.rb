@@ -29,7 +29,7 @@ set :haml, :format => :html5
 get '/' do
   if Database.validate?
     @setting = WebSetting.new
-    @version = "1.0.0"
+    @version = "1.0.2"
 
     @package_num = Database.instance.yaml_package_num
     @file_num = Database.instance.totalRecords

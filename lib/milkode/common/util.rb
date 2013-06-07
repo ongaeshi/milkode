@@ -4,6 +4,7 @@ require 'rubygems'
 require 'fileutils'
 require 'pathname'
 require 'kconv'
+require 'open3'
 
 module Milkode
   module Util
@@ -228,6 +229,15 @@ module Milkode
         table.sort(keys, options).map{|r| r.value}
       else
         table.sort(keys, options)
+      end
+    end
+
+    # 指定したコマンドが存在するか？
+    def exist_command?(command)
+      begin
+        Open3.capture3("type #{command}")[2].exited?
+      rescue Errno::ENOENT
+        false
       end
     end
   end

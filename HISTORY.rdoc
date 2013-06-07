@@ -1,3 +1,12 @@
+=== 1.0.2 2013/06/08
+
+* gmilk
+  * Add feature to accelerate search speed with an external tool file search
+  * Add -m(--match-files) option
+  * Add -e (-external-tool) option
+  * Search using "-e grep" when the number of records is large
+  * Add --no-external option
+
 === 1.0.0 2013/05/21
 
 * milk web
