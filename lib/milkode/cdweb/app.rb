@@ -23,6 +23,7 @@ require 'milkode/cdweb/lib/web_setting'
 require 'milkode/cdweb/lib/package_list'
 require 'milkode/cdweb/lib/info_home'
 require 'milkode/cdweb/lib/info_package'
+require 'sinatra/url_for'
 
 set :haml, :format => :html5
 
