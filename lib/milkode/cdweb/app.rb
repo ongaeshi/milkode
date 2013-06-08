@@ -34,7 +34,7 @@ get '/' do
 
     @package_num = Database.instance.yaml_package_num
     @file_num = Database.instance.totalRecords
-    @package_list = PackageList.new(Database.instance.grndb)
+    @package_list = PackageList.new(Database.instance.grndb, url_for(''))
     haml :index, :layout => false
   else
     <<EOF
@@ -90,7 +90,7 @@ post '/command' do
     end
   when 'favorite'
     Database.instance.set_fav(params[:name], params[:favorited] == 'true')
-    @package_list = PackageList.new(Database.instance.grndb)
+    @package_list = PackageList.new(Database.instance.grndb, url_for(''))
     "お気に入り: " + @package_list.favorite_list({})
   end
 end
@@ -99,7 +99,7 @@ get '/home*' do |path|
   before = Time.now
   path = path.sub(/^\//, "")
   record = Database.instance.record(path)
-  @package_list = PackageList.new(Database.instance.grndb)
+  @package_list = PackageList.new(Database.instance.grndb, url_for(''))
 
   if path.empty?
     if (params[:query] and !params[:query].empty?)
