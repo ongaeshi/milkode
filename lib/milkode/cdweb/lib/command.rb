@@ -88,14 +88,14 @@ module Milkode
     haml :search
   end
 
-  def filelist(path, params, before)
+  def filelist(path, params, before, suburl)
     @setting = WebSetting.new
     @title = filelist_title(path)
     @path = path
     fileList = Database.instance.fileList(path)
     @total_records = fileList.size
     @record_content = fileList.map do |v|
-      "<dt class='result-file'>#{file_or_dirimg(v[1])}<a href='#{Mkurl.new('/home/' + v[0], params).inherit_query_shead}'>#{File.basename v[0]}</a></dt>"
+      "<dt class='result-file'>#{file_or_dirimg(v[1], suburl)}<a href='#{Mkurl.new(suburl + '/home/' + v[0], params).inherit_query_shead}'>#{File.basename v[0]}</a></dt>"
     end.join
     Database.instance.touch_viewtime(path)
     @elapsed = Time.now - before
@@ -131,13 +131,13 @@ module Milkode
 
   private
   
-  def file_or_dirimg(is_file)
-    src = (is_file) ? 'file.png' : 'directory.png'
-    img_icon(src)
+  def file_or_dirimg(is_file, suburl)
+    filename = (is_file) ? 'file.png' : 'directory.png'
+    img_icon(filename, suburl)
   end
 
-  def img_icon(srcfile)
-    "<img alt='' style='vertical-align:bottom; border: 0; margin: 1px;' src='/images/#{srcfile}'>"
+  def img_icon(filename, suburl)
+    "<img alt='' style='vertical-align:bottom; border: 0; margin: 1px;' src='#{suburl}/images/#{filename}'>"
   end
 
   def sort_change_content(current_value, text, sort_kind = nil)

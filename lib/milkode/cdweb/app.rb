@@ -113,7 +113,7 @@ get '/home*' do |path|
     if (params[:query] and !params[:query].empty?)
       search(path, params, before)
     else
-      filelist(path, params, before)
+      filelist(path, params, before, url_for(''))
     end
   end
 end
