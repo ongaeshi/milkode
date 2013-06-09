@@ -77,7 +77,7 @@ module Milkode
         end
       end
     else
-      searcher = SearchFiles.new(path, params, query)
+      searcher = SearchFiles.new(path, params, query, suburl)
     end
     
     @total_records = searcher.total_records
