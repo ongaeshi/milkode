@@ -60,7 +60,7 @@ module Milkode
     @title = "'#{query.query_string}' in #{path_title(path)}"
 
     if (query.gotolines.size > 0)
-      searcher = SearchFuzzyGotoLine.new(path, params, query)
+      searcher = SearchFuzzyGotoLine.new(path, params, query, suburl)
 
       if searcher.directjump?
         redirect searcher.directjump_url
@@ -68,7 +68,7 @@ module Milkode
 
     elsif (query.keywords.size > 0)
       if Util::gotoline_keyword?(query.keywords[0])
-        searcher = SearchGotoLine.new(path, params, query)
+        searcher = SearchGotoLine.new(path, params, query, suburl)
       else
         searcher = SearchContents.new(path, params, query, suburl)
 
