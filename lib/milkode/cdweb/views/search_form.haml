@@ -3,7 +3,7 @@
     function set_pathname() {
       document.searchform.pathname.value = location.pathname;
     }
-  %form(name="searchform" action="/search" method="post")
+  %form(name="searchform" action="#{url_for '/search'}" method="post")
     %p
       %input#query(name="query" size="70" type="text" style="width: 419px;"){:value => params[:query]}
       %input#search(type="submit" name="search" value="検索" onclick="set_pathname()")
