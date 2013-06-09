@@ -100,20 +100,21 @@ get '/home*' do |path|
   path = path.sub(/^\//, "")
   record = Database.instance.record(path)
   @package_list = PackageList.new(Database.instance.grndb, url_for(''))
+  suburl = url_for('')
 
   if path.empty?
     if (params[:query] and !params[:query].empty?)
-      search(path, params, before)
+      search(path, params, before, suburl)
     else
-      packages(params, before)
+      packages(params, before, suburl)
     end
   elsif (record)
     view(record, params, before)
   else
     if (params[:query] and !params[:query].empty?)
-      search(path, params, before)
+      search(path, params, before, suburl)
     else
-      filelist(path, params, before, url_for(''))
+      filelist(path, params, before, suburl)
     end
   end
 end

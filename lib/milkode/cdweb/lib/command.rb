@@ -53,7 +53,7 @@ module Milkode
     haml :view
   end
 
-  def search(path, params, before)
+  def search(path, params, before, suburl)
     @setting = WebSetting.new
     @path = path
     query = Query.new(params[:query])
@@ -70,7 +70,7 @@ module Milkode
       if Util::gotoline_keyword?(query.keywords[0])
         searcher = SearchGotoLine.new(path, params, query)
       else
-        searcher = SearchContents.new(path, params, query)
+        searcher = SearchContents.new(path, params, query, suburl)
 
         if searcher.directjump?
           redirect searcher.directjump_url
@@ -102,7 +102,7 @@ module Milkode
     haml :filelist
   end
 
-  def packages(params, before)
+  def packages(params, before, suburl)
     @setting = WebSetting.new
     @title = "Package List"
     @path = ""
@@ -123,7 +123,7 @@ module Milkode
       ].join("\n")
 
     @record_content = packages.map do |v|
-      "<dt class='result-file'>#{file_or_dirimg(false)}<a href='#{Mkurl.new('/home/' + v, params).inherit_query_shead}'>#{File.basename v}</a></dt>"
+      "<dt class='result-file'>#{file_or_dirimg(false, suburl)}<a href='#{Mkurl.new(suburl + '/home/' + v, params).inherit_query_shead}'>#{File.basename v}</a></dt>"
     end.join
     @elapsed = Time.now - before
     haml :packages
