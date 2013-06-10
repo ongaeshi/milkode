@@ -44,8 +44,8 @@ EOF
   end
 end
 
-def package_path(path)
-  path.split('/')[0,3].join('/')
+def package_path(homeurl, path)
+  homeurl + path.sub(homeurl, "").split('/')[0,2].join('/')
 end
 
 post '/search*' do
@@ -54,15 +54,17 @@ post '/search*' do
   if params[:clear]
     redirect Mkurl.new("#{path}", params).inherit_shead
   else
+    homeurl = url_for "/home"
+    
     case params[:shead]
     when 'all'
-      path = url_for "/home"
+      path = homeurl
     when 'package'
-      path = package_path(path)
+      path = package_path(homeurl, path)
     when 'directory'
       # do nothing
     else
-      path = package_path(path)
+      path = package_path(homeurl, path)
     end
 
     query = Query.new(params[:query])
