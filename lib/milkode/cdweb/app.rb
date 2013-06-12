@@ -27,6 +27,15 @@ require 'sinatra/url_for'
 
 set :haml, :format => :html5
 
+get '/css/milkode.css' do
+  content_type :css
+
+  contents = File.read(File.join('views', 'milkode.scss'))
+  contents = erb(contents)
+  engine   = Sass::Engine.new(contents, :syntax => :scss)
+  engine.render
+end
+
 get '/' do
   if Database.validate?
     @setting = WebSetting.new
