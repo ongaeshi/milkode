@@ -302,7 +302,7 @@ EOF
 
     path.split('/').map_with_index {|v, index|
       href += '/' + v
-      "<a id='topic_#{index}' href='#{Mkurl.new(href, params).inherit_query_shead}' onclick='topic_path(\"topic_#{index}\");'>#{v}</a>"
+      "<a id='topic_#{index}' href='#{url_for Mkurl.new(href, params).inherit_query_shead}' onclick='topic_path(\"topic_#{index}\");'>#{v}</a>"
     }.join('/')
   end
 
