@@ -228,8 +228,10 @@ EOF
   end
 
   def create_headmenu(path, query, flistpath = '')
-    href = Mkurl.new('/home/' + path, params).inherit_query_shead
-    flist = File.join("/home/#{path}", flistpath)
+    suburl = url_for ""
+
+    href = Mkurl.new("#{suburl}/home/#{path}", params).inherit_query_shead
+    flist = File.join("#{suburl}/home/#{path}", flistpath)
 
     package_name = ""
     modal_body = "全てのパッケージを更新しますか？"
@@ -239,15 +241,15 @@ EOF
       modal_body = "#{package_name} を更新しますか？"
     end
 
-    info_path = "/info"
+    info_path = "#{suburl}/info"
     info_path = File.join(info_path, package_name) if package_name != ""
 
     <<EOF
-    #{headicon('go-home-5.png')}<a href="/home" class="headmenu">ホーム</a>&nbsp;
-    #{headicon('directory.png')}<a href="#{flist}" class="headmenu">ディレクトリ</a>
-    #{headicon('view-refresh-4.png')}<a href="#updateModal" class="headmenu" data-toggle="modal">パッケージを更新</a>&nbsp;
-    #{headicon('info.png')}<a href="#{info_path}" class="headmenu">統計情報</a>&nbsp;
-    #{headicon('help.png')}<a href="/help" class="headmenu">ヘルプ</a>
+    #{headicon('go-home-5.png', suburl)}<a href="#{suburl}/home" class="headmenu">ホーム</a>&nbsp;
+    #{headicon('directory.png', suburl)}<a href="#{flist}" class="headmenu">ディレクトリ</a>
+    #{headicon('view-refresh-4.png', suburl)}<a href="#updateModal" class="headmenu" data-toggle="modal">パッケージを更新</a>&nbsp;
+    #{headicon('info.png', suburl)}<a href="#{info_path}" class="headmenu">統計情報</a>&nbsp;
+    #{headicon('help.png', suburl)}<a href="#{suburl}/help" class="headmenu">ヘルプ</a>
 
     <div id="updateModal" class="modal hide fade">
       <div class="modal-header">
@@ -292,8 +294,8 @@ EOF
 EOF
   end
 
-  def headicon(name)
-    "<img alt='' style='vertical-align:center; border: 0px; margin: 0px;' src='/images/#{name}'>"
+  def headicon(name, suburl)
+    "<img alt='' style='vertical-align:center; border: 0px; margin: 0px;' src='#{suburl}/images/#{name}'>"
   end
 
   def topic_path(path, params)
