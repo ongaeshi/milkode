@@ -151,7 +151,7 @@ get '/info/:package' do
   before = Time.now
 
   name = params[:package]
-  obj = InfoPackage.new(name)
+  obj = InfoPackage.new(name, url_for(''))
     
   @setting         = WebSetting.new
   @path            = name
