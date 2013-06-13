@@ -27,6 +27,11 @@ require 'sinatra/url_for'
 
 set :haml, :format => :html5
 
+get '/js/:filename' do
+  content_type :js
+  erb(File.read(File.join('views', params[:filename])))
+end
+
 get '/css/milkode.css' do
   content_type :css
 
