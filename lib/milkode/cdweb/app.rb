@@ -137,7 +137,7 @@ get %r{/help} do
 end
 
 get '/info' do
-  obj = InfoHome.new
+  obj = InfoHome.new(url_for '')
 
   @setting             = WebSetting.new
   @path                = ""
