@@ -29,13 +29,13 @@ set :haml, :format => :html5
 
 get '/js/:filename' do
   content_type :js
-  erb(File.read(File.join('views', params[:filename])))
+  erb(File.read(File.join(settings.views, params[:filename])))
 end
 
 get '/css/milkode.css' do
   content_type :css
 
-  contents = File.read(File.join('views', 'milkode.scss'))
+  contents = File.read(File.join(settings.views, 'milkode.scss'))
   contents = erb(contents)
   engine   = Sass::Engine.new(contents, :syntax => :scss)
   engine.render
