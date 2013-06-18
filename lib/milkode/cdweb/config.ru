@@ -1,3 +1,6 @@
 require './app'
-run Sinatra::Application
+
+map (ENV['MILKODE_RELATIVE_URL'] || '/') do
+  run Sinatra::Application
+end
 

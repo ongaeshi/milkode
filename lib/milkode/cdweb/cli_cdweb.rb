@@ -57,6 +57,9 @@ module Milkode
         # 起動URL生成
         launch_url = create_launch_url(options)
 
+        # URL設定
+        ENV['MILKODE_RELATIVE_URL'] = File.join('/', options[:url]) if options[:url]
+
         # 起動
         rack_server.start do
           # この時点でoptions[:Host]やoptions[:Port]などの値が壊れてしまっているため事前にURLを生成している
@@ -71,8 +74,10 @@ module Milkode
       if (options[:LaunchBrowser])
         host = options[:Host] || options[:BindAddress] # options[:BindAddress] for WEBrick
 
-        if (options[:LaunchURL])
-          "http://#{host}:#{options[:Port]}#{options[:LaunchURL]}"
+        base = "http://#{host}:#{options[:Port]}"
+
+        if options[:url]
+          File.join(base, options[:url])
         else
           "http://#{host}:#{options[:Port]}"
         end

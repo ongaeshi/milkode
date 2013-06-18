@@ -53,14 +53,14 @@ module Milkode
     haml :view
   end
 
-  def search(path, params, before)
+  def search(path, params, before, suburl)
     @setting = WebSetting.new
     @path = path
     query = Query.new(params[:query])
     @title = "'#{query.query_string}' in #{path_title(path)}"
 
     if (query.gotolines.size > 0)
-      searcher = SearchFuzzyGotoLine.new(path, params, query)
+      searcher = SearchFuzzyGotoLine.new(path, params, query, suburl)
 
       if searcher.directjump?
         redirect searcher.directjump_url
@@ -68,16 +68,16 @@ module Milkode
 
     elsif (query.keywords.size > 0)
       if Util::gotoline_keyword?(query.keywords[0])
-        searcher = SearchGotoLine.new(path, params, query)
+        searcher = SearchGotoLine.new(path, params, query, suburl)
       else
-        searcher = SearchContents.new(path, params, query)
+        searcher = SearchContents.new(path, params, query, suburl)
 
         if searcher.directjump?
           redirect searcher.directjump_url
         end
       end
     else
-      searcher = SearchFiles.new(path, params, query)
+      searcher = SearchFiles.new(path, params, query, suburl)
     end
     
     @total_records = searcher.total_records
@@ -88,21 +88,21 @@ module Milkode
     haml :search
   end
 
-  def filelist(path, params, before)
+  def filelist(path, params, before, suburl)
     @setting = WebSetting.new
     @title = filelist_title(path)
     @path = path
     fileList = Database.instance.fileList(path)
     @total_records = fileList.size
     @record_content = fileList.map do |v|
-      "<dt class='result-file'>#{file_or_dirimg(v[1])}<a href='#{Mkurl.new('/home/' + v[0], params).inherit_query_shead}'>#{File.basename v[0]}</a></dt>"
+      "<dt class='result-file'>#{file_or_dirimg(v[1], suburl)}<a href='#{Mkurl.new(suburl + '/home/' + v[0], params).inherit_query_shead}'>#{File.basename v[0]}</a></dt>"
     end.join
     Database.instance.touch_viewtime(path)
     @elapsed = Time.now - before
     haml :filelist
   end
 
-  def packages(params, before)
+  def packages(params, before, suburl)
     @setting = WebSetting.new
     @title = "Package List"
     @path = ""
@@ -123,7 +123,7 @@ module Milkode
       ].join("\n")
 
     @record_content = packages.map do |v|
-      "<dt class='result-file'>#{file_or_dirimg(false)}<a href='#{Mkurl.new('/home/' + v, params).inherit_query_shead}'>#{File.basename v}</a></dt>"
+      "<dt class='result-file'>#{file_or_dirimg(false, suburl)}<a href='#{Mkurl.new(suburl + '/home/' + v, params).inherit_query_shead}'>#{File.basename v}</a></dt>"
     end.join
     @elapsed = Time.now - before
     haml :packages
@@ -131,13 +131,13 @@ module Milkode
 
   private
   
-  def file_or_dirimg(is_file)
-    src = (is_file) ? 'file.png' : 'directory.png'
-    img_icon(src)
+  def file_or_dirimg(is_file, suburl)
+    filename = (is_file) ? 'file.png' : 'directory.png'
+    img_icon(filename, suburl)
   end
 
-  def img_icon(srcfile)
-    "<img alt='' style='vertical-align:bottom; border: 0; margin: 1px;' src='/images/#{srcfile}'>"
+  def img_icon(filename, suburl)
+    "<img alt='' style='vertical-align:bottom; border: 0; margin: 1px;' src='#{suburl}/images/#{filename}'>"
   end
 
   def sort_change_content(current_value, text, sort_kind = nil)

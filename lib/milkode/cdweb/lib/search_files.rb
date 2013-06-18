@@ -17,10 +17,12 @@ module Milkode
 
     DISP_NUM = 100              # 1ページの表示数
     
-    def initialize(path, params, query)
-      @path = path
-      @params = params
-      @q = query
+    def initialize(path, params, query, suburl)
+      @path    = path
+      @params  = params
+      @q       = query
+      @suburl  = suburl
+      @homeurl = @suburl + "/home/"
       
       @offset = params[:offset].to_i
 
@@ -77,7 +79,7 @@ EOF
 
     def result_record(record)
       <<EOS
-    <dt class='result-file'>#{file_or_dirimg(true)}<a href='#{"/home/" + record_link(record)}'>#{Util::relative_path record.shortpath, @path}</a></dt>
+    <dt class='result-file'>#{file_or_dirimg(true, @suburl)}<a href='#{@homeurl + record_link(record)}'>#{Util::relative_path record.shortpath, @path}</a></dt>
 EOS
     end
 
