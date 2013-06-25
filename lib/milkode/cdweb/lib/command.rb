@@ -143,9 +143,9 @@ module Milkode
   def sort_change_content(current_value, text, sort_kind = nil)
     if (current_value != sort_kind)
       if (sort_kind)
-        "<a href='#{Mkurl.new('/home', params).inherit_query_shead_set_sort(sort_kind)}'>#{text}</a>"
+        "<a href='#{url_for Mkurl.new('/home', params).inherit_query_shead_set_sort(sort_kind)}'>#{text}</a>"
       else
-        "<a href='#{Mkurl.new('/home', params).inherit_query_shead}'>#{text}</a>"
+        "<a href='#{url_for Mkurl.new('/home', params).inherit_query_shead}'>#{text}</a>"
       end
     else
       text
