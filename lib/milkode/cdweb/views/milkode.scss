@@ -255,7 +255,7 @@ label.ui-corner-all {
 .star {
      text-indent: -5000px;
      display: block;
-     background: transparent url(/images/milkode-star.png) 20px;
+     background: transparent url(<%= url_for "/images/milkode-star.png" %>) 20px;
      height: 20px;
      width: 20px;
 }

@@ -956,7 +956,7 @@ EOF
     end
 
     def files(args, options)
-      packages = find_packages(args)
+      packages = options[:all] ? @yaml.contents : find_packages(args)
       return if (packages.empty?)
 
       db_open
@@ -968,7 +968,11 @@ EOF
           if options[:relative]
             @out.puts Util::relative_path(record.path, basedir)
           else
-            @out.puts record.restpath
+            if options[:all]
+              @out.puts record.path
+            else
+              @out.puts record.restpath
+            end
           end
         end
       end

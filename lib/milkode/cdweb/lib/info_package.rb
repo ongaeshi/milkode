@@ -14,7 +14,9 @@ module Milkode
     attr_reader :summary_content
     attr_reader :plang_content
 
-    def initialize(name)
+    def initialize(name, suburl)
+      @suburl = suburl
+      
       records = Database.instance.package_records(name)
       # plangs  = sorted_plangs(records)
       
@@ -54,7 +56,7 @@ EOF
         params = { :query => lang_to_query(lang) }
 
         if params[:query] != ""
-          url = "/home/" + Mkurl.new(package_name, params).inherit_query_shead
+          url = @suburl + "/home/" + Mkurl.new(package_name, params).inherit_query_shead
           "<tr><td>#{name}</td><td align=\"right\"><a href=\"#{url}\">#{count}</a></td><td align=\"right\">#{percent}%</td></tr>"
         else
           "<tr><td>#{name}</td><td align=\"right\">#{count}</td><td align=\"right\">#{percent}%</td></tr>"

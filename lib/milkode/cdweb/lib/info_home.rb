@@ -10,7 +10,7 @@ module Milkode
     attr_reader :record_content
     attr_reader :summary_content
 
-    def initialize
+    def initialize(suburl)
       packages       = Database.instance.packages(nil)
 
       @summary_content = <<EOF
@@ -21,7 +21,7 @@ module Milkode
 EOF
 
       @record_content = packages.map do |name|
-        "<dt class='result-file'><img src='/images/info.png' /><a href='/info/#{name}'>#{name}</a></dt>"
+        "<dt class='result-file'><img src='#{suburl}/images/info.png'/><a href='#{suburl}/info/#{name}'>#{name}</a></dt>"
       end.join("\n")
     end
 

@@ -151,12 +151,13 @@ EOF
     end
 
     desc "web", "Startup web interface"
-    option :db, :default => Milkode::CLI_Cdweb::select_dbdir
-    option :host, :default => '127.0.0.1', :aliases => '-o'
-    option :port, :default => 9292, :aliases => '-p'
-    option :server, :default => 'thin', :aliases => '-s'
-    option :no_browser, :type => :boolean, :default => false, :aliases => '-n', :type => :boolean, :desc => 'Do not launch browser.'
     option :customize, :type => :boolean, :desc => 'Create customize file.'
+    option :db, :default => Milkode::CLI_Cdweb::select_dbdir, :desc => 'Database dir.'
+    option :no_browser, :type => :boolean, :default => false, :aliases => '-n', :type => :boolean, :desc => 'Do not launch browser.'
+    option :host, :default => '127.0.0.1', :aliases => '-o', :desc => 'Listen on HOST.'
+    option :port, :default => 9292, :aliases => '-p', :desc => 'Use PORT.'
+    option :server, :default => 'thin', :aliases => '-s', :desc => 'Use SERVER.'
+    option :url, :aliases => '-u', :type => :string, :desc => 'Relative URL. (Default: "/")'
     def web
       opts = {
         :environment => ENV['RACK_ENV'] || "development",
@@ -169,6 +170,7 @@ EOF
         :server        => options[:server],
         :LaunchBrowser => !options[:no_browser],
         :DbDir         => options[:db],
+        :url           => options[:url],
       }
       opts[:customize] = options[:customize]
       # cdstk(opts[:DbDir]).assert_compatible
@@ -195,6 +197,7 @@ EOF
     end
 
     desc "files", "Display package files"
+    option :all, :type => :boolean, :aliases => '-a', :desc => 'Display all package files.'
     option :relative, :type => :boolean, :aliases => '-r', :desc => "Display relative path."
     def files(*args)
       cdstk.files(args, options)

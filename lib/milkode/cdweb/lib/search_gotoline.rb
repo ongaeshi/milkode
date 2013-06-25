@@ -23,12 +23,14 @@ module Milkode
     MATH_FILE_DISP  = 3        # マッチファイルの最大表示数
     MATH_FILE_LIMIT = MATH_FILE_DISP + 1 # マッチファイルの検索リミット数
     
-    def initialize(path, params, query)
-      @path = path
-      @params = params
-      @q = query
-      @page = params[:page].to_i || 0
-      @offset = params[:offset].to_i
+    def initialize(path, params, query, suburl)
+      @path    = path
+      @params  = params
+      @q       = query
+      @page    = params[:page].to_i || 0
+      @offset  = params[:offset].to_i
+      @suburl  = suburl
+      @homeurl = @suburl + "/home/"
 
       # 検索クエリを解析
       @gotolines = Util::parse_gotoline(@q.keywords)
@@ -113,7 +115,7 @@ EOF
       coderay.col_limit(COL_LIMIT)
       coderay.set_range(first_index..last_index)
 
-      url = "/home/" + record_link(record)
+      url = @homeurl + record_link(record)
       
       <<EOS
     <dt class='result-record'><a href='#{url + "#n#{coderay.highlight_lines[0]}"}'>#{Util::relative_path record.shortpath, @path}</a></dt>
@@ -133,12 +135,6 @@ EOS
 
     def pagination_span(content)
       "<ul><li>#{content}</li></ul>\n"
-    end
-
-    def result_record(record)
-      <<EOS
-    <dt class='result-file'>#{file_or_dirimg(true)}<a href='#{"/home/" + record_link(record)}'>#{Util::relative_path record.shortpath, @path}</a></dt>
-EOS
     end
 
     def record_link(record)     # 

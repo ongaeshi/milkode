@@ -16,8 +16,9 @@ module Milkode
 
     FAVORITE_LIST_NUM = 7
     
-    def initialize(grndb)
-      @grndb = grndb
+    def initialize(grndb, suburl)
+      @grndb  = grndb
+      @suburl = suburl
     end
 
     # topページへの表示数の調整は結構大切
@@ -47,12 +48,12 @@ module Milkode
       names = @grndb.packages.favs.map{|r| r.name}[0..FAVORITE_LIST_NUM-1]
 
       list = names.map_with_index {|v, index|
-        "<strong><a id='favorite_list_#{index}' href='#{Mkurl.new('/home/' + v, params).inherit_query_shead}' onclick='topic_path(\"favorite_list_#{index}\");'>#{v}</a></strong>"
+        "<strong><a id='favorite_list_#{index}' href='#{Mkurl.new(@suburl + '/home/' + v, params).inherit_query_shead}' onclick='topic_path(\"favorite_list_#{index}\");'>#{v}</a></strong>"
       }.join("&nbsp;&nbsp;\n")
 
       <<EOF
 #{list}&nbsp;&nbsp;
-<a href="/home?sort=favtime">...</a>
+<a href="#{@suburl}/home?sort=favtime">...</a>
 EOF
     end
 
@@ -66,12 +67,12 @@ EOF
 
     def top_list(list, column_name)
       list = list.map {|v|
-        "  <li><a href=\"/home/#{v}\">#{v}</a></li>"
+        "  <li><a href=\"#{@suburl}/home/#{v}\">#{v}</a></li>"
       }.join("\n")
       <<EOF
 <ul class="unstyled_margin">
 #{list}
-<li><a href=\"/home?sort=#{column_name}">next >></a></li>
+<li><a href=\"#{@suburl}/home?sort=#{column_name}">next >></a></li>
 </ul>
 EOF
     end

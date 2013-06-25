@@ -26,7 +26,7 @@ module Milkode
 
     DEFAULT_WIDE_MATCH_RANGE = 7 # 未指定時のワイド検索範囲
 
-    def initialize(path, params, query)
+    def initialize(path, params, query, suburl)
       @path             = path
       @params           = params
       @q                = query
@@ -35,6 +35,8 @@ module Milkode
       @line             = params[:line].to_i
       @is_onematch      = params[:onematch]  == 'on'
       @is_sensitive     = params[:sensitive] == 'on'
+      @suburl           = suburl
+      @homeurl          = @suburl + "/home/"
 
       @searcher_fuzzy_gotoline = nil
 
@@ -165,7 +167,7 @@ EOF
         tmpp         = @params.clone
         tmpp[:query] = conv_query.query_string
         url          = Mkurl.new(@path, tmpp).inherit_query_shead
-        result << "<dt class='result-file'>#{img_icon('document-new-4.png')}<a href='#{url}'>#{conv_query.query_string}</a></dt>"
+        result << "<dt class='result-file'>#{img_icon('document-new-4.png', @suburl)}<a href='#{url}'>#{conv_query.query_string}</a></dt>"
       end
 
       if recommended_wide_match_range?
@@ -184,7 +186,7 @@ EOF
         tmpp[:query] = conv_query.query_string
         url          = Mkurl.new(@path, tmpp).inherit_query_shead
 
-        result << "<dt class='result-file'>#{img_icon('document-new-4.png')}<a href='#{url}'>#{conv_query.query_string}</a> (<a href='#{w0_url}'>w:0</a>, <a href='#{w1_url}'>w:1</a>)</dt>"
+        result << "<dt class='result-file'>#{img_icon('document-new-4.png', @suburl)}<a href='#{url}'>#{conv_query.query_string}</a> (<a href='#{w0_url}'>w:0</a>, <a href='#{w1_url}'>w:1</a>)</dt>"
       end
       
       if recommended_fpath_or_packages?
@@ -192,7 +194,7 @@ EOF
         tmpp         = @params.clone
         tmpp[:query] = conv_query.query_string
         url          = Mkurl.new(@path, tmpp).inherit_query_shead
-        result << "<dt class='result-file'>#{img_icon('document-new-4.png')}<a href='#{url}'>#{conv_query.query_string}</a></dt>"
+        result << "<dt class='result-file'>#{img_icon('document-new-4.png', @suburl)}<a href='#{url}'>#{conv_query.query_string}</a></dt>"
       end
 
       unless result.empty?
@@ -308,7 +310,7 @@ EOF
       coderay.col_limit(COL_LIMIT)
       coderay.set_range(first_index..last_index)
 
-      url = "/home/" + record_link(record)
+      url = @homeurl + record_link(record)
       
       <<EOS
     <dt class='result-record'><a href='#{url + "#n#{coderay.highlight_lines[0]}"}'>#{Util::relative_path record.shortpath, @path}</a>#{result_refinement(record)}</dt>
@@ -332,7 +334,7 @@ EOS
 
     def result_record(record)
       <<EOS
-    <dt class='result-file'>#{file_or_dirimg(true)}<a href='#{"/home/" + record_link(record)}'>#{Util::relative_path record.shortpath, @path}</a></dt>
+    <dt class='result-file'>#{file_or_dirimg(true, @suburl)}<a href='#{@homeurl + record_link(record)}'>#{Util::relative_path record.shortpath, @path}</a></dt>
 EOS
     end
 
@@ -343,11 +345,11 @@ EOS
     def refinement_suffix(suffix)
       params = @params.clone
       params[:query] = [@params[:query], "s:#{suffix}"].join(" ")
-      "/home/" + Mkurl.new(@path, params).inherit_query_shead
+      @homeurl + Mkurl.new(@path, params).inherit_query_shead
     end
 
     def refinement_directory(path)
-      "/home/" + Mkurl.new(path, @params).inherit_query_shead
+      @homeurl + Mkurl.new(path, @params).inherit_query_shead
     end
 
     def result_refinement(record)

@@ -23,17 +23,32 @@ require 'milkode/cdweb/lib/web_setting'
 require 'milkode/cdweb/lib/package_list'
 require 'milkode/cdweb/lib/info_home'
 require 'milkode/cdweb/lib/info_package'
+require 'sinatra/url_for'
 
 set :haml, :format => :html5
+
+get '/js/:filename' do
+  content_type :js
+  erb(File.read(File.join(settings.views, params[:filename])))
+end
+
+get '/css/milkode.css' do
+  content_type :css
+
+  contents = File.read(File.join(settings.views, 'milkode.scss'))
+  contents = erb(contents)
+  engine   = Sass::Engine.new(contents, :syntax => :scss)
+  engine.render
+end
 
 get '/' do
   if Database.validate?
     @setting = WebSetting.new
-    @version = "1.0.2"
+    @version = "1.1.0"
 
     @package_num = Database.instance.yaml_package_num
     @file_num = Database.instance.totalRecords
-    @package_list = PackageList.new(Database.instance.grndb)
+    @package_list = PackageList.new(Database.instance.grndb, url_for(''))
     haml :index, :layout => false
   else
     <<EOF
@@ -43,8 +58,8 @@ EOF
   end
 end
 
-def package_path(path)
-  path.split('/')[0,3].join('/')
+def package_path(homeurl, path)
+  homeurl + path.sub(homeurl, "").split('/')[0,2].join('/')
 end
 
 post '/search*' do
@@ -53,22 +68,24 @@ post '/search*' do
   if params[:clear]
     redirect Mkurl.new("#{path}", params).inherit_shead
   else
+    homeurl = url_for "/home"
+    
     case params[:shead]
     when 'all'
-      path = "/home"
+      path = homeurl
     when 'package'
-      path = package_path(path)
+      path = package_path(homeurl, path)
     when 'directory'
       # do nothing
     else
-      path = package_path(path)
+      path = package_path(homeurl, path)
     end
 
     query = Query.new(params[:query])
     # gotolineモードで1つだけ渡された時は直接ジャンプ
     if query.keywords.size == 1 && Milkode::Util::gotoline_keyword?(query.keywords[0])
       gotoline = Milkode::Util::parse_gotoline(query.keywords)[0]
-      path2 = File.join('/home', gotoline[0][0])
+      path2 = File.join(url_for('/home'), gotoline[0][0])
       redirect Mkurl.new(path2, params).inherit_query_shead + "#n#{gotoline[1]}"
     else
       redirect Mkurl.new("#{path}", params).inherit_query_shead
@@ -89,7 +106,7 @@ post '/command' do
     end
   when 'favorite'
     Database.instance.set_fav(params[:name], params[:favorited] == 'true')
-    @package_list = PackageList.new(Database.instance.grndb)
+    @package_list = PackageList.new(Database.instance.grndb, url_for(''))
     "お気に入り: " + @package_list.favorite_list({})
   end
 end
@@ -98,21 +115,22 @@ get '/home*' do |path|
   before = Time.now
   path = path.sub(/^\//, "")
   record = Database.instance.record(path)
-  @package_list = PackageList.new(Database.instance.grndb)
+  @package_list = PackageList.new(Database.instance.grndb, url_for(''))
+  suburl = url_for('')
 
   if path.empty?
     if (params[:query] and !params[:query].empty?)
-      search(path, params, before)
+      search(path, params, before, suburl)
     else
-      packages(params, before)
+      packages(params, before, suburl)
     end
   elsif (record)
     view(record, params, before)
   else
     if (params[:query] and !params[:query].empty?)
-      search(path, params, before)
+      search(path, params, before, suburl)
     else
-      filelist(path, params, before)
+      filelist(path, params, before, suburl)
     end
   end
 end
@@ -124,7 +142,7 @@ get %r{/help} do
 end
 
 get '/info' do
-  obj = InfoHome.new
+  obj = InfoHome.new(url_for '')
 
   @setting             = WebSetting.new
   @path                = ""
@@ -138,7 +156,7 @@ get '/info/:package' do
   before = Time.now
 
   name = params[:package]
-  obj = InfoPackage.new(name)
+  obj = InfoPackage.new(name, url_for(''))
     
   @setting         = WebSetting.new
   @path            = name
@@ -215,8 +233,10 @@ EOF
   end
 
   def create_headmenu(path, query, flistpath = '')
-    href = Mkurl.new('/home/' + path, params).inherit_query_shead
-    flist = File.join("/home/#{path}", flistpath)
+    suburl = url_for ""
+
+    href = Mkurl.new("#{suburl}/home/#{path}", params).inherit_query_shead
+    flist = File.join("#{suburl}/home/#{path}", flistpath)
 
     package_name = ""
     modal_body = "全てのパッケージを更新しますか？"
@@ -226,15 +246,15 @@ EOF
       modal_body = "#{package_name} を更新しますか？"
     end
 
-    info_path = "/info"
+    info_path = "#{suburl}/info"
     info_path = File.join(info_path, package_name) if package_name != ""
 
     <<EOF
-    #{headicon('go-home-5.png')}<a href="/home" class="headmenu">ホーム</a>&nbsp;
-    #{headicon('directory.png')}<a href="#{flist}" class="headmenu">ディレクトリ</a>
-    #{headicon('view-refresh-4.png')}<a href="#updateModal" class="headmenu" data-toggle="modal">パッケージを更新</a>&nbsp;
-    #{headicon('info.png')}<a href="#{info_path}" class="headmenu">統計情報</a>&nbsp;
-    #{headicon('help.png')}<a href="/help" class="headmenu">ヘルプ</a>
+    #{headicon('go-home-5.png', suburl)}<a href="#{suburl}/home" class="headmenu">ホーム</a>&nbsp;
+    #{headicon('directory.png', suburl)}<a href="#{flist}" class="headmenu">ディレクトリ</a>
+    #{headicon('view-refresh-4.png', suburl)}<a href="#updateModal" class="headmenu" data-toggle="modal">パッケージを更新</a>&nbsp;
+    #{headicon('info.png', suburl)}<a href="#{info_path}" class="headmenu">統計情報</a>&nbsp;
+    #{headicon('help.png', suburl)}<a href="#{suburl}/help" class="headmenu">ヘルプ</a>
 
     <div id="updateModal" class="modal hide fade">
       <div class="modal-header">
@@ -279,8 +299,8 @@ EOF
 EOF
   end
 
-  def headicon(name)
-    "<img alt='' style='vertical-align:center; border: 0px; margin: 0px;' src='/images/#{name}'>"
+  def headicon(name, suburl)
+    "<img alt='' style='vertical-align:center; border: 0px; margin: 0px;' src='#{suburl}/images/#{name}'>"
   end
 
   def topic_path(path, params)
@@ -289,7 +309,7 @@ EOF
 
     path.split('/').map_with_index {|v, index|
       href += '/' + v
-      "<a id='topic_#{index}' href='#{Mkurl.new(href, params).inherit_query_shead}' onclick='topic_path(\"topic_#{index}\");'>#{v}</a>"
+      "<a id='topic_#{index}' href='#{url_for Mkurl.new(href, params).inherit_query_shead}' onclick='topic_path(\"topic_#{index}\");'>#{v}</a>"
     }.join('/')
   end
 
