@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{milkode}
-  s.version = "1.0.2"
+  s.version = "1.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ongaeshi"]
-  s.date = %q{2013-06-08}
+  s.date = %q{2013-06-26}
   s.description = %q{Line based local source code search engine & grep-command & web-app.}
   s.email = %q{ongaeshi0621@gmail.com}
   s.executables = ["gmilk", "milk"]
@@ -61,7 +61,6 @@ Gem::Specification.new do |s|
     "lib/milkode/cdweb/public/css/coderay.css",
     "lib/milkode/cdweb/public/css/jquery.multiselect.css",
     "lib/milkode/cdweb/public/css/jquery.multiselect.filter.css",
-    "lib/milkode/cdweb/public/css/milkode.css",
     "lib/milkode/cdweb/public/css/smoothness/images/ui-bg_flat_0_aaaaaa_40x100.png",
     "lib/milkode/cdweb/public/css/smoothness/images/ui-bg_flat_75_ffffff_40x100.png",
     "lib/milkode/cdweb/public/css/smoothness/images/ui-bg_glass_55_fbf9ee_1x400.png",
@@ -97,7 +96,6 @@ Gem::Specification.new do |s|
     "lib/milkode/cdweb/public/js/jquery-ui-1.8.22.custom.min.js",
     "lib/milkode/cdweb/public/js/jquery.multiselect.filter.min.js",
     "lib/milkode/cdweb/public/js/jquery.multiselect.min.js",
-    "lib/milkode/cdweb/public/js/milkode.js",
     "lib/milkode/cdweb/views/error.haml",
     "lib/milkode/cdweb/views/filelist.haml",
     "lib/milkode/cdweb/views/header_menu.haml",
@@ -106,6 +104,8 @@ Gem::Specification.new do |s|
     "lib/milkode/cdweb/views/info_home.haml",
     "lib/milkode/cdweb/views/info_package.haml",
     "lib/milkode/cdweb/views/layout.haml",
+    "lib/milkode/cdweb/views/milkode.js",
+    "lib/milkode/cdweb/views/milkode.scss",
     "lib/milkode/cdweb/views/packages.haml",
     "lib/milkode/cdweb/views/search.haml",
     "lib/milkode/cdweb/views/search_form.haml",
@@ -133,6 +133,7 @@ Gem::Specification.new do |s|
     "lib/milkode/grep/fast_gotoline.rb",
     "lib/milkode/grep/findgrep.rb",
     "lib/milkode/grep/findgrep_option.rb",
+    "lib/sinatra/url_for.rb",
     "milkode.gemspec",
     "test/data/.gitignore",
     "test/data/.gitignore.sjis",

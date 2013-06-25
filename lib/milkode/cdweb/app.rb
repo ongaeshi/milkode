@@ -44,7 +44,7 @@ end
 get '/' do
   if Database.validate?
     @setting = WebSetting.new
-    @version = "1.0.2"
+    @version = "1.1.0"
 
     @package_num = Database.instance.yaml_package_num
     @file_num = Database.instance.totalRecords

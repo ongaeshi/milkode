@@ -1,3 +1,19 @@
+=== 1.1.0 2013/06/26
+
+* milk web
+  * Support relative URL (e.g. http://example.com/milkode)
+  * Change milkode.css -> milkode.scss (For url_for)
+
+* milk
+  * 'milk files' add --all option
+
+* gmilk
+  * Add exist_command?('cat')
+  * Change how to call exist_command?
+
+* etc
+  * Add sinatra-url-for
+
 === 1.0.2 2013/06/08
 
 * gmilk
