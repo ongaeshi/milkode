@@ -235,7 +235,7 @@ module Milkode
     # 指定したコマンドが存在するか？
     def exist_command?(command)
       begin
-        Open3.capture3("type #{command}")[2].exited?
+        Open3.capture3('type', command)[2].exited?
       rescue Errno::ENOENT
         false
       end
