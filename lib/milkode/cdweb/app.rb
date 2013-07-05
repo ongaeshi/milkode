@@ -333,7 +333,7 @@ EOF
 
       if (result)
         path2 = path.gsub(/#{suffix}\Z/, result)
-        " (<a href='#{Mkurl.new(File.join('/home', path2), params).inherit_query_shead}'>#{result}</a>) "
+        " (<a href='#{url_for Mkurl.new(File.join('/home', path2), params).inherit_query_shead}'>#{result}</a>) "
       else
         ''
       end
