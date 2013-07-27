@@ -35,14 +35,14 @@ module Milkode
         Dir.chdir(@package.directory) { system("svn update") }
       end
 
-      # cleanup
-      unless @options[:no_clean]
-        @grndb.documents.cleanup_package_name(@package_name)
-      end
-      
       # update
       update_dir(@package.directory)
 
+      # cleanup
+      unless @options[:no_clean]
+        @grndb.documents.cleanup_package_name(@package_name, @current_ignore)
+      end
+      
       # 更新時刻の更新
       @grndb.packages.touch(@package_name, :updatetime)
     end

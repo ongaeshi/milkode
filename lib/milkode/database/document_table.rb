@@ -326,13 +326,13 @@ module Milkode
     end
 
     # 指定されたパッケージのクリーンアップ
-    def cleanup_package_name(package_name)
+    def cleanup_package_name(package_name, ignore_checker = nil)
       # クリーンアップ対象のファイルを検索
       result = @table.select { |record| record.package == package_name }
 
-      # 存在しないファイルの削除
+      # 存在しない＆無視ファイルの削除
       result.each do |r|
-        unless File.exist? r.path
+        if !File.exist?(r.path) || (ignore_checker && ignore_checker.ignore?("/#{r.restpath}"))
           yield r if block_given?
           # p r.restpath
           remove(r.path)
