@@ -35,34 +35,40 @@ module Milkode
     end
 
     # レコードをまとめて削除する
-    #   検索結果にマッチしたレコード等をまとめて削除
-    #   削除前にインデックスを削除し、削除後にインデックスを再度追加してい
-    #   大量のレコードを削除する場合に高速に動作する
+    #   過去の方法
+    #     検索結果にマッチしたレコード等をまとめて削除
+    #     削除前にインデックスを削除し、削除後にインデックスを再度追加してい
+    #     大量のレコードを削除する場合に高速に動作する
+    #
+    #   現在の方法
+    #     上記の方法がかえって遅くなったので元に戻す
+    #     普通に速くなった気がする
+    # 
     def remove_records(records, &block)
-      Groonga::Schema.define do |schema|
-        schema.change_table("terms") do |table|
-          table.remove_index("documents.path")
-          table.remove_index("documents.package")
-          table.remove_index("documents.restpath")
-          table.remove_index("documents.content")
-          table.remove_index("documents.suffix")
-        end
-      end
+      # Groonga::Schema.define do |schema|
+      #   schema.change_table("terms") do |table|
+      #     table.remove_index("documents.path")
+      #     table.remove_index("documents.package")
+      #     table.remove_index("documents.restpath")
+      #     table.remove_index("documents.content")
+      #     table.remove_index("documents.suffix")
+      #   end
+      # end
 
       records.each do |record|
         yield record if block
         record.key.delete
       end
 
-      Groonga::Schema.define do |schema|
-        schema.change_table("terms") do |table|
-          table.index("documents.path", :with_position => true)
-          table.index("documents.package", :with_position => true)
-          table.index("documents.restpath", :with_position => true)
-          table.index("documents.content", :with_position => true)
-          table.index("documents.suffix", :with_position => true)
-        end
-      end
+      # Groonga::Schema.define do |schema|
+      #   schema.change_table("terms") do |table|
+      #     table.index("documents.path", :with_position => true)
+      #     table.index("documents.package", :with_position => true)
+      #     table.index("documents.restpath", :with_position => true)
+      #     table.index("documents.content", :with_position => true)
+      #     table.index("documents.suffix", :with_position => true)
+      #   end
+      # end
     end
     
     def initialize(table)
