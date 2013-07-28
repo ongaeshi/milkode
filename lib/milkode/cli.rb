@@ -83,7 +83,7 @@ EOF
       cdstk.pwd(options)
     end
 
-    desc "cleanup", "Creanup garbage recoeds"
+    desc "cleanup", "Cleanup garbage records"
     option :force, :type => :boolean, :aliases => '-f', :desc => 'Force cleanup.'
     def cleanup
       cdstk.cleanup(options)
