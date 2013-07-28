@@ -911,7 +911,13 @@ EOF
         raise IgnoreError, "Not a package dir: '#{current_dir}'" unless package
       end
 
-      if options[:dry_run]
+      if options[:global]
+        if args.size > 0
+          @out.puts "Set '#{args[0]}'"
+        else
+          warning_alert("file name not specified.")
+        end
+      elsif options[:dry_run]
         # Test mode
         db_open
         @is_display_info = true
