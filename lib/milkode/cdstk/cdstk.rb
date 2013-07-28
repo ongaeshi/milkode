@@ -357,7 +357,7 @@ module Milkode
 
             unless package
               path = File.expand_path(arg)
-              package = @yaml.package_root(path)
+              package = @yaml.package_root(path) if File.exist?(path)
             end
             
             if (package)
