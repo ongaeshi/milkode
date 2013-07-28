@@ -63,22 +63,23 @@ module Milkode
       if @match_records.empty? && recommended_wide_match_range?
         grep_contents(@q.keywords, DEFAULT_WIDE_MATCH_RANGE)
 
-        if @match_records.empty?
-          grep_contents(@q.keywords, 0)
-        end
+        # 検索範囲0の自動マッチは混乱をまねくのでやめる
+        # if @match_records.empty?
+        #   grep_contents(@q.keywords, 0)
+        # end
       end
 
-      # 先頭をファイル名とみなす
-      if @match_records.empty? && recommended_fpath_or_packages?
-        # おすすめクエリーに変換
-        q2 = @q.conv_head_keyword_to_fpath_or_packages
+      # 先頭をファイル名とみなす自動マッチは混乱をまねくのでやめる
+      # if @match_records.empty? && recommended_fpath_or_packages?
+      #   # おすすめクエリーに変換
+      #   q2 = @q.conv_head_keyword_to_fpath_or_packages
         
-        # 検索
-        @records, @total_records = Database.instance.search(q2.keywords, q2.multi_match_keywords, q2.packages, path, q2.fpaths, q2.suffixs, q2.fpath_or_packages, @offset, LIMIT_NUM)
+      #   # 検索
+      #   @records, @total_records = Database.instance.search(q2.keywords, q2.multi_match_keywords, q2.packages, path, q2.fpaths, q2.suffixs, q2.fpath_or_packages, @offset, LIMIT_NUM)
         
-        # 再grep
-        grep_contents(q2.keywords, q2.wide_match_range)
-      end
+      #   # 再grep
+      #   grep_contents(q2.keywords, q2.wide_match_range)
+      # end
       
       # 検索3 : マッチするファイル
       @match_files = []
