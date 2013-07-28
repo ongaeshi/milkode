@@ -237,9 +237,11 @@ module Milkode
     end
 
     def add_global_gitignore(filename)
-      alert_info("add_ignore", filename)
-      str = Util::load_content($stdout, filename)
-      @current_ignore.add IgnoreSetting.create_from_gitignore("/", str)
+      if File.exist? filename
+        alert_info("add_ignore", filename)
+        str = Util::load_content($stdout, filename)
+        @current_ignore.add IgnoreSetting.create_from_gitignore("/", str)
+      end
     end
 
     def alert_info(title, msg)
