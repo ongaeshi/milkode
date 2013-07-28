@@ -911,7 +911,17 @@ EOF
         raise IgnoreError, "Not a package dir: '#{current_dir}'" unless package
       end
 
-      if options[:dry_run]
+      if options[:global]
+        if args.size > 0
+          @yaml.set_global_gitignore(args[0])
+          @yaml.save
+          @out.puts "Set '#{args[0]}'"
+        else
+          if @yaml.global_gitignore
+            @out.puts @yaml.global_gitignore
+          end
+        end
+      elsif options[:dry_run]
         # Test mode
         db_open
         @is_display_info = true
@@ -1026,6 +1036,7 @@ EOF
       updater.enable_update_with_git_pull   if is_update_with_git_pull
       updater.enable_update_with_svn_update if is_update_with_svn_update
       updater.enable_no_clean               if is_no_clean
+      updater.set_global_gitignore(@yaml.global_gitignore) if @yaml.global_gitignore
       updater.exec
 
       @package_count += 1

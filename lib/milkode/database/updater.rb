@@ -35,6 +35,11 @@ module Milkode
         Dir.chdir(@package.directory) { system("svn update") }
       end
 
+      # Add global .gitignore
+      if @options[:global_gitignore]
+        add_global_gitignore(@options[:global_gitignore])
+      end
+
       # update
       update_dir(@package.directory)
 
@@ -73,6 +78,10 @@ module Milkode
 
     def enable_no_clean
       @options[:no_clean] = true      
+    end
+
+    def set_global_gitignore(filename)
+      @options[:global_gitignore] = filename 
     end
 
     class Result
@@ -224,6 +233,14 @@ module Milkode
         alert_info("add_ignore", filename)
         str = Util::load_content($stdout, filename)
         @current_ignore.add IgnoreSetting.create_from_gitignore(path, str)
+      end
+    end
+
+    def add_global_gitignore(filename)
+      if File.exist? filename
+        alert_info("add_ignore", filename)
+        str = Util::load_content($stdout, filename)
+        @current_ignore.add IgnoreSetting.create_from_gitignore("/", str)
       end
     end
 

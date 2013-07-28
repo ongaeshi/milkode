@@ -135,6 +135,7 @@ EOF
     option :delete, :type => :boolean, :aliases => '-d', :desc => "Delete ignore setting."
     option :delete_all, :type => :boolean, :desc => "Delete all ignore setting."
     option :dry_run, :type => :boolean, :aliases => '-n', :desc => "Ignore setting test."
+    option :global, :type => :boolean, :desc => "Set global .gitignore file."
     def ignore(*paths)
       begin
         cdstk.ignore(paths, options)
