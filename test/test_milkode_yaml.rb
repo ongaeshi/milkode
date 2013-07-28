@@ -190,4 +190,31 @@ EOF
     assert_equal nil           , obj.package_root('/hoge/a/dir1/dir3')
     assert_equal '/path/to/dir', obj.package_root('/path/to/dir').directory
   end
+
+  def test_global_gitignore_empty
+    obj = MilkodeYaml.new(SRC)
+    assert_equal nil, obj.global_gitignore
+  end
+    
+  def test_global_gitignore_read
+    obj = MilkodeYaml.new(<<EOF)
+---
+version: '0.2'
+global_gitignore: '/path/to/.gitignore'
+contents:
+  - directory: /a/dir1
+EOF
+
+    assert_equal '/path/to/.gitignore', obj.global_gitignore
+  end
+
+  def test_global_gitignore_set
+    # set
+    obj = MilkodeYaml.new(SRC)
+    obj.set_global_gitignore('/path/to/.gitignore')
+
+    # reload
+    obj = MilkodeYaml.new(obj.dump)
+    assert_equal '/path/to/.gitignore', obj.global_gitignore
+  end
 end

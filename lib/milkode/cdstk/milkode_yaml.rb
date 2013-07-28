@@ -100,6 +100,14 @@ EOF
       end
     end
 
+    def global_gitignore
+      @data['global_gitignore']
+    end
+
+    def set_global_gitignore(filename)
+      @data['global_gitignore'] = filename
+    end
+
     private
 
     def parse_contents
