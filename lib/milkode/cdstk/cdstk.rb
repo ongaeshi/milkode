@@ -521,24 +521,44 @@ module Milkode
     end
 
     def cleanup(options)
-      # cleanup開始
+      update_display_info(options)
+
+      if (options[:all])
+        cleanup_all
+      elsif (options[:packages])
+        cleanup_packages
+      else
+        # Cleanup specify package
+      end
+    end
+
+    # Remove non exist pakcages
+    def cleanup_packages
+      print_result do
+        cleanup_packages_in
+      end
+    end
+
+    def cleanup_packages_in
+        @yaml.contents.find_all {|v| !File.exist? v.directory }.each do |p|
+          @yaml.remove(p)
+          alert("rm_package", p.directory)
+          @package_count += 1
+        end
+        @yaml.save
+
+        db_open
+
+        @grndb.yaml_sync(@yaml.contents)
+    end
+
+    def cleanup_all
       if (options[:force] or yes_or_no("cleanup contents? (yes/no)"))
-        print_result do 
-          # yamlファイルのクリーンアップ
-          @yaml.contents.find_all {|v| !File.exist? v.directory }.each do |p|
-            @yaml.remove(p)
-            alert("rm_package", p.directory)
-            @package_count += 1
-          end
-          @yaml.save
-
-          # データベースを開く
-          db_open
-
-          # yamlファイルと同期する
-          @grndb.yaml_sync(@yaml.contents)
+        print_result do
+          # Remove non exist packages
+          cleanup_packages_in
           
-          # データベースのクリーンアップ
+          # @todo Remove ignore files
           @documents.cleanup do |record|
             alert("rm_record", record.path)
             @file_count += 1

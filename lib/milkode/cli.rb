@@ -83,8 +83,11 @@ EOF
       cdstk.pwd(options)
     end
 
-    desc "cleanup", "Cleanup garbage records"
+    desc "cleanup keyword_or_path1 [keyword_or_path2 ...]", "Cleanup garbage records"
+    option :all, :type => :boolean, :aliases => '-a', :desc => 'Cleanup all.'
     option :force, :type => :boolean, :aliases => '-f', :desc => 'Force cleanup.'
+    option :packages, :type => :boolean, :aliases => '-p', :desc => 'Cleanup non exist packages.'
+    option :verbose, :type => :boolean, :aliases => '-v', :desc => 'Be verbose.'
     def cleanup
       cdstk.cleanup(options)
     end
