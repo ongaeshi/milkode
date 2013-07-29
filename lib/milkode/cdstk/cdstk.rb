@@ -520,15 +520,32 @@ module Milkode
       end
     end
 
-    def cleanup(options)
+    def cleanup(args, options)
       update_display_info(options)
 
       if (options[:all])
-        cleanup_all
+        cleanup_all(options)
       elsif (options[:packages])
         cleanup_packages
       else
-        # Cleanup specify package
+        print_result do
+          db_open
+          args.each do |arg|
+            package = @yaml.find_name(arg) || @yaml.find_dir(arg)
+
+            unless package
+              path = File.expand_path(arg)
+              package = @yaml.package_root(path) if File.exist?(path)
+            end
+            
+            if (package)
+              @documents.cleanup_package_name(package.name) # TODO: Support ignore_checker
+            else
+              @out.puts "Not found package '#{arg}'."
+              return
+            end
+          end
+        end
       end
     end
 
@@ -552,7 +569,7 @@ module Milkode
         @grndb.yaml_sync(@yaml.contents)
     end
 
-    def cleanup_all
+    def cleanup_all(options)
       if (options[:force] or yes_or_no("cleanup contents? (yes/no)"))
         print_result do
           # Remove non exist packages

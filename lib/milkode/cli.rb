@@ -88,8 +88,8 @@ EOF
     option :force, :type => :boolean, :aliases => '-f', :desc => 'Force cleanup.'
     option :packages, :type => :boolean, :aliases => '-p', :desc => 'Cleanup non exist packages.'
     option :verbose, :type => :boolean, :aliases => '-v', :desc => 'Be verbose.'
-    def cleanup
-      cdstk.cleanup(options)
+    def cleanup(*args)
+      cdstk.cleanup(args, options)
     end
 
     desc "rebuild [keyword1 keyword2]", "Rebuild database"
