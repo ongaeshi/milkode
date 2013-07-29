@@ -80,7 +80,7 @@ class TestCdstk < Test::Unit::TestCase
       obj.list(['com'], {:verbose => false})
 
       io.puts('--- cleanup ---')
-      obj.cleanup({:force=>true})
+      obj.cleanup([], {:force=>true})
 
       io.puts('--- rebuild ---')
       obj.rebuild([], {:all => true})
