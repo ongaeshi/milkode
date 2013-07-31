@@ -334,8 +334,11 @@ EOS
     end
 
     def result_record(record)
+      filename = Util::relative_path(record.shortpath, @path).to_s
+      filename = Util::highlight_keywords(filename, @q.keywords, 'highlight-filename')
+      
       <<EOS
-    <dt class='result-file'>#{file_or_dirimg(true, @suburl)}<a href='#{@homeurl + record_link(record)}'>#{Util::relative_path record.shortpath, @path}</a></dt>
+    <dt class='result-file'>#{file_or_dirimg(true, @suburl)}<a href='#{@homeurl + record_link(record)}'>#{filename}</a></dt>
 EOS
     end
 
