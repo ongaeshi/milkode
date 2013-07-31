@@ -250,8 +250,6 @@ module Milkode
       end
     end
 
-    private
-
     def highlight_keywords_sub(src, keywords, css_class, index)
       keyword = keywords[index]
 
