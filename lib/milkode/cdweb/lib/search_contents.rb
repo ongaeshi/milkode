@@ -125,6 +125,8 @@ module Milkode
         # 近接マッチ無効
         # g << [m]
       end
+
+      @prev = nil
       
       <<EOF
 #{recommended_contents}
@@ -312,9 +314,20 @@ EOF
       coderay.set_range(first_index..last_index)
 
       url = @homeurl + record_link(record)
+
+      path = Util::relative_path(record.shortpath, @path)
+
+      if path != @prev
+        dt = <<EOS
+    <dt class='result-record'><a href='#{url + "#n#{coderay.highlight_lines[0]}"}'>#{path}</a>#{result_refinement(record)}</dt>
+EOS
+        @prev = path
+      else
+        dt = "    <dt class='result-record-empty'></dt>"
+      end
       
       <<EOS
-    <dt class='result-record'><a href='#{url + "#n#{coderay.highlight_lines[0]}"}'>#{Util::relative_path record.shortpath, @path}</a>#{result_refinement(record)}</dt>
+    #{dt}
     <dd>
 #{coderay.to_html_anchorlink(url)}
     </dd>
