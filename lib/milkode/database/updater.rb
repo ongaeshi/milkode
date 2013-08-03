@@ -48,6 +48,16 @@ module Milkode
         @grndb.documents.cleanup_package_name(@package_name, @current_ignore)
       end
       
+      # ctags
+      if @options[:update_with_ctags]
+        Dir.chdir(@package.directory) { system("ctags -R") }
+      end
+
+      # ctags -e
+      if @options[:update_with_ctags_e]
+        Dir.chdir(@package.directory) { system("ctags -R -e") }
+      end
+
       # 更新時刻の更新
       @grndb.packages.touch(@package_name, :updatetime)
     end
@@ -74,6 +84,14 @@ module Milkode
 
     def enable_update_with_svn_update
       @options[:update_with_svn_update] = true
+    end
+
+    def enable_update_with_ctags
+      @options[:update_with_ctags] = true      
+    end
+
+    def enable_update_with_ctags_e
+      @options[:update_with_ctags_e] = true      
     end
 
     def enable_no_clean

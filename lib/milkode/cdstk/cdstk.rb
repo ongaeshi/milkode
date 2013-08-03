@@ -1063,17 +1063,23 @@ EOF
     end
 
     def updater_exec(package, is_update_with_git_pull, is_update_with_svn_update, is_no_clean)
-      alert("package", package.name )
+      alert("package", package.name)
 
       updater = Updater.new(@grndb, package.name)
+
       updater.set_package_ignore IgnoreSetting.new("/", package.ignore)
+      updater.set_global_gitignore(@yaml.global_gitignore) if @yaml.global_gitignore
       updater.enable_no_auto_ignore         if package.options[:no_auto_ignore]
+
       updater.enable_silent_mode            if @is_silent
       updater.enable_display_info           if @is_display_info
+      updater.enable_no_clean               if is_no_clean
+
       updater.enable_update_with_git_pull   if is_update_with_git_pull
       updater.enable_update_with_svn_update if is_update_with_svn_update
-      updater.enable_no_clean               if is_no_clean
-      updater.set_global_gitignore(@yaml.global_gitignore) if @yaml.global_gitignore
+      updater.enable_update_with_ctags      if package.options[:update_with_ctags]
+      updater.enable_update_with_ctags_e    if package.options[:update_with_ctags_e]
+
       updater.exec
 
       @package_count += 1
