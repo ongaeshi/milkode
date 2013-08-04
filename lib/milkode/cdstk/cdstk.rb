@@ -29,12 +29,10 @@ module Milkode
   class AddError    < RuntimeError ; end
   class ConvertError < RuntimeError ; end
 
+  
   class Cdstk
-    # バイグラムでトークナイズする。連続する記号・アルファベット・数字は一語として扱う。
-    # DEFAULT_TOKENIZER = "TokenBigram"
-
-    # 記号・アルファベット・数字もバイグラムでトークナイズする。
-    DEFAULT_TOKENIZER = "TokenBigramSplitSymbolAlphaDigit"
+    # Parameters
+    CONFIG_LJUST = 20           # Display parameter for 'milk config'
 
     def initialize(io = $stdout, db_dir = ".")
       @db_dir = db_dir
@@ -1043,7 +1041,7 @@ EOF
 
       @out.puts "Options:"
       package.options.each do |key, value|
-        @out.puts "  #{(key.to_s + ':').ljust(20)} #{value}"
+        @out.puts "  #{(key.to_s + ':').ljust(CONFIG_LJUST)} #{value}"
       end
     end
 
