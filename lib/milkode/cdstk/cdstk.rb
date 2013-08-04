@@ -1026,6 +1026,8 @@ EOF
     def config(args, options)
       if args.empty?
         config_print
+      else
+        config_set(args, options)
       end
     end
 
@@ -1042,6 +1044,31 @@ EOF
       @out.puts "Options:"
       package.options.each do |key, value|
         @out.puts "  #{(key.to_s + ':').ljust(20)} #{value}"
+      end
+    end
+
+    def config_set(args, options)
+      package = find_package_current_dir
+      return if package.nil?
+
+      opt = package.options
+      opt[args[0].to_sym] = config_to_value(args[1])
+      package.set_options(opt)
+
+      @yaml.save
+    end
+
+    # config_to_value('true')  #=> true
+    # config_to_value('false') #=> false
+    # config_to_value('abc')   #=> 'abc'
+    def config_to_value(v)
+      case v
+      when 'true'
+        true
+      when 'false'
+        false
+      else
+        v
       end
     end
 
