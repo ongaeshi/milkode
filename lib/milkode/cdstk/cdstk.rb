@@ -1052,7 +1052,13 @@ EOF
       return if package.nil?
 
       opt = package.options
-      opt[args[0].to_sym] = config_to_value(args[1])
+
+      if options[:delete]
+        opt.delete(args[0].to_sym)
+      else
+        opt[args[0].to_sym] = config_to_value(args[1])
+      end
+      
       package.set_options(opt)
 
       @yaml.save
