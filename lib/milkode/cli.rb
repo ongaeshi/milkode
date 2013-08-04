@@ -207,8 +207,8 @@ EOF
       cdstk.files(args, options)
     end
 
-    desc "config [options]", "Config package setting"
-    option :delete, :type => :boolean, :aliases => '-d', :desc => "Delete setting."
+    desc "config [options] KEY VALUE", "Config package setting"
+    option :delete, :type => :boolean, :aliases => '-d', :desc => "Delete key."
     def config(*args)
       cdstk.config(args, options)
     end

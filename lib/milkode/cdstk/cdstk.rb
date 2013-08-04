@@ -1054,7 +1054,11 @@ EOF
       if options[:delete]
         opt.delete(args[0].to_sym)
       else
-        opt[args[0].to_sym] = config_to_value(args[1])
+        if args.size == 2
+          opt[args[0].to_sym] = config_to_value(args[1])
+        else
+          @out.puts("[usage] milk config KEY VALUE")
+        end
       end
       
       package.set_options(opt)
