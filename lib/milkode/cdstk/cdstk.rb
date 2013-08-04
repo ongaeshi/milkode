@@ -1,30 +1,28 @@
 # -*- coding: utf-8 -*-
 
-require 'yaml'
+require 'fileutils'
+require 'kconv'
+require 'open-uri'
 require 'pathname'
 require 'rubygems'
-require 'fileutils'
-require 'pathname'
-require 'milkode/common/grenfiletest'
-require 'milkode/common/util'
-require 'milkode/common/dir'
-include Milkode
-require 'kconv'
+require 'yaml'
 begin
   require 'readline'
 rescue LoadError
   $no_readline = true
 end
-require 'open-uri'
 require 'milkode/cdstk/cdstk_command'
-require 'milkode/cdstk/yaml_file_wrapper'
 require 'milkode/cdstk/package'
-require 'milkode/common/ignore_checker'
-require 'milkode/database/groonga_database'
-require 'milkode/database/document_record'
+require 'milkode/cdstk/yaml_file_wrapper'
 require 'milkode/common/array_diff'
-require 'milkode/database/updater'
+require 'milkode/common/dir'
+require 'milkode/common/grenfiletest'
+require 'milkode/common/ignore_checker'
 require 'milkode/common/plang_detector'
+require 'milkode/common/util'
+require 'milkode/database/document_record'
+require 'milkode/database/groonga_database'
+require 'milkode/database/updater'
 
 module Milkode
   class IgnoreError < RuntimeError ; end
