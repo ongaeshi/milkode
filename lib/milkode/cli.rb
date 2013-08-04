@@ -207,6 +207,12 @@ EOF
       cdstk.files(args, options)
     end
 
+    desc "config [options]", "Config package setting"
+    option :delete, :type => :boolean, :aliases => '-d', :desc => "Delete setting."
+    def config(*args)
+      cdstk.config(args, options)
+    end
+
     # --------------------------------------------------------------------------
     
     no_tasks do

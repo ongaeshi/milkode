@@ -1025,6 +1025,10 @@ EOF
       end
     end
 
+    def config(args, options)
+      p [args, options]
+    end
+
     private
 
     def git_protocol?(options, src)
