@@ -926,15 +926,15 @@ EOF
           r
         end
       else
-        dir = File.expand_path('.')
-        r = @yaml.package_root(dir)
-        if r.nil?
-          @out.puts "Not registered '#{dir}'."
-          []
-        else
-          [r]
-        end
+        [find_package_current_dir].compact
       end
+    end
+
+    def find_package_current_dir
+      dir = File.expand_path('.')
+      package = @yaml.package_root(dir)
+      @out.puts "Not registered '#{dir}'." if package.nil?
+      package
     end
 
     def ignore(args, options)
@@ -1026,7 +1026,25 @@ EOF
     end
 
     def config(args, options)
-      p [args, options]
+      if args.empty?
+        config_print
+      end
+    end
+
+    def config_print
+      package = find_package_current_dir
+
+      return if package.nil?
+
+      @out.puts "Ignore:"
+      package.ignore.each do |v|
+        @out.puts "  #{v}"
+      end
+
+      @out.puts "Options:"
+      package.options.each do |key, value|
+        @out.puts "  #{(key.to_s + ':').ljust(20)} #{value}"
+      end
     end
 
     private
