@@ -207,7 +207,18 @@ EOF
       cdstk.files(args, options)
     end
 
-    desc "config [options] KEY VALUE", "Config package setting"
+    desc "config [options] KEY VALUE", <<EOF
+Config package settings.
+
+  $ milk coinfig no_auto_ignore true
+
+Configs:
+  no_auto_ignore           # Not add package's .gitignore
+  update_with_ctags        # Update with 'ctags -R'
+  update_with_ctags_e      # Update with 'ctags -R -e'
+  update_with_git_pull     # Update with 'git pull'
+  update_with_svn_update   # Update with 'svn update'
+EOF
     option :delete, :type => :boolean, :aliases => '-d', :desc => "Delete key."
     def config(*args)
       cdstk.config(args, options)
