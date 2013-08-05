@@ -194,28 +194,23 @@ module Milkode
       update_dir_in(dir)
     end
 
-    # yamlにパッケージを追加
     def add_yaml(package)
-      # すでに同名パッケージがある
+      # Already exist package
       if @yaml.find_name(package.name)
-        warning_alert("already exist '#{package.name}'.")
-        return
+        raise AddError, "package named '#{package.name}' already exist."
       end
 
-      # ファイルが存在しない
+      # File not exist
       unless File.exist?(package.directory)
-        error_alert("not found '#{package.directory}'.")
-        return
+        raise AddError, "not found '#{package.directory}'."
       end
 
-      # YAML更新
+      # Save yaml
       @yaml.add(package)
       @yaml.save
 
-      # データベースを開く
+      # Sync yaml -> db
       db_open
-
-      # yamlファイルと同期する
       @grndb.yaml_sync(@yaml.contents)
     end
 
@@ -1162,7 +1157,7 @@ EOF
       # データベースからも削除
       # dir = File.expand_path(dir)
 
-      alert("rm_package", dir)
+      alert("rm_package", package.name)
       @package_count += 1
 
       @documents.remove_match_path(dir) do |record|
