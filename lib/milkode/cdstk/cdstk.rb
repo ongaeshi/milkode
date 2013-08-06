@@ -1121,8 +1121,8 @@ EOF
 
       updater = Updater.new(@grndb, package.name)
 
-      updater.set_package_ignore IgnoreSetting.new("/", package.ignore)
       updater.set_global_gitignore(@yaml.global_gitignore) if @yaml.global_gitignore
+      updater.set_package_ignore IgnoreSetting.new("/", package.ignore)
       updater.enable_no_auto_ignore         if package.options[:no_auto_ignore]
 
       updater.enable_silent_mode            if @is_silent
