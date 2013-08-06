@@ -5,6 +5,7 @@ require 'fileutils'
 require 'pathname'
 require 'kconv'
 require 'open3'
+require 'strscan'
 
 module Milkode
   module Util
@@ -239,6 +240,28 @@ module Milkode
       rescue Errno::ENOENT
         false
       end
+    end
+
+    def highlight_keywords(src, keywords, css_class)
+      if keywords.empty?
+        src
+      else
+        highlight_keywords_sub(src, keywords, css_class, 0)
+      end
+    end
+
+    def highlight_keywords_sub(src, keywords, css_class, index)
+      keyword = keywords[index]
+
+      array = src.split(keyword)
+
+      if index + 1 <= keywords.size
+        array = array.map do |subsrc|
+          highlight_keywords_sub(subsrc, keywords, css_class, index + 1)
+        end
+      end
+      
+      array.join("<span class='#{css_class}'>#{keyword}</span>")
     end
   end
 end

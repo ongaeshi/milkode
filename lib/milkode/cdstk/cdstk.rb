@@ -1,42 +1,38 @@
 # -*- coding: utf-8 -*-
 
-require 'yaml'
+require 'fileutils'
+require 'kconv'
+require 'open-uri'
 require 'pathname'
 require 'rubygems'
-require 'fileutils'
-require 'pathname'
-require 'milkode/common/grenfiletest'
-require 'milkode/common/util'
-require 'milkode/common/dir'
-include Milkode
-require 'kconv'
+require 'yaml'
 begin
   require 'readline'
 rescue LoadError
   $no_readline = true
 end
-require 'open-uri'
 require 'milkode/cdstk/cdstk_command'
-require 'milkode/cdstk/yaml_file_wrapper'
 require 'milkode/cdstk/package'
-require 'milkode/common/ignore_checker'
-require 'milkode/database/groonga_database'
-require 'milkode/database/document_record'
+require 'milkode/cdstk/yaml_file_wrapper'
 require 'milkode/common/array_diff'
-require 'milkode/database/updater'
+require 'milkode/common/dir'
+require 'milkode/common/grenfiletest'
+require 'milkode/common/ignore_checker'
 require 'milkode/common/plang_detector'
+require 'milkode/common/util'
+require 'milkode/database/document_record'
+require 'milkode/database/groonga_database'
+require 'milkode/database/updater'
 
 module Milkode
   class IgnoreError < RuntimeError ; end
   class AddError    < RuntimeError ; end
   class ConvertError < RuntimeError ; end
 
+  
   class Cdstk
-    # バイグラムでトークナイズする。連続する記号・アルファベット・数字は一語として扱う。
-    # DEFAULT_TOKENIZER = "TokenBigram"
-
-    # 記号・アルファベット・数字もバイグラムでトークナイズする。
-    DEFAULT_TOKENIZER = "TokenBigramSplitSymbolAlphaDigit"
+    # Parameters
+    CONFIG_LJUST = 20           # Display parameter for 'milk config'
 
     def initialize(io = $stdout, db_dir = ".")
       @db_dir = db_dir
@@ -198,28 +194,23 @@ module Milkode
       update_dir_in(dir)
     end
 
-    # yamlにパッケージを追加
     def add_yaml(package)
-      # すでに同名パッケージがある
+      # Already exist package
       if @yaml.find_name(package.name)
-        warning_alert("already exist '#{package.name}'.")
-        return
+        raise AddError, "package named '#{package.name}' already exist."
       end
 
-      # ファイルが存在しない
+      # File not exist
       unless File.exist?(package.directory)
-        error_alert("not found '#{package.directory}'.")
-        return
+        raise AddError, "not found '#{package.directory}'."
       end
 
-      # YAML更新
+      # Save yaml
       @yaml.add(package)
       @yaml.save
 
-      # データベースを開く
+      # Sync yaml -> db
       db_open
-
-      # yamlファイルと同期する
       @grndb.yaml_sync(@yaml.contents)
     end
 
@@ -357,7 +348,7 @@ module Milkode
 
             unless package
               path = File.expand_path(arg)
-              package = @yaml.package_root(path)
+              package = @yaml.package_root(path) if File.exist?(path)
             end
             
             if (package)
@@ -520,25 +511,62 @@ module Milkode
       end
     end
 
-    def cleanup(options)
-      # cleanup開始
-      if (options[:force] or yes_or_no("cleanup contents? (yes/no)"))
-        print_result do 
-          # yamlファイルのクリーンアップ
-          @yaml.contents.find_all {|v| !File.exist? v.directory }.each do |p|
-            @yaml.remove(p)
-            alert("rm_package", p.directory)
-            @package_count += 1
-          end
-          @yaml.save
+    def cleanup(args, options)
+      update_display_info(options)
 
-          # データベースを開く
+      if (options[:all])
+        cleanup_all(options)
+      elsif (options[:packages])
+        cleanup_packages
+      else
+        print_result do
           db_open
+          args.each do |arg|
+            package = @yaml.find_name(arg) || @yaml.find_dir(arg)
 
-          # yamlファイルと同期する
-          @grndb.yaml_sync(@yaml.contents)
+            unless package
+              path = File.expand_path(arg)
+              package = @yaml.package_root(path) if File.exist?(path)
+            end
+            
+            if (package)
+              @documents.cleanup_package_name(package.name) # TODO: Support ignore_checker
+            else
+              @out.puts "Not found package '#{arg}'."
+              return
+            end
+          end
+        end
+      end
+    end
+
+    # Remove non exist pakcages
+    def cleanup_packages
+      print_result do
+        cleanup_packages_in
+      end
+    end
+
+    def cleanup_packages_in
+        @yaml.contents.find_all {|v| !File.exist? v.directory }.each do |p|
+          @yaml.remove(p)
+          alert("rm_package", p.directory)
+          @package_count += 1
+        end
+        @yaml.save
+
+        db_open
+
+        @grndb.yaml_sync(@yaml.contents)
+    end
+
+    def cleanup_all(options)
+      if (options[:force] or yes_or_no("cleanup contents? (yes/no)"))
+        print_result do
+          # Remove non exist packages
+          cleanup_packages_in
           
-          # データベースのクリーンアップ
+          # @todo Remove ignore files
           @documents.cleanup do |record|
             alert("rm_record", record.path)
             @file_count += 1
@@ -889,18 +917,32 @@ EOF
           r
         end
       else
-        dir = File.expand_path('.')
-        r = @yaml.package_root(dir)
-        if r.nil?
-          @out.puts "Not registered '#{dir}'."
-          []
-        else
-          [r]
-        end
+        [find_package_current_dir].compact
       end
     end
 
+    def find_package_current_dir
+      dir = File.expand_path('.')
+      package = @yaml.package_root(dir)
+      @out.puts "Not registered '#{dir}'." if package.nil?
+      package
+    end
+
     def ignore(args, options)
+      if options[:global]
+        if args.size > 0
+          @yaml.set_global_gitignore(args[0])
+          @yaml.save
+          @out.puts "Set '#{args[0]}'"
+        else
+          if @yaml.global_gitignore
+            @out.puts @yaml.global_gitignore
+          end
+        end
+
+        return
+      end
+
       current_dir = File.expand_path('.')
 
       if (options[:package])
@@ -978,6 +1020,65 @@ EOF
       end
     end
 
+    def config(args, options)
+      if args.empty?
+        config_print
+      else
+        config_set(args, options)
+      end
+    end
+
+    def config_print
+      package = find_package_current_dir
+
+      return if package.nil?
+
+      @out.puts "Ignore:"
+      package.ignore.each do |v|
+        @out.puts "  #{v}"
+      end
+
+      @out.puts "Options:"
+      package.options.each do |key, value|
+        @out.puts "  #{(key.to_s + ':').ljust(CONFIG_LJUST)} #{value}"
+      end
+    end
+
+    def config_set(args, options)
+      package = find_package_current_dir
+      return if package.nil?
+
+      opt = package.options
+
+      if options[:delete]
+        opt.delete(args[0].to_sym)
+      else
+        if args.size == 2
+          opt[args[0].to_sym] = config_to_value(args[1])
+        else
+          @out.puts("[usage] milk config KEY VALUE")
+        end
+      end
+      
+      package.set_options(opt)
+
+      @yaml.save
+    end
+
+    # config_to_value('true')  #=> true
+    # config_to_value('false') #=> false
+    # config_to_value('abc')   #=> 'abc'
+    def config_to_value(v)
+      case v
+      when 'true'
+        true
+      when 'false'
+        false
+      else
+        v
+      end
+    end
+
     private
 
     def git_protocol?(options, src)
@@ -1016,16 +1117,23 @@ EOF
     end
 
     def updater_exec(package, is_update_with_git_pull, is_update_with_svn_update, is_no_clean)
-      alert("package", package.name )
+      alert("package", package.name)
 
       updater = Updater.new(@grndb, package.name)
+
+      updater.set_global_gitignore(@yaml.global_gitignore) if @yaml.global_gitignore
       updater.set_package_ignore IgnoreSetting.new("/", package.ignore)
       updater.enable_no_auto_ignore         if package.options[:no_auto_ignore]
+
       updater.enable_silent_mode            if @is_silent
       updater.enable_display_info           if @is_display_info
+      updater.enable_no_clean               if is_no_clean
+
       updater.enable_update_with_git_pull   if is_update_with_git_pull
       updater.enable_update_with_svn_update if is_update_with_svn_update
-      updater.enable_no_clean               if is_no_clean
+      updater.enable_update_with_ctags      if package.options[:update_with_ctags]
+      updater.enable_update_with_ctags_e    if package.options[:update_with_ctags_e]
+
       updater.exec
 
       @package_count += 1
@@ -1053,7 +1161,7 @@ EOF
       # データベースからも削除
       # dir = File.expand_path(dir)
 
-      alert("rm_package", dir)
+      alert("rm_package", package.name)
       @package_count += 1
 
       @documents.remove_match_path(dir) do |record|

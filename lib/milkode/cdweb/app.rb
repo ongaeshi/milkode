@@ -44,7 +44,7 @@ end
 get '/' do
   if Database.validate?
     @setting = WebSetting.new
-    @version = "1.1.0"
+    @version = "1.2.0"
 
     @package_num = Database.instance.yaml_package_num
     @file_num = Database.instance.totalRecords
@@ -333,7 +333,7 @@ EOF
 
       if (result)
         path2 = path.gsub(/#{suffix}\Z/, result)
-        " (<a href='#{Mkurl.new(File.join('/home', path2), params).inherit_query_shead}'>#{result}</a>) "
+        " (<a href='#{url_for Mkurl.new(File.join('/home', path2), params).inherit_query_shead}'>#{result}</a>) "
       else
         ''
       end

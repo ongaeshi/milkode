@@ -35,13 +35,28 @@ module Milkode
         Dir.chdir(@package.directory) { system("svn update") }
       end
 
-      # cleanup
-      unless @options[:no_clean]
-        @grndb.documents.cleanup_package_name(@package_name)
+      # Add global .gitignore
+      if @options[:global_gitignore]
+        add_global_gitignore(@options[:global_gitignore])
       end
-      
+
       # update
       update_dir(@package.directory)
+
+      # cleanup
+      unless @options[:no_clean]
+        @grndb.documents.cleanup_package_name(@package_name, @current_ignore)
+      end
+      
+      # ctags
+      if @options[:update_with_ctags]
+        Dir.chdir(@package.directory) { system("ctags -R") }
+      end
+
+      # ctags -e
+      if @options[:update_with_ctags_e]
+        Dir.chdir(@package.directory) { system("ctags -R -e") }
+      end
 
       # 更新時刻の更新
       @grndb.packages.touch(@package_name, :updatetime)
@@ -71,8 +86,20 @@ module Milkode
       @options[:update_with_svn_update] = true
     end
 
+    def enable_update_with_ctags
+      @options[:update_with_ctags] = true      
+    end
+
+    def enable_update_with_ctags_e
+      @options[:update_with_ctags_e] = true      
+    end
+
     def enable_no_clean
       @options[:no_clean] = true      
+    end
+
+    def set_global_gitignore(filename)
+      @options[:global_gitignore] = filename 
     end
 
     class Result
@@ -224,6 +251,14 @@ module Milkode
         alert_info("add_ignore", filename)
         str = Util::load_content($stdout, filename)
         @current_ignore.add IgnoreSetting.create_from_gitignore(path, str)
+      end
+    end
+
+    def add_global_gitignore(filename)
+      if File.exist? filename
+        alert_info("add_ignore", filename)
+        str = Util::load_content($stdout, filename)
+        @current_ignore.add IgnoreSetting.create_from_gitignore("/", str)
       end
     end
 

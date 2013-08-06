@@ -98,5 +98,13 @@ module Milkode
         save
       end
     end
+
+    def global_gitignore
+      @data.global_gitignore
+    end
+
+    def set_global_gitignore(filename)
+      @data.set_global_gitignore(filename)
+    end
   end
 end

@@ -83,10 +83,13 @@ EOF
       cdstk.pwd(options)
     end
 
-    desc "cleanup", "Creanup garbage recoeds"
+    desc "cleanup keyword_or_path1 [keyword_or_path2 ...]", "Cleanup garbage records"
+    option :all, :type => :boolean, :aliases => '-a', :desc => 'Cleanup all.'
     option :force, :type => :boolean, :aliases => '-f', :desc => 'Force cleanup.'
-    def cleanup
-      cdstk.cleanup(options)
+    option :packages, :type => :boolean, :aliases => '-p', :desc => 'Cleanup non exist packages.'
+    option :verbose, :type => :boolean, :aliases => '-v', :desc => 'Be verbose.'
+    def cleanup(*args)
+      cdstk.cleanup(args, options)
     end
 
     desc "rebuild [keyword1 keyword2]", "Rebuild database"
@@ -135,6 +138,7 @@ EOF
     option :delete, :type => :boolean, :aliases => '-d', :desc => "Delete ignore setting."
     option :delete_all, :type => :boolean, :desc => "Delete all ignore setting."
     option :dry_run, :type => :boolean, :aliases => '-n', :desc => "Ignore setting test."
+    option :global, :type => :boolean, :desc => "Set global .gitignore file."
     def ignore(*paths)
       begin
         cdstk.ignore(paths, options)
@@ -201,6 +205,23 @@ EOF
     option :relative, :type => :boolean, :aliases => '-r', :desc => "Display relative path."
     def files(*args)
       cdstk.files(args, options)
+    end
+
+    desc "config [options] KEY VALUE", <<EOF
+Config package settings.
+
+  $ milk coinfig no_auto_ignore true
+
+Configs:
+  no_auto_ignore           # Not add package's .gitignore
+  update_with_ctags        # Update with 'ctags -R'
+  update_with_ctags_e      # Update with 'ctags -R -e'
+  update_with_git_pull     # Update with 'git pull'
+  update_with_svn_update   # Update with 'svn update'
+EOF
+    option :delete, :type => :boolean, :aliases => '-d', :desc => "Delete key."
+    def config(*args)
+      cdstk.config(args, options)
     end
 
     # --------------------------------------------------------------------------

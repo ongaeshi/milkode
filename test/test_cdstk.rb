@@ -32,8 +32,8 @@ class TestCdstk < Test::Unit::TestCase
       obj.init({})
       
       io.puts('--- add ---')
-      obj.add(['../../lib/milkode/findgrep', '../../lib/milkode/common'], {})
-      obj.add(['../../lib/milkode/findgrep'], {})
+      obj.add(['../../lib/milkode/grep', '../../lib/milkode/common'], {})
+      obj.add(['../../lib/milkode/grep'], {})
       obj.add(['../data/abc.zip'], {})
       obj.add(['../data/nodir_abc.zip'], {})
       obj.add(['../data/nodir_abc_xpi.xpi'], {})
@@ -80,7 +80,7 @@ class TestCdstk < Test::Unit::TestCase
       obj.list(['com'], {:verbose => false})
 
       io.puts('--- cleanup ---')
-      obj.cleanup({:force=>true})
+      obj.cleanup([], {:force=>true})
 
       io.puts('--- rebuild ---')
       obj.rebuild([], {:all => true})

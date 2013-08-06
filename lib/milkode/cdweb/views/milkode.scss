@@ -42,8 +42,12 @@ div.search-summary {
 
 dt.result-record {
     font-size: 105%;
+    margin-top: 5px;
 }
 
+dt.result-record-empty {
+    margin-top: 5px;
+}
 dt.result-file {
     font-size: 95%;
 }
@@ -262,5 +266,11 @@ label.ui-corner-all {
 
 .star.favorited {
      background-position: 0px;
+}
+
+/* */
+
+.highlight-filename {
+    background-color: #d0ff9c;
 }
 

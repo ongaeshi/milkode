@@ -1,3 +1,27 @@
+=== 1.2.0 2013/08/07
+
+* milk web
+  * Hightlight filename keywords
+  * Not show file infomation when same file name continue
+  * Delete auto search feature 'w:0' and 'fp:a b'
+  * Bugfix relative URL (clippy, 同名ファイルへのリンク) (thanks nicklegr)
+
+* milk
+  * milk update
+    * Remove ignored files with update
+  * milk ignore
+    * Support global ignore. 'milk ignore --global ~/.gitignore'
+  * milk config
+    * Add 'milk config KEY VALUE' command.
+    * e.g. 'milk config update_with_ctags_e true'
+  * milk remove
+    * Faster DocumentTable#remove_records
+    * Not remove package non exist filename
+  * milk cleanup
+    * Add milk cleanup options. -p, -a
+  * milk add
+    * 'milk add' can't use already exist package
+
 === 1.1.0 2013/06/26
 
 * milk web

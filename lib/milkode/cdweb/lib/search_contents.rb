@@ -63,22 +63,23 @@ module Milkode
       if @match_records.empty? && recommended_wide_match_range?
         grep_contents(@q.keywords, DEFAULT_WIDE_MATCH_RANGE)
 
-        if @match_records.empty?
-          grep_contents(@q.keywords, 0)
-        end
+        # 検索範囲0の自動マッチは混乱をまねくのでやめる
+        # if @match_records.empty?
+        #   grep_contents(@q.keywords, 0)
+        # end
       end
 
-      # 先頭をファイル名とみなす
-      if @match_records.empty? && recommended_fpath_or_packages?
-        # おすすめクエリーに変換
-        q2 = @q.conv_head_keyword_to_fpath_or_packages
+      # 先頭をファイル名とみなす自動マッチは混乱をまねくのでやめる
+      # if @match_records.empty? && recommended_fpath_or_packages?
+      #   # おすすめクエリーに変換
+      #   q2 = @q.conv_head_keyword_to_fpath_or_packages
         
-        # 検索
-        @records, @total_records = Database.instance.search(q2.keywords, q2.multi_match_keywords, q2.packages, path, q2.fpaths, q2.suffixs, q2.fpath_or_packages, @offset, LIMIT_NUM)
+      #   # 検索
+      #   @records, @total_records = Database.instance.search(q2.keywords, q2.multi_match_keywords, q2.packages, path, q2.fpaths, q2.suffixs, q2.fpath_or_packages, @offset, LIMIT_NUM)
         
-        # 再grep
-        grep_contents(q2.keywords, q2.wide_match_range)
-      end
+      #   # 再grep
+      #   grep_contents(q2.keywords, q2.wide_match_range)
+      # end
       
       # 検索3 : マッチするファイル
       @match_files = []
@@ -124,6 +125,8 @@ module Milkode
         # 近接マッチ無効
         # g << [m]
       end
+
+      @prev = nil
       
       <<EOF
 #{recommended_contents}
@@ -311,9 +314,20 @@ EOF
       coderay.set_range(first_index..last_index)
 
       url = @homeurl + record_link(record)
+
+      path = Util::relative_path(record.shortpath, @path)
+
+      if path != @prev
+        dt = <<EOS
+    <dt class='result-record'><a href='#{url + "#n#{coderay.highlight_lines[0]}"}'>#{path}</a>#{result_refinement(record)}</dt>
+EOS
+        @prev = path
+      else
+        dt = "    <dt class='result-record-empty'></dt>"
+      end
       
       <<EOS
-    <dt class='result-record'><a href='#{url + "#n#{coderay.highlight_lines[0]}"}'>#{Util::relative_path record.shortpath, @path}</a>#{result_refinement(record)}</dt>
+    #{dt}
     <dd>
 #{coderay.to_html_anchorlink(url)}
     </dd>
@@ -333,8 +347,11 @@ EOS
     end
 
     def result_record(record)
+      filename = Util::relative_path(record.shortpath, @path).to_s
+      filename = Util::highlight_keywords(filename, @q.keywords, 'highlight-filename')
+      
       <<EOS
-    <dt class='result-file'>#{file_or_dirimg(true, @suburl)}<a href='#{@homeurl + record_link(record)}'>#{Util::relative_path record.shortpath, @path}</a></dt>
+    <dt class='result-file'>#{file_or_dirimg(true, @suburl)}<a href='#{@homeurl + record_link(record)}'>#{filename}</a></dt>
 EOS
     end
 
