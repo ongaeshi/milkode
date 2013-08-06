@@ -929,16 +929,6 @@ EOF
     end
 
     def ignore(args, options)
-      current_dir = File.expand_path('.')
-
-      if (options[:package])
-        package = @yaml.find_name(options[:package])
-        raise IgnoreError, "Not found package '#{options[:package]}'." unless package
-      else
-        package = @yaml.package_root(current_dir)
-        raise IgnoreError, "Not a package dir: '#{current_dir}'" unless package
-      end
-
       if options[:global]
         if args.size > 0
           @yaml.set_global_gitignore(args[0])
@@ -949,7 +939,21 @@ EOF
             @out.puts @yaml.global_gitignore
           end
         end
-      elsif options[:dry_run]
+
+        return
+      end
+
+      current_dir = File.expand_path('.')
+
+      if (options[:package])
+        package = @yaml.find_name(options[:package])
+        raise IgnoreError, "Not found package '#{options[:package]}'." unless package
+      else
+        package = @yaml.package_root(current_dir)
+        raise IgnoreError, "Not a package dir: '#{current_dir}'" unless package
+      end
+
+      if options[:dry_run]
         # Test mode
         db_open
         @is_display_info = true
