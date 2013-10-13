@@ -243,26 +243,49 @@ module Milkode
     end
 
     def highlight_keywords(src, keywords, css_class)
-      if keywords.empty?
-        src
-      else
-        highlight_keywords_sub(src, keywords, css_class, 0)
-      end
-    end
+      hightlight_map = Array.new(src.length, nil)
 
-    def highlight_keywords_sub(src, keywords, css_class, index)
-      keyword = keywords[index]
+      keywords.each do |keyword|
+        pos = 0
 
-      array = src.split(keyword)
+        loop do 
+          r = src.match(keyword, pos) do |m|
+            s = m.begin(0)
+            l = keyword.length
+            
+            (s..(s+l-1)).each do |i|
+              hightlight_map[i] = 1
+            end
+            # p [pos, hightlight_map]
+            pos = s + l
+          end
 
-      if index + 1 <= keywords.size
-        array = array.map do |subsrc|
-          highlight_keywords_sub(subsrc, keywords, css_class, index + 1)
+          break if r.nil?
         end
       end
+
+      result = ""
+
+      prev = nil
+      hightlight_map.each_with_index do |current, i|
+        if prev.nil? && current
+          result += "<span class='#{css_class}'>"
+        elsif prev && current.nil?
+          result += "</span>"
+        end
+
+        result += src[i]
+        prev = current
+      end
       
-      array.join("<span class='#{css_class}'>#{keyword}</span>")
+      result += "</span>" if prev
+
+      # p hightlight_map
+      # p result
+
+      result
     end
+    
   end
 end
 

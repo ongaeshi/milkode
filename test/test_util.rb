@@ -27,10 +27,10 @@ class TestUtil < Test::Unit::TestCase
     assert File.exist?('nodir_abc/c.txt')
   end
 
-  def test_root_entrylist
-    assert_equal ['abc/'], Milkode::Util::root_entrylist('../data/abc.zip')
-    assert_equal ['a.txt', 'b.txt', 'c.txt'], Milkode::Util::root_entrylist('../data/nodir_abc.zip')
-  end
+  # def test_root_entrylist
+  #   assert_equal ['abc/'], Milkode::Util::root_entrylist('../data/abc.zip')
+  #   assert_equal ['a.txt', 'b.txt', 'c.txt'], Milkode::Util::root_entrylist('../data/nodir_abc.zip')
+  # end
 
   def test_platform
     if (Milkode::Util::platform_osx?)
@@ -122,7 +122,15 @@ class TestUtil < Test::Unit::TestCase
     assert_equal 'to/a.txt', restpath
   end
       
-  
+  def test_highlight_keywords
+    assert_equal "stringstr", Milkode::Util::highlight_keywords("stringstr", [], 'attr')
+    assert_equal "<span class='attr'>str</span>ing", Milkode::Util::highlight_keywords("string", ["str"], 'attr')
+    assert_equal "<span class='attr'>str</span>ing<span class='attr'>str</span>", Milkode::Util::highlight_keywords("stringstr", ["str"], 'attr')
+    assert_equal "<span class='attr'>stri</span>ng<span class='attr'>str</span>", Milkode::Util::highlight_keywords("stringstr", ["str", "i", "s"], 'attr')
+    assert_equal "abc<span class='attr'>d</span>", Milkode::Util::highlight_keywords("abcd", ["d"], 'attr')
+    assert_equal "<span class='attr'>日本</span>語a<span class='attr'>bc</span>dで<span class='attr'>す</span>", Milkode::Util::highlight_keywords("日本語abcdです", ["bc", "日本", "す"], 'attr')
+  end
+
   def teardown
     teardown_custom(true)
     #    teardown_custom(false)
