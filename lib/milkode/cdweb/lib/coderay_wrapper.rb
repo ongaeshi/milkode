@@ -17,12 +17,13 @@ module Milkode
     attr_reader :line_number_start
     attr_reader :highlight_lines
     
-    def initialize(content, filename, match_lines = [])
+    def initialize(content, filename, match_lines = [], keywords = [])
       @content = content
       @filename = filename
       @match_lines = match_lines
       @highlight_lines = match_lines.map{|v|v.index+1}
       @line_number_start = 1
+      @keywords = keywords
     end
 
     def col_limit(limit_num)
@@ -59,7 +60,8 @@ module Milkode
               :line_number_start => @line_number_start,
               :line_number_anchors => false,
               :onclick_copy_line_number => true,
-              :onclick_copy_prefix => "/#{@filename}:"
+              :onclick_copy_prefix => "/#{@filename}:",
+              :keywords => @keywords
               )
     end
 
@@ -72,7 +74,8 @@ module Milkode
               :highlight_lines => @highlight_lines,
               :line_number_start => @line_number_start,
               :line_number_anchors => 'n',
-              :line_number_anchor_url => url
+              :line_number_anchor_url => url,
+              :keywords => @keywords
               )
     end
 

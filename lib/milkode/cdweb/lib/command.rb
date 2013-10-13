@@ -32,7 +32,7 @@ module Milkode
               match_lines << Grep::MatchLineResult.new(v[1] - 1, nil)
           end
         end
-        @record_content = CodeRayWrapper.new(record.content, record.shortpath, match_lines).to_html
+        @record_content = CodeRayWrapper.new(record.content, record.shortpath, match_lines, q.keywords).to_html
       else
         grep = Grep.new(record.content)
         match_lines = grep.match_lines_and(q.keywords, is_sensitive, q.wide_match_range)
@@ -42,10 +42,10 @@ module Milkode
           match_lines = grep.match_lines_and(q.keywords, is_sensitive, 7)
         end
         
-        @record_content = CodeRayWrapper.new(record.content, record.shortpath, match_lines).to_html
+        @record_content = CodeRayWrapper.new(record.content, record.shortpath, match_lines, q.keywords).to_html
       end
     else
-      @record_content = CodeRayWrapper.new(record.content, record.shortpath).to_html
+      CodeRayWrapper.new(record.content, record.shortpath, [], []).to_html
     end
     
     Database.instance.touch_viewtime(@path)
