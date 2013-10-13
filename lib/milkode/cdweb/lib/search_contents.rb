@@ -49,7 +49,7 @@ module Milkode
       # gotolineモード (test_cdstk.rb:55)
       if @match_records.empty? && recommended_fuzzy_gotoline?
         # 専用の Searcher を作成
-        @searcher_fuzzy_gotoline = SearchFuzzyGotoLine.new(@path, @params, @q)
+        @searcher_fuzzy_gotoline = SearchFuzzyGotoLine.new(@path, @params, @q, @suburl)
 
         # 結果をコピーする
         @total_records = @searcher_fuzzy_gotoline.total_records
