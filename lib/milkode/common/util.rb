@@ -252,12 +252,9 @@ module Milkode
           r = src.match(keyword, pos) do |m|
             s = m.begin(0)
             l = keyword.length
-            
-            (s..(s+l-1)).each do |i|
-              hightlight_map[i] = 1
-            end
-            # p [pos, hightlight_map]
-            pos = s + l
+            e = s+l
+            (s...e).each {|i| hightlight_map[i] = 1 }
+            pos = e
           end
 
           break if r.nil?
@@ -266,22 +263,23 @@ module Milkode
 
       result = ""
 
+      index = 0
       prev = nil
-      hightlight_map.each_with_index do |current, i|
+      src.each_char do |char|
+        current = hightlight_map[index]
+
         if prev.nil? && current
           result += "<span class='#{css_class}'>"
         elsif prev && current.nil?
           result += "</span>"
         end
 
-        result += src[i]
+        result += char
+
+        index += 1
         prev = current
       end
-      
       result += "</span>" if prev
-
-      # p hightlight_map
-      # p result
 
       result
     end
