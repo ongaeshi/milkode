@@ -243,6 +243,7 @@ module Milkode
     end
 
     def highlight_keywords(src, keywords, css_class)
+      # Init highlight_map
       hightlight_map = Array.new(src.length, nil)
 
       keywords.each do |keyword|
@@ -261,6 +262,17 @@ module Milkode
         end
       end
 
+      # Delete html tag
+      index = 0
+      in_tag = false
+      src.each_char do |char|
+        in_tag = true               if char == '<'
+        hightlight_map[index] = nil if in_tag
+        in_tag = false              if char == '>'
+        index += 1
+      end
+
+      # Output
       result = ""
 
       index = 0

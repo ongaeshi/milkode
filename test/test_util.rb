@@ -129,6 +129,7 @@ class TestUtil < Test::Unit::TestCase
     assert_equal "<span class='attr'>stri</span>ng<span class='attr'>str</span>", Milkode::Util::highlight_keywords("stringstr", ["str", "i", "s"], 'attr')
     assert_equal "abc<span class='attr'>d</span>", Milkode::Util::highlight_keywords("abcd", ["d"], 'attr')
     assert_equal "<span class='attr'>日本</span>語a<span class='attr'>bc</span>dで<span class='attr'>す</span>", Milkode::Util::highlight_keywords("日本語abcdです", ["bc", "日本", "す"], 'attr')
+    assert_equal "<span><span class='attr'>span</span></span>", Milkode::Util::highlight_keywords("<span>span</span>", ["span"], 'attr')
   end
 
   def teardown
