@@ -48,7 +48,7 @@ module Milkode
       end
     else
       # TestCdwebApp#t_view_simple
-      CodeRayWrapper.new(record.content, record.shortpath, [], []).to_html
+      @record_content = CodeRayWrapper.new(record.content, record.shortpath).to_html
     end
     
     Database.instance.touch_viewtime(@path)
