@@ -37,6 +37,7 @@ class TestCdwebApp < Test::Unit::TestCase
     t_help
     t_not_found
     t_view_empty_file
+    t_view_with_query
   end
 
   private
@@ -67,6 +68,11 @@ class TestCdwebApp < Test::Unit::TestCase
   def t_view_empty_file
     get '/home/a_project/empty.txt'
     assert_equal 200, last_response.status # 空ファイルも表示出来るようにする
+  end
+
+  def t_view_with_query
+    get '/home/a_project/cdstk.rb?query=def'
+    assert_equal 200, last_response.status
   end
 end
 

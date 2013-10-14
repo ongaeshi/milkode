@@ -38,7 +38,7 @@ module Milkode
         match_lines = grep.match_lines_and(q.keywords, is_sensitive, q.wide_match_range)
 
         if match_lines.empty? && q.wide_match_range_empty?
-          # 検索範囲を広げる
+          # Expand search range
           match_lines = grep.match_lines_and(q.keywords, is_sensitive, 7)
         end
         
