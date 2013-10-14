@@ -38,6 +38,8 @@ class TestCdwebApp < Test::Unit::TestCase
     t_not_found
     t_view_empty_file
     t_view_with_query
+    t_view_gotoline
+    t_view_simple
   end
 
   private
@@ -72,6 +74,16 @@ class TestCdwebApp < Test::Unit::TestCase
 
   def t_view_with_query
     get '/home/a_project/cdstk.rb?query=def'
+    assert_equal 200, last_response.status
+  end
+
+  def t_view_gotoline
+    get '/home/a_project/cdstk.rb?query=%2Fa_project%2Fcdstk.rb%3A9'
+    assert_equal 200, last_response.status
+  end
+
+  def t_view_simple
+    get '/home/a_project/cdstk.rb'
     assert_equal 200, last_response.status
   end
 end
