@@ -40,6 +40,9 @@ class TestCdwebApp < Test::Unit::TestCase
     t_view_with_query
     t_view_gotoline
     t_view_simple
+    t_search_contents
+    t_search_gotoline
+    t_search_fuzzy_gotoline
   end
 
   private
@@ -84,6 +87,21 @@ class TestCdwebApp < Test::Unit::TestCase
 
   def t_view_simple
     get '/home/a_project/cdstk.rb'
+    assert_equal 200, last_response.status
+  end
+
+  def t_search_contents
+    get '/home/?query=def'
+    assert_equal 200, last_response.status
+  end
+
+  def t_search_gotoline
+    get '/home/?query=%2Fa_project%2Fcdstk.rb%3A1&shead=package#n1'
+    assert_equal 200, last_response.status
+  end
+
+  def t_search_fuzzy_gotoline
+    get '/home/?query=g%3Aa_project+1&shead=package'
     assert_equal 200, last_response.status
   end
 end
