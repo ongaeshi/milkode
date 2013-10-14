@@ -27,10 +27,10 @@ class TestUtil < Test::Unit::TestCase
     assert File.exist?('nodir_abc/c.txt')
   end
 
-  # def test_root_entrylist
-  #   assert_equal ['abc/'], Milkode::Util::root_entrylist('../data/abc.zip')
-  #   assert_equal ['a.txt', 'b.txt', 'c.txt'], Milkode::Util::root_entrylist('../data/nodir_abc.zip')
-  # end
+  def test_root_entrylist
+    assert_equal ['abc/'], Milkode::Util::root_entrylist('../data/abc.zip')
+    assert_equal ['a.txt', 'b.txt', 'c.txt'], Milkode::Util::root_entrylist('../data/nodir_abc.zip')
+  end
 
   def test_platform
     if (Milkode::Util::platform_osx?)
