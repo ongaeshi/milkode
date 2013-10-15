@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#
-# @file 
-# @brief
-# @author ongaeshi
-# @date   2012/09/15
-
 require 'milkode/database/groonga_database'
 require 'milkode/common/grenfiletest'
 require 'milkode/common/ignore_checker'
@@ -58,8 +52,8 @@ module Milkode
         Dir.chdir(@package.directory) { system("ctags -R -e") }
       end
 
-      # 更新時刻の更新
-      @grndb.packages.touch(@package_name, :updatetime)
+      # Update time
+      @grndb.packages.touch(@package_name, :updatetime) if @result.exist_update?
     end
 
     def set_package_ignore(ignore_setting)
@@ -123,6 +117,10 @@ module Milkode
 
       def inc_update_count
         @update_count += 1
+      end
+
+      def exist_update?
+        @add_count > 0 || @update_count > 0
       end
     end
 
