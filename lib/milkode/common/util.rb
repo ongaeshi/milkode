@@ -295,6 +295,10 @@ module Milkode
 
       result
     end
+
+    def github_repo(src)
+      "ongaeshi/firelink"
+    end
     
   end
 end

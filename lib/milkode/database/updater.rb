@@ -2,6 +2,7 @@
 require 'milkode/database/groonga_database'
 require 'milkode/common/grenfiletest'
 require 'milkode/common/ignore_checker'
+require 'milkode/common/util'
 require 'kconv'
 
 module Milkode
