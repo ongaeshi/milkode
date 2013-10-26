@@ -295,6 +295,16 @@ module Milkode
 
       result
     end
+
+    def github_repo(src)
+      if src.match(/\Agit@github\.com:(.*)\.git\Z/)
+        $1
+      elsif src.match(/\A\w+:\/\/github\.com\/(.*)\.git\Z/)
+        $1
+      else
+        nil
+      end
+    end
     
   end
 end

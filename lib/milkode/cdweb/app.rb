@@ -378,9 +378,26 @@ EOF
     end
   end
 
+  def goto_github_project(path)
+    return "" if (path == "")
+
+    paths = path.split('/')
+    package = Database.instance.yaml_package(paths[0])
+    return "" unless package.options[:github]
+    
+    image_href = 'https://raw.github.com/github/media/master/octocats/blacktocat-16.png'
+    url = "https://github.com/#{package.options[:github]}"
+
+    if (paths.size == 1)
+      "<a href='#{url}' target=\"_blank\"><img src='#{image_href}'></img></a>"
+    else
+      "<a href='#{url}/tree/master/#{paths[1..-1].join('/')}' target=\"_blank\"><img src='#{image_href}'></img></a>"
+    end
+  end
+
   # .search-summary に追加情報を表示したい時はこの関数をオーバーライド
   def search_summary_hook(path)
-    ""
+    goto_github_project(path)
   end
 end
 
