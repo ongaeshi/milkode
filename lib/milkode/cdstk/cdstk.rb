@@ -1138,7 +1138,7 @@ EOF
 
       # Is github repository ?
       if Util::exist_command?('git') && File.exist?(File.join(package.directory, ".git"))
-        repo_name = Util::github_repo(`git config --get remote.origin.url`)
+        repo_name = Dir.chdir(package.directory) { Util::github_repo(`git config --get remote.origin.url`) }
 
         if repo_name && repo_name != package.options[:github]
           dst = package.options
@@ -1146,6 +1146,7 @@ EOF
           package.set_options(dst)
           @yaml.update(package)
           @yaml.save
+          alert("github", repo_name)
         end
       end
       
