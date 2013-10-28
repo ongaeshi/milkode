@@ -111,7 +111,7 @@ EOF
       last_index  = match_group[-1].match_line.index + NTH
       match_lines = match_group.map{|m| m.match_line}
 
-      coderay = CodeRayWrapper.new(record.content, record.shortpath, match_lines)
+      coderay = CodeRayWrapper.new(record.content, record.shortpath, match_lines, @q.keywords)
       coderay.col_limit(COL_LIMIT)
       coderay.set_range(first_index..last_index)
 

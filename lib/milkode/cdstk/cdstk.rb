@@ -1136,6 +1136,20 @@ EOF
 
       updater.exec
 
+      # Is github repository ?
+      if Util::exist_command?('git') && File.exist?(File.join(package.directory, ".git"))
+        repo_name = Dir.chdir(package.directory) { Util::github_repo(`git config --get remote.origin.url`) }
+
+        if repo_name && repo_name != package.options[:github]
+          dst = package.options
+          dst[:github] = repo_name
+          package.set_options(dst)
+          @yaml.update(package)
+          @yaml.save
+          alert("github", repo_name)
+        end
+      end
+      
       @package_count += 1
       @file_count   += updater.result.file_count
       @add_count    += updater.result.add_count

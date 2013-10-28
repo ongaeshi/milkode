@@ -131,6 +131,10 @@ module Milkode
       yaml_load.contents.size
     end
     
+    def yaml_package(name)
+      yaml_load.find_name(name)
+    end
+
     # @sample test/test_database.rb:43 TestDatabase#t_fileList
     def fileList(base)
       base_parts = base.split("/")

@@ -4,14 +4,14 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{milkode}
-  s.version = "1.2.0"
+  s.name = "milkode"
+  s.version = "1.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ongaeshi"]
-  s.date = %q{2013-08-07}
-  s.description = %q{Line based local source code search engine & grep-command & web-app.}
-  s.email = %q{ongaeshi0621@gmail.com}
+  s.date = "2013-10-28"
+  s.description = "Line based local source code search engine & grep-command & web-app."
+  s.email = "ongaeshi0621@gmail.com"
   s.executables = ["gmilk", "milk"]
   s.extra_rdoc_files = [
     "LICENSE.txt",
@@ -196,18 +196,17 @@ Gem::Specification.new do |s|
     "test/test_wide_matcher.rb",
     "test/test_yaml_file_wrapper.rb"
   ]
-  s.homepage = %q{http://github.com/ongaeshi/milkode}
+  s.homepage = "http://github.com/ongaeshi/milkode"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.7}
-  s.summary = %q{Line based local source code search engine & grep-command & web-app.}
+  s.rubygems_version = "1.8.23"
+  s.summary = "Line based local source code search engine & grep-command & web-app."
 
   if s.respond_to? :specification_version then
-    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<termcolor>, [">= 1.2.0", "< 1.2.2"])
+      s.add_runtime_dependency(%q<termcolor>, ["< 1.2.2", ">= 1.2.0"])
       s.add_runtime_dependency(%q<rroonga>, [">= 1.1.0"])
       s.add_runtime_dependency(%q<rack>, [">= 1.5.2"])
       s.add_runtime_dependency(%q<sinatra>, [">= 1.2.6"])
@@ -224,7 +223,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<sinatra-reloader>, [">= 0"])
       s.add_development_dependency(%q<test-unit>, [">= 2.5.4"])
     else
-      s.add_dependency(%q<termcolor>, [">= 1.2.0", "< 1.2.2"])
+      s.add_dependency(%q<termcolor>, ["< 1.2.2", ">= 1.2.0"])
       s.add_dependency(%q<rroonga>, [">= 1.1.0"])
       s.add_dependency(%q<rack>, [">= 1.5.2"])
       s.add_dependency(%q<sinatra>, [">= 1.2.6"])
@@ -242,7 +241,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<test-unit>, [">= 2.5.4"])
     end
   else
-    s.add_dependency(%q<termcolor>, [">= 1.2.0", "< 1.2.2"])
+    s.add_dependency(%q<termcolor>, ["< 1.2.2", ">= 1.2.0"])
     s.add_dependency(%q<rroonga>, [">= 1.1.0"])
     s.add_dependency(%q<rack>, [">= 1.5.2"])
     s.add_dependency(%q<sinatra>, [">= 1.2.6"])

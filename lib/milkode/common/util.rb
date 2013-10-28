@@ -243,26 +243,69 @@ module Milkode
     end
 
     def highlight_keywords(src, keywords, css_class)
-      if keywords.empty?
-        src
-      else
-        highlight_keywords_sub(src, keywords, css_class, 0)
-      end
-    end
+      # Init highlight_map
+      hightlight_map = Array.new(src.length, nil)
 
-    def highlight_keywords_sub(src, keywords, css_class, index)
-      keyword = keywords[index]
+      keywords.each do |keyword|
+        pos = 0
 
-      array = src.split(keyword)
+        loop do 
+          r = src.match(/#{keyword}/i, pos) do |m|
+            s = m.begin(0)
+            l = keyword.length
+            e = s+l
+            (s...e).each {|i| hightlight_map[i] = 1 }
+            pos = e
+          end
 
-      if index + 1 <= keywords.size
-        array = array.map do |subsrc|
-          highlight_keywords_sub(subsrc, keywords, css_class, index + 1)
+          break if r.nil?
         end
       end
-      
-      array.join("<span class='#{css_class}'>#{keyword}</span>")
+
+      # Delete html tag
+      index = 0
+      in_tag = false
+      src.each_char do |char|
+        in_tag = true               if char == '<'
+        hightlight_map[index] = nil if in_tag
+        in_tag = false              if char == '>'
+        index += 1
+      end
+
+      # Output
+      result = ""
+
+      index = 0
+      prev = nil
+      src.each_char do |char|
+        current = hightlight_map[index]
+
+        if prev.nil? && current
+          result += "<span class='#{css_class}'>"
+        elsif prev && current.nil?
+          result += "</span>"
+        end
+
+        result += char
+
+        index += 1
+        prev = current
+      end
+      result += "</span>" if prev
+
+      result
     end
+
+    def github_repo(src)
+      if src.match(/\Agit@github\.com:(.*)\.git\Z/)
+        $1
+      elsif src.match(/\A\w+:\/\/github\.com\/(.*)\.git\Z/)
+        $1
+      else
+        nil
+      end
+    end
+    
   end
 end
 

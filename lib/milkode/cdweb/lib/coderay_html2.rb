@@ -7,6 +7,7 @@
 
 require 'rubygems'
 require 'rack'
+require 'milkode/common/util'
 
 module CodeRay
 module Encoders
@@ -46,22 +47,27 @@ module Encoders
     end
 
     def ornament_line_attr(options)
-      # p options
       line_number = options[:line_number_start]
-
       lines = @out.split("\n")
 
       lines.map{|l|
         line_number += 1
-        "<span #{line_attr(line_number - 1, options[:highlight_lines])}>#{l}</span>"
+        line_attr(l, line_number - 1, options)
       }.join("\n") + "\n"
     end
 
-    def line_attr(no, highlight_lines)
+    def line_attr(line, no, options)
+      # p options
+      is_highlight = true if options[:highlight_lines].include?(no)
+
       r = []
       r << "id=\"n#{no}\""
-      r << "class=\"highlight-line\"" if highlight_lines.include?(no)
-      r.join(" ")
+      r << "class=\"highlight-line\"" if is_highlight
+      attr = r.join(" ")
+
+      line = Milkode::Util::highlight_keywords(line, options[:keywords], 'highlight-filename') if is_highlight
+      
+      "<span #{attr}>#{line}</span>"
     end
 
     # [ref] CodeRay::Encoders::Numberling#number! (coderay-1.0.5/lib/coderay/encoders/numbering.rb:8)

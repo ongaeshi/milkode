@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*-
-#
-# @file 
-# @brief
-# @author ongaeshi
-# @date   2012/09/15
-
 require 'milkode/database/groonga_database'
 require 'milkode/common/grenfiletest'
 require 'milkode/common/ignore_checker'
+require 'milkode/common/util'
 require 'kconv'
 
 module Milkode
@@ -27,12 +22,12 @@ module Milkode
     def exec
       # git pull
       if @options[:update_with_git_pull]
-        Dir.chdir(@package.directory) { system("git pull") }        
+        Dir.chdir(@package.directory) { system("git pull") } if File.exist?(@package.directory)
       end
       
       # svn update
       if @options[:update_with_svn_update]
-        Dir.chdir(@package.directory) { system("svn update") }
+        Dir.chdir(@package.directory) { system("svn update") } if File.exist?(@package.directory)
       end
 
       # Add global .gitignore
@@ -50,16 +45,16 @@ module Milkode
       
       # ctags
       if @options[:update_with_ctags]
-        Dir.chdir(@package.directory) { system("ctags -R") }
+        Dir.chdir(@package.directory) { system("ctags -R") } if File.exist?(@package.directory)
       end
 
       # ctags -e
       if @options[:update_with_ctags_e]
-        Dir.chdir(@package.directory) { system("ctags -R -e") }
+        Dir.chdir(@package.directory) { system("ctags -R -e") } if File.exist?(@package.directory)
       end
 
-      # 更新時刻の更新
-      @grndb.packages.touch(@package_name, :updatetime)
+      # Update time
+      @grndb.packages.touch(@package_name, :updatetime) if @result.exist_update?
     end
 
     def set_package_ignore(ignore_setting)
@@ -123,6 +118,10 @@ module Milkode
 
       def inc_update_count
         @update_count += 1
+      end
+
+      def exist_update?
+        @add_count > 0 || @update_count > 0
       end
     end
 

@@ -23,8 +23,8 @@ module Milkode
 
     q = params[:query] && Query.new(params[:query]) 
 
-    if (Util::larger_than_oneline(record.content) and q and !q.keywords.empty?)
-      if Util::gotoline_keyword? q.keywords[0]
+    if (Util::larger_than_oneline(record.content) && q && !q.keywords.empty?)
+      if Util::gotoline_keyword?(q.keywords[0])
         gotolines = Util::parse_gotoline(q.keywords)
         match_lines = []
         gotolines.each do |v|
@@ -32,19 +32,22 @@ module Milkode
               match_lines << Grep::MatchLineResult.new(v[1] - 1, nil)
           end
         end
-        @record_content = CodeRayWrapper.new(record.content, record.shortpath, match_lines).to_html
+        # TestCdwebApp#t_view_gotoline
+        @record_content = CodeRayWrapper.new(record.content, record.shortpath, match_lines, q.keywords).to_html
       else
         grep = Grep.new(record.content)
         match_lines = grep.match_lines_and(q.keywords, is_sensitive, q.wide_match_range)
 
         if match_lines.empty? && q.wide_match_range_empty?
-          # 検索範囲を広げる
+          # Expand search range
           match_lines = grep.match_lines_and(q.keywords, is_sensitive, 7)
         end
         
-        @record_content = CodeRayWrapper.new(record.content, record.shortpath, match_lines).to_html
+        # TestCdwebApp#t_view_with_query
+        @record_content = CodeRayWrapper.new(record.content, record.shortpath, match_lines, q.keywords).to_html
       end
     else
+      # TestCdwebApp#t_view_simple
       @record_content = CodeRayWrapper.new(record.content, record.shortpath).to_html
     end
     
