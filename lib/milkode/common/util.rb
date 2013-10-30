@@ -187,11 +187,11 @@ module Milkode
     end
 
     def git_url?(src)
-      (src =~ /^(:?git[:@])|(:?ssh:)/) != nil
+      (src =~ /^(?:git[:@])|(?:ssh:)|(?:\.git\Z)/) != nil
     end
 
     def svn_url?(src)
-      (src =~ /^(:?svn|svn\+ssh):\/\//) != nil
+      (src =~ /^(?:svn|svn\+ssh):\/\//) != nil
     end
 
     # StringIO patch

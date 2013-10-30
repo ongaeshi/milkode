@@ -101,6 +101,7 @@ class TestUtil < Test::Unit::TestCase
     assert_equal  true, Milkode::Util::git_url?('git://github.com/ongaeshi/milkode.git')
     assert_equal  true, Milkode::Util::git_url?('git@github.com:ongaeshi/milkode.git')
     assert_equal  true, Milkode::Util::git_url?('ssh:foo@bar/baz.git')
+    assert_equal  true, Milkode::Util::git_url?('https://github.com/ongaeshi/milkode.git')
   end
 
   def test_svn_url?
