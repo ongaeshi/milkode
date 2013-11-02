@@ -38,11 +38,12 @@ EOF
     option :name,           :type => :string,  :aliases => '-n',   :desc => 'Rename package.'
     option :no_auto_ignore, :type => :boolean, :aliases => '--ni', :desc => 'Disable auto ignore.'
     option :protocol,       :type => :string,  :aliases => '-p',   :desc => 'Specify protocol. (git, svn)'
+    option :from_file,      :type => :string,                      :desc => 'Import from file'
     
     option :verbose, :type => :boolean, :aliases => '-v', :desc => 'Be verbose.'
     
     def add(*args)
-      if args.empty?
+      if args.empty? && !options[:from_file]
         CLI.task_help(shell, "add")
       else
         cdstk.add(args, options)
