@@ -170,7 +170,7 @@ get '/info/:package' do
 end
 
 get '/getlang' do
-  t.message
+  t.getlang
 end
 
 # -- helper function --

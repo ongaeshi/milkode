@@ -1,1 +1,13 @@
-message: "こんにちは世界"
+index:
+  search_button: '検索'
+  content:
+    recentf:     '最近使った'
+    add:         '追加'
+    update:      '更新'
+    fav:         'お気に入り'
+  footer:
+    package_num: '<a href="%1">%2</a>のパッケージ<br>'
+    file_num:    '<a href="%1">%2</a>のファイル<br>'
+    help:        'ヘルプ'
+
+getlang: "こんにちは世界"
