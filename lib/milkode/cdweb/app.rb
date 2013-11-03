@@ -27,6 +27,7 @@ require 'milkode/cdweb/lib/info_package'
 require 'sinatra/url_for'
 
 set :haml, :format => :html5
+enable :sessions
 
 # We're going to load the paths to locale files,
 I18n.load_path += Dir[File.join(File.dirname(__FILE__), 'locales', '*.yml').to_s]
@@ -405,14 +406,18 @@ EOF
   end
 
   ## for I18N
-  def get_locale
+  def ua_locale
     # Pulls the browser's language
     @env["HTTP_ACCEPT_LANGUAGE"][0,2]
   end
 
   def t(*args)
     # Just a simple alias
-    I18n.t(*args, locale: get_locale)
+    unless @locale
+      @locale = params[:locale] || session[:locale] || ua_locale || 'en'
+      session[:locale] = @locale
+    end
+    I18n.t(*args, locale: @locale)
   end
 end
 
