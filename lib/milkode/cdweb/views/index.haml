@@ -62,11 +62,6 @@
             <a href="#{url_for '/help'}">#{t(:help)}</a>
             = @setting.about_milkode(@locale)
 
-      .row
-        .span5.offset7
-          .footer
-            <br>original icon: &copy; Ruby Association LLC
-
     %script(type='text/javascript' src='#{url_for '/js/jquery-1.7.2.min.js'}')
     %script(type='text/javascript' src='#{url_for '/js/jquery-ui-1.8.22.custom.min.js'}')
     %script(type='text/javascript' src='#{url_for '/js/jquery.multiselect.min.js'}')
