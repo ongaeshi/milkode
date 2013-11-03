@@ -1,0 +1,24 @@
+ja:
+  search: 検索
+  recently_viewed: 最近使った
+  added: 追加
+  updated: 更新
+  favorite: お気に入り
+  packages: のパッケージ
+  files: のファイル
+  help: ヘルプ
+  about_milkode: milkodeについて
+  new_tab: 新規タブ
+  target: 範囲
+  package: パッケージ
+  clear: クリア
+  onematch: 1ファイル1マッチ
+  case_sensitive: 大文字／小文字を区別
+  total_files: ファイル中
+  matched_num: 件マッチ
+  sec: 秒
+  home: ホーム
+  directory: ディレクトリ
+  update_packages: パッケージを更新
+  stats: 統計情報
+  all: 全て

@@ -6,16 +6,16 @@
   %form(name="searchform" action="#{url_for '/search'}" method="post")
     %p
       %input#query(name="query" size="70" type="text" style="width: 419px;"){:value => params[:query]}
-      %input#search(type="submit" name="search" value="検索" onclick="set_pathname()")
-      %input#newtab(type="submit" name="newtab" value="新規タブ" onclick="open_newtab(); return false;")
-      %input#clear(type="submit" name="clear" value="クリア" onclick="set_pathname()")
+      %input#search(type="submit" name="search" value="#{t(:search)}" onclick="set_pathname()")
+      %input#newtab(type="submit" name="newtab" value="#{t(:new_tab)}" onclick="open_newtab(); return false;")
+      %input#clear(type="submit" name="clear" value="#{t(:clear)}" onclick="set_pathname()")
       %br
-      範囲:
+      = t(:target) + ":"
       = create_select_shead(params[:shead])
-      パッケージ:
+      = t(:package) + ":"
       = create_select_package(@path)
-      = create_checkbox('onematch', params[:onematch], '1ファイル1マッチ')
-      = create_checkbox('sensitive', params[:sensitive], '大文字／小文字を区別')
+      = create_checkbox('onematch', params[:onematch], t(:onematch))
+      = create_checkbox('sensitive', params[:sensitive], t(:case_sensitive))
       = create_favorite_list(@package_list)
       
       %input(name="pathname" type="hidden" value="")

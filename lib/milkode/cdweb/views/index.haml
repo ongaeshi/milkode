@@ -25,7 +25,7 @@
           .form
             %form(method="post" action="#{url_for '/search'}")
               %input(name="query" type="text" style="width: 419px;")
-              %input(type="submit" value="検索")
+              %input(type="submit" value="#{t(:search)}")
               %input(name='pathname' type='hidden' value='#{url_for '/home'}')
 
       .row
@@ -35,16 +35,20 @@
 
       .row
         .span3
-          %h2 最近使った
+          %h2
+            = t(:recently_viewed)
           = @package_list.top_view
         .span3
-          %h2 追加
+          %h2
+            = t(:added)
           = @package_list.top_add
         .span3
-          %h2 更新
+          %h2
+            = t(:updated)
           = @package_list.top_update
         .span3
-          %h2 お気に入り
+          %h2
+            = t(:favorite)
           = @package_list.top_fav
 
       %hr
@@ -52,17 +56,22 @@
       .row
         .span4.offset4
           .footer
-            <a href="#{url_for '/home'}">#{@package_num}</a>のパッケージ<br>
-            <a href="#{url_for '/home?query=f:*'}">#{@file_num}</a>のファイル<br>
-            <a href="#{url_for '/help'}">ヘルプ</a>
-            = @setting.about_milkode
+            <a href="#{url_for '/home'}">#{@package_num}</a> #{t(:packages)}<br>
+            <a href="#{url_for '/home?query=f:*'}">#{@file_num}</a> #{t(:files)}<br>
+            <a href="#{url_for '/help'}">#{t(:help)}</a</a>
+            = @setting.about_milkode(get_locale)
+
+      .row
+        .span5.offset7
+          .footer
+            <br>original icon: &copy; Ruby Association LLC
 
     %script(type='text/javascript' src='#{url_for '/js/jquery-1.7.2.min.js'}')
     %script(type='text/javascript' src='#{url_for '/js/jquery-ui-1.8.22.custom.min.js'}')
     %script(type='text/javascript' src='#{url_for '/js/jquery.multiselect.min.js'}')
     %script(type='text/javascript' src='#{url_for '/js/jquery.multiselect.filter.min.js'}')
     %script(type='text/javascript' src='#{url_for '/js/milkode.js'}')
-            
+
 
     
 

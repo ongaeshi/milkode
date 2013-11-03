@@ -7,6 +7,7 @@
 
 require 'milkode/cdweb/lib/database'
 require 'yaml'
+require 'i18n'
 
 module Milkode
   class WebSetting
@@ -51,9 +52,9 @@ module Milkode
 
     hash_method :favicon
     
-    def about_milkode
+    def about_milkode(locale)
       if (@data[:display_about_milkode])
-        ', <a href="http://milkode.ongaeshi.me">milkodeについて</a>'
+        ', <a href="http://milkode.ongaeshi.me">'+I18n.t(:about_milkode, locale: locale)+'</a>'
       else
         ''
       end

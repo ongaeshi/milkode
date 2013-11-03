@@ -13,6 +13,7 @@ if ENV['MILKODE_SINATRA_RELOADER']
 end
 require 'sass'
 require 'haml'
+require 'i18n'
 
 $LOAD_PATH.unshift '../..'
 require 'milkode/common/util'
@@ -26,6 +27,9 @@ require 'milkode/cdweb/lib/info_package'
 require 'sinatra/url_for'
 
 set :haml, :format => :html5
+
+# We're going to load the paths to locale files,
+I18n.load_path += Dir[File.join(File.dirname(__FILE__), 'locales', '*.yml').to_s]
 
 get '/js/:filename' do
   content_type :js
@@ -192,9 +196,9 @@ helpers do
     value ||= "package"
 
     data = [
-            ['all'      , '全て'        ],
-            ['package'  , 'パッケージ'  ],
-            ['directory', 'ディレクトリ'],
+            ['all'      , t(:all)      ],
+            ['package'  , t(:package)  ],
+            ['directory', t(:directory)],
            ]
 
     <<EOF
@@ -250,16 +254,16 @@ EOF
     info_path = File.join(info_path, package_name) if package_name != ""
 
     <<EOF
-    #{headicon('go-home-5.png', suburl)}<a href="#{suburl}/home" class="headmenu">ホーム</a>&nbsp;
-    #{headicon('directory.png', suburl)}<a href="#{flist}" class="headmenu">ディレクトリ</a>
-    #{headicon('view-refresh-4.png', suburl)}<a href="#updateModal" class="headmenu" data-toggle="modal">パッケージを更新</a>&nbsp;
-    #{headicon('info.png', suburl)}<a href="#{info_path}" class="headmenu">統計情報</a>&nbsp;
-    #{headicon('help.png', suburl)}<a href="#{suburl}/help" class="headmenu">ヘルプ</a>
+    #{headicon('go-home-5.png', suburl)}<a href="#{suburl}/home" class="headmenu">#{t(:home)}</a>&nbsp;
+    #{headicon('directory.png', suburl)}<a href="#{flist}" class="headmenu">#{t(:directory)}</a>
+    #{headicon('view-refresh-4.png', suburl)}<a href="#updateModal" class="headmenu" data-toggle="modal">#{t(:update_packages)}</a>&nbsp;
+    #{headicon('info.png', suburl)}<a href="#{info_path}" class="headmenu">#{t(:stats)}</a>&nbsp;
+    #{headicon('help.png', suburl)}<a href="#{suburl}/help" class="headmenu">#{t(:help)}</a>
 
     <div id="updateModal" class="modal hide fade">
       <div class="modal-header">
         <a href="#" class="close" data-dismiss="modal">&times;</a>
-        <h3>パッケージを更新</h3>
+        <h3>#{t(:update_packages)}</h3>
       </div>
       <div class="modal-body">
         <h4>#{modal_body}</h4>
@@ -292,7 +296,7 @@ EOF
   def create_favorite_list(package_list)
     <<EOF
       <div class="favorite_list">
-        お気に入り:
+        #{t(:favorite)}:
         #{package_list.favorite_list(params)}
       </div>
     </div>
@@ -398,6 +402,17 @@ EOF
   # .search-summary に追加情報を表示したい時はこの関数をオーバーライド
   def search_summary_hook(path)
     goto_github_project(path)
+  end
+
+  ## for I18N
+  def get_locale
+    # Pulls the browser's language
+    @env["HTTP_ACCEPT_LANGUAGE"][0,2]
+  end
+
+  def t(*args)
+    # Just a simple alias
+    I18n.t(*args, locale: get_locale)
   end
 end
 

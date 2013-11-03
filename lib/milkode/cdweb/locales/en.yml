@@ -1,0 +1,25 @@
+en:
+  search: Search
+  recently_viewed: Recently Viewed
+  added: New
+  updated: Updated
+  favorite: Favorites
+  packages: packages
+  files: files
+  help: Help
+  about_milkode: About Milkode
+  new_tab: New Tab
+  target: Target
+  package: Package
+  clear: Clear
+  onematch: one file one match
+  case_sensitive: case sensitive
+  total_files: files
+  matched_num: matched
+  sec: sec.
+  home: Home
+  directory: Directory
+  update_packages: Update Packages
+  stats: Stats
+  all: all
+  
