@@ -55,7 +55,7 @@
             = t.index.footer.package_num(url_for('/home'), @package_num)
             = t.index.footer.file_num(url_for('/home?query=f:*'), @file_num)
             <a href="#{url_for '/help'}">#{t.index.footer.help}</a>
-            = @setting.about_milkode
+            = @setting.about_milkode(t.index.footer.about)
 
     %script(type='text/javascript' src='#{url_for '/js/jquery-1.7.2.min.js'}')
     %script(type='text/javascript' src='#{url_for '/js/jquery-ui-1.8.22.custom.min.js'}')

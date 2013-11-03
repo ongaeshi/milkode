@@ -9,5 +9,6 @@ index:
     package_num: '<a href="%1">%2</a>のパッケージ<br>'
     file_num:    '<a href="%1">%2</a>のファイル<br>'
     help:        'ヘルプ'
+    about:       'Milkodeについて'
 
 getlang: "こんにちは世界"

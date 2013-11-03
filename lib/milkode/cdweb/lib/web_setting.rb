@@ -51,9 +51,9 @@ module Milkode
 
     hash_method :favicon
     
-    def about_milkode
+    def about_milkode(text)
       if (@data[:display_about_milkode])
-        ', <a href="http://milkode.ongaeshi.me">milkodeについて</a>'
+        ", <a href=\"http://milkode.ongaeshi.me\">#{text}</a>"
       else
         ''
       end
