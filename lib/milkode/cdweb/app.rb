@@ -13,6 +13,7 @@ if ENV['MILKODE_SINATRA_RELOADER']
 end
 require 'sass'
 require 'haml'
+require 'sinatra/r18n'
 
 $LOAD_PATH.unshift '../..'
 require 'milkode/common/util'
@@ -166,6 +167,10 @@ get '/info/:package' do
   @elapsed = Time.now - before
 
   haml :info_package
+end
+
+get '/getlang' do
+  t.message
 end
 
 # -- helper function --

@@ -15,6 +15,7 @@ gem 'archive-zip' , '>= 0.4.0'
 gem 'haml'        , '>= 3.1.2'
 gem 'sass'        , '>= 3.1.3'
 gem 'thor'        , '>= 0.18.1'
+gem 'sinatra-r18n'
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
