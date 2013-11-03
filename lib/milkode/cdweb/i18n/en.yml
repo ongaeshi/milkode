@@ -1,1 +1,13 @@
+index:
+  search_button: 'Search'
+  content:
+    recentf:     'View'
+    add:         'Add'
+    update:      'Update'
+    fav:         'Favorite'
+  footer:
+    package_num: '<a href="%1">%2</a> pacakges<br>'
+    file_num:    '<a href="%1">%2</a> files<br>'
+    help:        'help'
+
 message: "Hello world"
