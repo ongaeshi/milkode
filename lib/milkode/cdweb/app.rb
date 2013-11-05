@@ -1,19 +1,14 @@
 # -*- coding: utf-8 -*-
-#
-# @file 
-# @brief
-# @author ongaeshi
-# @date   2011/06/25
-
 require 'rubygems'
 require 'sinatra'
+require 'sass'
+require 'haml'
+require 'i18n'
+
 if ENV['MILKODE_SINATRA_RELOADER']
   require 'sinatra/reloader'
   also_reload '../../**/*.rb'
 end
-require 'sass'
-require 'haml'
-require 'i18n'
 
 $LOAD_PATH.unshift '../..'
 require 'milkode/common/util'
@@ -26,11 +21,10 @@ require 'milkode/cdweb/lib/info_home'
 require 'milkode/cdweb/lib/info_package'
 require 'sinatra/url_for'
 
+I18n.load_path += Dir[File.join(File.dirname(__FILE__), 'locales', '*.yml').to_s]
+
 set :haml, :format => :html5
 enable :sessions
-
-# We're going to load the paths to locale files,
-I18n.load_path += Dir[File.join(File.dirname(__FILE__), 'locales', '*.yml').to_s]
 
 get '/js/:filename' do
   content_type :js
@@ -412,10 +406,13 @@ EOF
   end
 
   def t(*args)
-    # Just a simple alias
     unless @locale
+      # Support session
       @locale = params[:locale] || session[:locale] || ua_locale || 'en'
       session[:locale] = @locale
+
+      # Reload with sinatra-reloader
+      I18n.reload! if ENV['MILKODE_SINATRA_RELOADER']
     end
     I18n.t(*args, locale: @locale)
   end
