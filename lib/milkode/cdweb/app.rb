@@ -407,10 +407,14 @@ EOF
 
   def t(*args)
     unless @locale
-      # Support session
-      @locale = params[:locale] || session[:locale] || ua_locale || 'en'
-      session[:locale] = @locale
-
+      begin
+        # Support session
+        @locale = params[:locale] || session[:locale] || ua_locale || 'en'
+        session[:locale] = @locale
+      rescue NameError          # 'session' variable can't find during testing
+        @locale = 'en'
+      end
+        
       # Reload with sinatra-reloader
       I18n.reload! if ENV['MILKODE_SINATRA_RELOADER']
     end
