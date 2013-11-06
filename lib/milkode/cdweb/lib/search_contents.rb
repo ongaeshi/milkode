@@ -26,7 +26,7 @@ module Milkode
 
     DEFAULT_WIDE_MATCH_RANGE = 7 # 未指定時のワイド検索範囲
 
-    def initialize(path, params, query, suburl)
+    def initialize(path, params, query, suburl, locale)
       @path             = path
       @params           = params
       @q                = query
@@ -37,6 +37,7 @@ module Milkode
       @is_sensitive     = params[:sensitive] == 'on'
       @suburl           = suburl
       @homeurl          = @suburl + "/home/"
+      @locale           = locale
 
       @searcher_fuzzy_gotoline = nil
 
@@ -373,19 +374,19 @@ EOS
       refinements = []
 
       # 拡張子で絞り込み
-      refinements << "<a href='#{refinement_suffix(record.suffix)}'>.#{record.suffix}で絞り込み</a>" if record.suffix
+      refinements << "<a href='#{refinement_suffix(record.suffix)}'>.#{record.suffix}</a>" if record.suffix
 
       # ディレクトリで絞り込み
       path    = Util::relative_path(record.shortpath, @path)
       dirname = path.to_s.split('/')[-2]
-      refinements << "<a href='#{refinement_directory(record.shortpath + '/..')}'>#{dirname}/以下で再検索</a>" if dirname
+      refinements << "<a href='#{refinement_directory(record.shortpath + '/..')}'>#{dirname}/</a>" if dirname
 
       unless refinements.empty?
         space1            = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
         space2            = '&nbsp;&nbsp;,&nbsp;&nbsp;'
 
         <<EOF
-#{space1}<span id="result-refinement">[#{refinements.join(space2)}]</span>
+#{space1}<span id="result-refinement">#{I18n.t(:filter, {locale: @locale})} [#{refinements.join(space2)}]</span>
 EOF
       else
         ''

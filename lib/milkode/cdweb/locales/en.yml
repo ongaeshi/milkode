@@ -1,5 +1,6 @@
 en:
   search: Search
+  name: Name
   recently_viewed: Viewed
   added: New
   updated: Updated
@@ -15,6 +16,7 @@ en:
   onematch: one file one match
   case_sensitive: case sensitive
   total_files: files
+  searched: searched
   matched_num: matched
   sec: sec.
   home: Home
@@ -24,3 +26,6 @@ en:
   all: all
   english: English
   japanese: Japanese
+  update_all: Update all packages?
+  update_package: 'Update %{package_name}?'
+  filter: Filter
