@@ -29,3 +29,4 @@ en:
   update_all: Update all packages?
   update_package: 'Update %{package_name}?'
   filter: Filter
+  item: items

@@ -106,7 +106,7 @@ post '/command' do
   when 'favorite'
     Database.instance.set_fav(params[:name], params[:favorited] == 'true')
     @package_list = PackageList.new(Database.instance.grndb, url_for(''))
-    "お気に入り: " + @package_list.favorite_list({})
+    t(:favorite) + ": " + @package_list.favorite_list({})
   end
 end
 

@@ -29,3 +29,4 @@ ja:
   update_all: 全てのパッケージを更新しますか？
   update_package: '%{package_name} を更新しますか？'
   filter: 絞り込み
+  item: 件
