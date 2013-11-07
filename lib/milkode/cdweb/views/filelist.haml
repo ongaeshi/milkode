@@ -9,7 +9,7 @@
     .keyword.ss-box
       #{topic_path(@path, params)}
     .total-entries.ss-box
-      #{@total_records}件（#{@elapsed}秒）
+      #{@total_records} #{t(:item)}（#{@elapsed}#{t(:sec)})
     .search-summary-hook.ss-box
       #{search_summary_hook(@path)}
     .ss-end
