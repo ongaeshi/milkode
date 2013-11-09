@@ -87,11 +87,11 @@ module Milkode
       end
 
       # 検索
-      result, total_records = [], 0
+      result, total_records, result = [], 0, nil
 
       begin
         unless is_not_search
-          result, total_records = @documents.search_with_match(
+          result, total_records, result = @documents.search_with_match(
             :patterns  => patterns,
             :keywords  => keywords,
             :paths     => paths,
@@ -108,7 +108,7 @@ module Milkode
       end
 
       # 結果
-      return result.map{|r| DocumentRecord.new(r)}, total_records
+      return result.map{|r| DocumentRecord.new(r)}, total_records, result
     end
 
     def selectAll(offset, limit)

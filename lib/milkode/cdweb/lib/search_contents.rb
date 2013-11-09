@@ -42,7 +42,7 @@ module Milkode
       @searcher_fuzzy_gotoline = nil
 
       # 検索1 : クエリーそのまま
-      @records, @total_records = Database.instance.search(@q.keywords, @q.multi_match_keywords, @q.packages, path, @q.fpaths, @q.suffixs, @q.fpath_or_packages, @offset, LIMIT_NUM)
+      @records, @total_records, result = Database.instance.search(@q.keywords, @q.multi_match_keywords, @q.packages, path, @q.fpaths, @q.suffixs, @q.fpath_or_packages, @offset, LIMIT_NUM)
       grep_contents(@q.keywords, @q.wide_match_range)
 
       # 検索2 : マッチしなかった時におすすめクエリーがある場合
@@ -93,6 +93,10 @@ module Milkode
           @match_files, t = Database.instance.search([], @q.multi_match_keywords, @q.packages, path, @q.fpaths, @q.suffixs, @q.fpath_or_packages + @q.keywords, @offset, MATH_FILE_LIMIT)
         end
       end
+
+      # Search4 : Drilldown
+      @drilldown_packages = DocumentTable.drilldown(result, "package", 5)
+      p @drilldown_packages
     end
 
     def query

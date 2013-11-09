@@ -299,14 +299,19 @@ module Milkode
                                         :offset => offset,
                                         :limit => limit)
 
-      # 検索結果のレコード(limitの影響を受ける), 総マッチ数(limitの影響を受けない)
-      return records, result.size
+      # 検索結果のレコード(limitの影響を受ける), 総マッチ数(limitの影響を受けない), result(Groonga::Hash)
+      return records, result.size, result
     end
 
     # マッチしたレコードのみを返す
     def search(options)
       records, match_total = search_with_match(options)
       records
+    end
+
+    def self.drilldown(result, column, num)
+      drilled = result.group(column).map {|record| [record.n_sub_records, record.key]}.sort_by {|a| a[0]}.reverse
+      drilled[0, num]
     end
     
     def select_all_sort_by_shortpath(offset = 0, limit = -1)
