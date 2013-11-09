@@ -96,7 +96,7 @@ module Milkode
 
       # Search4 : Drilldown
       @drilldown_packages = DocumentTable.drilldown(result, "package", 5)
-      @drilldown_suffixs = DocumentTable.drilldown(result, "suffix", 5)
+      @drilldown_suffixs = DocumentTable.drilldown(result, "suffix", 8)
     end
 
     def query
