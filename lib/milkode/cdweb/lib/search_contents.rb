@@ -96,6 +96,7 @@ module Milkode
 
       # Search4 : Drilldown
       @drilldown_packages = DocumentTable.drilldown(result, "package", 5)
+      @drilldown_suffixs = DocumentTable.drilldown(result, "suffix", 5)
     end
 
     def query
@@ -401,10 +402,20 @@ EOF
     end
 
     def drilldown_contents
-      if @drilldown_packages.empty? || @drilldown_packages.size == 1
-        ""
+      contents = []
+      
+      unless @drilldown_packages.empty? || @drilldown_packages.size == 1
+        contents << "Filter by Package: " + @drilldown_packages.map {|v| "<strong><a href=\"#{refinement_directory(v[1])}\" #{v[1]}(#{v[0]})>#{v[1]}</a></strong> (#{v[0]})" }.join("&nbsp;&nbsp;&nbsp;")
+      end
+
+      unless @drilldown_suffixs.empty? || @drilldown_suffixs.size == 1
+        contents << "Filter by Suffix: " + @drilldown_suffixs.map {|v| "<strong><a href=\"#{refinement_suffix(v[1])}\" #{v[1]}(#{v[0]})>.#{v[1]}</a></strong> (#{v[0]})" }.join("&nbsp;&nbsp;&nbsp;")
+      end
+
+      unless contents.empty?
+        contents.join("<br>\n") + "<hr>\n"
       else
-        "Filter by Package: " + @drilldown_packages.map {|v| "<strong><a href=\"#{refinement_directory(v[1])}\" #{v[1]}(#{v[0]})>#{v[1]}</a></strong> (#{v[0]})" }.join("&nbsp;&nbsp;&nbsp;") + "</dt>\n<hr>\n"
+        ""
       end
     end
 
