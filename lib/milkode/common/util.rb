@@ -250,7 +250,7 @@ module Milkode
         pos = 0
 
         loop do 
-          r = src.match(/#{keyword}/i, pos) do |m|
+          r = src.match(/#{Regexp.escape(keyword)}/i, pos) do |m|
             s = m.begin(0)
             l = keyword.length
             e = s+l
