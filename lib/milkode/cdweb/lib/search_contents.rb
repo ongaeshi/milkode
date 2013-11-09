@@ -96,7 +96,6 @@ module Milkode
 
       # Search4 : Drilldown
       @drilldown_packages = DocumentTable.drilldown(result, "package", 5)
-      p @drilldown_packages
     end
 
     def query
@@ -141,6 +140,9 @@ EOF
 
     def recommended_contents
       contents = []
+
+      str = drilldown_contents
+      contents << str unless str.empty?
 
       str = recommended_query_contents
       contents << str unless str.empty?
@@ -396,6 +398,14 @@ EOF
         ''
       end
 
+    end
+
+    def drilldown_contents
+      if @drilldown_packages.empty? || @drilldown_packages.size == 1
+        ""
+      else
+        "Filter by Package: " + @drilldown_packages.map {|v| "<strong><a href=\"#{refinement_directory(v[1])}\" #{v[1]}(#{v[0]})>#{v[1]}</a></strong> (#{v[0]})" }.join("&nbsp;&nbsp;&nbsp;") + "</dt>\n<hr>\n"
+      end
     end
 
   end
