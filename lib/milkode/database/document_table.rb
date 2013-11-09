@@ -18,7 +18,7 @@ module Milkode
           table.string("restpath")
           table.text("content")
           table.time("timestamp")
-          table.text("suffix")
+          table.string("suffix")
         end
 
         schema.create_table("terms",
