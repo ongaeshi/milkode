@@ -405,15 +405,15 @@ EOF
       contents = []
       
       unless @drilldown_packages.empty? || @drilldown_packages.size == 1
-        contents << "Filter by Package: " + @drilldown_packages.map {|v| "<strong><a href=\"#{refinement_directory(v[1])}\" #{v[1]}(#{v[0]})>#{v[1]}</a></strong> (#{v[0]})" }.join("&nbsp;&nbsp;&nbsp;")
+        contents << "<div class=\"filter_list\">Filter by Package: " + @drilldown_packages.map {|v| "<strong><a href=\"#{refinement_directory(v[1])}\" #{v[1]}(#{v[0]})>#{v[1]}</a></strong> (#{v[0]})" }.join("&nbsp;&nbsp;&nbsp;") + "</div>"
       end
 
       unless @drilldown_suffixs.empty? || @drilldown_suffixs.size == 1
-        contents << "Filter by Suffix: " + @drilldown_suffixs.map {|v| "<strong><a href=\"#{refinement_suffix(v[1])}\" #{v[1]}(#{v[0]})>.#{v[1]}</a></strong> (#{v[0]})" }.join("&nbsp;&nbsp;&nbsp;")
+        contents << "<div class=\"filter_list\">Filter by Suffix: " + @drilldown_suffixs.map {|v| "<strong><a href=\"#{refinement_suffix(v[1])}\" #{v[1]}(#{v[0]})>.#{v[1]}</a></strong> (#{v[0]})" }.join("&nbsp;&nbsp;&nbsp;") + "</div>" 
       end
 
       unless contents.empty?
-        contents.join("<br>\n") + "<hr>\n"
+        contents.join + "<hr>\n"
       else
         ""
       end
