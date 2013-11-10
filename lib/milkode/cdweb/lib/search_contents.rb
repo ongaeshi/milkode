@@ -96,7 +96,8 @@ module Milkode
 
       # Search4 : Drilldown
       @drilldown_packages = DocumentTable.drilldown(result, "package", 5)
-      @drilldown_suffixs = DocumentTable.drilldown(result, "suffix", 8)
+      @drilldown_suffixs = DocumentTable.drilldown(result, "suffix", 7)
+      # @drilldown_suffixs << [0, ""]
     end
 
     def query
@@ -404,16 +405,28 @@ EOF
     def drilldown_contents
       contents = []
       
-      unless @drilldown_packages.empty? || @drilldown_packages.size == 1
-        contents << "<div class=\"filter_list\">#{I18n.t(:filter_by_package, {locale: @locale})}: " + @drilldown_packages.map {|v| "<strong><a href=\"#{refinement_directory(v[1])}\" #{v[1]}(#{v[0]})>#{v[1]}</a></strong> (#{v[0]})" }.join("&nbsp;&nbsp;&nbsp;") + "</div>"
-      end
+      result = drilldown_content(@drilldown_packages, I18n.t(:filter_by_package, {locale: @locale}), method(:refinement_directory))
+      contents << result unless result.empty?
 
-      unless @drilldown_suffixs.empty? || @drilldown_suffixs.size == 1
-        contents << "<div class=\"filter_list\">#{I18n.t(:filter_by_suffix, {locale: @locale})}: " + @drilldown_suffixs.map {|v| "<strong><a href=\"#{refinement_suffix(v[1])}\" #{v[1]}(#{v[0]})>.#{v[1]}</a></strong> (#{v[0]})" }.join("&nbsp;&nbsp;&nbsp;") + "</div>" 
-      end
+      result = drilldown_content(@drilldown_suffixs, I18n.t(:filter_by_suffix, {locale: @locale}), method(:refinement_suffix))
+      contents << result unless result.empty?
 
       unless contents.empty?
         contents.join + "<hr>\n"
+      else
+        ""
+      end
+    end
+
+    def drilldown_content(array, title, to_url)
+      unless array.empty? || array.size == 1
+        "<div class=\"filter_list\">#{title}: " + array.map {|v|
+          if v[0] != 0
+            "<span style=\"\"><strong><a href=\"#{to_url.call(v[1])}\" #{v[1]}(#{v[0]})>.#{v[1]}</a></strong> (#{v[0]})</span>"
+          else
+            "<span style=\"\">...</span>"            
+          end
+        }.join("&nbsp;&nbsp;&nbsp;") + "</div>"
       else
         ""
       end
