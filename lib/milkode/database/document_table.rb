@@ -309,9 +309,9 @@ module Milkode
       records
     end
 
-    def self.drilldown(result, column, num)
+    def self.drilldown(result, column, num = nil)
       drilled = result.group(column).map {|record| [record.n_sub_records, record.key]}.sort_by {|a| a[0]}.reverse
-      drilled[0, num]
+      num ? drilled[0, num] : drilled
     end
     
     def select_all_sort_by_shortpath(offset = 0, limit = -1)
