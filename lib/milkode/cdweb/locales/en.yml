@@ -30,3 +30,5 @@ en:
   update_package: 'Update %{package_name}?'
   filter: Filter
   item: items
+  filter_by_package: 'Filter by Package'
+  filter_by_suffix: 'Filter by Suffix'
