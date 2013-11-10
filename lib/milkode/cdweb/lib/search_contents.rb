@@ -26,6 +26,9 @@ module Milkode
 
     DEFAULT_WIDE_MATCH_RANGE = 7 # 未指定時のワイド検索範囲
 
+    FILTER_BY_PACKAGE_NUM = 5
+    FILTER_BY_SUFFIX_NUM  = 8
+
     def initialize(path, params, query, suburl, locale)
       @path             = path
       @params           = params
@@ -95,9 +98,8 @@ module Milkode
       end
 
       # Search4 : Drilldown
-      @drilldown_packages = DocumentTable.drilldown(result, "package", 5)
-      @drilldown_suffixs = DocumentTable.drilldown(result, "suffix", 7)
-      # @drilldown_suffixs << [0, ""]
+      @drilldown_packages = DocumentTable.drilldown(result, "package", FILTER_BY_PACKAGE_NUM)
+      @drilldown_suffixs = DocumentTable.drilldown(result, "suffix", FILTER_BY_SUFFIX_NUM)
     end
 
     def query
@@ -408,7 +410,7 @@ EOF
       result = drilldown_content(@drilldown_packages, I18n.t(:filter_by_package, {locale: @locale}), method(:refinement_directory))
       contents << result unless result.empty?
 
-      result = drilldown_content(@drilldown_suffixs, I18n.t(:filter_by_suffix, {locale: @locale}), method(:refinement_suffix))
+      result = drilldown_content(@drilldown_suffixs, I18n.t(:filter_by_suffix, {locale: @locale}), method(:refinement_suffix), '.')
       contents << result unless result.empty?
 
       unless contents.empty?
@@ -418,15 +420,19 @@ EOF
       end
     end
 
-    def drilldown_content(array, title, to_url)
+    def drilldown_content(array, title, to_url, prefix = "")
       unless array.empty? || array.size == 1
-        "<div class=\"filter_list\">#{title}: " + array.map {|v|
+        contents = []
+
+        array.each_with_index do |v, index|
           if v[0] != 0
-            "<span style=\"\"><strong><a href=\"#{to_url.call(v[1])}\" #{v[1]}(#{v[0]})>.#{v[1]}</a></strong> (#{v[0]})</span>"
+            contents << "<strong><a href=\"#{to_url.call(v[1])}\" #{v[1]}(#{v[0]})>#{prefix + v[1]}</a></strong> (#{v[0]})"
           else
-            "<span style=\"\">...</span>"            
+            contents << "..."
           end
-        }.join("&nbsp;&nbsp;&nbsp;") + "</div>"
+        end
+
+        "<div class=\"filter_list\">#{title}: " + contents.join("&nbsp;&nbsp;&nbsp;") + "</div>"
       else
         ""
       end
