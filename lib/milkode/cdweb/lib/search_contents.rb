@@ -98,8 +98,39 @@ module Milkode
       end
 
       # Search4 : Drilldown
-      @drilldown_packages = DocumentTable.drilldown(result, "package", FILTER_BY_PACKAGE_NUM)
-      @drilldown_suffixs = DocumentTable.drilldown(result, "suffix", FILTER_BY_SUFFIX_NUM)
+      @drilldown_packages    = DocumentTable.drilldown(result, "package", FILTER_BY_PACKAGE_NUM)
+      @drilldown_directories = make_drilldown_directories(result)
+      @drilldown_suffixs     = DocumentTable.drilldown(result, "suffix", FILTER_BY_SUFFIX_NUM)
+    end
+
+    def make_drilldown_directories(result)
+      # Return empty if root path
+      return [] if @path == ""
+
+      # Collect path
+      total = []
+      DocumentTable.drilldown(result, "restpath").each do |v|
+        path = Util::relative_path(v[1], @path.split("/")[1..-1].join("/")).to_s
+
+        if (path.include?("/"))
+          total << path.split("/")[0]
+        end
+      end
+
+      # Counting 
+      h = {}
+      total.each do |item|
+        if h.has_key?(item)
+          h[item] += 1
+        else
+          h[item] = 1
+        end
+      end
+
+      # To Array
+      h.map {|key, value|
+        [value, key]
+      }.to_a
     end
 
     def query
@@ -404,10 +435,17 @@ EOF
 
     end
 
+    def refinement_pathdir(dir)
+      refinement_directory(File.join(@path, dir))
+    end
+
     def drilldown_contents
       contents = []
       
       result = drilldown_content(@drilldown_packages, I18n.t(:filter_by_package, {locale: @locale}), method(:refinement_directory))
+      contents << result unless result.empty?
+
+      result = drilldown_content(@drilldown_directories, 'Filter by Directory', method(:refinement_pathdir), '', '/', true)
       contents << result unless result.empty?
 
       result = drilldown_content(@drilldown_suffixs, I18n.t(:filter_by_suffix, {locale: @locale}), method(:refinement_suffix), '.')
@@ -420,13 +458,13 @@ EOF
       end
     end
 
-    def drilldown_content(array, title, to_url, prefix = "")
-      unless array.empty? || array.size == 1
+    def drilldown_content(array, title, to_url, prefix = "", suffix = "", disp_if_one = false)
+      unless array.empty? || (!disp_if_one && array.size == 1)
         contents = []
 
         array.each_with_index do |v, index|
           if v[0] != 0
-            contents << "<strong><a href=\"#{to_url.call(v[1])}\" #{v[1]}(#{v[0]})>#{prefix + v[1]}</a></strong> (#{v[0]})"
+            contents << "<strong><a href=\"#{to_url.call(v[1])}\" #{v[1]}(#{v[0]})>#{prefix + v[1] + suffix}</a></strong> (#{v[0]})"
           else
             contents << "..."
           end
