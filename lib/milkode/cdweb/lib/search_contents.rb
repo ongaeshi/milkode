@@ -28,6 +28,7 @@ module Milkode
 
     FILTER_BY_PACKAGE_NUM = 5
     FILTER_BY_SUFFIX_NUM  = 8
+    FILTER_BY_DIRECTORIES_FILES = 200
 
     def initialize(path, params, query, suburl, locale)
       @path             = path
@@ -108,7 +109,10 @@ module Milkode
       return [] if @path == ""
 
       # Drilldown
-      DocumentTable.drilldown(result, "restpath").find_all {|v|
+      files = DocumentTable.drilldown(result, "restpath")
+      return [] if files.size > FILTER_BY_DIRECTORIES_FILES
+      
+      files.find_all {|v|
         v[1].include?("/")                                                              # Extract directory
       }.map {|v|
         Util::relative_path(v[1], @path.split("/")[1..-1].join("/")).to_s.split("/")[0] # 'path/to/file' ->  'path'
