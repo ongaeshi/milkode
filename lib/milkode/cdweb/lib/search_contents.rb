@@ -107,29 +107,16 @@ module Milkode
       # Return empty if root path
       return [] if @path == ""
 
-      # Collect path
-      total = []
-      DocumentTable.drilldown(result, "restpath").each do |v|
-        path = Util::relative_path(v[1], @path.split("/")[1..-1].join("/")).to_s
-
-        if (path.include?("/"))
-          total << path.split("/")[0]
-        end
-      end
-
-      # Counting 
-      h = {}
-      total.each do |item|
-        if h.has_key?(item)
-          h[item] += 1
-        else
-          h[item] = 1
-        end
-      end
-
-      # To Array
-      h.map {|key, value|
-        [value, key]
+      # Drilldown
+      DocumentTable.drilldown(result, "restpath").find_all {|v|
+        v[1].include?("/")                                                              # Extract directory
+      }.map {|v|
+        Util::relative_path(v[1], @path.split("/")[1..-1].join("/")).to_s.split("/")[0] # 'path/to/file' ->  'path'
+      }.inject(Hash.new(0)) {|hash, v| 
+        hash[v] += 1                                                                    # Collect hash
+        hash
+      }.map {|key, value|
+        [value, key]                                                                    # To Array
       }.to_a
     end
 
