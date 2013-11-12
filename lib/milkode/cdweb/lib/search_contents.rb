@@ -112,13 +112,14 @@ module Milkode
       files = DocumentTable.drilldown(result, "restpath")
       return [] if files.size > FILTER_BY_DIRECTORIES_FILES
       
-      files.find_all {|v|
-        v[1].include?("/")                                                              # Extract directory
+      files.map {|v|
+        Util::relative_path(v[1], @path.split("/")[1..-1].join("/")).to_s               # 'path/to/file' ->  'to/file' (@path == 'path')
+      }.find_all {|v|
+        v.include?("/")                                                                 # Extract directory
       }.map {|v|
-        Util::relative_path(v[1], @path.split("/")[1..-1].join("/")).to_s.split("/")[0] # 'path/to/file' ->  'path'
+        v.split("/")[0]                                                                 # 'to/file' -> 'to'
       }.inject(Hash.new(0)) {|hash, v| 
-        hash[v] += 1                                                                    # Collect hash
-        hash
+        hash[v] += 1; hash                                                              # Collect hash
       }.map {|key, value|
         [value, key]                                                                    # To Array
       }.to_a
