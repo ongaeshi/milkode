@@ -30,5 +30,6 @@ ja:
   update_package: '%{package_name} を更新しますか？'
   filter: 絞り込み
   item: 件
-  filter_by_package: 'パッケージで絞り込み'
-  filter_by_suffix: '拡張子で絞り込み'
+  filter_by_package: パッケージで絞り込み
+  filter_by_suffix: 拡張子で絞り込み
+  filter_by_directory: ディレクトリで絞り込み

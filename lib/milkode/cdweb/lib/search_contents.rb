@@ -437,7 +437,7 @@ EOF
       result = drilldown_content(@drilldown_packages, I18n.t(:filter_by_package, {locale: @locale}), method(:refinement_directory))
       contents << result unless result.empty?
 
-      result = drilldown_content(@drilldown_directories, 'Filter by Directory', method(:refinement_pathdir), '', '/', true)
+      result = drilldown_content(@drilldown_directories, I18n.t(:filter_by_directory, {locale: @locale}), method(:refinement_pathdir), '', '/', true)
       contents << result unless result.empty?
 
       result = drilldown_content(@drilldown_suffixs, I18n.t(:filter_by_suffix, {locale: @locale}), method(:refinement_suffix), '.')
