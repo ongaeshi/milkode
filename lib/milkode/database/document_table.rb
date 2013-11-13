@@ -11,25 +11,57 @@ require 'milkode/common/util'
 module Milkode
   class DocumentTable
     def self.define_schema
-      Groonga::Schema.define do |schema|
-        schema.create_table("documents", :type => :hash) do |table|          
-          table.string("path")
-          table.string("package")
-          table.string("restpath")
-          table.text("content")
-          table.time("timestamp")
-          table.string("suffix")
-        end
+      begin
+        Groonga::Schema.define do |schema|
+          schema.create_table("documents", :type => :hash) do |table|          
+            table.string("path")
+            table.string("package")
+            table.string("restpath")
+            table.text("content")
+            table.time("timestamp")
+            table.string("suffix")
+          end
 
-        schema.create_table("terms",
-                            :type => :patricia_trie,
-                            :key_normalize => true,
-                            :default_tokenizer => "TokenBigramSplitSymbolAlphaDigit") do |table|
-          table.index("documents.path", :with_position => true)
-          table.index("documents.package", :with_position => true)
-          table.index("documents.restpath", :with_position => true)
-          table.index("documents.content", :with_position => true)
-          table.index("documents.suffix", :with_position => true)
+          schema.create_table("terms",
+                              :type => :patricia_trie,
+                              :key_normalize => true,
+                              :default_tokenizer => "TokenBigramSplitSymbolAlphaDigit") do |table|
+            table.index("documents.path", :with_position => true)
+            table.index("documents.package", :with_position => true)
+            table.index("documents.restpath", :with_position => true)
+            table.index("documents.content", :with_position => true)
+            table.index("documents.suffix", :with_position => true)
+          end
+        end
+      rescue Groonga::Schema::ColumnCreationWithDifferentOptions
+        puts <<EOF
+WARNING: Milkode database is old. (Renewal at 1.4.0)
+Please execute rebuild command.
+
+  $ milk rebuild --all
+
+EOF
+
+        Groonga::Schema.define do |schema|
+          schema.create_table("documents", :type => :hash) do |table|          
+            table.string("path")
+            table.string("package")
+            table.string("restpath")
+            table.text("content")
+            table.time("timestamp")
+            table.text("suffix")
+          end
+
+          schema.create_table("terms",
+                              :type => :patricia_trie,
+                              :key_normalize => true,
+                              :default_tokenizer => "TokenBigramSplitSymbolAlphaDigit") do |table|
+            table.index("documents.path", :with_position => true)
+            table.index("documents.package", :with_position => true)
+            table.index("documents.restpath", :with_position => true)
+            table.index("documents.content", :with_position => true)
+            table.index("documents.suffix", :with_position => true)
+          end
         end
       end
     end

@@ -99,9 +99,13 @@ module Milkode
       end
 
       # Search4 : Drilldown
-      @drilldown_packages    = DocumentTable.drilldown(result, "package", FILTER_BY_PACKAGE_NUM)
-      @drilldown_directories = make_drilldown_directories(result)
-      @drilldown_suffixs     = DocumentTable.drilldown(result, "suffix", FILTER_BY_SUFFIX_NUM)
+      begin 
+        @drilldown_packages    = DocumentTable.drilldown(result, "package", FILTER_BY_PACKAGE_NUM)
+        @drilldown_directories = make_drilldown_directories(result)
+        @drilldown_suffixs     = DocumentTable.drilldown(result, "suffix", FILTER_BY_SUFFIX_NUM)
+      rescue Groonga::InvalidArgument
+        @drilldown_packages = @drilldown_directories = @drilldown_suffixs = []
+      end
     end
 
     def make_drilldown_directories(result)
