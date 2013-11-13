@@ -11,25 +11,57 @@ require 'milkode/common/util'
 module Milkode
   class DocumentTable
     def self.define_schema
-      Groonga::Schema.define do |schema|
-        schema.create_table("documents", :type => :hash) do |table|          
-          table.string("path")
-          table.string("package")
-          table.string("restpath")
-          table.text("content")
-          table.time("timestamp")
-          table.text("suffix")
-        end
+      begin
+        Groonga::Schema.define do |schema|
+          schema.create_table("documents", :type => :hash) do |table|          
+            table.string("path")
+            table.string("package")
+            table.string("restpath")
+            table.text("content")
+            table.time("timestamp")
+            table.string("suffix")
+          end
 
-        schema.create_table("terms",
-                            :type => :patricia_trie,
-                            :key_normalize => true,
-                            :default_tokenizer => "TokenBigramSplitSymbolAlphaDigit") do |table|
-          table.index("documents.path", :with_position => true)
-          table.index("documents.package", :with_position => true)
-          table.index("documents.restpath", :with_position => true)
-          table.index("documents.content", :with_position => true)
-          table.index("documents.suffix", :with_position => true)
+          schema.create_table("terms",
+                              :type => :patricia_trie,
+                              :key_normalize => true,
+                              :default_tokenizer => "TokenBigramSplitSymbolAlphaDigit") do |table|
+            table.index("documents.path", :with_position => true)
+            table.index("documents.package", :with_position => true)
+            table.index("documents.restpath", :with_position => true)
+            table.index("documents.content", :with_position => true)
+            table.index("documents.suffix", :with_position => true)
+          end
+        end
+      rescue Groonga::Schema::ColumnCreationWithDifferentOptions
+        puts <<EOF
+WARNING: Milkode database is old. (Renewal at 1.4.0)
+Please execute rebuild command.
+
+  $ milk rebuild --all
+
+EOF
+
+        Groonga::Schema.define do |schema|
+          schema.create_table("documents", :type => :hash) do |table|          
+            table.string("path")
+            table.string("package")
+            table.string("restpath")
+            table.text("content")
+            table.time("timestamp")
+            table.text("suffix")
+          end
+
+          schema.create_table("terms",
+                              :type => :patricia_trie,
+                              :key_normalize => true,
+                              :default_tokenizer => "TokenBigramSplitSymbolAlphaDigit") do |table|
+            table.index("documents.path", :with_position => true)
+            table.index("documents.package", :with_position => true)
+            table.index("documents.restpath", :with_position => true)
+            table.index("documents.content", :with_position => true)
+            table.index("documents.suffix", :with_position => true)
+          end
         end
       end
     end
@@ -299,14 +331,19 @@ module Milkode
                                         :offset => offset,
                                         :limit => limit)
 
-      # 検索結果のレコード(limitの影響を受ける), 総マッチ数(limitの影響を受けない)
-      return records, result.size
+      # 検索結果のレコード(limitの影響を受ける), 総マッチ数(limitの影響を受けない), result(Groonga::Hash)
+      return records, result.size, result
     end
 
     # マッチしたレコードのみを返す
     def search(options)
       records, match_total = search_with_match(options)
       records
+    end
+
+    def self.drilldown(result, column, num = nil)
+      drilled = result.group(column).map {|record| [record.n_sub_records, record.key]}.sort_by {|a| a[0]}.reverse
+      num ? drilled[0, num] : drilled
     end
     
     def select_all_sort_by_shortpath(offset = 0, limit = -1)
