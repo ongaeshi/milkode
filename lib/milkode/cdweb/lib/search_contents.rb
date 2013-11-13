@@ -356,8 +356,11 @@ EOF
       path = Util::relative_path(record.shortpath, @path)
 
       if path != @prev
+#         dt = <<EOS
+#     <dt class='result-record'><a href='#{url + "#n#{coderay.highlight_lines[0]}"}'>#{path}</a>#{result_refinement(record)}</dt>
+# EOS
         dt = <<EOS
-    <dt class='result-record'><a href='#{url + "#n#{coderay.highlight_lines[0]}"}'>#{path}</a>#{result_refinement(record)}</dt>
+    <dt class='result-record'><a href='#{url + "#n#{coderay.highlight_lines[0]}"}'>#{path}</a></dt>
 EOS
         @prev = path
       else
@@ -423,12 +426,11 @@ EOS
         space2            = '&nbsp;&nbsp;,&nbsp;&nbsp;'
 
         <<EOF
-#{space1}<span id="result-refinement">#{I18n.t(:filter, {locale: @locale})} [#{refinements.join(space2)}]</span>
+# #{space1}<span id="result-refinement">#{I18n.t(:filter, {locale: @locale})} [#{refinements.join(space2)}]</span>
 EOF
       else
         ''
       end
-
     end
 
     def refinement_pathdir(dir)
