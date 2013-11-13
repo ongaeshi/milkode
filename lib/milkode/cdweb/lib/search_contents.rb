@@ -171,8 +171,8 @@ EOF
       str = drilldown_contents
       contents << str unless str.empty?
 
-      str = recommended_query_contents
-      contents << str unless str.empty?
+      # str = recommended_query_contents
+      # contents << str unless str.empty?
 
       str = match_files_contents
       contents << str unless str.empty?
