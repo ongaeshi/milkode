@@ -36,7 +36,7 @@ module Milkode
       rescue Groonga::Schema::ColumnCreationWithDifferentOptions
         puts <<EOF
 WARNING: Milkode database is old. (Renewal at 1.4.0)
-Please execute rebuild command.
+Can't get the new features. Please execute rebuild command.
 
   $ milk rebuild --all
 
