@@ -23,6 +23,14 @@ class TestCLI < Test::Unit::TestCase
     @work.teardown
   end
 
+  def test_add
+    # system("type git")
+    command("add")
+    assert_not_match /error/, command("add https://github.com/ongaeshi/emacs-milkode.git")
+    assert_not_match /error/, command("add https://github.com/ongaeshi/emacs-milkode.git -n em-develop -b develop")
+    assert_match     /error/, command("add https://github.com/ongaeshi/emacs-milkode.git -n em-developa -b developa") # not found branch
+  end
+
   def test_grep
     command("grep")
     command("grep not_found")

@@ -32,7 +32,9 @@ Samples:
   milk add /path/to/addon.xpi
   milk add http://example.com/urlfile.zip
   milk add git://github.com/ongaeshi/milkode.git
+  milk add git://github.com/ongaeshi/milkode.git -b develop -n milkode_develop
 EOF
+    option :branch_name,    :type => :string,  :aliases => '-b',   :desc => 'Branch name.'
     option :empty,          :type => :boolean,                     :desc => 'Add empty package.'
     option :ignore,         :type => :array,   :aliases => '-i',   :desc => 'Ignore path.'
     option :name,           :type => :string,  :aliases => '-n',   :desc => 'Rename package.'

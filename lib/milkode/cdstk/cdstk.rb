@@ -292,20 +292,22 @@ module Milkode
     end
 
     def git_clone_in(url, options)
-      alert("git", url)
-
       dst_dir  = File.join(@db_dir, "packages/git")
       name     = options[:name] || File.basename(url).sub(/\.git\Z/, "")
       filename = File.join(dst_dir, name)
 
       unless File.exist?(filename)
-        alert("git", url)
-
         # git output progress to stderr.
         # `git clone #{url} #{filename} 2>&1`
 
         # with output
-        system("git clone #{url} #{filename}")
+        if options[:branch_name]
+          alert("git", "#{url} (#{options[:branch_name]})")
+          system("git clone #{url} #{filename} -b #{options[:branch_name]}")
+        else
+          alert("git", url)
+          system("git clone #{url} #{filename}")
+        end
       end
 
       filename
