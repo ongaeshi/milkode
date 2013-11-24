@@ -79,6 +79,7 @@ EOF
       opt.on('-n NUM', 'Limits the number of match to show.') {|v| option.matchCountLimit = v.to_i }
       opt.on('--no-external', 'Disable auto external.') {|v| my_option[:no_external] = true }
       opt.on('--no-snip', 'There being a long line, it does not snip.') {|v| option.noSnip = true }
+      opt.on('-o ENCODE', '--output-encode ENCODE', 'Specify output encode(none, auto, jis, sjis, euc, ascii, utf8, utf16). Default is "auto"') {|v| option.output_kcode = Util::str2kcode(v) }
       opt.on('-p PACKAGE', '--package PACKAGE', 'Specify search package.') {|v| setup_package(option, my_option, v) }
       opt.on('-r', '--root', 'Search from package root.') {|v| current_dir = package_root_dir(File.expand_path(".")); my_option[:find_mode] = true }
       opt.on('-s SUFFIX', '--suffix SUFFIX', 'Suffix.') {|v| option.suffixs << v; my_option[:find_mode] = true } 

@@ -305,6 +305,27 @@ module Milkode
         nil
       end
     end
+
+    def str2kcode(str)
+      case str.downcase
+      when 'none'
+        Kconv::NOCONV
+      when 'jis'
+        Kconv::JIS
+      when 'sjis'
+        Kconv::SJIS
+      when 'euc'
+        Kconv::EUC
+      when 'ascii'
+        Kconv::ASCII
+      when 'utf8'
+        Kconv::UTF8
+      when 'utf16'
+        Kconv::UTF16
+      else
+        nil
+      end
+    end    
     
   end
 end
