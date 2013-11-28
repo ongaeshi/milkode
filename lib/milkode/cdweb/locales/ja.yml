@@ -1,0 +1,35 @@
+ja:
+  search: 検索
+  name: 名前
+  recently_viewed: 最近使った
+  added: 追加
+  updated: 更新
+  favorite: お気に入り
+  packages: のパッケージ
+  files: のファイル
+  help: ヘルプ
+  about_milkode: milkodeについて
+  new_tab: 新規タブ
+  target: 範囲
+  package: パッケージ
+  clear: クリア
+  onematch: 1ファイル1マッチ
+  case_sensitive: 大文字／小文字を区別
+  total_files: ファイル中
+  searched: ファイルを検索
+  matched_num: 件マッチ
+  sec: 秒
+  home: ホーム
+  directory: ディレクトリ
+  update_packages: パッケージを更新
+  stats: 統計情報
+  all: 全て
+  english: 英語
+  japanese: 日本語
+  update_all: 全てのパッケージを更新しますか？
+  update_package: '%{package_name} を更新しますか？'
+  filter: 絞り込み
+  item: 件
+  filter_by_package: パッケージで絞り込み
+  filter_by_suffix: 拡張子で絞り込み
+  filter_by_directory: ディレクトリで絞り込み

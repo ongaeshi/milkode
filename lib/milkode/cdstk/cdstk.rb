@@ -119,6 +119,10 @@ module Milkode
     def add(dirs, options)
       update_display_info(options)
 
+      if options[:from_file]
+        dirs = File.read(options[:from_file]).split("\n")
+      end
+
       print_result do
         # データベースを開く
         db_open
@@ -131,7 +135,8 @@ module Milkode
 
             # YAMLに追加
             package = Package.create(dir, options[:ignore])
-            add_yaml(package)
+            skip_add = options[:from_file] && @yaml.find_name(package.name)
+            add_yaml(package) unless skip_add
 
             # オプション設定
             is_update_with_git_pull   = git_protocol?(options, v)
@@ -139,7 +144,13 @@ module Milkode
             set_yaml_options(package, options, is_update_with_git_pull, is_update_with_svn_update)
 
             # アップデート
-            update_dir_in(dir) unless options[:empty]
+            unless options[:empty]
+              if skip_add
+                update_package_in(package, options)
+              else
+                update_dir_in(dir)
+              end
+            end
           end
         rescue AddError => e
           error_alert(e.message)
@@ -281,17 +292,23 @@ module Milkode
     end
 
     def git_clone_in(url, options)
-      alert("git", url)
-
       dst_dir  = File.join(@db_dir, "packages/git")
       name     = options[:name] || File.basename(url).sub(/\.git\Z/, "")
       filename = File.join(dst_dir, name)
 
-      # git output progress to stderr.
-      # `git clone #{url} #{filename} 2>&1`
+      unless File.exist?(filename)
+        # git output progress to stderr.
+        # `git clone #{url} #{filename} 2>&1`
 
-      # with output
-      system("git clone #{url} #{filename}")
+        # with output
+        if options[:branch_name]
+          alert("git", "#{url} (#{options[:branch_name]})")
+          system("git clone #{url} #{filename} -b #{options[:branch_name]}")
+        else
+          alert("git", url)
+          system("git clone #{url} #{filename}")
+        end
+      end
 
       filename
     end

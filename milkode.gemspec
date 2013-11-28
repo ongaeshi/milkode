@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ongaeshi"]
-  s.date = "2013-10-28"
+  s.date = "2013-11-28"
   s.description = "Line based local source code search engine & grep-command & web-app."
   s.email = "ongaeshi0621@gmail.com"
   s.executables = ["gmilk", "milk"]
@@ -53,6 +53,8 @@ Gem::Specification.new do |s|
     "lib/milkode/cdweb/lib/search_fuzzy_gotoline.rb",
     "lib/milkode/cdweb/lib/search_gotoline.rb",
     "lib/milkode/cdweb/lib/web_setting.rb",
+    "lib/milkode/cdweb/locales/en.yml",
+    "lib/milkode/cdweb/locales/ja.yml",
     "lib/milkode/cdweb/public/css/auth-buttons.css",
     "lib/milkode/cdweb/public/css/auth-icons.png",
     "lib/milkode/cdweb/public/css/bootstrap-responsive.min.css",
@@ -217,6 +219,7 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<haml>, [">= 3.1.2"])
       s.add_runtime_dependency(%q<sass>, [">= 3.1.3"])
       s.add_runtime_dependency(%q<thor>, [">= 0.18.1"])
+      s.add_runtime_dependency(%q<i18n>, ["~> 0.6.5"])
       s.add_development_dependency(%q<bundler>, [">= 0"])
       s.add_development_dependency(%q<jeweler>, [">= 0"])
       s.add_development_dependency(%q<rack-test>, [">= 0"])
@@ -234,6 +237,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<haml>, [">= 3.1.2"])
       s.add_dependency(%q<sass>, [">= 3.1.3"])
       s.add_dependency(%q<thor>, [">= 0.18.1"])
+      s.add_dependency(%q<i18n>, ["~> 0.6.5"])
       s.add_dependency(%q<bundler>, [">= 0"])
       s.add_dependency(%q<jeweler>, [">= 0"])
       s.add_dependency(%q<rack-test>, [">= 0"])
@@ -252,6 +256,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<haml>, [">= 3.1.2"])
     s.add_dependency(%q<sass>, [">= 3.1.3"])
     s.add_dependency(%q<thor>, [">= 0.18.1"])
+    s.add_dependency(%q<i18n>, ["~> 0.6.5"])
     s.add_dependency(%q<bundler>, [">= 0"])
     s.add_dependency(%q<jeweler>, [">= 0"])
     s.add_dependency(%q<rack-test>, [">= 0"])

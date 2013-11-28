@@ -1,18 +1,14 @@
 # -*- coding: utf-8 -*-
-#
-# @file 
-# @brief
-# @author ongaeshi
-# @date   2011/06/25
-
 require 'rubygems'
 require 'sinatra'
+require 'sass'
+require 'haml'
+require 'i18n'
+
 if ENV['MILKODE_SINATRA_RELOADER']
   require 'sinatra/reloader'
   also_reload '../../**/*.rb'
 end
-require 'sass'
-require 'haml'
 
 $LOAD_PATH.unshift '../..'
 require 'milkode/common/util'
@@ -25,7 +21,10 @@ require 'milkode/cdweb/lib/info_home'
 require 'milkode/cdweb/lib/info_package'
 require 'sinatra/url_for'
 
+I18n.load_path += Dir[File.join(File.dirname(__FILE__), 'locales', '*.yml').to_s]
+
 set :haml, :format => :html5
+enable :sessions
 
 get '/js/:filename' do
   content_type :js
@@ -44,7 +43,7 @@ end
 get '/' do
   if Database.validate?
     @setting = WebSetting.new
-    @version = "1.3.0"
+    @version = "1.4.0"
 
     @package_num = Database.instance.yaml_package_num
     @file_num = Database.instance.totalRecords
@@ -107,7 +106,7 @@ post '/command' do
   when 'favorite'
     Database.instance.set_fav(params[:name], params[:favorited] == 'true')
     @package_list = PackageList.new(Database.instance.grndb, url_for(''))
-    "お気に入り: " + @package_list.favorite_list({})
+    t(:favorite) + ": " + @package_list.favorite_list({})
   end
 end
 
@@ -117,18 +116,19 @@ get '/home*' do |path|
   record = Database.instance.record(path)
   @package_list = PackageList.new(Database.instance.grndb, url_for(''))
   suburl = url_for('')
+  update_locale
 
   if path.empty?
     if (params[:query] and !params[:query].empty?)
-      search(path, params, before, suburl)
+      search(path, params, before, suburl, @locale)
     else
-      packages(params, before, suburl)
+      packages(params, before, suburl, @locale)
     end
   elsif (record)
     view(record, params, before)
   else
     if (params[:query] and !params[:query].empty?)
-      search(path, params, before, suburl)
+      search(path, params, before, suburl, @locale)
     else
       filelist(path, params, before, suburl)
     end
@@ -192,9 +192,9 @@ helpers do
     value ||= "package"
 
     data = [
-            ['all'      , '全て'        ],
-            ['package'  , 'パッケージ'  ],
-            ['directory', 'ディレクトリ'],
+            ['all'      , t(:all)      ],
+            ['package'  , t(:package)  ],
+            ['directory', t(:directory)],
            ]
 
     <<EOF
@@ -239,27 +239,28 @@ EOF
     flist = File.join("#{suburl}/home/#{path}", flistpath)
 
     package_name = ""
-    modal_body = "全てのパッケージを更新しますか？"
+    modal_body = t(:update_all)
 
     if (path != "")
       package_name = path.split('/')[0]
-      modal_body = "#{package_name} を更新しますか？"
+      update_locale
+      modal_body = I18n.t(:update_package, {package_name: package_name, locale: @locale})
     end
 
     info_path = "#{suburl}/info"
     info_path = File.join(info_path, package_name) if package_name != ""
 
     <<EOF
-    #{headicon('go-home-5.png', suburl)}<a href="#{suburl}/home" class="headmenu">ホーム</a>&nbsp;
-    #{headicon('directory.png', suburl)}<a href="#{flist}" class="headmenu">ディレクトリ</a>
-    #{headicon('view-refresh-4.png', suburl)}<a href="#updateModal" class="headmenu" data-toggle="modal">パッケージを更新</a>&nbsp;
-    #{headicon('info.png', suburl)}<a href="#{info_path}" class="headmenu">統計情報</a>&nbsp;
-    #{headicon('help.png', suburl)}<a href="#{suburl}/help" class="headmenu">ヘルプ</a>
+    #{headicon('go-home-5.png', suburl)}<a href="#{suburl}/home" class="headmenu">#{t(:home)}</a>&nbsp;
+    #{headicon('directory.png', suburl)}<a href="#{flist}" class="headmenu">#{t(:directory)}</a>
+    #{headicon('view-refresh-4.png', suburl)}<a href="#updateModal" class="headmenu" data-toggle="modal">#{t(:update_packages)}</a>&nbsp;
+    #{headicon('info.png', suburl)}<a href="#{info_path}" class="headmenu">#{t(:stats)}</a>&nbsp;
+    #{headicon('help.png', suburl)}<a href="#{suburl}/help" class="headmenu">#{t(:help)}</a>
 
     <div id="updateModal" class="modal hide fade">
       <div class="modal-header">
         <a href="#" class="close" data-dismiss="modal">&times;</a>
-        <h3>パッケージを更新</h3>
+        <h3>#{t(:update_packages)}</h3>
       </div>
       <div class="modal-body">
         <h4>#{modal_body}</h4>
@@ -292,7 +293,7 @@ EOF
   def create_favorite_list(package_list)
     <<EOF
       <div class="favorite_list">
-        お気に入り:
+        #{t(:favorite)}:
         #{package_list.favorite_list(params)}
       </div>
     </div>
@@ -398,6 +399,32 @@ EOF
   # .search-summary に追加情報を表示したい時はこの関数をオーバーライド
   def search_summary_hook(path)
     goto_github_project(path)
+  end
+
+  ## for I18N
+  def ua_locale
+    # Pulls the browser's language
+    @env["HTTP_ACCEPT_LANGUAGE"][0,2]
+  end
+
+  def update_locale
+    unless @locale
+      begin
+        # Support session
+        @locale = params[:locale] || session[:locale] || ua_locale || 'en'
+        session[:locale] = @locale
+      rescue NameError          # 'session' variable can't find during testing
+        @locale = 'en'
+      end
+        
+      # Reload with sinatra-reloader
+      I18n.reload! if ENV['MILKODE_SINATRA_RELOADER']
+    end
+  end
+
+  def t(*args)
+    update_locale
+    I18n.t(*args, locale: @locale)
   end
 end
 

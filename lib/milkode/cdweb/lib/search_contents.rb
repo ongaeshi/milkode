@@ -26,7 +26,11 @@ module Milkode
 
     DEFAULT_WIDE_MATCH_RANGE = 7 # 未指定時のワイド検索範囲
 
-    def initialize(path, params, query, suburl)
+    FILTER_BY_PACKAGE_NUM = 5
+    FILTER_BY_SUFFIX_NUM  = 8
+    FILTER_BY_DIRECTORIES_FILES = 200
+
+    def initialize(path, params, query, suburl, locale)
       @path             = path
       @params           = params
       @q                = query
@@ -37,11 +41,12 @@ module Milkode
       @is_sensitive     = params[:sensitive] == 'on'
       @suburl           = suburl
       @homeurl          = @suburl + "/home/"
+      @locale           = locale
 
       @searcher_fuzzy_gotoline = nil
 
       # 検索1 : クエリーそのまま
-      @records, @total_records = Database.instance.search(@q.keywords, @q.multi_match_keywords, @q.packages, path, @q.fpaths, @q.suffixs, @q.fpath_or_packages, @offset, LIMIT_NUM)
+      @records, @total_records, result = Database.instance.search(@q.keywords, @q.multi_match_keywords, @q.packages, path, @q.fpaths, @q.suffixs, @q.fpath_or_packages, @offset, LIMIT_NUM)
       grep_contents(@q.keywords, @q.wide_match_range)
 
       # 検索2 : マッチしなかった時におすすめクエリーがある場合
@@ -92,6 +97,36 @@ module Milkode
           @match_files, t = Database.instance.search([], @q.multi_match_keywords, @q.packages, path, @q.fpaths, @q.suffixs, @q.fpath_or_packages + @q.keywords, @offset, MATH_FILE_LIMIT)
         end
       end
+
+      # Search4 : Drilldown
+      begin 
+        @drilldown_packages    = DocumentTable.drilldown(result, "package", FILTER_BY_PACKAGE_NUM)
+        @drilldown_directories = make_drilldown_directories(result)
+        @drilldown_suffixs     = DocumentTable.drilldown(result, "suffix", FILTER_BY_SUFFIX_NUM)
+      rescue Groonga::InvalidArgument
+        @drilldown_packages = @drilldown_directories = @drilldown_suffixs = []
+      end
+    end
+
+    def make_drilldown_directories(result)
+      # Return empty if root path
+      return [] if @path == ""
+
+      # Drilldown
+      files = DocumentTable.drilldown(result, "restpath")
+      return [] if files.size > FILTER_BY_DIRECTORIES_FILES
+      
+      files.map {|v|
+        Util::relative_path(v[1], @path.split("/")[1..-1].join("/")).to_s               # 'path/to/file' ->  'to/file' (@path == 'path')
+      }.find_all {|v|
+        v.include?("/")                                                                 # Extract directory
+      }.map {|v|
+        v.split("/")[0]                                                                 # 'to/file' -> 'to'
+      }.inject(Hash.new(0)) {|hash, v| 
+        hash[v] += 1; hash                                                              # Collect hash
+      }.map {|key, value|
+        [value, key]                                                                    # To Array
+      }.to_a
     end
 
     def query
@@ -137,8 +172,11 @@ EOF
     def recommended_contents
       contents = []
 
-      str = recommended_query_contents
+      str = drilldown_contents
       contents << str unless str.empty?
+
+      # str = recommended_query_contents
+      # contents << str unless str.empty?
 
       str = match_files_contents
       contents << str unless str.empty?
@@ -318,8 +356,11 @@ EOF
       path = Util::relative_path(record.shortpath, @path)
 
       if path != @prev
+#         dt = <<EOS
+#     <dt class='result-record'><a href='#{url + "#n#{coderay.highlight_lines[0]}"}'>#{path}</a>#{result_refinement(record)}</dt>
+# EOS
         dt = <<EOS
-    <dt class='result-record'><a href='#{url + "#n#{coderay.highlight_lines[0]}"}'>#{path}</a>#{result_refinement(record)}</dt>
+    <dt class='result-record'><a href='#{url + "#n#{coderay.highlight_lines[0]}"}'>#{path}</a></dt>
 EOS
         @prev = path
       else
@@ -373,24 +414,64 @@ EOS
       refinements = []
 
       # 拡張子で絞り込み
-      refinements << "<a href='#{refinement_suffix(record.suffix)}'>.#{record.suffix}で絞り込み</a>" if record.suffix
+      refinements << "<a href='#{refinement_suffix(record.suffix)}'>.#{record.suffix}</a>" if record.suffix
 
       # ディレクトリで絞り込み
       path    = Util::relative_path(record.shortpath, @path)
       dirname = path.to_s.split('/')[-2]
-      refinements << "<a href='#{refinement_directory(record.shortpath + '/..')}'>#{dirname}/以下で再検索</a>" if dirname
+      refinements << "<a href='#{refinement_directory(record.shortpath + '/..')}'>#{dirname}/</a>" if dirname
 
       unless refinements.empty?
         space1            = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
         space2            = '&nbsp;&nbsp;,&nbsp;&nbsp;'
 
         <<EOF
-#{space1}<span id="result-refinement">[#{refinements.join(space2)}]</span>
+# #{space1}<span id="result-refinement">#{I18n.t(:filter, {locale: @locale})} [#{refinements.join(space2)}]</span>
 EOF
       else
         ''
       end
+    end
 
+    def refinement_pathdir(dir)
+      refinement_directory(File.join(@path, dir))
+    end
+
+    def drilldown_contents
+      contents = []
+      
+      result = drilldown_content(@drilldown_packages, I18n.t(:filter_by_package, {locale: @locale}), method(:refinement_directory))
+      contents << result unless result.empty?
+
+      result = drilldown_content(@drilldown_directories, I18n.t(:filter_by_directory, {locale: @locale}), method(:refinement_pathdir), '', '/', true)
+      contents << result unless result.empty?
+
+      result = drilldown_content(@drilldown_suffixs, I18n.t(:filter_by_suffix, {locale: @locale}), method(:refinement_suffix), '.')
+      contents << result unless result.empty?
+
+      unless contents.empty?
+        contents.join + "<hr>\n"
+      else
+        ""
+      end
+    end
+
+    def drilldown_content(array, title, to_url, prefix = "", suffix = "", disp_if_one = false)
+      unless array.empty? || (!disp_if_one && array.size == 1)
+        contents = []
+
+        array.each_with_index do |v, index|
+          if v[0] != 0
+            contents << "<strong><a href=\"#{to_url.call(v[1])}\" #{v[1]}(#{v[0]})>#{prefix + v[1] + suffix}</a></strong> (#{v[0]})"
+          else
+            contents << "..."
+          end
+        end
+
+        "<div class=\"filter_list\">#{title}: " + contents.join("&nbsp;&nbsp;&nbsp;") + "</div>"
+      else
+        ""
+      end
     end
 
   end

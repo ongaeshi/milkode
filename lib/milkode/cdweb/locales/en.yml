@@ -1,0 +1,35 @@
+en:
+  search: Search
+  name: Name
+  recently_viewed: Viewed
+  added: New
+  updated: Updated
+  favorite: Favorites
+  packages: packages
+  files: files
+  help: Help
+  about_milkode: About Milkode
+  new_tab: New Tab
+  target: Target
+  package: Package
+  clear: Clear
+  onematch: one file one match
+  case_sensitive: case sensitive
+  total_files: files
+  searched: searched
+  matched_num: matched
+  sec: sec.
+  home: Home
+  directory: Directory
+  update_packages: Update Packages
+  stats: Stats
+  all: all
+  english: English
+  japanese: Japanese
+  update_all: Update all packages?
+  update_package: 'Update %{package_name}?'
+  filter: Filter
+  item: items
+  filter_by_package: Filter by Package
+  filter_by_suffix: Filter by Suffix
+  filter_by_directory: Filter by Directory

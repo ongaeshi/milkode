@@ -56,7 +56,7 @@ module Milkode
     haml :view
   end
 
-  def search(path, params, before, suburl)
+  def search(path, params, before, suburl, locale)
     @setting = WebSetting.new
     @path = path
     query = Query.new(params[:query])
@@ -73,7 +73,7 @@ module Milkode
       if Util::gotoline_keyword?(query.keywords[0])
         searcher = SearchGotoLine.new(path, params, query, suburl)
       else
-        searcher = SearchContents.new(path, params, query, suburl)
+        searcher = SearchContents.new(path, params, query, suburl, locale)
 
         if searcher.directjump?
           redirect searcher.directjump_url
@@ -105,24 +105,25 @@ module Milkode
     haml :filelist
   end
 
-  def packages(params, before, suburl)
+  def packages(params, before, suburl, locale)
     @setting = WebSetting.new
     @title = "Package List"
     @path = ""
     packages = Database.instance.packages(params["sort"])
     @total_records = packages.size
+    @locale = locale
 
     @sort_change_content =
       [
-       sort_change_content(params["sort"], '名前'),
+       sort_change_content(params["sort"], I18n.t(:name, locale: @locale)),
        '|',
-       sort_change_content(params["sort"], '最近使った', 'viewtime'),
+       sort_change_content(params["sort"], I18n.t(:recently_viewed, locale: @locale), 'viewtime'),
        '|',
-       sort_change_content(params["sort"], '追加順'    , 'addtime'),
+       sort_change_content(params["sort"], I18n.t(:added, locale: @locale), 'addtime'),
        '|',
-       sort_change_content(params["sort"], '更新順'    , 'updatetime'),
+       sort_change_content(params["sort"], I18n.t(:updated, locale: @locale), 'updatetime'),
        '|',
-       sort_change_content(params["sort"], 'お気に入り', 'favtime'),
+       sort_change_content(params["sort"], I18n.t(:favorite, locale: @locale), 'favtime'),
       ].join("\n")
 
     @record_content = packages.map do |v|

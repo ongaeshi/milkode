@@ -9,11 +9,12 @@
     .keyword.ss-box
       #{topic_path(@path, params)}
     .hit-num.ss-box
-      #{@total_records}</span>ファイル中
+      #{@total_records}</span>
+      = t(:total_files)
     .search-range.ss-box
-      #{@range.first} - #{@range.last}ファイルを検索
+      #{@range.first} - #{@range.last} #{t(:searched)}
     .match-num.ss-box
-      #{@match_num}</span>件マッチ（#{@elapsed}秒）
+      #{@match_num}</span> #{t(:matched_num)}（#{@elapsed}#{t(:sec)}）
     .search-summary-hook.ss-box
       #{search_summary_hook(@path)}
     .ss-end

@@ -187,11 +187,11 @@ module Milkode
     end
 
     def git_url?(src)
-      (src =~ /^(:?git[:@])|(:?ssh:)/) != nil
+      (src =~ /^(?:git[:@])|(?:ssh:)|(?:\.git\Z)/) != nil
     end
 
     def svn_url?(src)
-      (src =~ /^(:?svn|svn\+ssh):\/\//) != nil
+      (src =~ /^(?:svn|svn\+ssh):\/\//) != nil
     end
 
     # StringIO patch
@@ -250,7 +250,7 @@ module Milkode
         pos = 0
 
         loop do 
-          r = src.match(/#{keyword}/i, pos) do |m|
+          r = src.match(/#{Regexp.escape(keyword)}/i, pos) do |m|
             s = m.begin(0)
             l = keyword.length
             e = s+l
@@ -305,6 +305,27 @@ module Milkode
         nil
       end
     end
+
+    def str2kcode(str)
+      case str.downcase
+      when 'none'
+        Kconv::NOCONV
+      when 'jis'
+        Kconv::JIS
+      when 'sjis'
+        Kconv::SJIS
+      when 'euc'
+        Kconv::EUC
+      when 'ascii'
+        Kconv::ASCII
+      when 'utf8'
+        Kconv::UTF8
+      when 'utf16'
+        Kconv::UTF16
+      else
+        nil
+      end
+    end    
     
   end
 end

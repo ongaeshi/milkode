@@ -345,6 +345,11 @@ module Milkode
             
             line = GrenSnip::snip(line, match_datas) unless (@option.noSnip)
 
+            if @option.output_kcode != Kconv::UTF8
+              header = Kconv.kconv(header, @option.output_kcode)
+              line   = Kconv.kconv(line, @option.output_kcode)
+            end
+
             unless (@option.colorHighlight)
               stdout.puts header + line
             else
