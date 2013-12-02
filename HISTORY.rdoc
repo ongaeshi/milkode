@@ -1,3 +1,25 @@
+=== 1.4.0 2013/11/29
+
+* milk web
+  * Add Filtering feature
+    * Package
+    * Suffix
+    * Directory
+    * Delete result_refinement
+  * Support I18N (thanks takahashim)
+  * Bugfix
+    * Had forgotten Regexp.escape
+
+* milk
+  * Change Groonga::Schema table.text(“suffix”) -> table.string(“suffix”)
+    * Need 'milk rebuild --all'
+  * #51 Add ‘milk add -b branch_name’ option (thanks niku)
+  * Arrow 'https://.….git' to Util#git_url?
+  * Add 'milk add --from-file LIST'
+
+* gmilk
+  * Add ‘gmilk -o’ option (Specify output encode)
+
 === 1.3.0 2013/10/28
 
 * milk web
