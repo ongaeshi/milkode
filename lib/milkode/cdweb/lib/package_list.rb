@@ -57,6 +57,22 @@ module Milkode
 EOF
     end
 
+    def news_items
+      arrays = @grndb.packages.sort('updatetime')
+
+      arrays = arrays.map {|v|
+        {
+          a_tag: "<a href=\"#{@suburl}/home/#{v.name}\">#{v.name}</a>",
+          timestamp: v.updatetime
+          
+        }
+      }
+
+      arrays.map {|item|
+        "<div class='news-item'>Updated #{item[:a_tag]} <span class='time'>#{item[:timestamp]}</span></div>"
+      }.join("\n")
+    end
+
     # ------------------------------------------------------
     private
 
