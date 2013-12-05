@@ -13,6 +13,7 @@ module Milkode
     ADD_NUM    = 5
     UPDATE_NUM = 5
     FAV_NUM    = 7
+    NEWS_ITEM_NUM = 20
 
     FAVORITE_LIST_NUM = 7
     
@@ -58,18 +59,26 @@ EOF
     end
 
     def news_items
-      arrays = @grndb.packages.sort('updatetime')
-
-      arrays = arrays.map {|v|
+      updates = @grndb.packages.sort('updatetime')[0...NEWS_ITEM_NUM].map do |v|
         {
-          a_tag: "<a href=\"#{@suburl}/home/#{v.name}\">#{v.name}</a>",
+          html: "<div class='news-item'>Updated <a href=\"#{@suburl}/home/#{v.name}\">#{v.name}</a> <span class='time'>#{v.updatetime}</span></div>",
           timestamp: v.updatetime
-          
         }
-      }
+      end
 
-      arrays.map {|item|
-        "<div class='news-item'>Updated #{item[:a_tag]} <span class='time'>#{item[:timestamp]}</span></div>"
+      adds = @grndb.packages.sort('addtime')[0...NEWS_ITEM_NUM].map do |v|
+        {
+          html: "<div class='news-item'>Addd <a href=\"#{@suburl}/home/#{v.name}\">#{v.name}</a> <span class='time'>#{v.addtime}</span></div>",
+          timestamp: v.addtime
+        }
+      end
+
+      items = (updates + adds).sort_by {|item|
+        item[:timestamp]
+      }.reverse[0...NEWS_ITEM_NUM]
+        
+      items.map {|item|
+        item[:html]
       }.join("\n")
     end
 
