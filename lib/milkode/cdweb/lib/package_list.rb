@@ -13,10 +13,12 @@ module Milkode
     ADD_NUM    = 5
     UPDATE_NUM = 5
     FAV_NUM    = 7
-    NEWS_ITEM_NUM = 20
 
     FAVORITE_LIST_NUM = 7
     
+    NEWS_ITEM_NUM = 20
+    EXCLUDE_UPDATE_SEC = 300
+
     def initialize(grndb, suburl)
       @grndb  = grndb
       @suburl = suburl
@@ -63,8 +65,9 @@ EOF
         message = I18n.t(:update_news, {package_name: "<a href=\"#{@suburl}/home/#{v.name}\">#{v.name}</a>", locale: locale})
         
         {
-          html: "<div class='news-item'>#{message} <span class='time'>#{news_time(v.updatetime)}</span></div>",
-          timestamp: v.updatetime
+          name: v.name,
+          timestamp: v.updatetime,
+          html: "<div class='news-item'>#{message} <span class='time'>#{news_time(v.updatetime)}</span></div>"
         }
       end
 
@@ -72,16 +75,33 @@ EOF
         message = I18n.t(:add_news, {package_name: "<a href=\"#{@suburl}/home/#{v.name}\">#{v.name}</a>", locale: locale})
 
         {
-          html: "<div class='news-item'>#{message} <span class='time'>#{news_time(v.addtime)}</span></div>",
-          timestamp: v.addtime
+          name: v.name,
+          timestamp: v.addtime,
+          html: "<div class='news-item'>#{message} <span class='time'>#{news_time(v.addtime)}</span></div>"
         }
       end
 
       items = (updates + adds).sort_by {|item|
         item[:timestamp]
-      }.reverse[0...NEWS_ITEM_NUM]
-        
-      items.map {|item|
+      }.reverse
+
+      # Exclude 'Update' at the same time as 'Add'
+      result = []
+
+      items.each_with_index do |item, index|
+        if (index + 1 < items.length)
+          next_item = items[index + 1]
+
+          if item[:name] == next_item[:name] &&
+              item[:timestamp] - next_item[:timestamp] < EXCLUDE_UPDATE_SEC
+            next
+          end
+        end
+
+        result << item
+      end
+
+      result[0...NEWS_ITEM_NUM].map {|item|
         item[:html]
       }.join("\n")
     end
