@@ -62,47 +62,37 @@ EOF
 
     def news_items(locale)
       updates = @grndb.packages.sort('updatetime')[0...NEWS_ITEM_NUM].map do |v|
-        message = I18n.t(:update_news, {package_name: "<a href=\"#{@suburl}/home/#{v.name}\">#{v.name}</a>", locale: locale})
-        
         {
-          name: v.name,
+          kind: :update_news,
+          package: v,
           timestamp: v.updatetime,
-          html: "<div class='news-item'>#{message} <span class='time'>#{news_time(v.updatetime)}</span></div>"
         }
       end
 
       adds = @grndb.packages.sort('addtime')[0...NEWS_ITEM_NUM].map do |v|
-        message = I18n.t(:add_news, {package_name: "<a href=\"#{@suburl}/home/#{v.name}\">#{v.name}</a>", locale: locale})
-
         {
-          name: v.name,
+          kind: :add_news,
+          package: v,
           timestamp: v.addtime,
-          html: "<div class='news-item'>#{message} <span class='time'>#{news_time(v.addtime)}</span></div>"
         }
       end
 
       items = (updates + adds).sort_by {|item|
         item[:timestamp]
       }.reverse
-
-      # Exclude 'Update' at the same time as 'Add'
-      result = []
-
-      items.each_with_index do |item, index|
-        if (index + 1 < items.length)
-          next_item = items[index + 1]
-
-          if item[:name] == next_item[:name] &&
-              item[:timestamp] - next_item[:timestamp] < EXCLUDE_UPDATE_SEC
-            next
-          end
+      .find_all {|v|
+        if v[:kind] == :update_news &&
+            v[:timestamp] - v[:package].addtime < EXCLUDE_UPDATE_SEC
+          false
+        else
+          true
         end
+      }[0...NEWS_ITEM_NUM]
 
-        result << item
-      end
-
-      result[0...NEWS_ITEM_NUM].map {|item|
-        item[:html]
+      items.map {|item|
+        v = item[:package]
+        message = I18n.t(item[:kind], {package_name: "<a href=\"#{@suburl}/home/#{v.name}\">#{v.name}</a>", locale: locale})
+        "<div class='news-item'>#{message} <span class='time'>#{news_time(item[:timestamp])}</span></div>"
       }.join("\n")
     end
 
