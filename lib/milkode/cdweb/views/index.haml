@@ -33,33 +33,22 @@
           #select_package
             = create_select_package_home
 
-      .row
-        .span3
-          %h2
-            = t(:recently_viewed)
-          = @package_list.top_view
-        .span3
-          %h2
-            = t(:added)
-          = @package_list.top_add
-        .span3
-          %h2
-            = t(:updated)
-          = @package_list.top_update
-        .span3
-          %h2
-            = t(:favorite)
-          = @package_list.top_fav
-
       %hr
-   
+
       .row
-        .span4.offset4
-          .footer
-            <a href="#{url_for '/home'}">#{@package_num}</a> #{t(:packages)}<br>
-            <a href="#{url_for '/home?query=f:*'}">#{@file_num}</a> #{t(:files)}<br>
-            [<a href="#{url_for '/?locale=en'}">#{t(:english)}</a> | <a href="#{url_for '/?locale=ja'}">#{t(:japanese)}</a>]<br>
+        .span8
+          = @package_list.news_items(@locale)
+
+        .span4
+          .topmenu-item
+            <a href="#{url_for '/home'}">#{@package_num}</a> #{t(:packages)}
+          .topmenu-item
+            <a href="#{url_for '/home?query=f:*'}">#{@file_num}</a> #{t(:files)}
+          .topmenu-item
             <a href="#{url_for '/help'}">#{t(:help)}</a>
+          .topmenu-item
+            [<a href="#{url_for '/?locale=en'}">#{t(:english)}</a> | <a href="#{url_for '/?locale=ja'}">#{t(:japanese)}</a>]<br>
+          .topmenu-item
             = @setting.about_milkode(@locale)
 
     %script(type='text/javascript' src='#{url_for '/js/jquery-1.7.2.min.js'}')

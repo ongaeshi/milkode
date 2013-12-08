@@ -16,6 +16,9 @@ module Milkode
 
     FAVORITE_LIST_NUM = 7
     
+    NEWS_ITEM_NUM = 20
+    EXCLUDE_UPDATE_SEC = 300
+
     def initialize(grndb, suburl)
       @grndb  = grndb
       @suburl = suburl
@@ -57,6 +60,42 @@ module Milkode
 EOF
     end
 
+    def news_items(locale)
+      updates = @grndb.packages.sort('updatetime')[0...NEWS_ITEM_NUM].map do |v|
+        {
+          kind: :update_news,
+          package: v,
+          timestamp: v.updatetime,
+        }
+      end
+
+      adds = @grndb.packages.sort('addtime')[0...NEWS_ITEM_NUM].map do |v|
+        {
+          kind: :add_news,
+          package: v,
+          timestamp: v.addtime,
+        }
+      end
+
+      items = (updates + adds).sort_by {|item|
+        item[:timestamp]
+      }.reverse
+      .find_all {|v|
+        if v[:kind] == :update_news &&
+            v[:timestamp] - v[:package].addtime < EXCLUDE_UPDATE_SEC
+          false
+        else
+          true
+        end
+      }[0...NEWS_ITEM_NUM]
+
+      items.map {|item|
+        v = item[:package]
+        message = I18n.t(item[:kind], {package_name: "<a href=\"#{@suburl}/home/#{v.name}\">#{v.name}</a>", locale: locale})
+        "<div class='news-item'>#{message} <span class='time'>#{news_time(item[:timestamp])}</span></div>"
+      }.join("\n")
+    end
+
     # ------------------------------------------------------
     private
 
@@ -75,6 +114,10 @@ EOF
 <li><a href=\"#{@suburl}/home?sort=#{column_name}">next >></a></li>
 </ul>
 EOF
+    end
+
+    def news_time(timestamp)
+      timestamp.strftime("%Y-%m-%d %R")
     end
   end
 end
