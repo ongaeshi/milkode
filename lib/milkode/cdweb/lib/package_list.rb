@@ -63,7 +63,7 @@ EOF
         message = I18n.t(:update_news, {package_name: "<a href=\"#{@suburl}/home/#{v.name}\">#{v.name}</a>", locale: locale})
         
         {
-          html: "<div class='news-item'>#{message} <span class='time'>#{v.updatetime}</span></div>",
+          html: "<div class='news-item'>#{message} <span class='time'>#{news_time(v.updatetime)}</span></div>",
           timestamp: v.updatetime
         }
       end
@@ -72,7 +72,7 @@ EOF
         message = I18n.t(:add_news, {package_name: "<a href=\"#{@suburl}/home/#{v.name}\">#{v.name}</a>", locale: locale})
 
         {
-          html: "<div class='news-item'>#{message} <span class='time'>#{v.addtime}</span></div>",
+          html: "<div class='news-item'>#{message} <span class='time'>#{news_time(v.addtime)}</span></div>",
           timestamp: v.addtime
         }
       end
@@ -104,6 +104,10 @@ EOF
 <li><a href=\"#{@suburl}/home?sort=#{column_name}">next >></a></li>
 </ul>
 EOF
+    end
+
+    def news_time(timestamp)
+      timestamp.strftime("%Y-%m-%d %R")
     end
   end
 end
