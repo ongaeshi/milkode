@@ -58,17 +58,21 @@ module Milkode
 EOF
     end
 
-    def news_items
+    def news_items(locale)
       updates = @grndb.packages.sort('updatetime')[0...NEWS_ITEM_NUM].map do |v|
+        message = I18n.t(:update_news, {package_name: "<a href=\"#{@suburl}/home/#{v.name}\">#{v.name}</a>", locale: locale})
+        
         {
-          html: "<div class='news-item'>Updated <a href=\"#{@suburl}/home/#{v.name}\">#{v.name}</a> <span class='time'>#{v.updatetime}</span></div>",
+          html: "<div class='news-item'>#{message} <span class='time'>#{v.updatetime}</span></div>",
           timestamp: v.updatetime
         }
       end
 
       adds = @grndb.packages.sort('addtime')[0...NEWS_ITEM_NUM].map do |v|
+        message = I18n.t(:add_news, {package_name: "<a href=\"#{@suburl}/home/#{v.name}\">#{v.name}</a>", locale: locale})
+
         {
-          html: "<div class='news-item'>Addd <a href=\"#{@suburl}/home/#{v.name}\">#{v.name}</a> <span class='time'>#{v.addtime}</span></div>",
+          html: "<div class='news-item'>#{message} <span class='time'>#{v.addtime}</span></div>",
           timestamp: v.addtime
         }
       end
