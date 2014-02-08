@@ -1,3 +1,9 @@
+=== 1.5.0 2014/02/08
+
+* milk web
+  * Renewal Top Page
+    * Change to Timeline Style
+
 === 1.4.0 2013/11/29
 
 * milk web
