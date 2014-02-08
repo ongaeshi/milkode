@@ -33,3 +33,5 @@ ja:
   filter_by_package: パッケージで絞り込み
   filter_by_suffix: 拡張子で絞り込み
   filter_by_directory: ディレクトリで絞り込み
+  update_news: '%{package_name}を更新'
+  add_news: '%{package_name}を追加'

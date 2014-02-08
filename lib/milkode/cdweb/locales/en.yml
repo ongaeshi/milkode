@@ -33,3 +33,5 @@ en:
   filter_by_package: Filter by Package
   filter_by_suffix: Filter by Suffix
   filter_by_directory: Filter by Directory
+  update_news: 'Update %{package_name}'
+  add_news: 'Add %{package_name}'

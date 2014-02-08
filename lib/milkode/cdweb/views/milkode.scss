@@ -178,6 +178,10 @@ label.ui-corner-all {
 #toppage .footer {
 }
 
+#toppage .text-center {
+    text-align: center;
+}
+
 /* mainpage */
 
 #mainpage {
@@ -277,3 +281,28 @@ label.ui-corner-all {
 .filter_list {
     margin-top: 3px;
 }
+
+.news-item {
+    font-size: 18px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    border-color: #f0f0f0;
+    border-bottom-style:solid;
+    border-bottom-width:1px;
+}
+
+.news-item .time {
+    color: gray;
+    font-size: 75%;
+}
+
+.topmenu-item {
+    font-size: 18px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.topmenu-item a {
+    font-size: 18px;
+}
+

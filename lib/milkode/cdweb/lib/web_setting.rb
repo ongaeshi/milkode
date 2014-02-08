@@ -54,7 +54,7 @@ module Milkode
     
     def about_milkode(locale)
       if (@data[:display_about_milkode])
-        ', <a href="http://milkode.ongaeshi.me">'+I18n.t(:about_milkode, locale: locale)+'</a>'
+        '<a href="http://milkode.ongaeshi.me">'+I18n.t(:about_milkode, locale: locale)+'</a>'
       else
         ''
       end

@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "milkode"
-  s.version = "1.4.0"
+  s.version = "1.5.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ongaeshi"]
-  s.date = "2013-11-28"
+  s.date = "2014-02-08"
   s.description = "Line based local source code search engine & grep-command & web-app."
   s.email = "ongaeshi0621@gmail.com"
   s.executables = ["gmilk", "milk"]
