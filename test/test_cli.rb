@@ -26,9 +26,9 @@ class TestCLI < Test::Unit::TestCase
   def test_add
     # system("type git")
     command("add")
-    assert_not_match /error/, command("add https://github.com/ongaeshi/mini-repo-git.git")
-    assert_not_match /error/, command("add https://github.com/ongaeshi/mini-repo-git.git -n mrg-develop -b develop")
-    # assert_match     /error/, command("add https://github.com/ongaeshi/mini-repo-git.git -n mrg-developa -b developa") # not found branch
+    assert_not_match /error/, command("add git@github.com:ongaeshi/mini-repo-git.git")
+    assert_not_match /error/, command("add git@github.com:ongaeshi/mini-repo-git.git -n mrg-develop -b develop")
+    # assert_match     /error/, command("add git@github.com:ongaeshi/mini-repo-git.git -n mrg-developa -b developa") # not found branch
   end
 
   def test_grep
