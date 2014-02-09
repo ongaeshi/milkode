@@ -9,6 +9,7 @@ rootpath: .
 - [OSX](#osx)
 - [Windows](#windows)
 - [Linux](#linux)
+- [Rroongaのインストールに失敗する](#install-rroonga)
 - [インストールに成功](#success)
 
 ## <a id="osx"></a> OSX 
@@ -45,6 +46,15 @@ $ gem.bat install milkode
 <pre>
 $ gem install milkode
 </pre>
+
+## <a id="install-rroonga"></a> Rroongaのインストールに失敗する
+
+Rroongaが内部で使っているGroongaの自動ビルドに失敗している可能性があります。<br>
+バイナリパッケージを事前にインストールすると上手くいくかもしれません。
+
+以下のページが詳しいです。
+
+- [File: install — rroonga - ラングバ](http://ranguba.org/rroonga/ja/file.install.html)
 
 ## <a id="success"></a> インストールに成功
 
