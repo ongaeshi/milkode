@@ -211,7 +211,7 @@ EOF
             else
               # レコード数が多い時は"-e grep"で検索
               if Util::exist_command?('cat') && Util::exist_command?('grep') && Util::exist_command?('xargs')
-                $stderr.puts "Number of records is large. Use auto external tool (gmilk -e grep)"
+                $stderr.puts "Because number of records is large, Milkode use external tool. (Same as 'gmilk -e grep')"
                 search_external_tool(arguments, option, records, 'grep -n', 'grep')
               else
                 findGrep.searchAndPrint2(stdout, records)
