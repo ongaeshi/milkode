@@ -14,6 +14,14 @@ module Milkode
     AUTO_EXTERNAL_RECORD_NUM = 500
 
     def self.execute(stdout, arguments=[])
+      begin
+        execute_in(stdout, arguments)
+      rescue Interrupt
+        puts
+      end
+    end
+
+    def self.execute_in(stdout, arguments)
       # 引数の文字コードをUTF-8に変換
       if (Util::platform_win?)
         arguments = arguments.map{|arg| Kconv.kconv(arg, Kconv::UTF8)}
