@@ -16,6 +16,7 @@ gem 'haml'        , '>= 3.1.2'
 gem 'sass'        , '>= 3.1.3'
 gem 'thor'        , '>= 0.18.1'
 gem 'i18n'        , '~> 0.6.5'
+gem 'whichr'      , '~> 0.3'
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
