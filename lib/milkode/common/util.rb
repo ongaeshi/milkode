@@ -116,7 +116,7 @@ module Milkode
     end
 
     def ignore_case?(pattens, is_sensitive)
-      !is_sensitive && (pattens.all? {|v| Util::downcase? v})
+      !is_sensitive && (pattens.all? {|v| Util.downcase? v})
     end
 
     def gotoline_keyword?(keyword)
@@ -235,11 +235,15 @@ module Milkode
 
     # 指定したコマンドが存在するか？
     def exist_command?(command)
+      # open3 : Not working on Windows
       begin
         Open3.capture3('type', command)[2].exited?
       rescue Errno::ENOENT
         false
       end
+
+      # whichr
+      # RubyWhich.new.which(command)
     end
 
     def highlight_keywords(src, keywords, css_class)

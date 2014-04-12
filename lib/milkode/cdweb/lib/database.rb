@@ -66,7 +66,7 @@ module Milkode
 
       # パッケージ名未指定の時は現在位置を検索条件に追加
       if packages.empty? && current_path != ''
-        package, restpath = Util::divide_shortpath(current_path)
+        package, restpath = Util.divide_shortpath(current_path)
 
         grn_package = @grndb.packages[package]
         if grn_package
@@ -183,7 +183,7 @@ module Milkode
     end
 
     def touch_viewtime(path)
-      package, restpath = Util::divide_shortpath(path)
+      package, restpath = Util.divide_shortpath(path)
       @grndb.packages.touch_if(package, :viewtime) if package
     end
 

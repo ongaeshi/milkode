@@ -70,7 +70,7 @@ module Milkode
 
       strs.each do |v|
         option = 0
-        option |= Regexp::IGNORECASE if (!is_sensitive && Util::downcase?(v))
+        option |= Regexp::IGNORECASE if (!is_sensitive && Util.downcase?(v))
         regs   << Regexp.new(Regexp.escape(v), option)
       end
 

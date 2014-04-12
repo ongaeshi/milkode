@@ -23,9 +23,9 @@ module Milkode
 
     q = params[:query] && Query.new(params[:query]) 
 
-    if (Util::larger_than_oneline(record.content) && q && !q.keywords.empty?)
-      if Util::gotoline_keyword?(q.keywords[0])
-        gotolines = Util::parse_gotoline(q.keywords)
+    if (Util.larger_than_oneline(record.content) && q && !q.keywords.empty?)
+      if Util.gotoline_keyword?(q.keywords[0])
+        gotolines = Util.parse_gotoline(q.keywords)
         match_lines = []
         gotolines.each do |v|
           if v[0][0][1..-1] == record.shortpath
@@ -70,7 +70,7 @@ module Milkode
       end
 
     elsif (query.keywords.size > 0)
-      if Util::gotoline_keyword?(query.keywords[0])
+      if Util.gotoline_keyword?(query.keywords[0])
         searcher = SearchGotoLine.new(path, params, query, suburl)
       else
         searcher = SearchContents.new(path, params, query, suburl, locale)

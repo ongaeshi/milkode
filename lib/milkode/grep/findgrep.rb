@@ -45,8 +45,8 @@ module Milkode
       end
 
       def print(stdout)
-        stdout.puts "dir   : #{@start_dir} (#{Gren::Util::time_s(time)})"
-        stdout.puts "files : #{@search_count} in #{@count} (#{Gren::Util::size_s(@search_size)} in #{Gren::Util::size_s(@size)})"
+        stdout.puts "dir   : #{@start_dir} (#{Gren::Util.time_s(time)})"
+        stdout.puts "files : #{@search_count} in #{@count} (#{Gren::Util.size_s(@search_size)} in #{Gren::Util.size_s(@size)})"
         stdout.puts "match : #{@match_file_count} files, #{match_count} hit"
       end
     end
@@ -91,7 +91,7 @@ module Milkode
 
       strs.each do |v|
         option = 0
-        option |= Regexp::IGNORECASE if (@option.ignoreCase || (!@option.caseSensitive && Milkode::Util::downcase?(v)))
+        option |= Regexp::IGNORECASE if (@option.ignoreCase || (!@option.caseSensitive && Milkode::Util.downcase?(v)))
         regs << Regexp.new(v, option)
       end
 
@@ -155,7 +155,7 @@ module Milkode
     end
 
     def time_s
-      Gren::Util::time_s(@result.time)
+      Gren::Util.time_s(@result.time)
     end
 
     def searchFromDB(stdout, records, dir)
@@ -167,7 +167,7 @@ module Milkode
         if (@option.gotoline > 0)
           records.each do |record|
             if FileTest.exist?(record.path)
-              relative_path = Milkode::Util::relative_path(record.path, Dir.pwd).to_s
+              relative_path = Milkode::Util.relative_path(record.path, Dir.pwd).to_s
               line = getTextLineno(relative_path, @option.gotoline)
               stdout.puts "#{relative_path}:#{@option.gotoline}:#{line}" if (line)
               @result.match_file_count += 1
@@ -185,7 +185,7 @@ module Milkode
         else
           records.each do |record|
             path = record.path
-            relative_path = Milkode::Util::relative_path(path, Dir.pwd).to_s
+            relative_path = Milkode::Util.relative_path(path, Dir.pwd).to_s
             stdout.puts relative_path
             @result.match_file_count += 1
             raise MatchCountOverError if (0 < @option.matchCountLimit && @option.matchCountLimit <= @result.match_file_count)
@@ -340,7 +340,7 @@ module Milkode
         if ( result )
           unless (@option.dispHtml)
             # header = "#{path}:#{index + 1}:"
-            rpath = Milkode::Util::relative_path(path, Dir.pwd).to_s
+            rpath = Milkode::Util.relative_path(path, Dir.pwd).to_s
             header = "#{rpath}:#{index + 1}:"
             
             line = GrenSnip::snip(line, match_datas) unless (@option.noSnip)
@@ -391,7 +391,7 @@ EOF
     def self.file2lines(file, kcode)
       data = file.read
       
-      unless Milkode::Util::ruby19?
+      unless Milkode::Util.ruby19?
         if (kcode != Kconv::NOCONV)
           file_kcode = Kconv::guess(data)
 

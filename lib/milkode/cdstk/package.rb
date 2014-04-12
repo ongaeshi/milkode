@@ -88,8 +88,8 @@ module Milkode
     private
 
     def normalize
-      if (Util::platform_win?)
-        @hash['directory'] = Util::normalize_filename(directory)
+      if (Util.platform_win?)
+        @hash['directory'] = Util.normalize_filename(directory)
       end
     end
     

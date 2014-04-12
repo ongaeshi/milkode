@@ -16,12 +16,12 @@ module Milkode
 
     def search_and_print(stdout)
       @gotolines.each do |gotoline|
-        package_name, restpath = Util::divide_shortpath(gotoline[0][0])
+        package_name, restpath = Util.divide_shortpath(gotoline[0][0])
         package                = @yaml.find_name(package_name)
 
         if package
           path          = File.join(package.directory, restpath)
-          relative_path = Util::relative_path(path, Dir.pwd).to_s
+          relative_path = Util.relative_path(path, Dir.pwd).to_s
           lineno        = gotoline[1]
           content       = get_text_lineno(path, lineno)
 

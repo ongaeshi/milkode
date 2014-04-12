@@ -117,7 +117,7 @@ module Milkode
       return [] if files.size > FILTER_BY_DIRECTORIES_FILES
       
       files.map {|v|
-        Util::relative_path(v[1], @path.split("/")[1..-1].join("/")).to_s               # 'path/to/file' ->  'to/file' (@path == 'path')
+        Util.relative_path(v[1], @path.split("/")[1..-1].join("/")).to_s               # 'path/to/file' ->  'to/file' (@path == 'path')
       }.find_all {|v|
         v.include?("/")                                                                 # Extract directory
       }.map {|v|
@@ -189,7 +189,7 @@ EOF
     end
 
     def recommended_fuzzy_gotoline?
-      @q.keywords.size == 1 && @q.only_keywords && Util::fuzzy_gotoline_keyword?(@q.keywords[0])
+      @q.keywords.size == 1 && @q.only_keywords && Util.fuzzy_gotoline_keyword?(@q.keywords[0])
     end
 
     def recommended_wide_match_range?
@@ -296,7 +296,7 @@ EOF
       @next_line = nil
 
       @records.each_with_index do |record, index|
-        if (Util::larger_than_oneline(record.content))
+        if (Util.larger_than_oneline(record.content))
           if grep_match_lines_stopover(record, index, keywords, wide_match_range)
             break
           end
@@ -353,7 +353,7 @@ EOF
 
       url = @homeurl + record_link(record)
 
-      path = Util::relative_path(record.shortpath, @path)
+      path = Util.relative_path(record.shortpath, @path)
 
       if path != @prev
 #         dt = <<EOS
@@ -388,8 +388,8 @@ EOS
     end
 
     def result_record(record)
-      filename = Util::relative_path(record.shortpath, @path).to_s
-      filename = Util::highlight_keywords(filename, @q.keywords, 'highlight-filename')
+      filename = Util.relative_path(record.shortpath, @path).to_s
+      filename = Util.highlight_keywords(filename, @q.keywords, 'highlight-filename')
       
       <<EOS
     <dt class='result-file'>#{file_or_dirimg(true, @suburl)}<a href='#{@homeurl + record_link(record)}'>#{filename}</a></dt>
@@ -417,7 +417,7 @@ EOS
       refinements << "<a href='#{refinement_suffix(record.suffix)}'>.#{record.suffix}</a>" if record.suffix
 
       # ディレクトリで絞り込み
-      path    = Util::relative_path(record.shortpath, @path)
+      path    = Util.relative_path(record.shortpath, @path)
       dirname = path.to_s.split('/')[-2]
       refinements << "<a href='#{refinement_directory(record.shortpath + '/..')}'>#{dirname}/</a>" if dirname
 

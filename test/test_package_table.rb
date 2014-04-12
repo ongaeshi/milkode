@@ -165,7 +165,7 @@ module Milkode
 
     def t_touch
       r = @packages.add("r1", "", {})
-      t = Util::truncate_nsec(Time.now)
+      t = Util.truncate_nsec(Time.now)
 
       assert_not_equal t, r.updatetime
       assert_not_equal t, r.viewtime

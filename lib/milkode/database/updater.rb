@@ -248,7 +248,7 @@ module Milkode
       
       if File.exist? filename
         alert_info("add_ignore", filename)
-        str = Util::load_content($stdout, filename)
+        str = Util.load_content($stdout, filename)
         @current_ignore.add IgnoreSetting.create_from_gitignore(path, str)
       end
     end
@@ -256,7 +256,7 @@ module Milkode
     def add_global_gitignore(filename)
       if File.exist? filename
         alert_info("add_ignore", filename)
-        str = Util::load_content($stdout, filename)
+        str = Util.load_content($stdout, filename)
         @current_ignore.add IgnoreSetting.create_from_gitignore("/", str)
       end
     end
@@ -266,7 +266,7 @@ module Milkode
     end
 
     def alert(title, msg)
-      if (Util::platform_win?)
+      if (Util.platform_win?)
         @out.puts "#{title.ljust(10)} : #{Kconv.kconv(msg, Kconv::SJIS)}"
       else
         @out.puts "#{title.ljust(10)} : #{msg}"

@@ -78,8 +78,8 @@ EOF
     end
 
     def result_record(record)
-      filename = Util::relative_path(record.shortpath, @path).to_s
-      filename = Util::highlight_keywords(filename, @q.fpaths + @q.fpath_or_packages, 'highlight-filename')
+      filename = Util.relative_path(record.shortpath, @path).to_s
+      filename = Util.highlight_keywords(filename, @q.fpaths + @q.fpath_or_packages, 'highlight-filename')
 
       <<EOS
     <dt class='result-file'>#{file_or_dirimg(true, @suburl)}<a href='#{@homeurl + record_link(record)}'>#{filename}</a></dt>
