@@ -205,9 +205,6 @@ module Milkode
         # 除外ディレクトリならばパス
         next if ignoreDir?(fpath, next_path)
 
-        # 読み込み不可ならばパス
-        next unless FileTest.readable?(fpath)
-
         # ファイルならば中身を探索、ディレクトリならば再帰
         case File.ftype(fpath)
         when "directory"
@@ -229,9 +226,14 @@ module Milkode
     end
 
     def ignoreFile?(fpath, mini_path)
-      GrenFileTest::ignoreFile?(fpath) ||
-        GrenFileTest::binary?(fpath) ||
-        package_ignore?(fpath, mini_path)
+      begin
+        GrenFileTest::ignoreFile?(fpath) ||
+          GrenFileTest::binary?(fpath) ||
+          package_ignore?(fpath, mini_path)
+      rescue Errno::EACCES      # Can't read file
+        alert_info("skip", "Permission denied - #{fpath}")
+        true
+      end
     end
 
     def package_ignore?(fpath, mini_path)
