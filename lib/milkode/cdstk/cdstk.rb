@@ -255,7 +255,7 @@ module Milkode
       when '.zip', '.xpi'
         alert("extract", "#{src}")
         zip_dir = File.join(@db_dir, "packages/#{ext.sub(".", "")}")
-        result = File.join(zip_dir, Util::zip_extract(src, zip_dir))
+        result = File.join(zip_dir, Util.zip_extract(src, zip_dir))
       else
         src
       end
@@ -989,7 +989,7 @@ EOF
         if options[:package]
           add_ignore = args.map {|v| v.sub(/^.\//, "") }
         else
-          path = Util::relative_path(File.expand_path('.'), package.directory).to_s
+          path = Util.relative_path(File.expand_path('.'), package.directory).to_s
           add_ignore = args.map {|v| File.join(path, v).sub(/^.\//, "") }
         end
 
@@ -1025,7 +1025,7 @@ EOF
       packages.each do |package|
         package_records(package.name).each do |record|
           if options[:relative]
-            @out.puts Util::relative_path(record.path, basedir)
+            @out.puts Util.relative_path(record.path, basedir)
           else
             if options[:all]
               @out.puts record.path
@@ -1099,11 +1099,11 @@ EOF
     private
 
     def git_protocol?(options, src)
-      options[:protocol] == 'git' || Util::git_url?(src)
+      options[:protocol] == 'git' || Util.git_url?(src)
     end
 
     def svn_protocol?(options, src)
-      options[:protocol] == 'svn' || Util::svn_url?(src)
+      options[:protocol] == 'svn' || Util.svn_url?(src)
     end
 
     def db_file
@@ -1154,8 +1154,8 @@ EOF
       updater.exec
 
       # Is github repository ?
-      if Util::exist_command?('git') && File.exist?(File.join(package.directory, ".git"))
-        repo_name = Dir.chdir(package.directory) { Util::github_repo(`git config --get remote.origin.url`) }
+      if Util.exist_command?('git') && File.exist?(File.join(package.directory, ".git"))
+        repo_name = Dir.chdir(package.directory) { Util.github_repo(`git config --get remote.origin.url`) }
 
         if repo_name && repo_name != package.options[:github]
           dst = package.options
@@ -1220,7 +1220,7 @@ EOF
       r << "#{@file_count} records" if @file_count > 0
       r << "#{@add_count} add" if @add_count > 0
       r << "#{@update_count} update" if @update_count > 0
-      alert('result', "#{r.join(', ')}. (#{Gren::Util::time_s(time)})")
+      alert('result', "#{r.join(', ')}. (#{Gren::Util.time_s(time)})")
     end
 
     def milkode_info
@@ -1265,7 +1265,7 @@ EOF
     end
       
     def alert(title, msg)
-      if (Util::platform_win?)
+      if (Util.platform_win?)
         @out.puts "#{title.ljust(10)} : #{Kconv.kconv(msg, Kconv::SJIS)}"
       else
         @out.puts "#{title.ljust(10)} : #{msg}"

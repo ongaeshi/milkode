@@ -205,9 +205,6 @@ module Milkode
         # 除外ディレクトリならばパス
         next if ignoreDir?(fpath, next_path)
 
-        # 読み込み不可ならばパス
-        next unless FileTest.readable?(fpath)
-
         # ファイルならば中身を探索、ディレクトリならば再帰
         case File.ftype(fpath)
         when "directory"
@@ -229,9 +226,14 @@ module Milkode
     end
 
     def ignoreFile?(fpath, mini_path)
-      GrenFileTest::ignoreFile?(fpath) ||
-        GrenFileTest::binary?(fpath) ||
-        package_ignore?(fpath, mini_path)
+      begin
+        GrenFileTest::ignoreFile?(fpath) ||
+          GrenFileTest::binary?(fpath) ||
+          package_ignore?(fpath, mini_path)
+      rescue Errno::EACCES      # Can't read file
+        alert_info("skip", "Permission denied - #{fpath}")
+        true
+      end
     end
 
     def package_ignore?(fpath, mini_path)
@@ -248,7 +250,7 @@ module Milkode
       
       if File.exist? filename
         alert_info("add_ignore", filename)
-        str = Util::load_content($stdout, filename)
+        str = Util.load_content($stdout, filename)
         @current_ignore.add IgnoreSetting.create_from_gitignore(path, str)
       end
     end
@@ -256,7 +258,7 @@ module Milkode
     def add_global_gitignore(filename)
       if File.exist? filename
         alert_info("add_ignore", filename)
-        str = Util::load_content($stdout, filename)
+        str = Util.load_content($stdout, filename)
         @current_ignore.add IgnoreSetting.create_from_gitignore("/", str)
       end
     end
@@ -266,7 +268,7 @@ module Milkode
     end
 
     def alert(title, msg)
-      if (Util::platform_win?)
+      if (Util.platform_win?)
         @out.puts "#{title.ljust(10)} : #{Kconv.kconv(msg, Kconv::SJIS)}"
       else
         @out.puts "#{title.ljust(10)} : #{msg}"

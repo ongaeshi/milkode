@@ -65,7 +65,7 @@ module Encoders
       r << "class=\"highlight-line\"" if is_highlight
       attr = r.join(" ")
 
-      line = Milkode::Util::highlight_keywords(line, options[:keywords], 'highlight-filename') if is_highlight
+      line = Milkode::Util.highlight_keywords(line, options[:keywords], 'highlight-filename') if is_highlight
       
       "<span #{attr}>#{line}</span>"
     end

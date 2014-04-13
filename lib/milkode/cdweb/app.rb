@@ -43,7 +43,7 @@ end
 get '/' do
   if Database.validate?
     @setting = WebSetting.new
-    @version = "1.5.0"
+    @version = "1.6.0"
 
     @package_num = Database.instance.yaml_package_num
     @file_num = Database.instance.totalRecords
@@ -82,8 +82,8 @@ post '/search*' do
 
     query = Query.new(params[:query])
     # gotolineモードで1つだけ渡された時は直接ジャンプ
-    if query.keywords.size == 1 && Milkode::Util::gotoline_keyword?(query.keywords[0])
-      gotoline = Milkode::Util::parse_gotoline(query.keywords)[0]
+    if query.keywords.size == 1 && Milkode::Util.gotoline_keyword?(query.keywords[0])
+      gotoline = Milkode::Util.parse_gotoline(query.keywords)[0]
       path2 = File.join(url_for('/home'), gotoline[0][0])
       redirect Mkurl.new(path2, params).inherit_query_shead + "#n#{gotoline[1]}"
     else

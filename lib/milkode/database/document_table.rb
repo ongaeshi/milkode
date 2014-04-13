@@ -124,12 +124,12 @@ EOF
     def add(package_dir, restpath, package_name = nil)
       filename  = File.join(package_dir, restpath)           # フルパスの作成
       filename  = File.expand_path(filename)                 # 絶対パスに変換
-      path      = Util::filename_to_utf8(filename)           # データベースに格納する時のファイル名はutf8
+      path      = Util.filename_to_utf8(filename)           # データベースに格納する時のファイル名はutf8
       package   = package_name || File.basename(package_dir)
-      package   = Util::filename_to_utf8(package)
-      restpath  = Util::filename_to_utf8(restpath)
+      package   = Util.filename_to_utf8(package)
+      restpath  = Util.filename_to_utf8(restpath)
       suffix    = File.extname(path).sub('.', "")
-      timestamp = Util::truncate_nsec(File.mtime(filename)) # OSへの問い合わせは変換前のファイル名で
+      timestamp = Util.truncate_nsec(File.mtime(filename)) # OSへの問い合わせは変換前のファイル名で
 
       record = @table[path]
 
@@ -173,7 +173,7 @@ EOF
 
     # shortpathの一致するレコードを取得
     def find_shortpath(shortpath)
-      package, restpath = Util::divide_shortpath(shortpath)
+      package, restpath = Util.divide_shortpath(shortpath)
       result = @table.select { |record| (record.package == package) & (record.restpath == restpath) }
       return result.records[0]
     end
@@ -183,7 +183,7 @@ EOF
       if (shortpath.nil? || shortpath.empty?)
         @table.select.records
       else
-        package, restpath = Util::divide_shortpath(shortpath)
+        package, restpath = Util.divide_shortpath(shortpath)
 
         if (restpath.nil? || restpath.empty?)
           @table.select { |record| record.package == package }.to_a
@@ -406,7 +406,7 @@ EOF
     private
 
     def load_content(filename)
-      Util::load_content($stdout, filename)
+      Util.load_content($stdout, filename)
     end
 
     def package_expression(record, packages)

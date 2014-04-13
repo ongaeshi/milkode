@@ -16,8 +16,8 @@ Jeweler::Tasks.new do |gem|
   gem.name = "milkode"
   gem.homepage = "http://github.com/ongaeshi/milkode"
   gem.license = "MIT"
-  gem.summary = %Q{Line based local source code search engine & grep-command & web-app.}
-  gem.description = %Q{Line based local source code search engine & grep-command & web-app.}
+  gem.summary = %Q{Line based local source code search engine.}
+  gem.description = %Q{Milkode is line based local source code search engine. It have command line interface and web application. It will accelerate the code reading of your life.}
   gem.email = "ongaeshi0621@gmail.com"
   gem.authors = ["ongaeshi"]
   # Dependencies move to 'Gemfile'

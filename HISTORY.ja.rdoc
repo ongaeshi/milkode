@@ -1,3 +1,20 @@
+=== 1.6.0 2014/04/13
+
+* milk
+  * #57 Use "rescue Error::EACCESS" instead of FileTest.readable? for Windows (thanks kazuna)
+  * #58 Use whichr in Util.exist_command? (thanks kazuna)
+
+* gmilk
+  * #61 Without displaying stacktrace when pressed Ctrl+C on gmilk (thanks msmhrt)
+  * Support ENV['GMILK_OPTIONS']
+
+* etc
+  * #64 thin < 2.0.0 in Gemfile (thanks MaskedW)
+  * Add TravisCI Button
+  * README.rdoc -> README.md
+  * Util::func -> Util.func
+  * Rewrite summary and description
+
 === 1.5.0 2014/02/08
 
 * milk web

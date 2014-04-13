@@ -78,7 +78,7 @@ EOF
     # 指定ディレクトリの所属するパッケージのルートディレクトリを得る。
     # 見つからない場合はnilを返す。
     def package_root(dir)
-      nd = Util::normalize_filename(dir)
+      nd = Util.normalize_filename(dir)
 
       @contents.find_all {|v|
         nd =~ /^#{Regexp.escape(v.directory)}(:?\/|\Z)/

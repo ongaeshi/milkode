@@ -6,6 +6,7 @@ require 'pathname'
 require 'kconv'
 require 'open3'
 require 'strscan'
+require 'whichr'
 
 module Milkode
   module Util
@@ -116,7 +117,7 @@ module Milkode
     end
 
     def ignore_case?(pattens, is_sensitive)
-      !is_sensitive && (pattens.all? {|v| Util::downcase? v})
+      !is_sensitive && (pattens.all? {|v| Util.downcase? v})
     end
 
     def gotoline_keyword?(keyword)
@@ -235,11 +236,15 @@ module Milkode
 
     # 指定したコマンドが存在するか？
     def exist_command?(command)
-      begin
-        Open3.capture3('type', command)[2].exited?
-      rescue Errno::ENOENT
-        false
-      end
+      # open3 : Not working on Pure Windows
+      # begin
+      #   Open3.capture3('type', command)[2].exited?
+      # rescue Errno::ENOENT
+      #   false
+      # end
+
+      # whichr
+      !(RubyWhich.new.which(command).empty?)
     end
 
     def highlight_keywords(src, keywords, css_class)

@@ -36,9 +36,9 @@ EOF
 
   def test_dump
     obj = MilkodeYaml.new(SRC)
-    if Milkode::Util::ruby20?
+    if Milkode::Util.ruby20?
       assert_equal SRC, obj.dump
-    elsif Milkode::Util::ruby19?
+    elsif Milkode::Util.ruby19?
       assert_equal <<EOF, obj.dump
 ---
 version: '0.2'
@@ -75,7 +75,7 @@ EOF
 
     assert_equal 1, obj.contents.size
 
-    assert_equal <<EOF, obj.dump  if Milkode::Util::ruby19?
+    assert_equal <<EOF, obj.dump  if Milkode::Util.ruby19?
 ---
 version: '0.2'
 contents:
@@ -89,7 +89,7 @@ EOF
 
     assert_equal 2, obj.contents.size
 
-    if Milkode::Util::ruby20?
+    if Milkode::Util.ruby20?
       assert_equal <<EOF, obj.dump
 ---
 version: '0.2'
@@ -100,7 +100,7 @@ contents:
   - '*.bak'
   - /rdoc
 EOF
-    elsif Milkode::Util::ruby19?
+    elsif Milkode::Util.ruby19?
       assert_equal <<EOF, obj.dump
 ---
 version: '0.2'
@@ -122,7 +122,7 @@ EOF
     obj = MilkodeYaml.new(V_0_1)
     assert_equal true, obj.migrate
 
-    assert_equal <<EOF, obj.dump if Milkode::Util::ruby19?
+    assert_equal <<EOF, obj.dump if Milkode::Util.ruby19?
 ---
 version: '0.2'
 contents:
@@ -145,7 +145,7 @@ EOF
     p = Package.create(p.directory, p.ignore + ['*.a'])
     obj.update(p)
 
-    if Milkode::Util::ruby20?
+    if Milkode::Util.ruby20?
       assert_equal <<EOF, obj.dump
 ---
 version: '0.2'
@@ -158,7 +158,7 @@ contents:
   - '*.a'
 - directory: /a/b/c
 EOF
-    elsif Milkode::Util::ruby19?
+    elsif Milkode::Util.ruby19?
       assert_equal <<EOF, obj.dump
 ---
 version: '0.2'

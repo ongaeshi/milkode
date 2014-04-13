@@ -14,8 +14,19 @@ module Milkode
     AUTO_EXTERNAL_RECORD_NUM = 500
 
     def self.execute(stdout, arguments=[])
+      begin
+        execute_in(stdout, arguments)
+      rescue Interrupt
+        puts
+      end
+    end
+
+    def self.execute_in(stdout, arguments)
+      # Add ENV['GMILK_OPTIONS'] value
+      arguments += ENV['GMILK_OPTIONS'].split if ENV['GMILK_OPTIONS']
+      
       # 引数の文字コードをUTF-8に変換
-      if (Util::platform_win?)
+      if (Util.platform_win?)
         arguments = arguments.map{|arg| Kconv.kconv(arg, Kconv::UTF8)}
       end
 
@@ -79,7 +90,7 @@ EOF
       opt.on('-n NUM', 'Limits the number of match to show.') {|v| option.matchCountLimit = v.to_i }
       opt.on('--no-external', 'Disable auto external.') {|v| my_option[:no_external] = true }
       opt.on('--no-snip', 'There being a long line, it does not snip.') {|v| option.noSnip = true }
-      opt.on('-o ENCODE', '--output-encode ENCODE', 'Specify output encode(none, jis, sjis, euc, ascii, utf8, utf16). Default is "utf8"') {|v| option.output_kcode = Util::str2kcode(v) }
+      opt.on('-o ENCODE', '--output-encode ENCODE', 'Specify output encode(none, jis, sjis, euc, ascii, utf8, utf16). Default is "utf8"') {|v| option.output_kcode = Util.str2kcode(v) }
       opt.on('-p PACKAGE', '--package PACKAGE', 'Specify search package.') {|v| setup_package(option, my_option, v) }
       opt.on('-r', '--root', 'Search from package root.') {|v| current_dir = package_root_dir(File.expand_path(".")); my_option[:find_mode] = true }
       opt.on('-s SUFFIX', '--suffix SUFFIX', 'Suffix.') {|v| option.suffixs << v; my_option[:find_mode] = true } 
@@ -101,7 +112,7 @@ EOF
 
         unless ap.gotowords.empty?
           my_option[:find_mode] = true
-          my_option[:gotoline_data] = Util::parse_gotoline(ap.gotowords)
+          my_option[:gotoline_data] = Util.parse_gotoline(ap.gotowords)
         end
 
         # p ap.arguments
@@ -189,7 +200,7 @@ EOF
             my_option[:gotoline_data].each do |v|
               if is_abs_path
                 # @memo ここにはこないはず
-                package, restpath = Util::divide_shortpath(v[0][0])
+                package, restpath = Util.divide_shortpath(v[0][0])
                 # p [package, restpath]
                 option.packages = [package]
                 option.filePatterns = [restpath]
@@ -210,8 +221,8 @@ EOF
               findGrep.searchAndPrint2(stdout, records)
             else
               # レコード数が多い時は"-e grep"で検索
-              if Util::exist_command?('cat') && Util::exist_command?('grep') && Util::exist_command?('xargs')
-                $stderr.puts "Number of records is large. Use auto external tool (gmilk -e grep)"
+              if Util.exist_command?('cat') && Util.exist_command?('grep') && Util.exist_command?('xargs')
+                $stderr.puts "Because number of records is large, Milkode use external tool. (Same as 'gmilk -e grep')"
                 search_external_tool(arguments, option, records, 'grep -n', 'grep')
               else
                 findGrep.searchAndPrint2(stdout, records)
@@ -330,7 +341,7 @@ EOF
 
       def after
         if @arguments.first
-          if Util::gotoline_keyword? @arguments[0]
+          if Util.gotoline_keyword? @arguments[0]
             @state = :gotoline
           end
         end
