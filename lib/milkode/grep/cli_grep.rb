@@ -22,6 +22,9 @@ module Milkode
     end
 
     def self.execute_in(stdout, arguments)
+      # Add ENV['GMILK_OPTIONS'] value
+      arguments += ENV['GMILK_OPTIONS'].split if ENV['GMILK_OPTIONS']
+      
       # 引数の文字コードをUTF-8に変換
       if (Util.platform_win?)
         arguments = arguments.map{|arg| Kconv.kconv(arg, Kconv::UTF8)}
