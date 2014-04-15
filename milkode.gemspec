@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "milkode"
-  s.version = "1.6.0"
+  s.version = "1.6.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ongaeshi"]
-  s.date = "2014-04-13"
+  s.date = "2014-04-15"
   s.description = "Milkode is line based local source code search engine. It have command line interface and web application. It will accelerate the code reading of your life."
   s.email = "ongaeshi0621@gmail.com"
   s.executables = ["gmilk", "milk"]
