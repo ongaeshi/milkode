@@ -205,6 +205,12 @@ module Milkode
         # 除外ディレクトリならばパス
         next if ignoreDir?(fpath, next_path)
 
+        # Warning if file is not readable
+        unless FileTest.readable?(fpath)
+          alert("warning", "Failed to FileTest.readable? - #{fpath}")
+          next
+        end
+        
         # ファイルならば中身を探索、ディレクトリならば再帰
         case File.ftype(fpath)
         when "directory"
