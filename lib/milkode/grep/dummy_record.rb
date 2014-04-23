@@ -38,7 +38,7 @@ EOF
 
     def initialize(path)
       @path = path
-      @content = File.read(@path)
+      # @content = File.read(@path)   # Need only at 'gmilk --cache'
     end
   end
 end
