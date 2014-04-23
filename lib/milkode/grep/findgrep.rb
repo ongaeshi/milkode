@@ -12,6 +12,7 @@ include Gren
 require 'cgi'
 require 'pathname'
 require 'milkode/database/groonga_database'
+require 'milkode/grep/dummy_record'
 
 module Milkode
   class FindGrep
@@ -152,6 +153,8 @@ module Milkode
       records = searchDatabase
       @result.time_stop
       records
+
+      # DummyRecord.dummy_records
     end
 
     def time_s
