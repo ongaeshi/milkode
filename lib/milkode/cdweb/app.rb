@@ -168,6 +168,10 @@ get '/info/:package' do
   haml :info_package
 end
 
+get '/gmilk' do
+  search_for_gmilk(params)
+end
+
 # -- helper function --
 
 helpers do

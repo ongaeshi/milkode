@@ -133,6 +133,10 @@ module Milkode
     haml :packages
   end
 
+  def search_for_gmilk(params)
+    "bbb"
+  end
+
   private
   
   def file_or_dirimg(is_file, suburl)
