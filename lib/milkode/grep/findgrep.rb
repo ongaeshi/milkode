@@ -11,8 +11,7 @@ require 'milkode/common/util'
 include Gren
 require 'cgi'
 require 'pathname'
-require 'milkode/database/groonga_database'
-require 'milkode/grep/dummy_record'
+# require 'milkode/database/groonga_database'
 
 module Milkode
   class FindGrep
@@ -66,7 +65,12 @@ module Milkode
       @ignoreFiles    = strs2regs_simple(option.ignoreFiles)
       @ignoreDirs     = strs2regs_simple(option.ignoreDirs)
       @result         = Result.new(option.directory)
-      open_database       if @option.dbFile
+      if @option.fast_gmilk
+        require 'milkode/grep/dummy_record'
+      else
+        require 'milkode/database/groonga_database'
+        open_database       if @option.dbFile
+      end
       require 'termcolor' if @option.colorHighlight
     end
 
@@ -149,12 +153,14 @@ module Milkode
     end
 
     def pickupRecords
-      raise unless @option.dbFile
-      records = searchDatabase
-      @result.time_stop
-      records
-
-      # DummyRecord.dummy_records
+      if @option.fast_gmilk
+        DummyRecord.from_url('http://127.0.0.1:9293/gmilk?dir=/path/to/dir&query=def+test')
+      else
+        raise unless @option.dbFile
+        records = searchDatabase
+        @result.time_stop
+        records
+      end
     end
 
     def time_s

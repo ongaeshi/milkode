@@ -31,7 +31,8 @@ module Milkode
                         :dispHtml,
                         :matchCountLimit,
                         :keywords,
-                        :gotoline)
+                        :gotoline,
+                        :fast_gmilk)
 
     def self.create_default
       Option.new([],
@@ -58,7 +59,8 @@ module Milkode
                  false,
                  -1,
                  [],
-                 -1)
+                 -1,
+                 false)
     end
   end
 end

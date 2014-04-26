@@ -85,6 +85,7 @@ EOF
       opt.on('--db DB_DIR', "Specify dbdir. (Use often with '-a')") {|v| option.dbFile = Dbdir.groonga_path(v) }
       opt.on('-e GREP', '--external-tool GREP', "Use external tool for file search. (e.g. grep, ag)") {|v| my_option[:external_tool] = v}
       opt.on('-f FILE_PATH', '--file-path FILE_PATH', 'File path. (Enable multiple call)') {|v| option.filePatterns << v; my_option[:find_mode] = true }
+      opt.on('-F', '--fast-gmilk', 'Fast gmilk mode with server. (Need "milk web --fast-gmilk")') {|v| option.fast_gmilk = true }
       opt.on('-i', '--ignore', 'Ignore case.') {|v| option.ignoreCase = true}
       opt.on('-m', '--match-files', 'Display match files.') {|v| my_option[:match_files] = true}
       opt.on('-n NUM', 'Limits the number of match to show.') {|v| option.matchCountLimit = v.to_i }
