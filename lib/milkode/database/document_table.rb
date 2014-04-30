@@ -10,6 +10,8 @@ require 'milkode/common/util'
 
 module Milkode
   class DocumentTable
+    attr_reader :table
+    
     def self.define_schema
       begin
         Groonga::Schema.define do |schema|
