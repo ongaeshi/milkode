@@ -135,28 +135,11 @@ module Milkode
 
   def search_for_gmilk(params)
     documents = Database.instance.documents
-    documents_grn = documents.table
+    grn = documents.table
 
-    # query = "package:#{params[:dir]} content:#{params[:query]}"
-    # query = "package:milkode content:@#{params[:query]}"
     contents = params[:query].split(" ").map{ |v| "content:@#{v}" }.join(" ")
-    
-    query = "path:@#{params[:dir]} #{contents}"
-    # p query
-    records = documents_grn.select(query)
-    # p records.size
-    
-    # records = documents.search(
-    #                            :patterns  => params[:query].split(" "),
-    #                            # :keywords  => @option.keywords,
-    #                            :paths     => [ params[:dir] ],
-    #                            # :packages  => @option.packages,
-    #                            # :strict_packages  => @option.strict_packages,
-    #                            # :restpaths => ,
-    #                            # :suffixs   => @option.suffixs
-    #                            # :offset    => ,
-    #                            # :limit     => ,
-    #                            )
+    query = "package:#{params[:package]} #{params[:query]}"
+    records = grn.select(query, default_column: "content")
 
     records.map { |r| r.path }.join("\n")
   end

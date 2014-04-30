@@ -154,9 +154,9 @@ module Milkode
 
     def pickupRecords
       if @option.fast_gmilk
-        dir = File.expand_path('.')
+        package = @option.strict_packages[0]
         query = CGI.escape(@patterns.join(" "))
-        DummyRecord.from_url("http://127.0.0.1:9292/gmilk?dir=#{dir}&query=#{query}")
+        DummyRecord.from_url("http://127.0.0.1:9292/gmilk?package=#{package}&query=#{query}")
       else
         raise unless @option.dbFile
         records = searchDatabase
