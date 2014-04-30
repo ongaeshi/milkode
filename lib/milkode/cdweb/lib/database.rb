@@ -21,6 +21,8 @@ module Milkode
   class Database
     include Singleton
 
+    attr_reader :documents
+
     @@db_dir = nil
 
     def self.setup(db_dir)
