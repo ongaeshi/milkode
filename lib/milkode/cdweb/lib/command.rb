@@ -5,14 +5,15 @@
 # @author ongaeshi
 # @date   2011/07/11
 
-require 'milkode/cdweb/lib/database'
 require 'milkode/cdweb/lib/coderay_wrapper'
+require 'milkode/cdweb/lib/database'
+require 'milkode/cdweb/lib/mkurl'
 require 'milkode/cdweb/lib/search_contents'
 require 'milkode/cdweb/lib/search_files'
-require 'milkode/cdweb/lib/search_gotoline'
 require 'milkode/cdweb/lib/search_fuzzy_gotoline'
-require 'milkode/cdweb/lib/mkurl'
+require 'milkode/cdweb/lib/search_gotoline'
 require 'milkode/common/util'
+require 'milkode/grep/findgrep'
 
 module Milkode
   def view(record, params, before)
@@ -137,8 +138,8 @@ module Milkode
     documents = Database.instance.documents
     grn = documents.table
 
-    contents = params[:query].split(" ").map{ |v| "content:@#{v}" }.join(" ")
-    query = "package:#{params[:package]} #{params[:query]}"
+    package = CLI_Grep.package_root(params[:dir])
+    query = "package: #{package.name} #{params[:query]}"
     records = grn.select(query, default_column: "content")
 
     records.map { |r| r.path }.join("\n")
