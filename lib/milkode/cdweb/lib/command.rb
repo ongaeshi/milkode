@@ -138,8 +138,13 @@ module Milkode
     documents = Database.instance.documents
     grn = documents.table
 
-    package = CLI_Grep.package_root(params[:dir])
-    query = "package: #{package.name} #{params[:query]}"
+    query = params[:query]
+
+    unless params[:all]
+      package = CLI_Grep.package_root(params[:dir])
+      query += " package: #{package.name}"
+    end
+
     records = grn.select(query, default_column: "content")
 
     records.map { |r| r.path }.join("\n")
