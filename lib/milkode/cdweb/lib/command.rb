@@ -134,7 +134,7 @@ module Milkode
     haml :packages
   end
 
-  def search_for_gmilk(params)
+  def search_for_gomilk(params)
     documents = Database.instance.documents
     grn = documents.table
 
