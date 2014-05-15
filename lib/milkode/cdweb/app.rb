@@ -169,7 +169,11 @@ get '/info/:package' do
 end
 
 get '/gomilk' do
-  search_for_gomilk(params)
+  if ENV['MILKODE_SUPPORT_GOMILK']
+    search_for_gomilk(params)
+  else
+    "Error:"
+  end
 end
 
 # -- helper function --
