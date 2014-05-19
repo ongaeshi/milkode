@@ -141,7 +141,7 @@ module Milkode
     query = params[:query]
 
     unless params[:all]
-      package = CLI_Grep.package_root(params[:dir])
+      package = CLI_Grep.package_root(params[:dir].gsub("\\", "/"))
       query += " package: #{package.name}"
     end
 
