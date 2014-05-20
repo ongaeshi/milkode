@@ -42,8 +42,9 @@ $ MILKODE_DEFAULT_DIR=/path/to/dir milk add /path/to/project
 
 ### Add packages
 
+Add source code from local directory.
+
 ```
-# Add source code from local directory
 $ milk add a_project/
 package    : a_project
 add_record : /Users/auser/Documents/a_project/a.txt
@@ -51,16 +52,25 @@ add_record : /Users/auser/Documents/a_project/b.txt
 add_record : /Users/auser/Documents/a_project/c.rb
 result     : 1 packages, 3 records, 3 add. (0.21sec)
 *milkode*  : 1 packages, 3 records in /Users/auser/.milkode/db/milkode.db.
+```
 
-# Add source code from gem
+Add source code from gem.
+
+```
 $ milk add /opt/local/lib/ruby2.0/gems/2.0.0/gems/milkode-1.6.2/
+```
 
-# Add source code from GitHub
+Add source code from GitHub.
+
+```
 $ milk add https://github.com/ongaeshi/milkode.git -p git
 $ milk add git://github.com/ongaeshi/milkode.git
 $ milk add git://github.com/ongaeshi/milkode.git -b develop -n milkode_develop
+```
 
-# Add source code from http-zip
+Add source code from http-zip.
+
+```
 $ milk add http://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.zip
 ```
 
@@ -72,8 +82,11 @@ a_project
 milkode
 milkode-1.6.2
 ruby-2.1.2
+```
 
-# Filter by keyword
+Filter by keyword.
+
+```
 $ milk list milk
 milkode-1.6.2
 milkode
