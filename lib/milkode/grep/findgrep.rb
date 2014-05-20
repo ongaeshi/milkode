@@ -340,8 +340,7 @@ module Milkode
         if ( result )
           unless (@option.dispHtml)
             # header = "#{path}:#{index + 1}:"
-            rpath = Milkode::Util.relative_path(path, Dir.pwd).to_s
-            header = "#{rpath}:#{index + 1}:"
+            header = "#{convert_path(path)}:#{index + 1}:"
             
             line = GrenSnip::snip(line, match_datas) unless (@option.noSnip)
 
@@ -443,6 +442,14 @@ EOF
       else
         or_matchs[0]
       end
+    end
+
+    def convert_path(path)
+     unless @option.expand_path
+       Milkode::Util.relative_path(path, Dir.pwd).to_s
+     else
+       path
+     end
     end
   end
 end
