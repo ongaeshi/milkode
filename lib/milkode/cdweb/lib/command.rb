@@ -5,14 +5,15 @@
 # @author ongaeshi
 # @date   2011/07/11
 
-require 'milkode/cdweb/lib/database'
 require 'milkode/cdweb/lib/coderay_wrapper'
+require 'milkode/cdweb/lib/database'
+require 'milkode/cdweb/lib/mkurl'
 require 'milkode/cdweb/lib/search_contents'
 require 'milkode/cdweb/lib/search_files'
-require 'milkode/cdweb/lib/search_gotoline'
 require 'milkode/cdweb/lib/search_fuzzy_gotoline'
-require 'milkode/cdweb/lib/mkurl'
+require 'milkode/cdweb/lib/search_gotoline'
 require 'milkode/common/util'
+require 'milkode/grep/findgrep'
 
 module Milkode
   def view(record, params, before)
@@ -131,6 +132,22 @@ module Milkode
     end.join
     @elapsed = Time.now - before
     haml :packages
+  end
+
+  def search_for_gomilk(params)
+    documents = Database.instance.documents
+    grn = documents.table
+
+    query = params[:query]
+
+    unless params[:all]
+      package = CLI_Grep.package_root(params[:dir].gsub("\\", "/"))
+      query += " package: #{package.name}"
+    end
+
+    records = grn.select(query, default_column: "content")
+
+    records.map { |r| r.path }.join("\n")
   end
 
   private
