@@ -57,7 +57,7 @@ result     : 1 packages, 3 records, 3 add. (0.21sec)
 Add source code from gem.
 
 ```
-$ milk add /opt/local/lib/ruby2.0/gems/2.0.0/gems/milkode-1.6.2/
+$ milk add /opt/local/lib/ruby2.0/gems/2.0.0/gems/milkode-1.6.0/
 ```
 
 Add source code from GitHub.
@@ -80,7 +80,7 @@ $ milk add http://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.zip
 $ milk list
 a_project
 milkode
-milkode-1.6.2
+milkode-1.6.0
 ruby-2.1.2
 ```
 
@@ -88,7 +88,7 @@ Filter by keyword.
 
 ```
 $ milk list milk
-milkode-1.6.2
+milkode-1.6.0
 milkode
 ```
 
