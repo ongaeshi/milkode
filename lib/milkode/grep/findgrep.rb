@@ -167,7 +167,7 @@ module Milkode
         if (@option.gotoline > 0)
           records.each do |record|
             if FileTest.exist?(record.path)
-              relative_path = Milkode::Util.relative_path(record.path, Dir.pwd).to_s
+              relative_path = convert_path(record.path)
               line = getTextLineno(relative_path, @option.gotoline)
               stdout.puts "#{relative_path}:#{@option.gotoline}:#{line}" if (line)
               @result.match_file_count += 1
@@ -185,8 +185,7 @@ module Milkode
         else
           records.each do |record|
             path = record.path
-            relative_path = Milkode::Util.relative_path(path, Dir.pwd).to_s
-            stdout.puts relative_path
+            stdout.puts convert_path(path)
             @result.match_file_count += 1
             raise MatchCountOverError if (0 < @option.matchCountLimit && @option.matchCountLimit <= @result.match_file_count)
           end
