@@ -141,7 +141,11 @@ module Milkode
     query = params[:query]
 
     unless params[:all]
-      package = CLI_Grep.package_root(params[:dir].gsub("\\", "/"))
+      begin
+        package = CLI_Grep.package_root(params[:dir].gsub("\\", "/"))
+      rescue CLI_Grep::NotFoundPackage
+        return "Error: Not package dir '#{params[:dir]}'"
+      end
       query += " package: #{package.name}"
     end
 

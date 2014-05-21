@@ -172,7 +172,7 @@ get '/gomilk' do
   if ENV['MILKODE_SUPPORT_GOMILK']
     search_for_gomilk(params)
   else
-    "Error:"
+    "Error: Need 'milk web --gomilk'"
   end
 end
 
