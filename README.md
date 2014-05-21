@@ -45,13 +45,12 @@ $ MILKODE_DEFAULT_DIR=/path/to/dir milk add /path/to/project
 Add source code from local directory.
 
 ```
-$ milk add a_project/
-package    : a_project
-add_record : /Users/auser/Documents/a_project/a.txt
-add_record : /Users/auser/Documents/a_project/b.txt
-add_record : /Users/auser/Documents/a_project/c.rb
-result     : 1 packages, 3 records, 3 add. (0.21sec)
-*milkode*  : 1 packages, 3 records in /Users/auser/.milkode/db/milkode.db.
+$ milk add ~/Documents/codes/linux-3.10-rc4
+package    : linux-3.10-rc4
+.
+.
+result     : 1 packages, 42810 records, 42810 add.
+*milkode*  : 1 packages, 42810 records in /Users/ongaeshi/.milkode/db/milkode.db.
 ```
 
 Add source code from gem.
@@ -91,6 +90,25 @@ $ milk list milk
 milkode-1.6.0
 milkode
 ```
+
+### Search command line
+
+```
+$ cd ~/Documents/codes/linux-3.10-rc4
+$ gmilk specific prototypes
+arch/ia64/include/asm/numa.h:6: * This file contains NUMA specific prototypes and definitions.
+arch/x86/include/asm/proto.h:6:/* misc architecture specific prototypes */
+```
+
+[Gomilk](https://github.com/ongaeshi/gomilk) is faster version written by Go.
+
+### Web application
+
+```
+$ milk web
+```
+
+![milk-web-02.jpg](http://milkode.ongaeshi.me/images/milk-web-02.jpg)
 
 ## Documents
 
