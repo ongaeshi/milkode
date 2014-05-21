@@ -93,11 +93,20 @@ milkode
 
 ### Search command line
 
+Gmilk command can use the AND search.
+
 ```
 $ cd ~/Documents/codes/linux-3.10-rc4
-$ gmilk specific prototypes
-arch/ia64/include/asm/numa.h:6: * This file contains NUMA specific prototypes and definitions.
-arch/x86/include/asm/proto.h:6:/* misc architecture specific prototypes */
+$ gmilk according prototypes
+Documentation/cdrom/cdrom-standard.tex:977:  according to prototypes listed in \cdromh, and specifications given
+```
+
+Remember the project root.
+
+```
+$ cd driver/acpi
+$ gmilk according prototypes
+../../Documentation/cdrom/cdrom-standard.tex:977:  according to prototypes listed in \cdromh, and specifications given
 ```
 
 [Gomilk](https://github.com/ongaeshi/gomilk) is faster version written by Go.
