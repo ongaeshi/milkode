@@ -165,6 +165,8 @@ EOF
     option :port, :default => 9292, :aliases => '-p', :desc => 'Use PORT.'
     option :server, :default => 'thin', :aliases => '-s', :desc => 'Use SERVER.'
     option :url, :aliases => '-u', :type => :string, :desc => 'Relative URL. (Default: "/")'
+    option :gomilk, :aliases => '-g', :type => :boolean, :desc => 'Allow "http://127.0.0.1:9292/gomilk"'
+
     def web
       opts = {
         :environment => ENV['RACK_ENV'] || "development",
@@ -178,6 +180,7 @@ EOF
         :LaunchBrowser => !options[:no_browser],
         :DbDir         => options[:db],
         :url           => options[:url],
+        :gomilk        => options[:gomilk]
       }
       opts[:customize] = options[:customize]
       # cdstk(opts[:DbDir]).assert_compatible

@@ -1,3 +1,8 @@
+=== 1.6.2 xxxx/xx/xx
+
+* gmilk
+  *  #66 gmilkでの検索結果のファイルのパス (thanks kazuna)
+
 === 1.6.1 2014/04/15
 
 * milk

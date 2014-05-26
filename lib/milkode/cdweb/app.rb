@@ -168,6 +168,14 @@ get '/info/:package' do
   haml :info_package
 end
 
+get '/gomilk' do
+  if ENV['MILKODE_SUPPORT_GOMILK']
+    search_for_gomilk(params)
+  else
+    "Error: Need 'milk web --gomilk'"
+  end
+end
+
 # -- helper function --
 
 helpers do
