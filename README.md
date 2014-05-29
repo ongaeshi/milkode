@@ -1,6 +1,6 @@
 # Milkode
 
-[![Build Status](https://travis-ci.org/ongaeshi/milkode.svg?branch=develop)](https://travis-ci.org/ongaeshi/milkode)
+[![Version](https://img.shields.io/gem/v/milkode.svg)](https://rubygems.org/gems/milkode) [![Build Status](https://travis-ci.org/ongaeshi/milkode.svg?branch=develop)](https://travis-ci.org/ongaeshi/milkode)
 
 Milkode is "Line Based" local source code search engine written by Ruby. It have command line interface and web application. It will accelerate the code reading of your life.
 
