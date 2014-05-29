@@ -4,7 +4,8 @@
 #  
 
 require 'rubygems'
+require 'milkode'
 require 'milkode/grep/cli_grep'
 
-Version = "1.6.1"
+Version = Milkode::VERSION
 Milkode::CLI_Grep.execute(STDOUT, ARGV)

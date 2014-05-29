@@ -6,5 +6,4 @@
 require 'rubygems'
 require 'milkode/cli'
 
-Version = "1.6.1"
 Milkode::CLI.start(ARGV)

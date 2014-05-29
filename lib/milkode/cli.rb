@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 require 'thor'
+require 'milkode'
 require 'milkode/cdstk/cdstk'
 require 'milkode/common/dbdir.rb'
 require 'milkode/cdweb/cli_cdweb'
@@ -243,7 +244,7 @@ EOF
         if options[:help] && task.name != 'grep'
           CLI.task_help(shell, task.name)
         elsif options[:version] && task.name == 'help'
-          puts "milk #{Version}"
+          puts "milk #{Milkode::VERSION}"
         else
           super
         end
