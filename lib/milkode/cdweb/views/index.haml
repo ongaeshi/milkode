@@ -27,6 +27,7 @@
               %input(name="query" type="text" style="width: 419px;")
               %input(type="submit" value="#{t(:search)}")
               %input(name='pathname' type='hidden' value='#{url_for '/home'}')
+              &nbsp;&nbsp;<a href="#{url_for '/help'}">#{t(:help)}</a>
 
       .row
         .span12.text-center
@@ -44,8 +45,6 @@
             <a href="#{url_for '/home'}">#{@package_num}</a> #{t(:packages)}
           .topmenu-item
             <a href="#{url_for '/home?query=f:*'}">#{@file_num}</a> #{t(:files)}
-          .topmenu-item
-            <a href="#{url_for '/help'}">#{t(:help)}</a>
           .topmenu-item
             [<a href="#{url_for '/?locale=en'}">#{t(:english)}</a> | <a href="#{url_for '/?locale=ja'}">#{t(:japanese)}</a>]<br>
           .topmenu-item
