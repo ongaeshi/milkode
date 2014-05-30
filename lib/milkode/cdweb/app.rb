@@ -138,6 +138,7 @@ end
 get %r{/help} do
   @setting = WebSetting.new
   @path                = ""
+  update_locale
   haml :help
 end
 

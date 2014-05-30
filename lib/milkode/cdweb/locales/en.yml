@@ -35,3 +35,26 @@ en:
   filter_by_directory: Filter by Directory
   update_news: 'Update %{package_name}'
   add_news: 'Add %{package_name}'
+  filter_options: Filter Options
+  help_search_by_keyword: Search by Keywords
+  help_and_search: AND Search
+  help_phrase_search: Pyrase Search
+  help_filter_options_description: Can use along with the keywords
+  help_filter_by_package_name: Filter by package
+  help_filter_by_file_name: Filter by filename
+  help_filter_by_suffix: Filter by suffix
+  help_filter_by_a_file_name_or_package_name: Filter by a filename or packge
+  help_filter_by_a_file_name_or_package_name_or_contents: Filter by a filename or packge or contents
+  help_wide_search: Extend to multiple lines search range
+  help_wide_search_comment_01: Both of 'read' and 'write' to within seven lines are included
+  help_wide_search_comment_02: "File all if 'w:0'"
+  help_directpath: Direct Path
+  help_directpath_description: Direct Path is a <strong>"Absolute Path"</strong>
+  help_jump_directly_to_a_search_for_directpath: Jump directly to a search for Direct Path.
+  help_directpath_comment_01: /#{package}/#{filename}:#{lineno}
+  help_directpath_comment_02: If spaces are included
+  help_directpath_comment_03: You can pass more than one value if you separate them by blank
+  help_directpath_gif: Get by clicking the line number
+  help_emacs_milkode: Direct Path can work with <a href="https://github.com/ongaeshi/emacs-milkode">emacs-milkode</a>.
+
+
