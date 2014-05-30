@@ -2,75 +2,75 @@
 
 .content
   .help-content
-    %h1 ヘルプ
+    %h1 #{t(:help)}
     
     %ol
-      %li <a href="#search">検索</a>
-      %li <a href="#refine">絞り込みオプション</a>
+      %li <a href="#search">#{t(:search)}</a>
+      %li <a href="#refine">#{t(:filter_options)}</a>
       %li <a href="#directpath">ダイレクトパス</a>
 
-    %h2#search 検索
+    %h2#search #{t(:search)}
     %ul
-      %li キーワードを並べてAND検索
+      %li #{t(:help_and_search)}
 
       %pre
         :preserve
           def open
 
-      %li １フレーズとして検索
+      %li #{t(:help_phrase_search)}
       %pre
         :preserve
           "def open"
       
-    %h2#refine 絞り込みオプション
+    %h2#refine #{t(:filter_options)}
     %p
-      検索キーワードと組み合わせて使う
+      #{t(:help_filter_options_description)}
       
     %ul
-      %li パッケージ名で絞り込み
+      %li #{t(:help_filter_by_package_name)}
       %pre
         :preserve
           p:milkode
       
-      %li ファイル名で絞り込み
+      %li #{t(:help_filter_by_file_name)}
       %pre
         :preserve
           f:test
       
-      %li 拡張子で絞り込み
+      %li #{t(:help_filter_by_suffix)}
       %pre
         :preserve
           s:rb
       
-      %li ファイル名もしくはパッケージ名で絞り込み
+      %li #{t(:help_filter_by_a_file_name_or_package_name)}
       %pre
         :preserve
           fp:milkode
       
-      %li ファイル名、パッケージ名、もしくはファイルの内容
+      %li #{t(:help_filter_by_a_file_name_or_package_name_or_contents)}
       %pre
         :preserve
           k:test
       
-      %li 検索範囲を複数行に広げる
+      %li #{t(:help_wide_search)}
       %pre
         :preserve
-          w:7 read write                          <span class="comment"># 7行以内に'read'と'write'が含まれる箇所</span>
-          w:0 read write                          <span class="comment"># 'w:0'ならファイル内全て</span>
+          w:7 read write                          <span class="comment"># #{t(:help_wide_search_comment_01)}</span>
+          w:0 read write                          <span class="comment"># #{t(:help_wide_search_comment_02)}</span>
 
-    %h2#directpath ダイレクトパス
+    %h2#directpath #{t(:help_directpath)}
     %p
-      Milkodeにおける<strong>"絶対パス"</strong>に相当するもの
+      #{t(:help_directpath_description)}
       
     %ul
-      %li ダイレクトパスで検索すると直接ジャンプ
+      %li #{t(:help_jump_directly_to_a_search_for_directpath)}
       %pre
         :preserve
-          /proj/a/file.rb:81                      <span class="comment"># /パッケージ名/ファイル名:行番号</span>
-          "/proj/a file.rb:3"                     <span class="comment"># 空白を含むダイレクトパスは""で囲む</span>
-          /proj1/file.rb:1 /proj2/file.c:2         <span class="comment"># 空白で区切れば複数個渡せる</span>
+          /proj/a/file.rb:81                      <span class="comment"># #{t(:help_directpath_comment_01)}</span>
+          "/proj/a file.rb:3"                     <span class="comment"># #{t(:help_directpath_comment_02)}</span>
+          /proj1/file.rb:1 /proj2/file.c:2        <span class="comment"># #{t(:help_directpath_comment_03)}</span>
 
-      %li ファイルモードで行番号をクリックすると取得可能
+      %li #{t(:help_directpath_gif)}
       <img src="#{url_for '/images/milkode-directpath-copy.gif'}" />
 
-      %li <a href="https://github.com/ongaeshi/emacs-milkode">emacs-milkode</a>との連携にも使う
+      %li #{t(:help_emacs_milkode)}
