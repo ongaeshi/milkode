@@ -38,6 +38,7 @@ ja:
   filter_options: 絞り込みオプション
   help_and_search: キーワードを並べてAND検索
   help_phrase_search: １フレーズとして検索
+  help_search_by_keyword: キーワードで検索
   help_filter_options_description: 検索キーワードと組み合わせて使う
   help_filter_by_package_name: パッケージ名で絞り込み
   help_filter_by_file_name: ファイル名で絞り込み
