@@ -1,7 +1,19 @@
-=== 1.6.2 xxxx/xx/xx
+=== 1.7.0 2014/06/02
+
+* milk web
+  * Support gomilk option (milk web -g)
+    * https://github.com/ongaeshi/gomilk
+  * Support i18n in the help.haml
 
 * gmilk
   *  #66 gmilkでの検索結果のファイルのパス (thanks kazuna)
+
+* etc
+  * Improve README
+  * Add a badge of gem version
+  * Change the setting of TravisCI [groonga-dev,02268]
+  * Change to Bundler a method of generating a gem
+    * Jeweler, Thanks for long support
 
 === 1.6.1 2014/04/15
 

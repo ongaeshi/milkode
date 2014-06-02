@@ -35,3 +35,26 @@ ja:
   filter_by_directory: ディレクトリで絞り込み
   update_news: '%{package_name}を更新'
   add_news: '%{package_name}を追加'
+  filter_options: 絞り込みオプション
+  help_and_search: キーワードを並べてAND検索
+  help_phrase_search: １フレーズとして検索
+  help_search_by_keyword: キーワードで検索
+  help_filter_options_description: 検索キーワードと組み合わせて使う
+  help_filter_by_package_name: パッケージ名で絞り込み
+  help_filter_by_file_name: ファイル名で絞り込み
+  help_filter_by_suffix: 拡張子で絞り込み
+  help_filter_by_a_file_name_or_package_name: ファイル名もしくはパッケージ名で絞り込み
+  help_filter_by_a_file_name_or_package_name_or_contents: ファイル名、パッケージ名、もしくはファイルの内容
+  help_wide_search: 検索範囲を複数行に広げる
+  help_wide_search_comment_01: 7行以内に'read'と'write'が含まれる箇所
+  help_wide_search_comment_02: "'w:0'ならファイル内全て"
+  help_directpath: ダイレクトパス
+  help_directpath_description: Milkodeにおける<strong>"絶対パス"</strong>に相当するもの
+  help_jump_directly_to_a_search_for_directpath: ダイレクトパスで検索すると直接ジャンプ
+  help_directpath_comment_01: /パッケージ名/ファイル名:行番号
+  help_directpath_comment_02: 空白を含むダイレクトパスは""で囲む
+  help_directpath_comment_03: 空白で区切れば複数個渡せる
+  help_directpath_gif: ファイルモードで行番号をクリックすると取得可能
+  help_emacs_milkode: <a href="https://github.com/ongaeshi/emacs-milkode">emacs-milkode</a>との連携にも使う
+  
+
