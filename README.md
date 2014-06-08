@@ -2,7 +2,9 @@
 
 [![Version](https://img.shields.io/gem/v/milkode.svg)](https://rubygems.org/gems/milkode) [![Build Status](https://travis-ci.org/ongaeshi/milkode.svg?branch=develop)](https://travis-ci.org/ongaeshi/milkode)
 
-Milkode is "Line Based" local source code search engine written by Ruby. It have command line interface and web application. It will accelerate the code reading of your life.
+Milkode is source code search engine of "line-oriented" written by Ruby.It have command line interface and web application. It will accelerate the code reading of your life.
+
+It is possible from the file tens of thousands of the order, to search instantly a line that contains the keyword of interest.
 
 Milkode is "見るコード". "See a code" is meaning.
 
