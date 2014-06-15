@@ -21,7 +21,7 @@ module Milkode
       :favicon      => "/images/favicon.ico",
 
       :display_about_milkode => true,
-      :hide_update_button => true,
+      :hide_update_button => false,
     }
 
     def self.hash_method(name)

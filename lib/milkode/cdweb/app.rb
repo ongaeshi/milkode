@@ -260,7 +260,7 @@ EOF
     info_path = File.join(info_path, package_name) if package_name != ""
 
     update_menu = "#{headicon('view-refresh-4.png', suburl)}<a href='#updateModal' class='headmenu' data-toggle='modal'>#{t(:update_packages)}</a>&nbsp;"
-    update_menu = "" unless @setting.hide_update_button
+    update_menu = "" if @setting.hide_update_button
 
     <<EOF
     #{headicon('go-home-5.png', suburl)}<a href="#{suburl}/home" class="headmenu">#{t(:home)}</a>&nbsp;
