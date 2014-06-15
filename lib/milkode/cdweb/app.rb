@@ -259,10 +259,13 @@ EOF
     info_path = "#{suburl}/info"
     info_path = File.join(info_path, package_name) if package_name != ""
 
+    update_menu = "#{headicon('view-refresh-4.png', suburl)}<a href='#updateModal' class='headmenu' data-toggle='modal'>#{t(:update_packages)}</a>&nbsp;"
+    update_menu = "" unless @setting.hide_update_button
+
     <<EOF
     #{headicon('go-home-5.png', suburl)}<a href="#{suburl}/home" class="headmenu">#{t(:home)}</a>&nbsp;
-    #{headicon('directory.png', suburl)}<a href="#{flist}" class="headmenu">#{t(:directory)}</a>
-    #{headicon('view-refresh-4.png', suburl)}<a href="#updateModal" class="headmenu" data-toggle="modal">#{t(:update_packages)}</a>&nbsp;
+    #{headicon('directory.png', suburl)}<a href="#{flist}" class="headmenu">#{t(:directory)}</a>&nbsp;
+    #{update_menu}
     #{headicon('info.png', suburl)}<a href="#{info_path}" class="headmenu">#{t(:stats)}</a>&nbsp;
     #{headicon('help.png', suburl)}<a href="#{suburl}/help" class="headmenu">#{t(:help)}</a>
 

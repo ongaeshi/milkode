@@ -20,7 +20,8 @@ module Milkode
 
       :favicon      => "/images/favicon.ico",
 
-      :display_about_milkode => true
+      :display_about_milkode => true,
+      :hide_update_button => true,
     }
 
     def self.hash_method(name)
@@ -59,6 +60,8 @@ module Milkode
         ''
       end
     end
+
+    hash_method :hide_update_button
   end
 end
 
