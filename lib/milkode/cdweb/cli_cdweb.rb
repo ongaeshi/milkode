@@ -84,7 +84,10 @@ EOF
 :header_title: "Milkode"
 :header_icon : "/images/MilkodeIcon135.png"
 
+:favicon: "/images/favicon.ico"
+
 :display_about_milkode: true
+:hide_update_button: false
 EOF
         end
       end
