@@ -1,3 +1,9 @@
+=== 1.7.1 2014/06/17
+
+* milk web
+  * Add the :hide_update_button option to the milkweb.yaml file
+  * Improve the help text
+
 === 1.7.0 2014/06/02
 
 * milk web
