@@ -56,5 +56,9 @@ en:
   help_directpath_comment_03: You can pass more than one value if you separate them by blank
   help_directpath_gif: Get by clicking the line number
   help_emacs_milkode: Direct Path can work with <a href="https://github.com/ongaeshi/emacs-milkode">emacs-milkode</a>.
+  keyboard_shortcut: Keyboard Shortcut
+  keyboard_shortcut_s: Focus search bar
+  keyboard_shortcut_S: Search using a selected text with new tab 
+  select_text: Select text
 
 
