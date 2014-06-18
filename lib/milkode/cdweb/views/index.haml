@@ -24,7 +24,7 @@
         .span12.text-center
           .form
             %form(method="post" action="#{url_for '/search'}")
-              %input(name="query" type="text" style="width: 419px;")
+              %input#query(name="query" type="text" style="width: 419px;")
               %input(type="submit" value="#{t(:search)}")
               %input(name='pathname' type='hidden' value='#{url_for '/home'}')
               &nbsp;&nbsp;<a href="#{url_for '/help'}">#{t(:help)}</a>
