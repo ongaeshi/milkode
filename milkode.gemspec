@@ -30,7 +30,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'sinatra'     , '>= 1.2.6'
   spec.add_dependency 'launchy'     , '>= 0.3.7'
   spec.add_dependency 'coderay'     , '>= 1.0.5'
-  spec.add_dependency 'thin'        , '>= 1.2.10', '< 2.0.0'
+  spec.add_dependency 'thin'        , '>= 1.2.10', '< 2.0.0.pre'
   spec.add_dependency 'archive-zip' , '>= 0.4.0'
   spec.add_dependency 'haml'        , '>= 3.1.2'
   spec.add_dependency 'sass'        , '>= 3.1.3'
