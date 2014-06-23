@@ -304,6 +304,8 @@ EOF
   end
 
   def create_favorite_list(package_list)
+    return "" if package_list.favorite_list_size == 0
+    
     <<EOF
       <div class="favorite_list">
         #{t(:favorite)}:

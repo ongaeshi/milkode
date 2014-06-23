@@ -47,6 +47,10 @@ module Milkode
       top_list(a[0...FAV_NUM], 'favtime')
     end
 
+    def favorite_list_size
+      @grndb.packages.favs.size
+    end
+
     def favorite_list(params)
       names = @grndb.packages.favs.map{|r| r.name}[0..FAVORITE_LIST_NUM-1]
 
