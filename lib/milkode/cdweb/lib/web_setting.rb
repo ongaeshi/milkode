@@ -14,6 +14,7 @@ module Milkode
     DEFAULT_SETTING = {
       :home_title    => "Milkode",
       :home_icon     => "/images/MilkodeIcon135.png",
+      :home_font_size => "100%",
 
       :header_title => "Milkode",
       :header_icon  => "/images/MilkodeIcon135.png",
@@ -47,6 +48,7 @@ module Milkode
 
     hash_method :home_title
     hash_method :home_icon
+    hash_method :home_font_size
     
     hash_method :header_title
     hash_method :header_icon
