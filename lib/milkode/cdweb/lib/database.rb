@@ -113,8 +113,55 @@ module Milkode
       return records.map{|r| DocumentRecord.new(r)}, total_records, result
     end
 
-    def selectAll(offset, limit)
-      @documents.select_all_sort_by_shortpath(offset, limit)
+    def selectAll(current_path, offset, limit)
+      if current_path == ''
+        return @documents.select_all_sort_by_shortpath(offset, limit)
+      end
+
+      paths = []
+      strict_packages = []
+      is_not_search = false
+
+      package, restpath = Util.divide_shortpath(current_path)
+
+      grn_package = @grndb.packages[package]
+      if grn_package
+        # package name
+        strict_packages << package
+
+        # file path
+        directory = grn_package.directory
+        if restpath
+          paths << File.join(directory, restpath)
+        else
+          paths << directory
+        end
+      else
+        is_not_search = true
+      end
+
+      # search
+      records, total_records, result = [], 0, nil
+
+      begin
+        unless is_not_search
+          records, total_records, result = @documents.search_with_match(
+            :paths     => paths,
+            :strict_packages  => strict_packages,
+            :offset    => offset,
+            :limit     => limit
+          )
+        end
+      rescue Groonga::TooLargeOffset
+      end
+
+      if (limit != -1)
+        records = records.sort_by{|record| DocumentRecord::shortpath(record).downcase }
+      else
+        records = records.sort_by{|record| DocumentRecord::shortpath(record).downcase }
+      end
+
+      return records, result.size
     end
 
     # レコード数を得る
