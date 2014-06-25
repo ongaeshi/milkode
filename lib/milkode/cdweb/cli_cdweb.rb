@@ -78,8 +78,9 @@ EOF
         File.open(fname, "w") do |f|
           f.write <<EOF
 ---
-:home_title  : "Milkode"
-:home_icon   : "/images/MilkodeIcon135.png"
+:home_title     : "Milkode"
+:home_icon      : "/images/MilkodeIcon135.png"
+:home_font_size : "100%"
 
 :header_title: "Milkode"
 :header_icon : "/images/MilkodeIcon135.png"

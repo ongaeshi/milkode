@@ -19,6 +19,7 @@ require 'milkode/cdweb/lib/web_setting'
 require 'milkode/cdweb/lib/package_list'
 require 'milkode/cdweb/lib/info_home'
 require 'milkode/cdweb/lib/info_package'
+require 'milkode/version'
 require 'sinatra/url_for'
 
 I18n.load_path += Dir[File.join(File.dirname(__FILE__), 'locales', '*.yml').to_s]
@@ -303,6 +304,8 @@ EOF
   end
 
   def create_favorite_list(package_list)
+    return "" if package_list.favorite_list_size == 0
+    
     <<EOF
       <div class="favorite_list">
         #{t(:favorite)}:

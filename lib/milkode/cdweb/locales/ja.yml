@@ -56,5 +56,9 @@ ja:
   help_directpath_comment_03: 空白で区切れば複数個渡せる
   help_directpath_gif: ファイルモードで行番号をクリックすると取得可能
   help_emacs_milkode: <a href="https://github.com/ongaeshi/emacs-milkode">emacs-milkode</a>との連携にも使う
+  keyboard_shortcut: キーボードショートカット
+  keyboard_shortcut_s: 検索バーに移動
+  keyboard_shortcut_S: 選択したテキストを使って新しいタブで検索
+  select_text: テキスト選択
   
 

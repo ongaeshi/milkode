@@ -18,13 +18,13 @@
     .container#toppage
       .row
         .span12.text-center
-          %h1 <a href="#{url_for '/'}"><img src=#{url_for @setting.home_icon} alt="milkode-icon" border="0" height="135px" /></a> #{@setting.home_title} <font class="version">#{@version}</font>
+          %h1 <a href="#{url_for '/'}"><img src=#{url_for @setting.home_icon} alt="milkode-icon" border="0" height="135px" /></a> <span style="font-size: #{@setting.home_font_size}">#{@setting.home_title}</span> <font class="version">#{@version}</font>
 
       .row
         .span12.text-center
           .form
             %form(method="post" action="#{url_for '/search'}")
-              %input(name="query" type="text" style="width: 419px;")
+              %input#query(name="query" type="text" style="width: 419px;")
               %input(type="submit" value="#{t(:search)}")
               %input(name='pathname' type='hidden' value='#{url_for '/home'}')
               &nbsp;&nbsp;<a href="#{url_for '/help'}">#{t(:help)}</a>
