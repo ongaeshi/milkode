@@ -138,7 +138,7 @@ module Milkode
     documents = Database.instance.documents
     grn = documents.table
 
-    query = params[:query]
+    query = %Q|"#{params[:query]}"|
 
     unless params[:all]
       begin
