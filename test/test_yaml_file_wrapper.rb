@@ -22,60 +22,60 @@ class TestYamlFileWrapper < Test::Unit::TestCase
     FileUtils.cd(@tmp_dir.to_s)
   end
 
-  def test_basic
-    # create
-    yaml = YamlFileWrapper.create
-    assert_equal yaml.contents, []
-    assert_equal yaml.version, '0.2'
-    assert_raise(YamlFileWrapper::YAMLAlreadyExist) { YamlFileWrapper.create }
+#   def test_basic
+#     # create
+#     yaml = YamlFileWrapper.create
+#     assert_equal yaml.contents, []
+#     assert_equal yaml.version, '0.2'
+#     assert_raise(YamlFileWrapper::YAMLAlreadyExist) { YamlFileWrapper.create }
 
-    # # load
-    yaml = YamlFileWrapper.load
-    assert_equal yaml.contents, []
-    assert_equal yaml.version, '0.2'
+#     # # load
+#     yaml = YamlFileWrapper.load
+#     assert_equal yaml.contents, []
+#     assert_equal yaml.version, '0.2'
 
-    # load fail
-    FileUtils.mkdir 'loadtest'
-    FileUtils.cd 'loadtest' do
-      assert_raise(YamlFileWrapper::YAMLNotExist) { YamlFileWrapper.load }
-    end
+#     # load fail
+#     FileUtils.mkdir 'loadtest'
+#     FileUtils.cd 'loadtest' do
+#       assert_raise(YamlFileWrapper::YAMLNotExist) { YamlFileWrapper.load }
+#     end
 
-    # add
-    yaml.add(Package.create('/path/to/dir1'))
-    yaml.add(Package.create('/path/to/dir2'))
-    yaml.add(Package.create('/path/to/dir3'))
-    assert_equal ['dir1', 'dir2', 'dir3'], yaml.contents.map{|v| v.name }
+#     # add
+#     yaml.add(Package.create('/path/to/dir1'))
+#     yaml.add(Package.create('/path/to/dir2'))
+#     yaml.add(Package.create('/path/to/dir3'))
+#     assert_equal ['dir1', 'dir2', 'dir3'], yaml.contents.map{|v| v.name }
 
-    # remove
-    yaml.remove(Package.create('/path/to/dir2'))
-    assert_equal ['dir1', 'dir3'], yaml.contents.map{|v| v.name }
+#     # remove
+#     yaml.remove(Package.create('/path/to/dir2'))
+#     assert_equal ['dir1', 'dir3'], yaml.contents.map{|v| v.name }
 
-    # update
-    yaml.update(Package.create('/path/to/dir1', ["*.bak"]))
-    assert_equal ['*.bak'], yaml.contents[0].ignore
+#     # update
+#     yaml.update(Package.create('/path/to/dir1', ["*.bak"]))
+#     assert_equal ['*.bak'], yaml.contents[0].ignore
 
-    # find_name
-    assert yaml.find_name('dir1')
-    assert_nil yaml.find_name('dir2')
+#     # find_name
+#     assert yaml.find_name('dir1')
+#     assert_nil yaml.find_name('dir2')
 
-    # find_dir
-    assert yaml.find_dir('/path/to/dir1')
-    assert_nil yaml.find_dir('/path/to/dir2')
+#     # find_dir
+#     assert yaml.find_dir('/path/to/dir1')
+#     assert_nil yaml.find_dir('/path/to/dir2')
 
-    # save
-    yaml.save
-    expected_object = YAML.load <<EOF
----
-version: '0.2'
-contents:
-- directory: /path/to/dir1
-  ignore:
-  - ! '*.bak'
-- directory: /path/to/dir3
-EOF
-    actual_object = open('milkode.yaml'){|f| YAML.load f}
-    assert_equal expected_object, actual_object
-  end
+#     # save
+#     yaml.save
+#     expected_object = YAML.load <<EOF
+# ---
+# version: '0.2'
+# contents:
+# - directory: /path/to/dir1
+#   ignore:
+#   - ! '*.bak'
+# - directory: /path/to/dir3
+# EOF
+#     actual_object = open('milkode.yaml'){|f| YAML.load f}
+#     assert_equal expected_object, actual_object
+#   end
 
   def test_save_otherpath
     FileUtils.mkdir 'otherpath'
