@@ -1,3 +1,12 @@
+=== 1.8.1 2014/09/27
+
+* milk web 
+  * Use thin < 2.0.0.pre
+  * Set a viewport attribute
+
+* gomilk
+  * Add escape to query from gomilk
+
 === 1.8.0 2014/06/26
 
 * milk web
