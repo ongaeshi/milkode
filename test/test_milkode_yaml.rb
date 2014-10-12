@@ -37,7 +37,7 @@ EOF
   def test_dump
     obj = MilkodeYaml.new(SRC)
     if Milkode::Util.ruby20?
-      assert_equal SRC, obj.dump
+      assert_equal YAML.load(SRC), YAML.load(obj.dump)
     elsif Milkode::Util.ruby19?
       assert_equal <<EOF, obj.dump
 ---
@@ -75,7 +75,7 @@ EOF
 
     assert_equal 1, obj.contents.size
 
-    assert_equal <<EOF, obj.dump  if Milkode::Util.ruby19?
+    assert_equal YAML.load(<<EOF), YAML.load(obj.dump) if Milkode::Util.ruby19?
 ---
 version: '0.2'
 contents:
@@ -90,7 +90,7 @@ EOF
     assert_equal 2, obj.contents.size
 
     if Milkode::Util.ruby20?
-      assert_equal <<EOF, obj.dump
+      assert_equal YAML.load(<<EOF), YAML.load(obj.dump)
 ---
 version: '0.2'
 contents:
@@ -122,7 +122,7 @@ EOF
     obj = MilkodeYaml.new(V_0_1)
     assert_equal true, obj.migrate
 
-    assert_equal <<EOF, obj.dump if Milkode::Util.ruby19?
+    assert_equal YAML.load(<<EOF), YAML.load(obj.dump) if Milkode::Util.ruby19?
 ---
 version: '0.2'
 contents:
@@ -146,7 +146,7 @@ EOF
     obj.update(p)
 
     if Milkode::Util.ruby20?
-      assert_equal <<EOF, obj.dump
+      assert_equal YAML.load(<<EOF), YAML.load(obj.dump)
 ---
 version: '0.2'
 contents:
