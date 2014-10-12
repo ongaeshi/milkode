@@ -5,11 +5,21 @@ module GrenFileTest
   IGNORE_DIR = /(\A\.svn\Z)|(\A\.git\Z)|(\ACVS\Z)/
 
   def self.ignoreDir?(fpath)
-    IGNORE_DIR.match(File.basename(fpath))
+    begin
+      IGNORE_DIR.match(File.basename(fpath))
+    rescue ArgumentError => e
+      puts "[skip dir] #{fpath}: #{e.to_s}"
+      true
+    end
   end
 
   def self.ignoreFile?(fpath)
-    IGNORE_FILE.match(File.basename(fpath))
+    begin
+      IGNORE_FILE.match(File.basename(fpath))
+    rescue ArgumentError => e
+      puts "[skip] #{fpath}: #{e.to_s}"
+      true
+    end
   end
 
   def self.binary?(fpath)
