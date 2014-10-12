@@ -7,7 +7,6 @@
 
 require 'test_helper'
 require 'milkode/cdstk/milkode_yaml.rb'
-require 'milkode/common/util'
 
 class TestMilkodeYaml < Test::Unit::TestCase
   include Milkode
@@ -32,25 +31,9 @@ contents:
 - directory: /path/to/dir
 EOF
 
-  # YAML#dumpの出力形式が1.8と1.9で変わってしまったので、1.8の時はテストしない
-
   def test_dump
     obj = MilkodeYaml.new(SRC)
-    if Milkode::Util.ruby20?
-      assert_equal YAML.load(SRC), YAML.load(obj.dump)
-    elsif Milkode::Util.ruby19?
-      assert_equal <<EOF, obj.dump
----
-version: '0.2'
-contents:
-- directory: /a/dir1
-- directory: /path/to/dir
-  ignore:
-  - ! '*.bak'
-  - /rdoc
-- directory: /a/b/c
-EOF
-    end
+    assert_equal YAML.load(SRC), YAML.load(obj.dump)
   end
 
   def test_version
@@ -75,7 +58,7 @@ EOF
 
     assert_equal 1, obj.contents.size
 
-    assert_equal YAML.load(<<EOF), YAML.load(obj.dump) if Milkode::Util.ruby19?
+    assert_equal YAML.load(<<EOF), YAML.load(obj.dump)
 ---
 version: '0.2'
 contents:
@@ -89,8 +72,7 @@ EOF
 
     assert_equal 2, obj.contents.size
 
-    if Milkode::Util.ruby20?
-      assert_equal YAML.load(<<EOF), YAML.load(obj.dump)
+    assert_equal YAML.load(<<EOF), YAML.load(obj.dump)
 ---
 version: '0.2'
 contents:
@@ -100,19 +82,6 @@ contents:
   - '*.bak'
   - /rdoc
 EOF
-    elsif Milkode::Util.ruby19?
-      assert_equal <<EOF, obj.dump
----
-version: '0.2'
-contents:
-- directory: /a/dir1
-- directory: /path/to/dir
-  ignore:
-  - ! '*.bak'
-  - /rdoc
-EOF
-    end
-
   end
 
   def test_migrate
@@ -122,14 +91,13 @@ EOF
     obj = MilkodeYaml.new(V_0_1)
     assert_equal true, obj.migrate
 
-    assert_equal YAML.load(<<EOF), YAML.load(obj.dump) if Milkode::Util.ruby19?
+    assert_equal YAML.load(<<EOF), YAML.load(obj.dump)
 ---
 version: '0.2'
 contents:
 - directory: /a/dir1
 - directory: /path/to/dir
 EOF
-    
   end
 
   def test_find_name
@@ -145,8 +113,7 @@ EOF
     p = Package.create(p.directory, p.ignore + ['*.a'])
     obj.update(p)
 
-    if Milkode::Util.ruby20?
-      assert_equal YAML.load(<<EOF), YAML.load(obj.dump)
+    assert_equal YAML.load(<<EOF), YAML.load(obj.dump)
 ---
 version: '0.2'
 contents:
@@ -158,21 +125,6 @@ contents:
   - '*.a'
 - directory: /a/b/c
 EOF
-    elsif Milkode::Util.ruby19?
-      assert_equal <<EOF, obj.dump
----
-version: '0.2'
-contents:
-- directory: /a/dir1
-- directory: /path/to/dir
-  ignore:
-  - ! '*.bak'
-  - /rdoc
-  - ! '*.a'
-- directory: /a/b/c
-EOF
-    end
-
 
     p = Package.create("not_found")
     assert_raise(RuntimeError) { obj.update(p) }
