@@ -66,6 +66,20 @@ EOF
     option :force, :type => :boolean, :aliases => '-f', :desc => 'Force remove.'
     option :verbose, :type => :boolean, :aliases => '-v', :desc => 'Be verbose.'
     def remove(*args)
+      $stdout.puts "[warning] 'milk remove' is obsolate. Please use 'milk rm'."
+
+      if args.empty? && !options[:all]
+        CLI.task_help(shell, "remove")
+      else
+        cdstk.remove(args, options)
+      end
+    end
+
+    desc "rm keyword_or_path1 [keyword_or_path2 ...]", "Remove package"
+    option :all, :type => :boolean, :aliases => '-a', :desc => 'Remove all.'
+    option :force, :type => :boolean, :aliases => '-f', :desc => 'Force remove.'
+    option :verbose, :type => :boolean, :aliases => '-v', :desc => 'Be verbose.'
+    def rm(*args)
       if args.empty? && !options[:all]
         CLI.task_help(shell, "remove")
       else
