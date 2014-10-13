@@ -1,3 +1,16 @@
+=== 1.8.4 2014/10/13
+
+* milk
+  * Add 'milk rm' command
+    * 'milk remove' is obsolate
+  * Fix a failure when 'gem install milkode' at a empty environment
+
+=== 1.8.3 2014/10/12
+
+* milk
+  * Fix the invalid byte sequence bug on Linux
+    * #69 grenfiletest.rb:12:in `match': invalid byte sequence in UTF-8 (ArgumentError)
+
 === 1.8.1 2014/09/27
 
 * milk web 
