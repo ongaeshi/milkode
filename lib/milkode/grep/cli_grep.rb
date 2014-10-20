@@ -8,6 +8,8 @@ require 'milkode/common/util'
 require 'milkode/grep/findgrep_option'
 require 'optparse'
 require 'tempfile'
+require 'open3'
+require 'shellwords'
 
 module Milkode
   class CLI_Grep
@@ -250,15 +252,15 @@ EOF
         tmpfile.write(files.join("\n"))
         tmpfile.close
         tmpfile.open
-        cmd << "cat #{tmpfile.path}"
+        cmd << ["cat", tmpfile.path]
 
-        cmd << "xargs #{first_command} #{arguments[0]}"
+        cmd << ["xargs", Shellwords.split(first_command), arguments[0]].flatten
 
         (1...arguments.size).each do |index|
-          cmd << "#{second_command} #{arguments[index]}"
+          cmd << [Shellwords.split(second_command), arguments[index]].flatten
         end
 
-        system(cmd.join(" | "))
+        Open3.pipeline(*cmd)
 
         tmpfile.close(true)
       end
