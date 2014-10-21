@@ -92,7 +92,7 @@ module Milkode
       strs.each do |v|
         option = 0
         option |= Regexp::IGNORECASE if (@option.ignoreCase || (!@option.caseSensitive && Milkode::Util.downcase?(v)))
-        regs << Regexp.new(v, option)
+        regs << Regexp.new(Regexp.escape(v), option)
       end
 
       regs
@@ -102,7 +102,7 @@ module Milkode
       regs = []
 
       strs.each do |v|
-        regs << Regexp.new(v, 0)
+        regs << Regexp.new(Regexp.escape(v), 0)
       end
 
       regs
