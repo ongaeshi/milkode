@@ -24,7 +24,7 @@ module Milkode
       :display_about_milkode => true,
       :hide_update_button => false,
 
-      :eliminate_extname => ".hoge .fuga",
+      :eliminate_extname => "",
     }
 
     def self.hash_method(name)
