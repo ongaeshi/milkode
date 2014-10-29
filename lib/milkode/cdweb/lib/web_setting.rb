@@ -24,7 +24,7 @@ module Milkode
       :display_about_milkode => true,
       :hide_update_button => false,
 
-      :custom_filetype => "",
+      :eliminate_extname => ".hoge .fuga",
     }
 
     def self.hash_method(name)
@@ -66,7 +66,7 @@ module Milkode
     end
 
     hash_method :hide_update_button
-    hash_method :custom_filetype
+    hash_method :eliminate_extname
   end
 end
 
