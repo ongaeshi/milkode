@@ -83,7 +83,8 @@ module Milkode
     def file_type
       @setting = WebSetting.new
       @extname = File.extname(@filename)
-      if @setting.eliminate_extname.include? @extname
+      @p_extname = "^\\#{@extname}$"
+      if @setting.eliminate_extname.split(" ").grep(/#{@p_extname}/).size > 0
           @filename = File.basename(@filename, @extname)
           @extname = File.extname(@filename)
       end
