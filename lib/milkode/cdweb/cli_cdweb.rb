@@ -89,6 +89,8 @@ EOF
 
 :display_about_milkode: true
 :hide_update_button: false
+
+:eliminate_extname: ""
 EOF
         end
       end
