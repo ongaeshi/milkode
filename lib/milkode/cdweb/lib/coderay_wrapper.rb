@@ -11,6 +11,7 @@ require 'coderay/helpers/file_type'
 require 'milkode/common/util'
 require 'milkode/cdweb/lib/coderay_html2'
 require 'milkode/cdweb/lib/coderay_php_utf8'
+require 'milkode/cdweb/lib/web_setting'
 
 module Milkode
   class CodeRayWrapper
@@ -80,7 +81,14 @@ module Milkode
     end
 
     def file_type
-      case File.extname(@filename)
+      @setting = WebSetting.new
+      @extname = File.extname(@filename)
+      @p_extname = "^\\#{@extname}$"
+      if @setting.eliminate_extname.split(" ").grep(/#{@p_extname}/).size > 0
+          @filename = File.basename(@filename, @extname)
+          @extname = File.extname(@filename)
+      end
+      case @extname
       when ".php"
         :php_utf8
       when ".el"
