@@ -66,7 +66,7 @@ EOF
     option :force, :type => :boolean, :aliases => '-f', :desc => 'Force remove.'
     option :verbose, :type => :boolean, :aliases => '-v', :desc => 'Be verbose.'
     def remove(*args)
-      $stdout.puts "[warning] 'milk remove' is obsolate. Please use 'milk rm'."
+      $stdout.puts "[warning] 'milk remove' is obsolete. Please use 'milk rm'."
 
       if args.empty? && !options[:all]
         CLI.task_help(shell, "remove")
