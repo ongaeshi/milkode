@@ -10,7 +10,7 @@
 
 * milk
   * Add 'milk rm' command
-    * 'milk remove' is obsolate
+    * 'milk remove' is obsolete
   * Fix a failure when 'gem install milkode' at a empty environment
 
 === 1.8.3 2014/10/12
