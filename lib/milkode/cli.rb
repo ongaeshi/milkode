@@ -175,7 +175,7 @@ EOF
     desc "web", "Startup web interface"
     option :customize, :type => :boolean, :desc => 'Create customize file.'
     option :db, :default => Milkode::CLI_Cdweb::select_dbdir, :desc => 'Database dir.'
-    option :no_browser, :type => :boolean, :default => false, :aliases => '-n', :type => :boolean, :desc => 'Do not launch browser.'
+    option :no_browser, :type => :boolean, :default => false, :aliases => '-n', :desc => 'Do not launch browser.'
     option :host, :default => '127.0.0.1', :aliases => '-o', :desc => 'Listen on HOST.'
     option :port, :default => 9292, :aliases => '-p', :desc => 'Use PORT.'
     option :server, :default => 'thin', :aliases => '-s', :desc => 'Use SERVER.'
