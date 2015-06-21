@@ -25,6 +25,10 @@ module Milkode
       :hide_update_button => false,
 
       :eliminate_extname => "",
+
+      :layout_setting => {
+        :tab_width => 8
+      }
     }
 
     def self.hash_method(name)
@@ -67,6 +71,8 @@ module Milkode
 
     hash_method :hide_update_button
     hash_method :eliminate_extname
+
+    hash_method :layout_setting
   end
 end
 

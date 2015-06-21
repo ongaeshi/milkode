@@ -52,6 +52,9 @@ module Milkode
     end
 
     def to_html
+      setting = WebSetting.new
+      layout_setting = setting.layout_setting
+
       CodeRay.scan(@content, file_type).
         html2(
               :wrap => nil,
@@ -62,11 +65,15 @@ module Milkode
               :line_number_anchors => false,
               :onclick_copy_line_number => true,
               :onclick_copy_prefix => "/#{@filename}:",
-              :keywords => @keywords
+              :keywords => @keywords,
+              :tab_width => layout_setting[:tab_width],
               )
     end
 
     def to_html_anchorlink(url)
+      setting = WebSetting.new
+      layout_setting = setting.layout_setting
+
       CodeRay.scan(@content, file_type).
         html2(
               :wrap => nil,
@@ -76,7 +83,8 @@ module Milkode
               :line_number_start => @line_number_start,
               :line_number_anchors => 'n',
               :line_number_anchor_url => url,
-              :keywords => @keywords
+              :keywords => @keywords,
+              :tab_width => layout_setting[:tab_width],
               )
     end
 
