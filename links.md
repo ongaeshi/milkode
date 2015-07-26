@@ -10,7 +10,6 @@ rootpath: .
 - [RubyGems](https://rubygems.org/gems/milkode)
 - [更新履歴](https://github.com/ongaeshi/milkode/blob/master/HISTORY.ja.rdoc) ([en](https://github.com/ongaeshi/milkode/blob/master/HISTORY.rdoc)) 
 - [よくある質問(FAQ)](./faq.html)
-- [Wiki](./wiki) - 旧ホームページ
 
 ## コミュニティ
 
