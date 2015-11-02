@@ -8,6 +8,10 @@ require 'milkode/grep/cli_grep'
 
 module Milkode
   class CLI < Thor
+    def self.exit_on_failure?
+      true
+    end
+
     class_option :help,    :type => :boolean, :aliases => '-h', :desc => 'Help message.'
     class_option :version, :type => :boolean, :desc => 'Show version.'
 
