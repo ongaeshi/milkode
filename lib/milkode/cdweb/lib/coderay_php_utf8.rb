@@ -6,7 +6,13 @@
 # @date   2012/03/18
 
 require 'rubygems'
-require 'coderay/scanner'
+
+begin
+  # Renamed since CodeRay v1.1.1
+  require 'coderay/scanners'
+rescue LoadError
+  require 'coderay/scanner'
+end
 
 # coderay-1.0.5/lib/coderay/scanners/php.rb
 module CodeRay
