@@ -1,3 +1,18 @@
+=== 1.8.8 2016/04/18
+
+* milk web
+  * Fix LoadError of coderay/scanner
+    * https://github.com/ongaeshi/milkode/pull/81
+
+* milk
+  * Exit with 1 on error
+    * https://github.com/ongaeshi/milkode/pull/79
+
+* etc
+  * Fix TravisCI error
+    * Add "require: sudo" into .travis.yml
+    * Add "gem update bundler" into .travis.yml
+
 === 1.8.7 2015/06/22
 
 * milk web
