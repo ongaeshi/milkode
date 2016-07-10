@@ -28,6 +28,7 @@
               %input#query(name="query" type="text" style="width: 419px;")
               %input(type="submit" value="#{t(:search)}")
               %input(name='pathname' type='hidden' value='#{url_for '/home'}')
+              %input(name='relative_url' type='hidden' value='#{ENV['MILKODE_RELATIVE_URL']}')
               &nbsp;&nbsp;<a href="#{url_for '/help'}">#{t(:help)}</a>
 
       .row
