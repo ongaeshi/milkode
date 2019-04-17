@@ -43,6 +43,7 @@ rootpath: .
 
 ## <a name="faq04"></a> (4) 推奨バージョンは？
 
-- ruby 2.5.3
+- ruby 2.3.1
+- ruby 2.2.5
 
 
