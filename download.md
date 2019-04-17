@@ -28,7 +28,7 @@ $ sudo gem install milkode
 
 ## <a id="windows"></a> Windows
 
-**RubyInstaller + DevKit**
+**[RubyInstaller + DevKit](https://rubyinstaller.org/downloads/)**
 
 <pre>
 $ gem install eventmachine --platform ruby
