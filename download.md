@@ -31,7 +31,8 @@ $ sudo gem install milkode
 **RubyInstaller + DevKit**
 
 <pre>
-$ gem.bat install milkode
+$ gem install eventmachine --platform ruby
+$ gem install milkode
 </pre>
 
 **ActiveScriptRuby**
