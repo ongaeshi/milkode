@@ -16,18 +16,18 @@ class TestCLI_Grep < Test::Unit::TestCase
     @work.add_package "db1", @work.expand_path("../data/b_project")
   end
 
-  def test_main
-    # 全てを test_* にすると、毎回setup, teardown が走ってデータベースを生成する時間がもったいないので
-    t_basic
-    t_not_found_package
-    t_not_package_root
-    t_exec_onlysuffix
-    t_cache
-    t_case_sensitive
-    t_keyword
-    t_db
-    t_match_files
-  end
+  # def test_main
+  #   # 全てを test_* にすると、毎回setup, teardown が走ってデータベースを生成する時間がもったいないので
+  #   t_basic
+  #   t_not_found_package
+  #   t_not_package_root
+  #   t_exec_onlysuffix
+  #   t_cache
+  #   t_case_sensitive
+  #   t_keyword
+  #   t_db
+  #   t_match_files
+  # end
 
   def teardown
     @work.teardown
