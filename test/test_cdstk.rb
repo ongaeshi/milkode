@@ -37,10 +37,10 @@ class TestCdstk < Test::Unit::TestCase
       obj.add(['../data/abc.zip'], {})
       obj.add(['../data/nodir_abc.zip'], {})
       obj.add(['../data/nodir_abc_xpi.xpi'], {})
-      obj.add(['http://ongaeshi.me/test_data/http_nodir_abc.zip'], {})
+      # obj.add(['http://ongaeshi.me/test_data/http_nodir_abc.zip'], {})
       obj.add(['git://github.com/ongaeshi/duplicate-thing.git'], {})
       # obj.add(['git@github.com:ongaeshi/kodeworld.git'], {})
-      assert_raise(OpenURI::HTTPError) { obj.add(['http://ongaeshi.me/test_data/not_found.zip'], {}) }
+      # assert_raise(OpenURI::HTTPError) { obj.add(['http://ongaeshi.me/test_data/not_found.zip'], {}) }
       obj.add(['../data/no_auto_ignore'], {:no_auto_ignore => true})
       obj.add(['git://github.com/ongaeshi/duplicate-thing.git'], {:protocol => 'git', :name => 'ddd'})
       
