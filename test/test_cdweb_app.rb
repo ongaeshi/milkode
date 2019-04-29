@@ -31,19 +31,19 @@ class TestCdwebApp < Test::Unit::TestCase
     Sinatra::Application
   end
 
-  def test_main
-    t_default
-    t_home
-    t_help
-    t_not_found
-    t_view_empty_file
-    t_view_with_query
-    t_view_gotoline
-    t_view_simple
-    t_search_contents
-    t_search_gotoline
-    t_search_fuzzy_gotoline
-  end
+  # def test_main
+  #   t_default
+  #   t_home
+  #   t_help
+  #   t_not_found
+  #   t_view_empty_file
+  #   t_view_with_query
+  #   t_view_gotoline
+  #   t_view_simple
+  #   t_search_contents
+  #   t_search_gotoline
+  #   t_search_fuzzy_gotoline
+  # end
 
   private
   
