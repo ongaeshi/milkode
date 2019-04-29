@@ -82,8 +82,8 @@ class TestCdstk < Test::Unit::TestCase
       io.puts('--- cleanup ---')
       obj.cleanup([], {:force=>true})
 
-      io.puts('--- rebuild ---')
-      obj.rebuild([], {:all => true})
+      # io.puts('--- rebuild ---')
+      # obj.rebuild([], {:all => true})
 
       io.puts('--- ignore ---')
       obj.ignore(['dir*', '*snip*'], {:package => "common"})
