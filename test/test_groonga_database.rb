@@ -39,20 +39,20 @@ module Milkode
       # @obj.close
     end
 
-    def test_compatible?
-      begin
-        t_setup
+    # def test_compatible?
+    #   begin
+    #     t_setup
 
-        # 互換性の無いGroongaデータベースを作る
-        filename = Dbdir.groonga_path(@tmp_dir)
-        FileUtils.mkdir_p(File.dirname filename) 
-        Groonga::Database.create(:path => filename)
-        # DocumentTable.define_schema
+    #     # 互換性の無いGroongaデータベースを作る
+    #     filename = Dbdir.groonga_path(@tmp_dir)
+    #     FileUtils.mkdir_p(File.dirname filename) 
+    #     Groonga::Database.create(:path => filename)
+    #     # DocumentTable.define_schema
 
-        assert_equal nil, @obj.compatible?(filename, true)
-      ensure
-        t_cleanup
-      end
-    end
+    #     assert_equal nil, @obj.compatible?(filename, true)
+    #   ensure
+    #     t_cleanup
+    #   end
+    # end
   end
 end
