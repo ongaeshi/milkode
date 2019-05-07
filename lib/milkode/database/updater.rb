@@ -214,7 +214,11 @@ module Milkode
         # ファイルならば中身を探索、ディレクトリならば再帰
         case File.ftype(fpath)
         when "directory"
-          searchDirectory(dirname, packname, next_path, depth + 1)
+          begin
+            searchDirectory(dirname, packname, next_path, depth + 1)
+          rescue
+            alert("warning", "Failed to searchDirectory - #{fpath}")
+          end
         when "file"
           unless ignoreFile?(fpath, next_path)
             db_add_file(dirname, next_path) # shortpathの先頭に'/'が付いているのが気になる
