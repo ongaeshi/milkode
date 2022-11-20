@@ -32,7 +32,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'coderay'     , '>= 1.0.5'
   spec.add_dependency 'thin'        , '>= 1.2.10', '< 1.9.9'
   spec.add_dependency 'archive-zip' , '>= 0.4.0'
-  spec.add_dependency 'haml'        , '>= 3.1.2'
+  spec.add_dependency 'haml'        , '>= 3.1.2', '< 6.0.0'
   spec.add_dependency 'sass'        , '>= 3.1.3'
   spec.add_dependency 'thor'        , '>= 0.18.1'
   spec.add_dependency 'i18n'        , '~> 0.6.5'
